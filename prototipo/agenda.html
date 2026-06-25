@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-brand-title>Agenda</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+  <link rel="stylesheet" href="assets/css/agenda.css" />
+</head>
+<body>
+  <div class="app" id="app">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+      <div class="sidebar__logo">
+        <span class="sidebar__mark"><img src="assets/img/logo-mark.png" alt="" /></span>
+        <span class="sidebar__word" data-brand>NutriPlat</span>
+      </div>
+
+      <nav class="menu" aria-label="Menu principal">
+        <a href="dashboard.html"><span class="ico">📊</span> Dashboard</a>
+        <a href="pacientes.html"><span class="ico">👥</span> Pacientes</a>
+        <a href="agenda.html" class="is-active"><span class="ico">📅</span> Agenda <span class="badge">7</span></a>
+        <a href="prontuario.html"><span class="ico">📋</span> Prontuários</a>
+        <a href="#"><span class="ico">🥗</span> Prescrições</a>
+        <a href="#"><span class="ico">🧪</span> Exames</a>
+
+        <p class="menu__label">Gestão</p>
+        <a href="#"><span class="ico">💬</span> Comunidade</a>
+        <a href="#"><span class="ico">💰</span> Financeiro</a>
+        <a href="#"><span class="ico">📈</span> Relatórios</a>
+
+        <p class="menu__label">Sistema</p>
+        <a href="#"><span class="ico">🤖</span> IA Assistente</a>
+        <a href="#"><span class="ico">⚙️</span> Configurações</a>
+      </nav>
+
+      <div class="sidebar__user">
+        <span class="avatar avatar--sm avatar--rosa">AL</span>
+        <div class="sidebar__user-info">
+          <div class="sidebar__user-name">Ana Luísa</div>
+          <div class="sidebar__user-crn">CRN-3 12345</div>
+        </div>
+      </div>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <!-- ================= CONTEÚDO ================= -->
+    <div class="content">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
+        <div class="topbar__hello">
+          <h1>Agenda</h1>
+          <p>Organize suas consultas por dia e semana</p>
+        </div>
+        <a class="icon-btn" href="index.html" title="Sair / voltar ao login" aria-label="Sair" style="margin-left:auto">↩</a>
+        <span class="avatar" id="user-avatar">AL</span>
+      </header>
+
+      <!-- Canvas -->
+      <main class="canvas">
+
+        <!-- Barra de controles -->
+        <div class="cal-toolbar">
+          <div class="cal-nav">
+            <button class="cal-nav__arrow" id="nav-prev" type="button" aria-label="Anterior">‹</button>
+            <button class="cal-nav__arrow" id="nav-next" type="button" aria-label="Próximo">›</button>
+            <button class="btn btn--outline" id="nav-hoje" type="button" style="padding:9px 16px">Hoje</button>
+          </div>
+          <span class="cal-label" id="cal-label">—</span>
+
+          <div class="cal-toolbar__right">
+            <div class="seg" role="tablist" aria-label="Modo de visualização">
+              <button id="view-dia" type="button">Dia</button>
+              <button id="view-semana" type="button" class="is-active">Semana</button>
+            </div>
+            <button class="btn btn--primary" id="btn-novo" type="button">+ Novo agendamento</button>
+          </div>
+        </div>
+
+        <!-- Calendário + lateral -->
+        <div class="cal-layout">
+
+          <section class="card cal-card">
+            <div id="cal-main"></div>
+          </section>
+
+          <aside class="aside-stack">
+            <section class="card aside-card">
+              <div id="minical"></div>
+            </section>
+
+            <section class="card aside-card">
+              <h2 class="aside-card__title" id="sum-title">Resumo do dia</h2>
+              <div class="dsum" id="day-summary"></div>
+            </section>
+
+            <section class="card aside-card">
+              <h2 class="aside-card__title">Legenda</h2>
+              <div class="legend">
+                <span class="legend__item"><span class="legend__sw"></span> Agendada</span>
+                <span class="legend__item"><span class="legend__sw is-emandamento"></span> Em andamento</span>
+                <span class="legend__item"><span class="legend__sw is-concluida"></span> Concluída</span>
+                <span class="legend__item"><span class="legend__sw is-cancelada"></span> Cancelada</span>
+              </div>
+            </section>
+          </aside>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ================= MODAL · NOVO AGENDAMENTO ================= -->
+  <div class="modal-overlay" id="ag-modal" role="dialog" aria-modal="true" aria-label="Novo agendamento">
+    <div class="modal">
+      <p class="modal__eyebrow">Agenda</p>
+      <h2 class="modal__title">Novo agendamento</h2>
+      <p class="modal__sub">Preencha os dados da consulta. No protótipo, ela é adicionada ao calendário.</p>
+
+      <form id="ag-form">
+        <div class="ag-form__grid">
+          <div class="field field--light col-full">
+            <label class="field__label" for="ag-pac">Paciente</label>
+            <input class="field__input" id="ag-pac" list="ag-pac-list" placeholder="Buscar paciente…" autocomplete="off" required />
+            <datalist id="ag-pac-list"></datalist>
+          </div>
+
+          <div class="field field--light">
+            <label class="field__label" for="ag-data">Data</label>
+            <input class="field__input" type="date" id="ag-data" required />
+          </div>
+          <div class="field field--light">
+            <label class="field__label" for="ag-hora">Início</label>
+            <input class="field__input" type="time" id="ag-hora" value="08:00" required />
+          </div>
+
+          <div class="field field--light">
+            <label class="field__label" for="ag-dur">Duração</label>
+            <select class="field__input" id="ag-dur"></select>
+          </div>
+          <div class="field field--light">
+            <label class="field__label" for="ag-tipo">Tipo</label>
+            <select class="field__input" id="ag-tipo"></select>
+          </div>
+
+          <div class="field field--light col-full">
+            <label class="field__label">Modalidade</label>
+            <div class="ag-modo" id="ag-modo">
+              <button class="chip" type="button" data-modo="Presencial" aria-pressed="true">🏥 Presencial</button>
+              <button class="chip" type="button" data-modo="Online" aria-pressed="false">💻 Online</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal__actions">
+          <button class="btn btn--outline" type="button" id="ag-cancel">Cancelar</button>
+          <button class="btn btn--primary" type="submit">Agendar consulta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/agenda-data.js"></script>
+  <script src="assets/js/agenda.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

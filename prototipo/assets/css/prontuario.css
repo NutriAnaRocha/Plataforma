@@ -1,0 +1,284 @@
+/* ============================================================
+   PRONTUÁRIO (Tela 5) — cabeçalho do paciente, menu de módulos
+   e componentes clínicos. Herda tokens.css, style.css, o shell
+   de dashboard.css e componentes de pacientes.css (info-block,
+   timeline, pill, bar, chart, pstat).
+   ============================================================ */
+
+/* =====================================================
+   CABEÇALHO DO PACIENTE
+   ===================================================== */
+.pc-head { padding: var(--sp-5); }
+.pc-top { display: flex; gap: var(--sp-5); align-items: flex-start; flex-wrap: wrap; }
+.pc-photo {
+  width: 92px; height: 92px; flex: none; border-radius: 24px;
+  display: grid; place-items: center; font-weight: 800; font-size: 1.8rem;
+  background: linear-gradient(135deg, var(--vinho), var(--vinho-claro)); color: #fff;
+  box-shadow: var(--shadow-md);
+}
+.pc-id { flex: 1; min-width: 240px; }
+.pc-name { font-size: var(--fs-h1); margin: 0; color: var(--cinza-escuro); display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+.pc-sub { color: var(--texto-sutil); font-weight: 600; font-size: var(--fs-sm); margin: 3px 0 0; }
+
+/* Pílula de status do paciente */
+.status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: var(--fs-caption); font-weight: 700; }
+.status-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; }
+.status-Ativo   { background: #E6F6EE; color: #1B8A5A; } .status-Ativo::before   { background: #1B8A5A; }
+.status-Alta    { background: var(--rosa-suave); color: var(--vinho); } .status-Alta::before { background: var(--vinho); }
+.status-Inativo { background: var(--cinza-claro); color: var(--texto-sutil); border: 1px solid var(--cinza-borda); } .status-Inativo::before { background: var(--cinza-medio); }
+
+/* Grade de identidade (contato/documentos) */
+.idgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-3) var(--sp-5); margin-top: var(--sp-4); }
+.idgrid__k { font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .5px; color: var(--texto-sutil); font-weight: 700; }
+.idgrid__v { font-size: var(--fs-sm); color: var(--cinza-escuro); font-weight: 600; margin-top: 1px; }
+
+/* Resumo rápido (chips de indicadores) */
+.qsum { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-3); margin-top: var(--sp-5); }
+.qsum__item { background: var(--cinza-claro); border: 1px solid var(--cinza-borda); border-radius: 16px; padding: var(--sp-4); }
+.qsum__lbl { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+.qsum__val { font-size: 1.35rem; font-weight: 800; color: var(--cinza-escuro); line-height: 1.1; margin-top: 3px; }
+.qsum__val small { font-size: .8rem; font-weight: 700; color: var(--texto-sutil); }
+.qsum__hint { font-size: var(--fs-caption); font-weight: 700; margin-top: 2px; color: var(--texto-sutil); }
+.qsum__hint.down { color: #1B8A5A; } .qsum__hint.up { color: #C0392B; }
+
+/* =====================================================
+   LAYOUT — menu de módulos + painel
+   ===================================================== */
+.pront { display: grid; grid-template-columns: 248px 1fr; gap: var(--sp-5); align-items: start; }
+
+.modrail {
+  position: sticky; top: 90px; display: flex; flex-direction: column; gap: 2px;
+  background: var(--branco); border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  padding: var(--sp-3); box-shadow: var(--shadow-sm); max-height: calc(100vh - 110px); overflow: auto;
+}
+.modrail__item {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  padding: 9px 11px; border: none; background: none; border-radius: 10px; cursor: pointer;
+  font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--texto);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.modrail__item .ico { width: 22px; flex: none; text-align: center; font-size: 1rem; }
+.modrail__item .txt { flex: 1; min-width: 0; line-height: 1.2; }
+.modrail__item:hover { background: var(--rosa-suave); color: var(--vinho); }
+.modrail__item.is-active { background: var(--vinho); color: #fff; }
+.modrail__item.is-active .ico { filter: none; }
+
+/* Painel do módulo */
+.modpane { display: flex; flex-direction: column; gap: var(--sp-5); min-width: 0; }
+.modpane__head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
+.modpane__title { font-size: var(--fs-h1); margin: 0; color: var(--cinza-escuro); }
+.modpane__sub { font-size: var(--fs-sm); color: var(--texto-sutil); font-weight: 600; margin: 2px 0 0; }
+
+/* Sub-grids genéricos dentro dos módulos */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-5); align-items: start; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); align-items: start; }
+
+/* Definição chave/valor (anamnese/hábitos) */
+.kv { display: grid; grid-template-columns: 1fr; gap: 0; }
+.kv__row { display: grid; grid-template-columns: 200px 1fr; gap: var(--sp-3); padding: 10px 0; }
+.kv__row + .kv__row { border-top: 1px solid var(--cinza-borda); }
+.kv__k { font-size: var(--fs-sm); color: var(--texto-sutil); font-weight: 700; }
+.kv__v { font-size: var(--fs-sm); color: var(--cinza-escuro); font-weight: 600; }
+
+/* Lista de “tags” clínicas */
+.cliplist { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.clitag { font-size: var(--fs-caption); font-weight: 700; padding: 5px 11px; border-radius: 999px; background: var(--rosa-suave); color: var(--vinho); border: 1px solid var(--cinza-borda); }
+.clitag.is-warn { background: #FCEFD9; color: #B26A00; }
+
+/* Caixa de insight da IA */
+.ai-insight {
+  border: 1px solid var(--cinza-borda); border-radius: 16px; padding: var(--sp-4) var(--sp-5);
+  background: linear-gradient(135deg, rgba(123,40,76,.05), rgba(244,220,229,.35));
+  position: relative;
+}
+.ai-insight__head { display: flex; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+.ai-insight__badge { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-caption); font-weight: 800; color: var(--vinho); text-transform: uppercase; letter-spacing: .5px; }
+.ai-insight__txt { font-size: var(--fs-sm); color: var(--cinza-escuro); line-height: 1.6; margin: 0; }
+.ai-insight__txt strong { color: var(--vinho); }
+.ai-insight__actions { margin-top: var(--sp-3); display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+
+/* =====================================================
+   EXAMES — tabela de marcadores
+   ===================================================== */
+.mk-table { width: 100%; }
+.mk-row { display: grid; grid-template-columns: 1.6fr 1fr 1.1fr auto 90px; gap: var(--sp-3); align-items: center; padding: 11px var(--sp-2); }
+.mk-row + .mk-row { border-top: 1px solid var(--cinza-borda); }
+.mk-row.is-head { font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .5px; color: var(--texto-sutil); font-weight: 700; }
+.mk-name { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); }
+.mk-val { font-weight: 800; font-size: var(--fs-sm); }
+.mk-ref { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+.mk-flag { font-size: var(--fs-caption); font-weight: 700; padding: 3px 9px; border-radius: 999px; justify-self: start; }
+.flag-normal { background: #E6F6EE; color: #1B8A5A; }
+.flag-alto   { background: #FDEAEA; color: #C0392B; }
+.flag-baixo  { background: #FCEFD9; color: #B26A00; }
+.mk-val.flag-alto, .mk-val.flag-baixo { color: #C0392B; }
+.mk-spark { width: 90px; height: 26px; }
+.mk-spark svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.mk-spark path { fill: none; stroke: var(--vinho); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Dropzone de upload (visual) */
+.dropzone {
+  border: 2px dashed var(--cinza-borda); border-radius: 16px; padding: var(--sp-5);
+  text-align: center; color: var(--texto-sutil); font-weight: 600; font-size: var(--fs-sm);
+  transition: all var(--t-fast); cursor: pointer; background: var(--cinza-claro);
+}
+.dropzone:hover { border-color: var(--vinho); background: var(--rosa-suave); color: var(--vinho); }
+.dropzone__ico { font-size: 1.8rem; display: block; margin-bottom: var(--sp-2); }
+
+/* =====================================================
+   QUESTIONÁRIOS
+   ===================================================== */
+.qz-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-4); }
+.qz { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--cinza-borda); border-radius: 16px; box-shadow: var(--shadow-sm); }
+.qz__ico { width: 44px; height: 44px; flex: none; border-radius: 13px; background: var(--rosa-suave); display: grid; place-items: center; font-size: 1.3rem; }
+.qz__info { flex: 1; min-width: 0; }
+.qz__nome { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); }
+.qz__meta { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+.qz__score { text-align: right; }
+.qz__pts { font-size: 1.25rem; font-weight: 800; color: var(--vinho); }
+.qz__faixa { font-size: var(--fs-caption); font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+.fx-ativo { background: #E6F6EE; color: #1B8A5A; }
+.fx-atencao { background: #FCEFD9; color: #B26A00; }
+.fx-alto { background: #FDEAEA; color: #C0392B; }
+.fx-neutro { background: var(--cinza-claro); color: var(--texto-sutil); }
+
+/* =====================================================
+   DIÁRIO ALIMENTAR
+   ===================================================== */
+.diary-day + .diary-day { margin-top: var(--sp-4); }
+.diary-day__head { display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-3); flex-wrap: wrap; }
+.diary-day__date { font-weight: 800; color: var(--cinza-escuro); font-size: var(--fs-body); }
+.diary-tags { display: flex; gap: var(--sp-2); flex-wrap: wrap; margin-left: auto; }
+.diary-tag { font-size: var(--fs-caption); font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--cinza-claro); color: var(--texto-sutil); }
+.meal-row { display: flex; gap: var(--sp-3); align-items: center; padding: 10px 0; }
+.meal-row + .meal-row { border-top: 1px solid var(--cinza-borda); }
+.meal-thumb { width: 48px; height: 48px; flex: none; border-radius: 12px; background: var(--rosa-suave); display: grid; place-items: center; font-size: 1.2rem; }
+.meal-hora { font-weight: 800; font-size: var(--fs-caption); color: var(--vinho); width: 48px; flex: none; }
+.meal-info { flex: 1; min-width: 0; }
+.meal-nome { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); }
+.meal-desc { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+
+/* =====================================================
+   PLANO ALIMENTAR
+   ===================================================== */
+.meal-card { border: 1px solid var(--cinza-borda); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); }
+.meal-card + .meal-card { margin-top: var(--sp-4); }
+.meal-card__head { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); background: var(--rosa-suave); }
+.meal-card__nome { font-weight: 800; color: var(--vinho); font-size: var(--fs-sm); }
+.meal-card__hora { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); }
+.meal-card__kcal { margin-left: auto; font-weight: 800; color: var(--cinza-escuro); font-size: var(--fs-sm); }
+.food-row { display: grid; grid-template-columns: 1fr auto auto; gap: var(--sp-3); align-items: center; padding: 9px var(--sp-4); }
+.food-row + .food-row { border-top: 1px solid var(--cinza-borda); }
+.food-check { width: 18px; height: 18px; flex: none; border: 2px solid var(--cinza-borda); border-radius: 6px; cursor: pointer; display: grid; place-items: center; color: #fff; transition: all var(--t-fast); }
+.food-check.is-on { background: var(--vinho); border-color: var(--vinho); }
+.food-check.is-on::after { content: "✓"; font-size: .7rem; }
+.food-name { font-size: var(--fs-sm); color: var(--cinza-escuro); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+.food-qtd { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; }
+.food-kcal { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; width: 64px; text-align: right; }
+.meal-card__foot { padding: 10px var(--sp-4); font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; background: var(--cinza-claro); }
+.meal-card__foot strong { color: var(--vinho); }
+
+/* Totais de macros */
+.macro-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--sp-3); }
+.macro { text-align: center; }
+.macro__val { font-size: 1.3rem; font-weight: 800; color: var(--cinza-escuro); }
+.macro__lbl { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; }
+.macro .bar { margin-top: 6px; }
+
+/* =====================================================
+   METAS
+   ===================================================== */
+.goal { display: flex; align-items: center; gap: var(--sp-4); padding: var(--sp-4) 0; }
+.goal + .goal { border-top: 1px solid var(--cinza-borda); }
+.goal__ico { width: 44px; height: 44px; flex: none; border-radius: 13px; background: var(--rosa-suave); display: grid; place-items: center; font-size: 1.25rem; }
+.goal__main { flex: 1; min-width: 0; }
+.goal__top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-3); }
+.goal__nome { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); }
+.goal__nums { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); }
+.goal__nums b { color: var(--vinho); font-size: var(--fs-sm); }
+.goal .bar { margin-top: 8px; height: 9px; }
+.goal__pct { font-size: var(--fs-caption); font-weight: 800; color: var(--vinho); width: 44px; text-align: right; flex: none; }
+
+/* =====================================================
+   CARDS DE LISTA (orientações, manipulados, anexos, documentos)
+   ===================================================== */
+.tile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-3); }
+.tile { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); border: 1px solid var(--cinza-borda); border-radius: 14px; box-shadow: var(--shadow-sm); transition: transform var(--t-fast), box-shadow var(--t-fast); }
+.tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--vinho-claro); }
+.tile__ico { width: 42px; height: 42px; flex: none; border-radius: 12px; background: var(--rosa-suave); display: grid; place-items: center; font-size: 1.2rem; }
+.tile__info { flex: 1; min-width: 0; }
+.tile__title { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); line-height: 1.25; }
+.tile__meta { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+.tile__btn { border: 1px solid var(--cinza-borda); background: var(--branco); color: var(--vinho); border-radius: 10px; width: 34px; height: 34px; flex: none; cursor: pointer; font-size: 1rem; transition: all var(--t-fast); }
+.tile__btn:hover { border-color: var(--vinho); background: var(--rosa-suave); }
+
+/* Manipulado (mais detalhe) */
+.rx { border: 1px solid var(--cinza-borda); border-radius: 16px; padding: var(--sp-4); box-shadow: var(--shadow-sm); }
+.rx + .rx { margin-top: var(--sp-3); }
+.rx__head { display: flex; align-items: center; gap: var(--sp-3); }
+.rx__nome { font-weight: 800; color: var(--cinza-escuro); font-size: var(--fs-body); }
+.rx__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-3); margin-top: var(--sp-3); }
+.rx__k { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+.rx__v { font-size: var(--fs-sm); color: var(--cinza-escuro); font-weight: 600; }
+.rx__obs { margin-top: var(--sp-3); font-size: var(--fs-sm); color: var(--texto); }
+
+/* Categorias de anexos */
+.cat-label { font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .6px; font-weight: 800; color: var(--vinho); margin: var(--sp-4) 0 var(--sp-2); }
+.cat-label:first-child { margin-top: 0; }
+
+/* =====================================================
+   CHAT
+   ===================================================== */
+.chatbox { display: flex; flex-direction: column; gap: var(--sp-3); max-height: 460px; overflow-y: auto; padding: var(--sp-2); }
+.cmsg { max-width: 78%; padding: 10px 14px; border-radius: 16px; font-size: var(--fs-sm); line-height: 1.45; }
+.cmsg--paciente { align-self: flex-start; background: var(--cinza-claro); border: 1px solid var(--cinza-borda); border-bottom-left-radius: 5px; color: var(--cinza-escuro); }
+.cmsg--nutri { align-self: flex-end; background: var(--vinho); color: #fff; border-bottom-right-radius: 5px; }
+.cmsg__hora { font-size: .62rem; opacity: .7; margin-top: 4px; }
+.cmsg--media { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.chat-input { display: flex; gap: var(--sp-2); align-items: center; margin-top: var(--sp-3); padding-top: var(--sp-3); border-top: 1px solid var(--cinza-borda); }
+.chat-input input { flex: 1; border: 1px solid var(--cinza-borda); border-radius: 999px; padding: 11px 16px; font: inherit; font-size: var(--fs-sm); outline: none; }
+.chat-input input:focus { border-color: var(--vinho); box-shadow: var(--ring-foco); }
+.chat-tool { width: 40px; height: 40px; flex: none; border: 1px solid var(--cinza-borda); background: var(--branco); border-radius: 50%; cursor: pointer; font-size: 1.1rem; }
+.chat-tool--send { background: var(--vinho); color: #fff; border: none; }
+
+/* =====================================================
+   FINANCEIRO
+   ===================================================== */
+.fin-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-4); }
+.fin-card { border: 1px solid var(--cinza-borda); border-radius: 16px; padding: var(--sp-4); box-shadow: var(--shadow-sm); }
+.fin-card__lbl { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+.fin-card__val { font-size: 1.5rem; font-weight: 800; color: var(--cinza-escuro); margin-top: 3px; }
+.fin-card__val.ok { color: #1B8A5A; } .fin-card__val.pend { color: #C0392B; }
+.fin-row { display: grid; grid-template-columns: 1fr 1.6fr auto auto 120px; gap: var(--sp-3); align-items: center; padding: 11px var(--sp-2); }
+.fin-row + .fin-row { border-top: 1px solid var(--cinza-borda); }
+.fin-row.is-head { font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .5px; color: var(--texto-sutil); font-weight: 700; }
+.fin-val { font-weight: 800; color: var(--cinza-escuro); text-align: right; }
+.pay-list { display: flex; gap: var(--sp-2); flex-wrap: wrap; margin-top: var(--sp-3); }
+.pay-chip { font-size: var(--fs-caption); font-weight: 700; padding: 6px 13px; border-radius: 999px; background: var(--cinza-claro); border: 1px solid var(--cinza-borda); color: var(--cinza-escuro); }
+
+/* =====================================================
+   RESPONSIVO
+   ===================================================== */
+@media (max-width: 1100px) {
+  .pront { grid-template-columns: 1fr; }
+  .modrail {
+    position: static; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; max-height: none;
+    gap: var(--sp-2);
+  }
+  .modrail__item { flex: none; }
+  .modrail__item .txt { white-space: nowrap; }
+  .idgrid { grid-template-columns: repeat(2, 1fr); }
+  .qsum, .fin-cards { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-3, .qz-grid, .tile-grid, .macro-grid { grid-template-columns: 1fr; }
+  .macro-grid { grid-template-columns: repeat(5, 1fr); }
+  .rx__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  .idgrid, .qsum, .fin-cards { grid-template-columns: 1fr; }
+  .kv__row { grid-template-columns: 1fr; gap: 2px; }
+  .mk-row { grid-template-columns: 1.4fr auto auto; }
+  .mk-row .mk-ref, .mk-row .mk-spark { display: none; }
+  .fin-row { grid-template-columns: 1fr auto; }
+  .fin-row .fin-data, .fin-row .fin-metodo { display: none; }
+  .macro-grid { grid-template-columns: repeat(2, 1fr); }
+}

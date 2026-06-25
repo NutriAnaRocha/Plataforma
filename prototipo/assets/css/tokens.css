@@ -1,0 +1,95 @@
+/* ============================================================
+   DESIGN TOKENS — Plataforma Nutri (protótipo)
+   Identidade visual: Ana Luísa Rocha Nutricionista
+   Tudo aqui é reutilizável pelas próximas telas (Dashboard, etc.)
+   ============================================================ */
+
+/* ---- Fonte display (wordmark / títulos) ---- */
+@font-face {
+  font-family: "Merienda";
+  src: url("../img/fonts/Merienda-VariableFont_wght.ttf") format("truetype");
+  font-weight: 300 900;
+  font-display: swap;
+}
+
+:root {
+  /* ---------- Paleta da marca ---------- */
+  --vinho: #7B284C;
+  --rosa: #F4DCE5;
+  --branco: #FFFFFF;
+  --cinza-claro: #F5F5F5;
+  --cinza-escuro: #3C3C3C;
+
+  /* ---------- Derivadas ---------- */
+  --vinho-escuro: #5E1D3A;       /* hover / estados pressionados */
+  --vinho-claro: #9C3D63;        /* destaques sobre vinho */
+  --rosa-suave: #FBEEF3;         /* fundos muito sutis */
+  --cinza-medio: #8A8A8A;        /* textos secundários */
+  --cinza-borda: #E7E7EA;        /* bordas/divisores */
+  --texto: var(--cinza-escuro);
+  --texto-sutil: var(--cinza-medio);
+
+  /* Overlays sobre o painel vinho */
+  --sobre-vinho-10: rgba(255, 255, 255, 0.10);
+  --sobre-vinho-16: rgba(255, 255, 255, 0.16);
+  --sobre-vinho-70: rgba(255, 255, 255, 0.72);
+
+  /* ---------- Tipografia ---------- */
+  --font-display: "Merienda", "Georgia", serif;
+  --font-ui: "Montserrat", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --fs-display: clamp(2.6rem, 4.5vw, 3.6rem);
+  --fs-h1: 1.85rem;
+  --fs-h2: 1.35rem;
+  --fs-h3: 1.05rem;
+  --fs-body: 0.95rem;
+  --fs-sm: 0.85rem;
+  --fs-caption: 0.74rem;
+
+  --lh-tight: 1.2;
+  --lh-normal: 1.55;
+
+  /* ---------- Raio ---------- */
+  --radius-card: 20px;
+  --radius-btn: 12px;
+  --radius-input: 12px;
+  --radius-chip: 999px;
+  --radius-sm: 8px;
+
+  /* ---------- Sombra (premium, suave em camadas — sem glow) ---------- */
+  --shadow-sm: 0 1px 2px rgba(60, 60, 60, 0.06),
+               0 2px 6px rgba(60, 60, 60, 0.05);
+  --shadow-md: 0 4px 12px rgba(60, 60, 60, 0.07),
+               0 12px 28px rgba(123, 40, 76, 0.08);
+  --shadow-lg: 0 10px 24px rgba(60, 60, 60, 0.10),
+               0 24px 60px rgba(123, 40, 76, 0.12);
+  --ring-foco: 0 0 0 3px rgba(123, 40, 76, 0.18);
+
+  /* ---------- Espaçamento (escala 4) ---------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* ---------- Motion ---------- */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --t-fast: 160ms var(--ease);
+  --t-med: 240ms var(--ease);
+  --t-slow: 320ms var(--ease);
+
+  /* ---------- Layout ---------- */
+  --maxw: 1440px;
+  --carousel-ms: 10000; /* duração do auto-avanço (ref. para o JS) */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-fast: 0ms;
+    --t-med: 0ms;
+    --t-slow: 0ms;
+  }
+}

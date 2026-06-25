@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-brand-title>Pacientes</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+  <link rel="stylesheet" href="assets/css/pacientes.css" />
+</head>
+<body>
+  <div class="app" id="app">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+      <div class="sidebar__logo">
+        <span class="sidebar__mark"><img src="assets/img/logo-mark.png" alt="" /></span>
+        <span class="sidebar__word" data-brand>NutriPlat</span>
+      </div>
+
+      <nav class="menu" aria-label="Menu principal">
+        <a href="dashboard.html"><span class="ico">📊</span> Dashboard</a>
+        <a href="pacientes.html" class="is-active"><span class="ico">👥</span> Pacientes</a>
+        <a href="agenda.html"><span class="ico">📅</span> Agenda <span class="badge">7</span></a>
+        <a href="prontuario.html"><span class="ico">📋</span> Prontuários</a>
+        <a href="#"><span class="ico">🥗</span> Prescrições</a>
+        <a href="#"><span class="ico">🧪</span> Exames</a>
+
+        <p class="menu__label">Gestão</p>
+        <a href="#"><span class="ico">💬</span> Comunidade</a>
+        <a href="#"><span class="ico">💰</span> Financeiro</a>
+        <a href="#"><span class="ico">📈</span> Relatórios</a>
+
+        <p class="menu__label">Sistema</p>
+        <a href="#"><span class="ico">🤖</span> IA Assistente</a>
+        <a href="#"><span class="ico">⚙️</span> Configurações</a>
+      </nav>
+
+      <div class="sidebar__user">
+        <span class="avatar avatar--sm avatar--rosa">AL</span>
+        <div class="sidebar__user-info">
+          <div class="sidebar__user-name" id="side-user-name">Ana Luísa</div>
+          <div class="sidebar__user-crn" id="side-user-crn">CRN-3 12345</div>
+        </div>
+      </div>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <!-- ================= CONTEÚDO ================= -->
+    <div class="content">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
+        <div class="topbar__hello">
+          <h1>Pacientes</h1>
+          <p>Gerencie seus pacientes e acompanhe a evolução</p>
+        </div>
+        <a class="icon-btn" href="index.html" title="Sair / voltar ao login" aria-label="Sair">↩</a>
+        <span class="avatar" id="user-avatar">AL</span>
+      </header>
+
+      <!-- Canvas -->
+      <main class="canvas">
+
+        <!-- ===== LISTA DE PACIENTES ===== -->
+        <section class="ptable-view">
+          <div class="page-head">
+            <div>
+              <h2 class="page-head__title">Todos os pacientes</h2>
+              <p class="page-head__sub" id="pac-total">—</p>
+            </div>
+            <div class="page-head__actions">
+              <label class="search-lg">🔍 <input type="search" id="search-pac" placeholder="Buscar por nome ou objetivo…" aria-label="Buscar paciente" /></label>
+              <button class="btn btn--primary">+ Novo paciente</button>
+            </div>
+          </div>
+
+          <div class="filters" id="filters" style="margin-top:var(--sp-4)"></div>
+
+          <div class="ptable" style="margin-top:var(--sp-4)">
+            <div class="ptable__head">
+              <span>Paciente</span><span>Objetivo</span><span>Status</span><span>Adesão</span><span></span>
+            </div>
+            <div class="ptable__list" id="plist2"></div>
+          </div>
+        </section>
+
+        <!-- ===== PERFIL (substitui a lista) ===== -->
+        <section class="profile" id="profile" aria-label="Perfil do paciente"></section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/pacientes-data.js"></script>
+  <script src="assets/js/pacientes.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

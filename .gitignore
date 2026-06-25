@@ -1,0 +1,10 @@
+# Lixo do sistema / Google Drive
+desktop.ini
+Thumbs.db
+.DS_Store
+*.tmp
+~$*
+
+# Credenciais (nunca versionar)
+*.git-credentials
+.nutri-git-credentials

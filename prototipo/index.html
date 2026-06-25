@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- O título recebe o nome da marca via JS (constante BRAND em app.js) -->
+  <title data-brand-title>Plataforma para Nutricionistas</title>
+
+  <!-- Fonte UI oficial da marca -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <main class="login">
+
+    <!-- ============ ESQUERDA · INSTITUCIONAL ============ -->
+    <section class="brand-panel">
+      <div class="brand-logo">
+        <span class="brand-logo__mark"><img src="assets/img/logo-mark.png" alt="" /></span>
+        <span class="brand-logo__word" data-brand>NutriPlat</span>
+      </div>
+
+      <div class="brand-hero">
+        <h1 class="brand-hero__title">
+          Transformando a nutrição através da <span class="accent">ciência</span> e da <span class="accent">tecnologia</span>.
+        </h1>
+        <p class="brand-hero__sub">
+          Gerencie pacientes, consultas, prescrições e acompanhamentos em um único lugar.
+        </p>
+
+        <div class="auth">
+          <div class="auth__buttons">
+            <button class="btn btn--primary btn--lg" id="btn-entrar" type="button">Entrar</button>
+            <button class="btn btn--ghost btn--lg" id="btn-criar" type="button">Criar conta</button>
+          </div>
+
+          <!-- Formulário revelado inline (não é "só login e senha") -->
+          <form class="auth-form" id="auth-form" autocomplete="off">
+            <p class="auth-form__back-wrap">
+              <button class="auth-form__back" id="auth-back" type="button">← voltar</button>
+            </p>
+            <div class="field" id="field-nome" hidden>
+              <label class="field__label" for="nome">Nome completo</label>
+              <input class="field__input" id="nome" type="text" placeholder="Seu nome" />
+            </div>
+            <div class="field">
+              <label class="field__label" for="email">E-mail</label>
+              <input class="field__input" id="email" type="email" placeholder="voce@email.com" />
+            </div>
+            <div class="field">
+              <label class="field__label" for="senha">Senha</label>
+              <input class="field__input" id="senha" type="password" placeholder="••••••••" />
+            </div>
+            <div class="auth-form__row">
+              <a class="auth-form__link" href="#" id="link-esqueci">Esqueci minha senha</a>
+            </div>
+            <button class="btn btn--primary btn--block btn--lg" id="auth-submit" type="submit">Entrar na plataforma</button>
+          </form>
+        </div>
+      </div>
+
+      <p class="brand-foot">
+        <span data-brand>NutriPlat</span> · Portal de atualização profissional para nutricionistas
+      </p>
+    </section>
+
+    <!-- ============ DIREITA · FEED CIENTÍFICO ============ -->
+    <section class="feed-panel">
+      <header class="feed-head">
+        <div>
+          <p class="feed-head__eyebrow">Feed Científico Inteligente</p>
+          <h2 class="feed-head__title">Atualização <span class="light">profissional</span></h2>
+        </div>
+        <span class="live"><span class="live__dot"></span> Em tempo real</span>
+      </header>
+
+      <!-- Chips de categoria (preenchidos via JS) -->
+      <nav class="chips" id="chips" aria-label="Categorias do feed"></nav>
+
+      <!-- Carrossel automático (10s) -->
+      <div class="carousel">
+        <div class="carousel__viewport" id="carousel-viewport" aria-live="polite"></div>
+
+        <div class="carousel__controls">
+          <div class="carousel__dots" id="carousel-dots"></div>
+          <div class="carousel__nav">
+            <button class="nav-btn" id="prev" type="button" aria-label="Anterior">‹</button>
+            <button class="nav-btn" id="next" type="button" aria-label="Próximo">›</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Atualização da Semana (resumo da IA) -->
+      <aside class="highlight-week" id="highlight-week"></aside>
+    </section>
+  </main>
+
+  <!-- ============ MODAL · PERSONALIZAÇÃO (1º acesso) ============ -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <p class="modal__eyebrow">Bem-vinda à plataforma</p>
+      <h2 class="modal__title" id="modal-title">Quais áreas você atende?</h2>
+      <p class="modal__sub">Vamos priorizar o conteúdo científico mais relevante para a sua prática. Você pode mudar depois.</p>
+
+      <div class="opt-grid" id="opt-grid"></div>
+
+      <div class="modal__actions">
+        <button class="btn btn--outline" id="skip-personalize" type="button">Pular</button>
+        <button class="btn btn--primary" id="save-personalize" type="button">Salvar e continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts: ordem importa (dados → módulos → app) -->
+  <script src="assets/js/feed-data.js"></script>
+  <script src="assets/js/personalize.js"></script>
+  <script src="assets/js/feed.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

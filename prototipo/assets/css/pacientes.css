@@ -1,0 +1,169 @@
+/* ============================================================
+   PACIENTES (Tela 3) — lista/busca + perfil do paciente.
+   Herda tokens.css, componentes de style.css e o shell
+   (sidebar/topbar/card/avatar/bar) de dashboard.css.
+   ============================================================ */
+
+/* ---------- Cabeçalho da página ---------- */
+.page-head { display: flex; align-items: center; gap: var(--sp-4); flex-wrap: wrap; }
+.page-head__title { font-size: var(--fs-h1); margin: 0; color: var(--cinza-escuro); }
+.page-head__sub { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; margin: 2px 0 0; }
+.page-head__actions { margin-left: auto; display: flex; gap: var(--sp-3); align-items: center; flex-wrap: wrap; }
+
+/* Busca da página */
+.search-lg {
+  display: flex; align-items: center; gap: var(--sp-2);
+  background: var(--branco); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-chip); padding: 10px 16px; min-width: 260px;
+}
+.search-lg input { border: none; background: none; outline: none; font: inherit; font-size: var(--fs-sm); width: 100%; color: var(--texto); }
+
+/* Filtros (status) */
+.filters { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+.filters .chip .count { font-weight: 800; opacity: .7; }
+
+/* ---------- Tabela de pacientes ---------- */
+.ptable { width: 100%; }
+.ptable__head, .prow2 {
+  display: grid;
+  grid-template-columns: 2.4fr 1.4fr 1.2fr 1fr 0.5fr;
+  align-items: center; gap: var(--sp-3);
+}
+.ptable__head {
+  padding: var(--sp-2) var(--sp-4);
+  font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .6px;
+  color: var(--texto-sutil); font-weight: 700;
+}
+.prow2 {
+  padding: var(--sp-3) var(--sp-4); border-radius: 14px;
+  background: var(--branco); border: 1px solid var(--cinza-borda);
+  box-shadow: var(--shadow-sm); cursor: pointer;
+  transition: transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast);
+}
+.prow2 + .prow2 { margin-top: var(--sp-3); }
+.prow2:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--vinho-claro); }
+.ptable__list { margin-top: var(--sp-3); }
+
+.pcell-who { display: flex; align-items: center; gap: var(--sp-3); min-width: 0; }
+.pcell-nome { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); line-height: 1.2; }
+.pcell-meta { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+.pcell-obj { font-size: var(--fs-sm); font-weight: 600; color: var(--texto); }
+.pcell-adesao { display: flex; align-items: center; gap: var(--sp-2); }
+.pcell-adesao .bar { flex: 1; margin: 0; }
+.pcell-adesao .val { font-size: var(--fs-caption); font-weight: 800; color: var(--vinho); width: 34px; text-align: right; }
+.pcell-go { text-align: right; color: var(--vinho); font-weight: 800; }
+
+/* Pílula de status */
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px; font-size: var(--fs-caption); font-weight: 700; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; }
+.pill-ativo   { background: #E6F6EE; color: #1B8A5A; } .pill-ativo::before   { background: #1B8A5A; }
+.pill-atencao { background: #FCEFD9; color: #B26A00; } .pill-atencao::before { background: #E59512; }
+.pill-inativo { background: var(--cinza-claro); color: var(--texto-sutil); border: 1px solid var(--cinza-borda); } .pill-inativo::before { background: var(--cinza-medio); }
+
+/* Barra de progresso fina (reaproveitada da lista) */
+.bar { height: 7px; border-radius: 999px; background: var(--cinza-borda); overflow: hidden; }
+.bar__fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--vinho-claro), var(--vinho)); }
+.bar__fill.is-low { background: linear-gradient(90deg, #E59512, #C0392B); }
+
+/* =====================================================
+   PERFIL DO PACIENTE (view que substitui a lista)
+   ===================================================== */
+.profile { display: none; flex-direction: column; gap: var(--sp-5); }
+.is-profile .ptable-view { display: none; }
+.is-profile .profile { display: flex; }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+  background: none; border: none; cursor: pointer;
+  color: var(--vinho); font-weight: 700; font-size: var(--fs-sm); padding: 0;
+}
+.back-link:hover { text-decoration: underline; }
+
+/* Cabeçalho do perfil */
+.phead { display: flex; gap: var(--sp-5); align-items: center; flex-wrap: wrap; }
+.phead__avatar {
+  width: 76px; height: 76px; flex: none; border-radius: 22px;
+  display: grid; place-items: center; font-weight: 800; font-size: 1.5rem;
+  background: var(--vinho); color: #fff; box-shadow: var(--shadow-md);
+}
+.phead__id { min-width: 0; }
+.phead__name { font-size: var(--fs-h1); margin: 0; color: var(--cinza-escuro); display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+.phead__meta { color: var(--texto-sutil); font-weight: 600; font-size: var(--fs-sm); margin: 2px 0 0; }
+.phead__tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: var(--sp-2); }
+.mini-tag { font-size: var(--fs-caption); font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--rosa); color: var(--vinho); }
+.phead__actions { margin-left: auto; display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+
+/* Faixa de indicadores do paciente */
+.pstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-3); }
+.pstat { background: var(--branco); border: 1px solid var(--cinza-borda); border-radius: 16px; padding: var(--sp-4); box-shadow: var(--shadow-sm); }
+.pstat__lbl { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+.pstat__val { font-size: 1.5rem; font-weight: 800; color: var(--cinza-escuro); line-height: 1.1; margin-top: 4px; }
+.pstat__val small { font-size: .85rem; font-weight: 700; color: var(--texto-sutil); }
+.pstat__hint { font-size: var(--fs-caption); font-weight: 700; margin-top: 2px; }
+
+/* Abas */
+.tabs { display: flex; gap: var(--sp-1); border-bottom: 1px solid var(--cinza-borda); flex-wrap: wrap; }
+.tab {
+  background: none; border: none; cursor: pointer;
+  padding: 11px 16px; font: inherit; font-size: var(--fs-sm); font-weight: 700;
+  color: var(--texto-sutil); border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+.tab:hover { color: var(--vinho); }
+.tab.is-active { color: var(--vinho); border-bottom-color: var(--vinho); }
+
+.tabpane { display: none; }
+.tabpane.is-active { display: block; }
+
+/* Grid de 2 colunas dentro das abas */
+.pgrid { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--sp-5); align-items: start; }
+
+/* Blocos de informação */
+.info-block + .info-block { margin-top: var(--sp-4); }
+.info-block__label { font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .6px; font-weight: 700; color: var(--vinho); margin: 0 0 4px; }
+.info-block__text { margin: 0; font-size: var(--fs-sm); color: var(--texto); line-height: 1.55; }
+
+/* Timeline de consultas */
+.timeline { position: relative; padding-left: var(--sp-5); }
+.timeline::before { content: ""; position: absolute; left: 7px; top: 4px; bottom: 4px; width: 2px; background: var(--cinza-borda); }
+.tl-item { position: relative; padding-bottom: var(--sp-4); }
+.tl-item::before { content: ""; position: absolute; left: -22px; top: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--branco); border: 3px solid var(--vinho); }
+.tl-item:first-child::before { background: var(--vinho); }
+.tl-date { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; }
+.tl-tipo { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); }
+.tl-nota { font-size: var(--fs-sm); color: var(--texto); margin: 2px 0 0; }
+
+/* Lista de itens (prescrições / exames) */
+.ilist { display: flex; flex-direction: column; }
+.iitem { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) 0; }
+.iitem + .iitem { border-top: 1px solid var(--cinza-borda); }
+.iitem__ico { width: 38px; height: 38px; flex: none; border-radius: 11px; background: var(--rosa-suave); display: grid; place-items: center; font-size: 1.1rem; }
+.iitem__info { flex: 1; min-width: 0; }
+.iitem__title { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); line-height: 1.25; }
+.iitem__date { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+.istatus { font-size: var(--fs-caption); font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.is-Ativo, .is-Anexado { background: #E6F6EE; color: #1B8A5A; }
+.is-Pendente, .is-Solicitado { background: #FCEFD9; color: #B26A00; }
+.is-Encerrado { background: var(--cinza-claro); color: var(--texto-sutil); border: 1px solid var(--cinza-borda); }
+
+/* Gráfico de peso (reusa estilos .chart de dashboard.css) */
+.empty-state { padding: var(--sp-5); text-align: center; color: var(--texto-sutil); font-size: var(--fs-sm); }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 1100px) {
+  .pgrid { grid-template-columns: 1fr; }
+  .pstats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 760px) {
+  .ptable__head { display: none; }
+  .prow2 { grid-template-columns: 1fr auto; grid-template-areas: "who status" "obj adesao"; row-gap: var(--sp-2); }
+  .prow2 .pcell-who { grid-area: who; }
+  .prow2 .pcell-obj { grid-area: obj; }
+  .prow2 .pcell-status { grid-area: status; justify-self: end; }
+  .prow2 .pcell-adesao { grid-area: adesao; }
+  .prow2 .pcell-go { display: none; }
+}
+@media (max-width: 560px) {
+  .pstats { grid-template-columns: 1fr 1fr; }
+  .phead__actions { width: 100%; margin-left: 0; }
+}
