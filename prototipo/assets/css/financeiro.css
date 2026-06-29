@@ -1,0 +1,105 @@
+/* ============================================================
+   FINANCEIRO (consolidado) — reaproveita shell (dashboard.css)
+   ============================================================ */
+
+/* ---------- KPIs ---------- */
+.fin-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+}
+.kpi {
+  background: var(--branco);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-card);
+  padding: var(--sp-4);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.kpi::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--cinza-borda);
+}
+.kpi--up::before, .kpi--ok::before { background: #2E9E6B; }
+.kpi--down::before { background: #C0492F; }
+.kpi--neutro::before { background: var(--vinho-claro); }
+.kpi__ico { font-size: 20px; }
+.kpi__rot { font-size: var(--fs-sm); color: var(--texto-sutil); margin-top: var(--sp-1); }
+.kpi__val { font-size: 1.5rem; font-weight: 800; color: var(--texto); margin-top: 2px; }
+.kpi__sub { font-size: var(--fs-caption); color: var(--texto-sutil); margin-top: 2px; }
+.kpi--up .kpi__sub, .kpi--ok .kpi__sub { color: #2E9E6B; }
+.kpi--down .kpi__sub { color: #C0492F; }
+
+/* ---------- Grid principal ---------- */
+.fin-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--sp-5);
+  align-items: start;
+}
+.fin-col { display: flex; flex-direction: column; gap: var(--sp-5); }
+
+/* gráfico */
+.fin-svg { width: 100%; height: 240px; display: block; }
+.cx-lbl { font-size: 11px; fill: var(--cinza-medio); font-family: var(--font-ui); }
+
+/* métodos de pagamento */
+.mtd { margin-bottom: var(--sp-3); }
+.mtd__top { display: flex; justify-content: space-between; font-size: var(--fs-sm); color: var(--texto); }
+.mtd__top strong { color: var(--vinho); }
+.mtd__bar { height: 8px; border-radius: var(--radius-chip); background: var(--cinza-claro); margin-top: 5px; overflow: hidden; }
+.mtd__bar span { display: block; height: 100%; border-radius: var(--radius-chip); background: linear-gradient(90deg, var(--vinho), var(--vinho-claro)); }
+.mtd__pct { font-size: var(--fs-caption); color: var(--texto-sutil); margin-top: 2px; }
+
+/* planos */
+.plano { display: flex; justify-content: space-between; align-items: center; padding: var(--sp-3) 0; border-bottom: 1px solid var(--cinza-borda); }
+.plano:last-child { border-bottom: 0; }
+.plano__nome { font-weight: 700; font-size: var(--fs-sm); color: var(--texto); }
+.plano__sub { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.plano__val { font-weight: 800; color: var(--vinho); font-size: var(--fs-body); }
+.plano__val span { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 500; }
+
+/* ---------- Tabela de lançamentos ---------- */
+.fin-table { width: 100%; border-collapse: collapse; }
+.fin-table th {
+  text-align: left; font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .05em;
+  color: var(--texto-sutil); font-weight: 700; padding: 0 var(--sp-3) var(--sp-2);
+  border-bottom: 1px solid var(--cinza-borda);
+}
+.fin-table td { padding: var(--sp-3); border-bottom: 1px solid var(--cinza-borda); font-size: var(--fs-sm); vertical-align: middle; }
+.fin-table tr:last-child td { border-bottom: 0; }
+.lc-data { color: var(--texto-sutil); white-space: nowrap; }
+.lc-pac { font-weight: 700; color: var(--texto); }
+.lc-desc { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.lc-met { color: var(--texto-sutil); }
+.lc-val { font-weight: 800; color: var(--texto); white-space: nowrap; }
+
+.st { display: inline-block; padding: 3px 11px; border-radius: var(--radius-chip); font-size: var(--fs-caption); font-weight: 700; }
+.st--pago { background: #E4F5EC; color: #1F7A4D; }
+.st--pendente { background: #FBF0DC; color: #9A6B12; }
+.st--atrasado { background: #FBE3DD; color: #B23A23; }
+
+/* ---------- Integrações ---------- */
+.fin-integ { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.integ {
+  display: flex; flex-direction: column; gap: 1px;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-btn);
+  background: var(--cinza-claro);
+}
+.integ.is-on { background: var(--rosa-suave); border-color: var(--rosa); }
+.integ__nome { font-weight: 700; font-size: var(--fs-sm); color: var(--texto); }
+.integ__st { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.integ.is-on .integ__st { color: #2E9E6B; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 1100px) {
+  .fin-grid { grid-template-columns: 1fr; }
+  .fin-kpis { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .fin-kpis { grid-template-columns: 1fr; }
+  .lc-met { display: none; }
+}
