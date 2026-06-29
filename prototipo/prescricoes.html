@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-brand-title>Prontuário</title>
+  <title data-brand-title>Prescrições</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,8 +12,7 @@
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/dashboard.css" />
-  <link rel="stylesheet" href="assets/css/pacientes.css" />
-  <link rel="stylesheet" href="assets/css/prontuario.css" />
+  <link rel="stylesheet" href="assets/css/prescricoes.css" />
 </head>
 <body>
   <div class="app" id="app">
@@ -29,8 +28,8 @@
         <a href="dashboard.html"><span class="ico">📊</span> Dashboard</a>
         <a href="pacientes.html"><span class="ico">👥</span> Pacientes</a>
         <a href="agenda.html"><span class="ico">📅</span> Agenda <span class="badge">7</span></a>
-        <a href="prontuario.html" class="is-active"><span class="ico">📋</span> Prontuários</a>
-        <a href="prescricoes.html"><span class="ico">🥗</span> Prescrições</a>
+        <a href="prontuario.html"><span class="ico">📋</span> Prontuários</a>
+        <a href="prescricoes.html" class="is-active"><span class="ico">🥗</span> Prescrições</a>
         <a href="#"><span class="ico">🧪</span> Exames</a>
 
         <p class="menu__label">Gestão</p>
@@ -60,64 +59,42 @@
       <header class="topbar">
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
         <div class="topbar__hello">
-          <h1>Prontuário</h1>
-          <p>Centro de inteligência clínica do paciente</p>
+          <h1>Prescrições</h1>
+          <p>Planos alimentares e modelos reutilizáveis</p>
         </div>
-        <a class="icon-btn" href="pacientes.html" title="Voltar para pacientes" aria-label="Voltar" style="margin-left:auto">↩</a>
+        <button class="btn btn--primary" style="margin-left:auto">+ Nova prescrição</button>
         <span class="avatar" id="user-avatar">AL</span>
       </header>
 
       <!-- Canvas -->
       <main class="canvas">
 
-        <a class="back-link" href="pacientes.html">‹ Voltar para pacientes</a>
+        <div class="rx-kpis" id="rx-kpis"></div>
 
-        <!-- Cabeçalho do paciente -->
-        <section class="card pc-head" id="pc-head"></section>
+        <div class="rx-grid">
+          <!-- Lista -->
+          <section>
+            <div class="rx-search">🔍 <input type="search" id="rx-search-input" placeholder="Buscar por paciente ou objetivo…" aria-label="Buscar prescrição" /></div>
+            <div class="rx-list" id="rx-list"></div>
+          </section>
 
-        <!-- Menu de módulos + painel -->
-        <div class="pront">
-          <nav class="modrail" id="modrail" aria-label="Módulos do prontuário"></nav>
-          <section class="modpane" id="modulo"></section>
+          <!-- Detalhe -->
+          <section class="rx-detail" id="rx-detail"></section>
         </div>
+
+        <!-- Modelos -->
+        <section class="rx-modelos">
+          <h2 class="page-head__title">Modelos de plano</h2>
+          <div class="rx-modelos__grid" id="rx-modelos-grid"></div>
+        </section>
 
       </main>
     </div>
   </div>
 
-  <!-- ================= NÚTRI AI (assistente flutuante) ================= -->
-  <button class="ai-fab" id="ai-fab" type="button">
-    <span class="ai-fab__ico">🤖</span> Nútri AI
-  </button>
-
-  <section class="ai-panel" id="ai-panel" role="dialog" aria-label="Assistente Nútri AI">
-    <header class="ai-panel__head">
-      <span class="ai-panel__avatar">🤖</span>
-      <div class="ai-panel__id">
-        <div class="ai-panel__name">Nútri AI</div>
-        <div class="ai-panel__status">Analisando este prontuário · online</div>
-      </div>
-      <button class="ai-panel__close" id="ai-close" type="button" aria-label="Fechar">✕</button>
-    </header>
-
-    <div class="ai-thread" id="ai-thread">
-      <div class="msg msg--ai">
-        Estou com o prontuário da <strong>Marina</strong> aberto. Posso interpretar exames, sugerir condutas,
-        resumir a evolução e ajudar no plano alimentar. Por onde começamos?
-      </div>
-    </div>
-
-    <div class="ai-suggest" id="ai-suggest"></div>
-
-    <div class="ai-input">
-      <input type="text" id="ai-text" placeholder="Pergunte ao Nútri AI…" aria-label="Mensagem" />
-      <button class="ai-input__send" id="ai-send" type="button" aria-label="Enviar">➤</button>
-    </div>
-  </section>
-
   <!-- Scripts -->
-  <script src="assets/js/prontuario-data.js"></script>
-  <script src="assets/js/prontuario.js"></script>
+  <script src="assets/js/prescricoes-data.js"></script>
+  <script src="assets/js/prescricoes.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
