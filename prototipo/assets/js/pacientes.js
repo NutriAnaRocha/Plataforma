@@ -182,6 +182,8 @@
         pstat("Adesão", p.adesao + '<small>%</small>', hint) +
       '</div>' +
 
+      renderPortalCard(p) +
+
       '<div class="card" style="padding:0">' +
         '<div class="tabs" id="tabs" style="padding:0 var(--sp-4)">' +
           tabBtn("resumo", "Resumo") + tabBtn("evolucao", "Evolução") + tabBtn("consultas", "Consultas") +
@@ -201,6 +203,7 @@
     el("pac-view").addEventListener("click", function () { window.open("portal-paciente.html?preview=" + encodeURIComponent(p.id), "_blank"); });
     el("pac-edit").addEventListener("click", function () { openForm(p); });
     el("pac-del").addEventListener("click", function () { confirmDelete(p); });
+    wirePortalCard(p);
     initChatPane(p);
     wrap.querySelectorAll(".tab").forEach(function (t) {
       t.addEventListener("click", function () { switchTab(t.getAttribute("data-t")); });
@@ -221,6 +224,158 @@
     wrap.querySelectorAll(".tabpane").forEach(function (pn) { pn.classList.toggle("is-active", pn.getAttribute("data-pane") === id); });
     if (id === "evolucao") drawWeightChart(state.current);
     if (id === "mensagens") loadChatPane(state.current);
+  }
+
+  /* ---------- Portal do paciente: acesso + features (entitlements) ---------- */
+  var FEAT_LABELS = { plano: "Plano alimentar", evolucao: "Evolução", consultas: "Consultas", chat: "Chat" };
+
+  function renderPortalCard(p) {
+    var feats = window.NutriPacientes.TODAS_FEATURES;
+    var atuais = p.portalFeatures || feats.slice();
+    var toggles = feats.map(function (f) {
+      var on = atuais.indexOf(f) >= 0;
+      return '<label class="feat-toggle"><input type="checkbox" data-feat="' + f + '"' + (on ? " checked" : "") + '>' +
+        '<span>' + esc(FEAT_LABELS[f]) + (f === "chat" ? ' <small>(controla o envio de mensagens)</small>' : '') + '</span></label>';
+    }).join("");
+
+    var acesso = p.userId
+      ? '<div class="portal-acesso portal-acesso--on"><span class="pill pill-ativo">Acesso ativo</span>' +
+          '<span class="portal-acesso__hint">O paciente já tem login e vê o próprio acompanhamento.</span></div>'
+      : '<div class="portal-acesso"><button class="btn btn--primary btn--sm" id="pac-criar-acesso" type="button">🔑 Criar acesso do paciente</button>' +
+          '<span class="portal-acesso__hint">Gera um login para o paciente entrar no portal.</span></div>';
+
+    return '<div class="card portal-card" style="padding:var(--sp-5)">' +
+      '<div class="portal-card__head"><h2 class="pcard__title" style="margin:0">Portal do paciente</h2>' +
+        '<span class="portal-card__saved" id="feat-saved" hidden>✓ salvo</span></div>' +
+      acesso +
+      '<div class="portal-card__feats"><span class="portal-card__lbl">O que aparece no portal:</span>' +
+        '<div class="feat-toggles">' + toggles + '</div></div>' +
+    '</div>';
+  }
+
+  function wirePortalCard(p) {
+    var btn = el("pac-criar-acesso");
+    if (btn) btn.addEventListener("click", function () { openAcessoModal(p); });
+
+    var saved = el("feat-saved"), savedT;
+    el("profile").querySelectorAll("[data-feat]").forEach(function (cb) {
+      cb.addEventListener("change", function () {
+        var feats = [];
+        el("profile").querySelectorAll("[data-feat]").forEach(function (x) { if (x.checked) feats.push(x.getAttribute("data-feat")); });
+        el("profile").querySelectorAll("[data-feat]").forEach(function (x) { x.disabled = true; });
+        window.NutriPacientes.setPortalFeatures(p.id, feats).then(function (novo) {
+          p.portalFeatures = novo;
+          if (saved) { saved.hidden = false; clearTimeout(savedT); savedT = setTimeout(function () { saved.hidden = true; }, 1600); }
+        }).catch(function () {
+          alert("Não foi possível salvar as permissões. Tente novamente.");
+          // reverte a UI ao estado salvo
+          el("profile").querySelectorAll("[data-feat]").forEach(function (x) {
+            x.checked = (p.portalFeatures || []).indexOf(x.getAttribute("data-feat")) >= 0;
+          });
+        }).then(function () {
+          el("profile").querySelectorAll("[data-feat]").forEach(function (x) { x.disabled = false; });
+        });
+      });
+    });
+  }
+
+  function acessoErro(code) {
+    return ({
+      email_em_uso: "Este e-mail já tem uma conta. Use outro e-mail para o paciente.",
+      ja_tem_acesso: "Este paciente já tem acesso criado.",
+      ficha_nao_e_sua: "Esta ficha não pertence à sua conta.",
+      ficha_inexistente: "Ficha não encontrada. Recarregue a página.",
+      email_invalido: "E-mail inválido.",
+      senha_curta: "A senha precisa ter ao menos 6 caracteres.",
+      faltam_campos: "Informe o e-mail do paciente.",
+      invalid_token: "Sua sessão expirou. Faça login de novo.",
+      missing_auth: "Sua sessão expirou. Faça login de novo."
+    })[code] || "Não foi possível criar o acesso. Tente novamente.";
+  }
+
+  function openAcessoModal(p) {
+    if (formOverlay) formOverlay.remove();
+    formOverlay = document.createElement("div");
+    formOverlay.className = "pf-overlay";
+    formOverlay.innerHTML =
+      '<div class="pf-modal pf-modal--sm" role="dialog" aria-modal="true" aria-label="Criar acesso do paciente">' +
+        '<div class="pf-modal__head"><h3>Criar acesso · ' + esc(p.nome) + '</h3>' +
+          '<button class="pf-close" type="button" aria-label="Fechar">✕</button></div>' +
+        '<form class="pf-form" id="acesso-form">' +
+          '<p class="pf-msg" hidden></p>' +
+          '<p class="pf-note">O paciente vai usar este e-mail e senha para entrar no portal. ' +
+            'A senha é definida agora (não é enviada por e-mail).</p>' +
+          '<div class="pf-grid">' +
+            field("E-mail do paciente", "email", (p.contato && p.contato.email) || "", { type: "email", required: true, wide: true, placeholder: "email@paciente.com" }) +
+            field("Senha (opcional)", "senha", "", { wide: true, placeholder: "deixe em branco para gerar automaticamente" }) +
+          '</div>' +
+          '<div class="pf-actions">' +
+            '<button class="btn btn--ghost" type="button" id="acesso-cancel">Cancelar</button>' +
+            '<button class="btn btn--primary" type="submit" id="acesso-save">Criar acesso</button>' +
+          '</div>' +
+        '</form>' +
+      '</div>';
+    document.body.appendChild(formOverlay);
+    requestAnimationFrame(function () { formOverlay.classList.add("is-open"); });
+
+    var closeIt = function () { if (formOverlay) { formOverlay.remove(); formOverlay = null; } };
+    formOverlay.querySelector(".pf-close").addEventListener("click", closeIt);
+    formOverlay.querySelector("#acesso-cancel").addEventListener("click", closeIt);
+    formOverlay.addEventListener("click", function (e) { if (e.target === formOverlay) closeIt(); });
+    formOverlay.querySelector("[name=email]").focus();
+
+    formOverlay.querySelector("#acesso-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var f = new FormData(e.target);
+      var email = String(f.get("email") || "").trim();
+      var senha = String(f.get("senha") || "").trim();
+      var msg = e.target.querySelector(".pf-msg");
+      var save = el("acesso-save");
+      if (!email) { msg.textContent = "Informe o e-mail do paciente."; msg.hidden = false; return; }
+      save.disabled = true; save.textContent = "Criando…"; msg.hidden = true;
+      window.NutriPacientes.criarAcessoPaciente(p.id, email, senha).then(function (cred) {
+        p.userId = cred.user_id;
+        showCredencial(p, cred);
+      }).catch(function (err) {
+        save.disabled = false; save.textContent = "Criar acesso";
+        msg.textContent = acessoErro(err && err.code); msg.hidden = false;
+      });
+    });
+  }
+
+  function showCredencial(p, cred) {
+    if (!formOverlay) return;
+    var modal = formOverlay.querySelector(".pf-modal");
+    modal.innerHTML =
+      '<div class="pf-modal__head"><h3>✅ Acesso criado</h3>' +
+        '<button class="pf-close" type="button" aria-label="Fechar">✕</button></div>' +
+      '<div class="pf-form">' +
+        '<p class="pf-note">Envie estes dados para <strong>' + esc(p.nome) + '</strong>. ' +
+          'Anote agora: a senha não fica visível depois.</p>' +
+        '<div class="cred-box">' +
+          '<div class="cred-row"><span class="cred-lbl">Link</span><code id="cred-link">' + esc(location.origin + location.pathname.replace(/[^/]*$/, "") + "index.html") + '</code></div>' +
+          '<div class="cred-row"><span class="cred-lbl">E-mail</span><code id="cred-email">' + esc(cred.email) + '</code></div>' +
+          '<div class="cred-row"><span class="cred-lbl">Senha</span><code id="cred-senha">' + esc(cred.senha) + '</code></div>' +
+        '</div>' +
+        '<div class="pf-actions">' +
+          '<button class="btn btn--ghost" type="button" id="cred-copy">📋 Copiar tudo</button>' +
+          '<button class="btn btn--primary" type="button" id="cred-done">Concluir</button>' +
+        '</div>' +
+      '</div>';
+    var closeAndRefresh = function () {
+      if (formOverlay) { formOverlay.remove(); formOverlay = null; }
+      // p já tem userId setado; re-renderiza a ficha com "acesso ativo".
+      if (state.current && state.current.id === p.id) renderProfile(p);
+      loadPatients(); // atualiza a lista em segundo plano
+    };
+    modal.querySelector(".pf-close").addEventListener("click", closeAndRefresh);
+    modal.querySelector("#cred-done").addEventListener("click", closeAndRefresh);
+    modal.querySelector("#cred-copy").addEventListener("click", function () {
+      var txt = "Portal: " + el("cred-link").textContent + "\nE-mail: " + cred.email + "\nSenha: " + cred.senha;
+      navigator.clipboard.writeText(txt).then(function () {
+        var b = el("cred-copy"); b.textContent = "✓ Copiado"; setTimeout(function () { b.textContent = "📋 Copiar tudo"; }, 1500);
+      }).catch(function () {});
+    });
   }
 
   /* ---------- Chat (visão nutri) ---------- */

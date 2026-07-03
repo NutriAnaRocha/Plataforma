@@ -70,9 +70,35 @@
       t.addEventListener("click", function () { switchTab(t.getAttribute("data-t")); });
     });
 
+    applyFeatureGate(p);
     drawWeightChart(p);
     initChat();
     wireLogout();
+  }
+
+  // Mostra só as seções liberadas para este paciente (pacientes.portal_features).
+  // O chat tem gate real de RLS; as demais são apenas ocultadas aqui.
+  function applyFeatureGate(p) {
+    var feats = Array.isArray(p.portalFeatures) ? p.portalFeatures : ["plano", "evolucao", "consultas", "chat"];
+    var tabsWrap = el("portal-tabs");
+    var visiveis = [];
+    tabsWrap.querySelectorAll(".ptab").forEach(function (t) {
+      var id = t.getAttribute("data-t");
+      var on = feats.indexOf(id) >= 0;
+      t.hidden = !on;
+      if (on) visiveis.push(id);
+    });
+    tabsWrap.hidden = visiveis.length <= 1; // 0 ou 1 seção: nem mostra a barra de abas
+    if (!visiveis.length) {
+      el("portal").querySelectorAll(".portal-pane").forEach(function (pn) { pn.classList.remove("is-active"); });
+      var pp = el("pane-plano");
+      pp.classList.add("is-active");
+      pp.innerHTML = '<div class="pcard"><div class="empty-state">Seu acesso ainda não tem seções liberadas. Fale com sua nutricionista.</div></div>';
+      return;
+    }
+    // Se a aba ativa foi ocultada, ativa a primeira liberada.
+    var ativo = tabsWrap.querySelector(".ptab.is-active");
+    if (!ativo || ativo.hidden) switchTab(visiveis[0]);
   }
 
   function switchTab(id) {

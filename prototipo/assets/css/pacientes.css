@@ -249,6 +249,31 @@
   .pf-actions .btn { width: 100%; }
 }
 
+/* ---------- Portal do paciente: card de acesso + features ---------- */
+.portal-card { margin-bottom: var(--sp-4); }
+.portal-card__head { display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.portal-card__saved { font-size: var(--fs-sm); font-weight: 700; color: #1B8A5A; }
+
+.portal-acesso { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-4); }
+.portal-acesso__hint { font-size: var(--fs-sm); color: var(--texto-sutil); }
+
+.portal-card__feats { border-top: 1px solid var(--cinza-borda); padding-top: var(--sp-4); }
+.portal-card__lbl { display: block; font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .6px; font-weight: 700; color: var(--vinho); margin-bottom: var(--sp-3); }
+.feat-toggles { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-5); }
+.feat-toggle { display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); color: var(--texto); cursor: pointer; }
+.feat-toggle input { width: 17px; height: 17px; accent-color: var(--vinho); cursor: pointer; }
+.feat-toggle small { color: var(--texto-sutil); font-weight: 500; }
+
+.btn--sm { padding: 8px 14px; font-size: var(--fs-sm); }
+
+/* Modal estreito (criar acesso) + credencial gerada */
+.pf-modal--sm { max-width: 480px; }
+.pf-note { margin: 0 0 var(--sp-4); font-size: var(--fs-sm); color: var(--texto-sutil); line-height: 1.5; }
+.cred-box { display: flex; flex-direction: column; gap: var(--sp-2); background: var(--rosa-suave); border-radius: var(--radius-sm); padding: var(--sp-4); }
+.cred-row { display: flex; align-items: center; gap: var(--sp-3); }
+.cred-lbl { flex: none; width: 56px; font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--vinho); }
+.cred-row code { flex: 1; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: var(--fs-sm); color: var(--texto); word-break: break-all; }
+
 /* ---------- Chat na aba Mensagens do perfil ---------- */
 .chat { display: flex; flex-direction: column; border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); overflow: hidden; }
 .chat__scroll { display: flex; flex-direction: column; gap: var(--sp-3); padding: var(--sp-4); max-height: 48vh; overflow-y: auto; }

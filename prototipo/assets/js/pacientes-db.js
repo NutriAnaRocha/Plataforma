@@ -7,7 +7,9 @@
 (function () {
   "use strict";
 
-  var COLS = "id,user_id,nome,ini,idade,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames,plano";
+  var COLS = "id,user_id,nome,ini,idade,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames,plano,portal_features";
+
+  var TODAS_FEATURES = ["plano", "evolucao", "consultas", "chat"];
 
   // DB row (snake) -> shape usado pela UI (camelCase, igual ao mock PAC_DATA)
   function fromRow(r) {
@@ -25,7 +27,8 @@
       restricoes: r.restricoes || "", anamnese: r.anamnese || "", observacoes: r.observacoes || "",
       evolucao: r.evolucao || { labels: [], peso: [] },
       consultas: r.consultas || [], prescricoes: r.prescricoes || [], exames: r.exames || [],
-      plano: r.plano || { titulo: null, refeicoes: [] }
+      plano: r.plano || { titulo: null, refeicoes: [] },
+      portalFeatures: Array.isArray(r.portal_features) ? r.portal_features : TODAS_FEATURES.slice()
     };
   }
 
@@ -150,8 +153,44 @@
         if (res.error) throw res.error;
         return res.data;
       });
+    },
+
+    // ---- Entitlements ----
+    // Features do portal que ESTE paciente enxerga (subconjunto de TODAS_FEATURES).
+    setPortalFeatures: function (pacienteId, features) {
+      var clean = (features || []).filter(function (f) { return TODAS_FEATURES.indexOf(f) >= 0; });
+      return client().then(function (c) {
+        return c.from("pacientes").update({ portal_features: clean }).eq("id", pacienteId)
+          .select("id,portal_features").single();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return res.data.portal_features;
+      });
+    },
+
+    // ---- Criar login do paciente (Edge Function com service_role) ----
+    // Devolve { ok, user_id, email, senha } ou lança Error com .code (o "error" da function).
+    criarAcessoPaciente: function (pacienteId, email, senha) {
+      return client().then(function (c) {
+        return c.functions.invoke("create-patient-access", {
+          body: { paciente_id: pacienteId, email: email, senha: senha || undefined }
+        });
+      }).then(function (res) {
+        if (res.error) {
+          // functions.invoke embrulha erro HTTP; tenta extrair o código do corpo.
+          var e = new Error("falha_function");
+          try {
+            return res.error.context.json().then(function (b) {
+              e.code = (b && b.error) || "erro"; e.detail = b && b.detail; throw e;
+            });
+          } catch (x) { e.code = "erro_rede"; throw e; }
+        }
+        if (res.data && res.data.error) { var e2 = new Error(res.data.error); e2.code = res.data.error; throw e2; }
+        return res.data;
+      });
     }
   };
 
+  api.TODAS_FEATURES = TODAS_FEATURES;
   window.NutriPacientes = api;
 })();
