@@ -86,9 +86,9 @@
     box.innerHTML =
       '<div class="ex-dhead">' +
         '<span class="ex-card__av ' + (e.cor === "vinho" ? "vinho" : "") + '" style="width:48px;height:48px">' + esc(e.iniciais) + '</span>' +
-        '<div><div class="ex-dhead__tit">' + esc(e.paciente) + '</div>' +
+        '<div class="ex-dhead__id"><div class="ex-dhead__tit">' + esc(e.paciente) + '</div>' +
         '<div class="ex-dhead__sub">' + esc(e.tipo) + ' · ' + esc(e.data) + '</div></div>' +
-        '<div class="ex-dhead__actions"><button class="btn btn--ghost">Baixar PDF</button><button class="btn btn--primary">Comentar no prontuário</button></div>' +
+        '<div class="ex-dhead__actions"><button class="btn btn--outline">Baixar PDF</button><button class="btn btn--primary">Comentar no prontuário</button></div>' +
       '</div>' +
       (e.ia ? '<div class="ex-ia"><span class="ex-ia__ico">🤖</span><div><div class="ex-ia__t">Leitura da IA</div><div class="ex-ia__txt">' + esc(e.ia) + '</div></div></div>' : '') +
       (e.grupos || []).map(groupHTML).join("");
