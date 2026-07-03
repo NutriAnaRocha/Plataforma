@@ -179,7 +179,7 @@
         pstat("Peso atual", p.pesoAtual + '<small> kg</small>', '<span class="delta ' + deltaCls + '">' + deltaTxt + '</span>') +
         pstat("IMC", p.imc + '', '<span class="pstat__hint" style="color:var(--texto-sutil)">' + imcClasse(p.imc) + '</span>') +
         pstat("Meta", (p.meta != null ? p.meta + '<small> kg</small>' : '—'), '<span class="pstat__hint" style="color:var(--texto-sutil)">' + esc(metaMeta) + '</span>') +
-        pstat("Adesão", p.adesao + '<small>%</small>', hint) +
+        pstat("Adesão", '<span id="adesao-val">' + p.adesao + '</span><small>%</small>', '<span id="adesao-hint">' + hint + '</span>') +
       '</div>' +
 
       renderPortalCard(p) +
@@ -204,6 +204,7 @@
     el("pac-edit").addEventListener("click", function () { openForm(p); });
     el("pac-del").addEventListener("click", function () { confirmDelete(p); });
     wirePortalCard(p);
+    refreshAdesaoReal(p);
     initChatPane(p);
     wrap.querySelectorAll(".tab").forEach(function (t) {
       t.addEventListener("click", function () { switchTab(t.getAttribute("data-t")); });
@@ -224,6 +225,25 @@
     wrap.querySelectorAll(".tabpane").forEach(function (pn) { pn.classList.toggle("is-active", pn.getAttribute("data-pane") === id); });
     if (id === "evolucao") drawWeightChart(state.current);
     if (id === "mensagens") loadChatPane(state.current);
+  }
+
+  // Adesão REAL: % de itens do plano que o paciente marcou (tabela plano_adesao).
+  // Substitui o número manual quando existe um plano com itens.
+  function refreshAdesaoReal(p) {
+    var refs = (p.plano && p.plano.refeicoes) || [];
+    var total = refs.reduce(function (s, r) { return s + ((r.itens || []).length); }, 0);
+    if (!total) return; // sem plano publicado: mantém o valor manual da ficha
+    window.NutriPacientes.getAdesao(p.id).then(function (marcas) {
+      var feitos = 0;
+      refs.forEach(function (r, ri) { (r.itens || []).forEach(function (_it, ii) { if (marcas[ri + ":" + ii] === true) feitos++; }); });
+      var pct = Math.round(feitos * 100 / total);
+      var val = el("adesao-val"), hintEl = el("adesao-hint");
+      if (val) val.textContent = pct;
+      if (hintEl) {
+        var cls = pct >= 70 ? "delta--up" : pct >= 50 ? "delta--neutro" : "delta--down";
+        hintEl.outerHTML = '<span id="adesao-hint"><span class="delta ' + cls + '">' + feitos + '/' + total + ' itens · marcado pelo paciente</span></span>';
+      }
+    }).catch(function () { /* silencioso: mantém o valor manual */ });
   }
 
   /* ---------- Portal do paciente: acesso + features (entitlements) ---------- */

@@ -155,6 +155,27 @@
       });
     },
 
+    // ---- Adesão ao plano (marcação feita pelo paciente) ----
+    getAdesao: function (pacienteId) {
+      return client().then(function (c) {
+        return c.from("plano_adesao").select("marcas").eq("paciente_id", pacienteId).maybeSingle();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return (res.data && res.data.marcas) || {};
+      });
+    },
+    setAdesao: function (pacienteId, marcas) {
+      return client().then(function (c) {
+        return c.from("plano_adesao").upsert(
+          { paciente_id: pacienteId, marcas: marcas || {}, updated_at: new Date().toISOString() },
+          { onConflict: "paciente_id" }
+        );
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return true;
+      });
+    },
+
     // ---- Entitlements ----
     // Features do portal que ESTE paciente enxerga (subconjunto de TODAS_FEATURES).
     setPortalFeatures: function (pacienteId, features) {

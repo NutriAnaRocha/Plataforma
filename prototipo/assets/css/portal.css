@@ -72,6 +72,12 @@
 .pcard__meta { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
 .pcard__hint { margin: var(--sp-2) 0 0; font-size: var(--fs-sm); color: var(--texto-sutil); }
 
+/* Barra de adesão (% do plano seguido) no topo do plano */
+.plano-adesao { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-3); }
+.plano-adesao__bar { flex: 1; height: 8px; border-radius: 999px; background: var(--rosa-suave); overflow: hidden; }
+.plano-adesao__bar span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--vinho-claro, #A64D6E), var(--vinho)); transition: width .25s ease; }
+.plano-adesao__pct { flex: none; font-size: var(--fs-sm); font-weight: 800; color: var(--vinho); }
+
 /* Refeições */
 .meal { padding: var(--sp-4) var(--sp-5); }
 .meal__head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--sp-3); }

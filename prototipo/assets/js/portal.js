@@ -13,7 +13,7 @@
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
 
-  var ctx = { mode: "real", paciente: null, user: null };
+  var ctx = { mode: "real", paciente: null, user: null, marcas: {} };
 
   window.NutriDBReady.then(function (c) {
     return c.auth.getSession().then(function (r) {
@@ -37,7 +37,10 @@
     if (paciente === undefined) return;
     if (!paciente) { showNoData(); return; }
     ctx.paciente = paciente;
-    boot();
+    return window.NutriPacientes.getAdesao(paciente.id)
+      .then(function (marcas) { ctx.marcas = marcas || {}; })
+      .catch(function () { ctx.marcas = {}; })
+      .then(function () { boot(); });
   }).catch(function () {
     el("portal-loading").textContent = "Não foi possível carregar. Verifique a conexão e recarregue.";
   });
@@ -117,15 +120,19 @@
       return '<div class="pcard"><div class="empty-state">Seu plano alimentar ainda não foi publicado. ' +
         'Assim que sua nutricionista liberar, ele aparece aqui.</div></div>';
     }
-    var pid = p.id;
+    var readonly = ctx.mode === "preview";
+    var pct = adesaoPct(p);
     var head = '<div class="pcard pcard--head"><h2>' + esc(plano.titulo || "Plano alimentar") + '</h2>' +
       (plano.atualizadoEm ? '<span class="pcard__meta">Atualizado em ' + esc(plano.atualizadoEm) + '</span>' : '') +
-      '<p class="pcard__hint">Marque o que você seguiu — é só pra seu acompanhamento pessoal.</p></div>';
+      '<div class="plano-adesao"><div class="plano-adesao__bar"><span id="adesao-fill" style="width:' + pct + '%"></span></div>' +
+        '<span class="plano-adesao__pct" id="adesao-pct">' + pct + '% seguido</span></div>' +
+      '<p class="pcard__hint">Marque o que você seguiu — sua nutricionista acompanha sua adesão por aqui.</p></div>';
     var body = refs.map(function (r, ri) {
       var itens = (r.itens || []).map(function (it, ii) {
-        var key = pid + ":" + ri + ":" + ii;
+        var key = ri + ":" + ii;
         var done = checkGet(key);
-        return '<li class="meal-item"><label><input type="checkbox" data-check="' + esc(key) + '"' + (done ? " checked" : "") + '> ' +
+        return '<li class="meal-item"><label><input type="checkbox" data-check="' + esc(key) + '"' +
+          (done ? " checked" : "") + (readonly ? " disabled" : "") + '> ' +
           '<span>' + esc(it) + '</span></label></li>';
       }).join("");
       return '<div class="pcard meal"><div class="meal__head"><span class="meal__nome">' + esc(r.nome) + '</span>' +
@@ -135,17 +142,33 @@
     return head + body;
   }
 
-  // Marcação do plano: persistência local por paciente (v1). Sincronizar a adesão
-  // com a nutri é passo futuro (evita o paciente escrever em campos clínicos).
-  function checkKey() { return "nutriplat.plano." + (ctx.paciente ? ctx.paciente.id : "x"); }
-  function checkGet(key) {
-    try { return (JSON.parse(localStorage.getItem(checkKey()) || "{}"))[key] === true; } catch (e) { return false; }
-  }
+  // Marcação do plano sincronizada no banco (tabela plano_adesao, gravada pelo
+  // próprio paciente via RLS). A nutri só lê. Salvamento é debounced.
+  function checkGet(key) { return ctx.marcas[key] === true; }
+  var saveTimer = null;
   function checkSet(key, val) {
-    try {
-      var o = JSON.parse(localStorage.getItem(checkKey()) || "{}");
-      o[key] = val; localStorage.setItem(checkKey(), JSON.stringify(o));
-    } catch (e) {}
+    if (val) ctx.marcas[key] = true; else delete ctx.marcas[key];
+    if (ctx.mode === "preview") return; // nutri em preview não grava (e RLS bloquearia)
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      window.NutriPacientes.setAdesao(ctx.paciente.id, ctx.marcas).catch(function () {});
+    }, 500);
+  }
+
+  // % de itens do plano marcados como seguidos (só conta itens que ainda existem).
+  function adesaoPct(p) {
+    var refs = (p.plano && p.plano.refeicoes) || [];
+    var total = 0, feitos = 0;
+    refs.forEach(function (r, ri) {
+      (r.itens || []).forEach(function (_it, ii) { total++; if (ctx.marcas[ri + ":" + ii] === true) feitos++; });
+    });
+    return total ? Math.round(feitos * 100 / total) : 0;
+  }
+  function refreshAdesaoUI() {
+    var pct = adesaoPct(ctx.paciente);
+    var fill = el("adesao-fill"), lbl = el("adesao-pct");
+    if (fill) fill.style.width = pct + "%";
+    if (lbl) lbl.textContent = pct + "% seguido";
   }
 
   /* ---------- Evolução ---------- */
@@ -278,5 +301,6 @@
     var cb = e.target.closest && e.target.closest("[data-check]");
     if (!cb) return;
     checkSet(cb.getAttribute("data-check"), cb.checked);
+    refreshAdesaoUI();
   });
 })();
