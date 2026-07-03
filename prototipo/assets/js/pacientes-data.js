@@ -32,7 +32,40 @@ window.PAC_DATA = {
       exames: [
         { titulo: "Lipidograma + Glicemia", data: "24/06/2026", status: "Solicitado" },
         { titulo: "Hemograma completo", data: "01/04/2026", status: "Anexado" }
-      ]
+      ],
+      plano: {
+        titulo: "Plano alimentar — Low carb 1.500 kcal",
+        atualizadoEm: "27/05/2026",
+        refeicoes: [
+          { nome: "Café da manhã", horario: "07h30", itens: [
+            "2 ovos mexidos + 1 fatia de queijo",
+            "1 fatia de pão integral",
+            "Café sem açúcar ou chá"
+          ] },
+          { nome: "Lanche da manhã", horario: "10h30", itens: [
+            "1 iogurte natural sem açúcar",
+            "1 punhado de castanhas (30 g)"
+          ] },
+          { nome: "Almoço", horario: "12h30", itens: [
+            "Salada de folhas à vontade + azeite",
+            "120 g de frango grelhado (ou peixe)",
+            "3 col. de sopa de arroz integral",
+            "1 concha de feijão"
+          ] },
+          { nome: "Lanche da tarde", horario: "16h00", itens: [
+            "1 fruta (maçã ou pera)",
+            "1 col. de sopa de pasta de amendoim"
+          ] },
+          { nome: "Jantar", horario: "19h30", itens: [
+            "Omelete de 2 ovos com legumes",
+            "Salada de folhas + azeite"
+          ] },
+          { nome: "Ceia", horario: "21h30", itens: [
+            "1 xícara de chá de camomila",
+            "1 iogurte natural (se estiver com fome)"
+          ] }
+        ]
+      }
     },
     {
       id: "p2", nome: "Rafael Andrade", ini: "RA", idade: 28, sexo: "M",

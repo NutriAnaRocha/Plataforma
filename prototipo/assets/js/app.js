@@ -111,9 +111,11 @@
       });
     });
 
-    // Decide destino após autenticar: 1º acesso -> personalização; senão -> dashboard.
+    // Decide destino após autenticar. Paciente -> portal; nutri -> 1º acesso (personalização) ou dashboard.
     function afterAuth(c) {
-      return c.from("profiles").select("onboarded").maybeSingle().then(function (res) {
+      return c.from("profiles").select("onboarded,tipo").maybeSingle().then(function (res) {
+        var tipo = (res.data && res.data.tipo) || "nutri";
+        if (tipo === "paciente") { window.location.href = "portal-paciente.html"; return; }
         var onboarded = res.data && res.data.onboarded;
         if (!onboarded) { setBusy(false); openPersonalize(); }
         else { goToDashboard(); }

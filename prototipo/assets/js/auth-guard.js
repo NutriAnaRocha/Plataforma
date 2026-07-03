@@ -12,7 +12,11 @@
     c.auth.getSession().then(function (r) {
       if (!r.data.session) { window.location.replace("index.html"); return; }
       window.__nutriUser = r.data.session.user;
-      window.dispatchEvent(new Event("nutri-auth-ready"));
+      // Pacientes não acessam o painel da nutri — vão para o portal deles.
+      c.from("profiles").select("tipo").maybeSingle().then(function (res) {
+        if (res.data && res.data.tipo === "paciente") { window.location.replace("portal-paciente.html"); return; }
+        window.dispatchEvent(new Event("nutri-auth-ready"));
+      });
     });
 
     // Logout: qualquer [data-logout] (botão "Sair", etc.)

@@ -167,6 +167,7 @@
             '<div class="phead__tags">' + (p.tags || []).map(function (t) { return '<span class="mini-tag">' + esc(t) + '</span>'; }).join("") + '</div>' +
           '</div>' +
           '<div class="phead__actions">' +
+            '<button class="btn btn--ghost" id="pac-view" type="button" title="Abrir o portal como o paciente veria">👁 Ver como paciente</button>' +
             '<button class="btn btn--ghost" id="pac-edit" type="button">✏ Editar</button>' +
             '<button class="btn btn--ghost btn--danger" id="pac-del" type="button">🗑 Excluir</button>' +
             '<a class="btn btn--primary" href="prontuario.html">📋 Abrir prontuário</a>' +
@@ -184,7 +185,7 @@
       '<div class="card" style="padding:0">' +
         '<div class="tabs" id="tabs" style="padding:0 var(--sp-4)">' +
           tabBtn("resumo", "Resumo") + tabBtn("evolucao", "Evolução") + tabBtn("consultas", "Consultas") +
-          tabBtn("prescricoes", "Prescrições") + tabBtn("exames", "Exames") +
+          tabBtn("prescricoes", "Prescrições") + tabBtn("exames", "Exames") + tabBtn("mensagens", "Mensagens") +
         '</div>' +
         '<div style="padding:var(--sp-5)">' +
           pane("resumo", paneResumo(p)) +
@@ -192,12 +193,15 @@
           pane("consultas", paneConsultas(p)) +
           pane("prescricoes", paneLista(p.prescricoes, "🥗", "Nenhuma prescrição registrada.")) +
           pane("exames", paneLista(p.exames, "🧪", "Nenhum exame registrado.")) +
+          pane("mensagens", paneChat()) +
         '</div>' +
       '</div>';
 
     el("back-list").addEventListener("click", closeProfile);
+    el("pac-view").addEventListener("click", function () { window.open("portal-paciente.html?preview=" + encodeURIComponent(p.id), "_blank"); });
     el("pac-edit").addEventListener("click", function () { openForm(p); });
     el("pac-del").addEventListener("click", function () { confirmDelete(p); });
+    initChatPane(p);
     wrap.querySelectorAll(".tab").forEach(function (t) {
       t.addEventListener("click", function () { switchTab(t.getAttribute("data-t")); });
     });
@@ -216,6 +220,53 @@
     wrap.querySelectorAll(".tab").forEach(function (t) { t.classList.toggle("is-active", t.getAttribute("data-t") === id); });
     wrap.querySelectorAll(".tabpane").forEach(function (pn) { pn.classList.toggle("is-active", pn.getAttribute("data-pane") === id); });
     if (id === "evolucao") drawWeightChart(state.current);
+    if (id === "mensagens") loadChatPane(state.current);
+  }
+
+  /* ---------- Chat (visão nutri) ---------- */
+  function paneChat() {
+    return '<div class="chat">' +
+      '<div class="chat__scroll" id="nchat-scroll"><div class="empty-state">Carregando mensagens…</div></div>' +
+      '<form class="chat__form" id="nchat-form">' +
+        '<input type="text" id="nchat-input" placeholder="Responder ao paciente…" autocomplete="off" />' +
+        '<button class="btn btn--primary" type="submit">Enviar</button></form>' +
+    '</div>';
+  }
+  function initChatPane(p) {
+    var form = el("nchat-form");
+    if (!form) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var inp = el("nchat-input");
+      var txt = inp.value.trim();
+      if (!txt) return;
+      inp.value = ""; inp.disabled = true;
+      window.NutriPacientes.sendMensagem(p.id, "nutri", txt).then(function () {
+        inp.disabled = false; inp.focus(); loadChatPane(p);
+      }).catch(function () { inp.disabled = false; inp.value = txt; alert("Não foi possível enviar."); });
+    });
+  }
+  function loadChatPane(p) {
+    if (!p) return;
+    var box = el("nchat-scroll");
+    if (!box) return;
+    window.NutriPacientes.listMensagens(p.id).then(function (msgs) {
+      if (!msgs.length) { box.innerHTML = '<div class="empty-state">Nenhuma mensagem ainda com este paciente.</div>'; return; }
+      box.innerHTML = msgs.map(function (m) {
+        var mine = m.autor === "nutri";
+        return '<div class="msg ' + (mine ? "msg--me" : "msg--nutri") + '">' +
+          '<div class="msg__bubble">' + esc(m.corpo) + '</div>' +
+          '<div class="msg__time">' + fmtChatTime(m.created_at) + (mine ? "" : " · paciente") + '</div></div>';
+      }).join("");
+      box.scrollTop = box.scrollHeight;
+    }).catch(function () { box.innerHTML = '<div class="empty-state">Não foi possível carregar as mensagens.</div>'; });
+  }
+  function fmtChatTime(iso) {
+    try {
+      var d = new Date(iso);
+      return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) + " " +
+        d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    } catch (e) { return ""; }
   }
 
   /* ---------- Conteúdo das abas ---------- */

@@ -7,12 +7,13 @@
 (function () {
   "use strict";
 
-  var COLS = "id,nome,ini,idade,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames";
+  var COLS = "id,user_id,nome,ini,idade,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames,plano";
 
   // DB row (snake) -> shape usado pela UI (camelCase, igual ao mock PAC_DATA)
   function fromRow(r) {
     return {
       id: r.id,
+      userId: r.user_id || null,
       nome: r.nome, ini: r.ini || iniciais(r.nome),
       idade: r.idade, sexo: r.sexo,
       objetivo: r.objetivo, status: r.status || "ativo", adesao: r.adesao || 0,
@@ -23,7 +24,8 @@
       tags: r.tags || [],
       restricoes: r.restricoes || "", anamnese: r.anamnese || "", observacoes: r.observacoes || "",
       evolucao: r.evolucao || { labels: [], peso: [] },
-      consultas: r.consultas || [], prescricoes: r.prescricoes || [], exames: r.exames || []
+      consultas: r.consultas || [], prescricoes: r.prescricoes || [], exames: r.exames || [],
+      plano: r.plano || { titulo: null, refeicoes: [] }
     };
   }
 
@@ -47,7 +49,8 @@
       contato: p.contato || {},
       tags: p.tags || [],
       evolucao: p.evolucao || { labels: [], peso: [] },
-      consultas: p.consultas || [], prescricoes: p.prescricoes || [], exames: p.exames || []
+      consultas: p.consultas || [], prescricoes: p.prescricoes || [], exames: p.exames || [],
+      plano: p.plano || { titulo: null, refeicoes: [] }
     };
   }
 
@@ -124,6 +127,28 @@
       }).then(function (res) {
         if (res.error) throw res.error;
         return (res.data || []).map(fromRow);
+      });
+    },
+
+    // ---- Chat (tabela mensagens) ----
+    listMensagens: function (pacienteId) {
+      return client().then(function (c) {
+        return c.from("mensagens").select("id,autor,corpo,created_at")
+          .eq("paciente_id", pacienteId).order("created_at", { ascending: true });
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return res.data || [];
+      });
+    },
+
+    sendMensagem: function (pacienteId, autor, corpo) {
+      return client().then(function (c) {
+        return c.from("mensagens")
+          .insert({ paciente_id: pacienteId, autor: autor, corpo: corpo })
+          .select("id,autor,corpo,created_at").single();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return res.data;
       });
     }
   };

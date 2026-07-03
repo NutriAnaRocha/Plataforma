@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-brand-title>Meu acompanhamento</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/portal.css" />
+</head>
+<body class="portal-body">
+
+  <!-- Faixa de pré-visualização (só no modo "Ver como paciente" da nutri) -->
+  <div class="preview-bar" id="preview-bar" hidden>
+    👁 Você está vendo o portal <strong>como o paciente veria</strong>.
+    <a href="pacientes.html" class="preview-bar__back">‹ Voltar ao painel</a>
+  </div>
+
+  <div class="portal" id="portal" hidden>
+
+    <!-- Cabeçalho -->
+    <header class="portal-head">
+      <div class="portal-head__brand">
+        <span class="portal-head__mark"><img src="assets/img/logo-mark.png" alt="" /></span>
+        <span data-brand>NutriPlat</span>
+      </div>
+      <div class="portal-head__right">
+        <span class="portal-head__hi" id="portal-hi">Olá</span>
+        <button class="icon-btn" id="portal-logout" type="button" title="Sair" aria-label="Sair" data-logout>↩</button>
+      </div>
+    </header>
+
+    <!-- Cartão de boas-vindas -->
+    <section class="portal-hero">
+      <span class="portal-hero__avatar" id="portal-avatar">?</span>
+      <div>
+        <h1 class="portal-hero__name" id="portal-name">—</h1>
+        <p class="portal-hero__sub" id="portal-sub">Acompanhe seu plano, sua evolução e fale com sua nutricionista.</p>
+      </div>
+    </section>
+
+    <!-- Abas -->
+    <nav class="portal-tabs" id="portal-tabs" aria-label="Seções">
+      <button class="ptab is-active" data-t="plano" type="button">🥗 Meu plano</button>
+      <button class="ptab" data-t="evolucao" type="button">📈 Evolução</button>
+      <button class="ptab" data-t="consultas" type="button">📅 Consultas</button>
+      <button class="ptab" data-t="chat" type="button">💬 Mensagens</button>
+    </nav>
+
+    <main class="portal-main" id="portal-main">
+      <div class="portal-pane is-active" data-pane="plano" id="pane-plano"></div>
+      <div class="portal-pane" data-pane="evolucao" id="pane-evolucao"></div>
+      <div class="portal-pane" data-pane="consultas" id="pane-consultas"></div>
+      <div class="portal-pane" data-pane="chat" id="pane-chat"></div>
+    </main>
+  </div>
+
+  <div class="portal-loading" id="portal-loading">Carregando seu acompanhamento…</div>
+
+  <!-- Scripts -->
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/pacientes-db.js"></script>
+  <script src="assets/js/portal.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
