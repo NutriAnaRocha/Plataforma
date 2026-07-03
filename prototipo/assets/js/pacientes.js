@@ -5,20 +5,36 @@
 (function () {
   "use strict";
 
-  var P = (window.PAC_DATA || { pacientes: [], filtros: ["Todos"] });
+  var P = { pacientes: [], filtros: (window.PAC_DATA && window.PAC_DATA.filtros) || ["Todos", "Ativos", "Atenção", "Inativos"] };
   var statusMap = { ativo: "Ativo", atencao: "Atenção", inativo: "Inativo" };
 
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
 
-  var state = { filtro: "Todos", busca: "", tab: "resumo", current: null };
+  var state = { filtro: "Todos", busca: "", tab: "resumo", current: null, load: "loading" };
 
   document.addEventListener("DOMContentLoaded", function () {
     renderFilters();
     renderList();
     initSearch();
     initMobileNav();
+    initCrud();
+    loadPatients();
   });
+
+  /* ---------- Carga do banco (Supabase) ---------- */
+  function loadPatients() {
+    if (!window.NutriPacientes) { state.load = "error"; renderList(); return; }
+    state.load = "loading"; renderList();
+    window.NutriPacientes.list().then(function (rows) {
+      P.pacientes = rows;
+      state.load = "ready";
+      renderFilters(); renderList();
+    }).catch(function () {
+      state.load = "error";
+      renderList();
+    });
+  }
 
   /* ---------- Filtros (status) ---------- */
   function matchFiltro(p) {
@@ -62,8 +78,28 @@
     var rows = visiblePatients();
     var tot = el("pac-total");
     if (tot) tot.textContent = rows.length + " de " + P.pacientes.length + " paciente" + (P.pacientes.length === 1 ? "" : "s");
+    if (state.load === "loading") {
+      wrap.innerHTML = '<div class="empty-state">Carregando pacientes…</div>';
+      return;
+    }
+    if (state.load === "error") {
+      wrap.innerHTML = '<div class="empty-state">Não foi possível carregar os pacientes. Verifique a conexão e ' +
+        '<button class="link-btn" id="retry-load" type="button">tente de novo</button>.</div>';
+      var rb = el("retry-load"); if (rb) rb.addEventListener("click", loadPatients);
+      return;
+    }
     if (!rows.length) {
-      wrap.innerHTML = '<div class="empty-state">Nenhum paciente encontrado para este filtro/busca.</div>';
+      if (!P.pacientes.length) {
+        wrap.innerHTML = '<div class="empty-state">Você ainda não tem pacientes.' +
+          '<div class="empty-state__actions">' +
+          '<button class="btn btn--primary" id="empty-novo" type="button">+ Cadastrar o primeiro</button>' +
+          '<button class="btn btn--outline" id="empty-seed" type="button">Carregar exemplos</button>' +
+          '</div></div>';
+        var en = el("empty-novo"); if (en) en.addEventListener("click", function () { openForm(null); });
+        var es = el("empty-seed"); if (es) es.addEventListener("click", seedExamples);
+      } else {
+        wrap.innerHTML = '<div class="empty-state">Nenhum paciente encontrado para este filtro/busca.</div>';
+      }
       return;
     }
     wrap.innerHTML = rows.map(function (p) {
@@ -131,7 +167,8 @@
             '<div class="phead__tags">' + (p.tags || []).map(function (t) { return '<span class="mini-tag">' + esc(t) + '</span>'; }).join("") + '</div>' +
           '</div>' +
           '<div class="phead__actions">' +
-            '<button class="btn btn--outline">✉ Mensagem</button>' +
+            '<button class="btn btn--ghost" id="pac-edit" type="button">✏ Editar</button>' +
+            '<button class="btn btn--ghost btn--danger" id="pac-del" type="button">🗑 Excluir</button>' +
             '<a class="btn btn--primary" href="prontuario.html">📋 Abrir prontuário</a>' +
           '</div>' +
         '</div>' +
@@ -159,6 +196,8 @@
       '</div>';
 
     el("back-list").addEventListener("click", closeProfile);
+    el("pac-edit").addEventListener("click", function () { openForm(p); });
+    el("pac-del").addEventListener("click", function () { confirmDelete(p); });
     wrap.querySelectorAll(".tab").forEach(function (t) {
       t.addEventListener("click", function () { switchTab(t.getAttribute("data-t")); });
     });
@@ -273,5 +312,152 @@
     if (!app || !toggle) return;
     toggle.addEventListener("click", function () { app.classList.toggle("nav-open"); });
     if (scrim) scrim.addEventListener("click", function () { app.classList.remove("nav-open"); });
+  }
+
+  /* ============================================================
+     CRUD — cadastro/edição/exclusão de pacientes (Supabase).
+     ============================================================ */
+  function initCrud() {
+    var novo = el("btn-novo-pac");
+    if (novo) novo.addEventListener("click", function () { openForm(null); });
+  }
+
+  function seedExamples() {
+    if (!window.NutriPacientes) return;
+    var btn = el("empty-seed");
+    if (btn) { btn.disabled = true; btn.textContent = "Carregando…"; }
+    window.NutriPacientes.seedExamples().then(function () {
+      loadPatients();
+    }).catch(function () {
+      if (btn) { btn.disabled = false; btn.textContent = "Carregar exemplos"; }
+      alert("Não foi possível carregar os exemplos. Tente novamente.");
+    });
+  }
+
+  function confirmDelete(p) {
+    if (!window.confirm('Excluir o paciente "' + p.nome + '"? Esta ação não pode ser desfeita.')) return;
+    window.NutriPacientes.remove(p.id).then(function () {
+      closeProfile();
+      loadPatients();
+    }).catch(function () { alert("Não foi possível excluir. Tente novamente."); });
+  }
+
+  /* ---------- Modal de formulário ---------- */
+  var formOverlay = null;
+
+  function field(label, name, val, opts) {
+    opts = opts || {};
+    var v = esc(val == null ? "" : val);
+    var input;
+    if (opts.type === "textarea") {
+      input = '<textarea name="' + name + '" rows="' + (opts.rows || 2) + '">' + v + '</textarea>';
+    } else if (opts.type === "select") {
+      input = '<select name="' + name + '">' + opts.options.map(function (o) {
+        return '<option value="' + esc(o.v) + '"' + (String(val) === String(o.v) ? " selected" : "") + '>' + esc(o.l) + '</option>';
+      }).join("") + '</select>';
+    } else {
+      input = '<input type="' + (opts.type || "text") + '" name="' + name + '" value="' + v + '"' +
+        (opts.type === "number" ? ' step="' + (opts.step || "any") + '"' : "") +
+        (opts.required ? " required" : "") + (opts.placeholder ? ' placeholder="' + esc(opts.placeholder) + '"' : "") + ' />';
+    }
+    return '<label class="pf-field' + (opts.wide ? " pf-field--wide" : "") + '"><span>' + esc(label) + '</span>' + input + '</label>';
+  }
+
+  function openForm(p) {
+    var edit = !!p;
+    p = p || {};
+    var c = p.contato || {};
+    if (formOverlay) formOverlay.remove();
+
+    formOverlay = document.createElement("div");
+    formOverlay.className = "pf-overlay";
+    formOverlay.innerHTML =
+      '<div class="pf-modal" role="dialog" aria-modal="true" aria-label="' + (edit ? "Editar paciente" : "Novo paciente") + '">' +
+        '<div class="pf-modal__head"><h3>' + (edit ? "Editar paciente" : "Novo paciente") + '</h3>' +
+          '<button class="pf-close" type="button" aria-label="Fechar">✕</button></div>' +
+        '<form class="pf-form" id="pf-form">' +
+          '<p class="pf-msg" hidden></p>' +
+          '<div class="pf-grid">' +
+            field("Nome completo", "nome", p.nome, { required: true, wide: true }) +
+            field("Idade", "idade", p.idade, { type: "number", step: "1" }) +
+            field("Sexo", "sexo", p.sexo || "F", { type: "select", options: [{ v: "F", l: "Feminino" }, { v: "M", l: "Masculino" }] }) +
+            field("Objetivo", "objetivo", p.objetivo, { wide: true }) +
+            field("Status", "status", p.status || "ativo", { type: "select", options: [{ v: "ativo", l: "Ativo" }, { v: "atencao", l: "Atenção" }, { v: "inativo", l: "Inativo" }] }) +
+            field("Adesão (%)", "adesao", p.adesao, { type: "number", step: "1" }) +
+            field("Peso inicial (kg)", "pesoInicial", p.pesoInicial, { type: "number" }) +
+            field("Peso atual (kg)", "pesoAtual", p.pesoAtual, { type: "number" }) +
+            field("Meta (kg)", "meta", p.meta, { type: "number" }) +
+            field("Altura (m)", "altura", p.altura, { type: "number", placeholder: "1.68" }) +
+            field("Telefone", "tel", c.tel, {}) +
+            field("E-mail", "email", c.email, { type: "email" }) +
+            field("Cidade", "cidade", c.cidade, { wide: true }) +
+            field("Tags (separadas por vírgula)", "tags", (p.tags || []).join(", "), { wide: true }) +
+            field("Anamnese", "anamnese", p.anamnese, { type: "textarea", rows: 3, wide: true }) +
+            field("Restrições & alergias", "restricoes", p.restricoes, { type: "textarea", rows: 2, wide: true }) +
+            field("Observações clínicas", "observacoes", p.observacoes, { type: "textarea", rows: 2, wide: true }) +
+          '</div>' +
+          '<div class="pf-actions">' +
+            '<button class="btn btn--ghost" type="button" id="pf-cancel">Cancelar</button>' +
+            '<button class="btn btn--primary" type="submit" id="pf-save">' + (edit ? "Salvar alterações" : "Cadastrar paciente") + '</button>' +
+          '</div>' +
+        '</form>' +
+      '</div>';
+    document.body.appendChild(formOverlay);
+    requestAnimationFrame(function () { formOverlay.classList.add("is-open"); });
+
+    var closeIt = function () { if (formOverlay) { formOverlay.remove(); formOverlay = null; } };
+    formOverlay.querySelector(".pf-close").addEventListener("click", closeIt);
+    formOverlay.querySelector("#pf-cancel").addEventListener("click", closeIt);
+    formOverlay.addEventListener("click", function (e) { if (e.target === formOverlay) closeIt(); });
+    formOverlay.querySelector("[name=nome]").focus();
+
+    formOverlay.querySelector("#pf-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      saveForm(e.target, edit ? p : null, closeIt);
+    });
+  }
+
+  function saveForm(form, existing, closeIt) {
+    var f = new FormData(form);
+    var g = function (k) { var v = f.get(k); return v == null ? "" : String(v).trim(); };
+    var msg = form.querySelector(".pf-msg");
+    var save = form.querySelector("#pf-save");
+
+    var nome = g("nome");
+    if (!nome) { msg.textContent = "Informe o nome do paciente."; msg.hidden = false; return; }
+
+    var payload = {
+      nome: nome, idade: g("idade"), sexo: g("sexo"), objetivo: g("objetivo"),
+      status: g("status"), adesao: g("adesao"),
+      pesoInicial: g("pesoInicial"), pesoAtual: g("pesoAtual"), meta: g("meta"), altura: g("altura"),
+      contato: { tel: g("tel"), email: g("email"), cidade: g("cidade") },
+      tags: g("tags").split(",").map(function (t) { return t.trim(); }).filter(Boolean),
+      anamnese: g("anamnese"), restricoes: g("restricoes"), observacoes: g("observacoes")
+    };
+    // Preserva as estruturas ricas ao editar (não são editáveis por este form).
+    if (existing) {
+      payload.evolucao = existing.evolucao;
+      payload.consultas = existing.consultas;
+      payload.prescricoes = existing.prescricoes;
+      payload.exames = existing.exames;
+      payload.ultConsulta = existing.ultConsulta;
+      payload.proxConsulta = existing.proxConsulta;
+    }
+
+    save.disabled = true; save.textContent = "Salvando…"; msg.hidden = true;
+    var op = existing ? window.NutriPacientes.update(existing.id, payload)
+                      : window.NutriPacientes.create(payload);
+    op.then(function (saved) {
+      closeIt();
+      state.load = "ready";
+      return window.NutriPacientes.list().then(function (rows) {
+        P.pacientes = rows;
+        renderFilters(); renderList();
+        if (existing) { var fresh = rows.filter(function (x) { return x.id === saved.id; })[0]; if (fresh) openProfile(fresh.id); }
+      });
+    }).catch(function () {
+      save.disabled = false; save.textContent = existing ? "Salvar alterações" : "Cadastrar paciente";
+      msg.textContent = "Não foi possível salvar. Verifique a conexão e tente novamente."; msg.hidden = false;
+    });
   }
 })();

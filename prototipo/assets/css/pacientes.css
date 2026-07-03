@@ -167,3 +167,84 @@
   .pstats { grid-template-columns: 1fr 1fr; }
   .phead__actions { width: 100%; margin-left: 0; }
 }
+
+/* ============================================================
+   CRUD — botões extras, empty-state com ações e modal de form.
+   ============================================================ */
+.btn--danger { color: #B23A3A; }
+.btn--danger:hover { background: rgba(178,58,58,0.08); border-color: rgba(178,58,58,0.4); }
+
+.link-btn {
+  background: none; border: none; padding: 0; cursor: pointer;
+  color: var(--vinho); font: inherit; text-decoration: underline;
+}
+
+.empty-state__actions {
+  display: flex; gap: var(--sp-3); justify-content: center; flex-wrap: wrap;
+  margin-top: var(--sp-4);
+}
+
+/* Overlay + modal */
+.pf-overlay {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(60, 30, 45, 0.35);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: var(--sp-5) var(--sp-4); overflow-y: auto;
+  opacity: 0; transition: opacity .18s ease;
+}
+.pf-overlay.is-open { opacity: 1; }
+
+.pf-modal {
+  width: 100%; max-width: 720px; margin: auto;
+  background: var(--branco); border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg); overflow: hidden;
+  transform: translateY(8px); transition: transform .18s ease;
+}
+.pf-overlay.is-open .pf-modal { transform: translateY(0); }
+
+.pf-modal__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-4) var(--sp-5); border-bottom: 1px solid var(--cinza-borda);
+}
+.pf-modal__head h3 { margin: 0; font-size: var(--fs-h3); color: var(--vinho); }
+.pf-close {
+  background: none; border: none; font-size: 1.1rem; cursor: pointer;
+  color: var(--texto-sutil); line-height: 1; padding: var(--sp-2);
+}
+.pf-close:hover { color: var(--texto); }
+
+.pf-form { padding: var(--sp-5); }
+.pf-msg {
+  margin: 0 0 var(--sp-4); padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-sm); font-size: var(--fs-sm);
+  background: rgba(178,58,58,0.08); color: #B23A3A;
+}
+.pf-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4);
+}
+.pf-field { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.pf-field--wide { grid-column: 1 / -1; }
+.pf-field > span { font-size: var(--fs-sm); font-weight: 600; color: var(--texto); }
+.pf-field input,
+.pf-field select,
+.pf-field textarea {
+  width: 100%; padding: 10px 12px; font: inherit; color: var(--texto);
+  background: var(--branco); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input); outline: none;
+}
+.pf-field textarea { resize: vertical; }
+.pf-field input:focus,
+.pf-field select:focus,
+.pf-field textarea:focus { border-color: var(--vinho); box-shadow: var(--ring-foco); }
+
+.pf-actions {
+  display: flex; justify-content: flex-end; gap: var(--sp-3);
+  margin-top: var(--sp-5); padding-top: var(--sp-4);
+  border-top: 1px solid var(--cinza-borda);
+}
+
+@media (max-width: 560px) {
+  .pf-grid { grid-template-columns: 1fr; }
+  .pf-actions { flex-direction: column-reverse; }
+  .pf-actions .btn { width: 100%; }
+}
