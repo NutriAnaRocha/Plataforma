@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-brand-title>Prescrições</title>
+  <title data-brand-title>Exames</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/dashboard.css" />
-  <link rel="stylesheet" href="assets/css/prescricoes.css" />
+  <link rel="stylesheet" href="assets/css/exames.css" />
 </head>
 <body>
   <div class="app" id="app">
@@ -29,8 +29,8 @@
         <a href="pacientes.html"><span class="ico">👥</span> Pacientes</a>
         <a href="agenda.html"><span class="ico">📅</span> Agenda <span class="badge">7</span></a>
         <a href="prontuario.html"><span class="ico">📋</span> Prontuários</a>
-        <a href="prescricoes.html" class="is-active"><span class="ico">🥗</span> Prescrições</a>
-        <a href="exames.html"><span class="ico">🧪</span> Exames</a>
+        <a href="prescricoes.html"><span class="ico">🥗</span> Prescrições</a>
+        <a href="exames.html" class="is-active"><span class="ico">🧪</span> Exames</a>
 
         <p class="menu__label">Gestão</p>
         <a href="#"><span class="ico">💬</span> Comunidade</a>
@@ -59,42 +59,34 @@
       <header class="topbar">
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
         <div class="topbar__hello">
-          <h1>Prescrições</h1>
-          <p>Planos alimentares e modelos reutilizáveis</p>
+          <h1>Exames</h1>
+          <p>Resultados laboratoriais e leitura assistida por IA</p>
         </div>
-        <button class="btn btn--primary" style="margin-left:auto">+ Nova prescrição</button>
+        <button class="btn btn--primary" style="margin-left:auto">+ Anexar exame</button>
         <span class="avatar" id="user-avatar">AL</span>
       </header>
 
       <!-- Canvas -->
       <main class="canvas">
 
-        <div class="rx-kpis" id="rx-kpis"></div>
+        <div class="ex-kpis" id="ex-kpis"></div>
 
-        <div class="rx-grid">
-          <!-- Lista -->
+        <div class="ex-grid">
           <section>
-            <div class="rx-search">🔍 <input type="search" id="rx-search-input" placeholder="Buscar por paciente ou objetivo…" aria-label="Buscar prescrição" /></div>
-            <div class="rx-list" id="rx-list"></div>
+            <div class="ex-search">🔍 <input type="search" id="ex-search-input" placeholder="Buscar por paciente ou tipo de exame…" aria-label="Buscar exame" /></div>
+            <div class="ex-list" id="ex-list"></div>
           </section>
 
-          <!-- Detalhe -->
-          <section class="rx-detail" id="rx-detail"></section>
+          <section class="ex-detail" id="ex-detail"></section>
         </div>
-
-        <!-- Modelos -->
-        <section class="rx-modelos">
-          <h2 class="page-head__title">Modelos de plano</h2>
-          <div class="rx-modelos__grid" id="rx-modelos-grid"></div>
-        </section>
 
       </main>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="assets/js/prescricoes-data.js"></script>
-  <script src="assets/js/prescricoes.js"></script>
+  <script src="assets/js/exames-data.js"></script>
+  <script src="assets/js/exames.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
