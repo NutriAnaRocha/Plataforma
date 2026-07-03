@@ -1,0 +1,42 @@
+/* ===== Relatórios ===== (reusa .card do dashboard.css e .kpi/.cx-lbl/.mtd do financeiro.css) */
+.rel-kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:var(--sp-4); margin-bottom:var(--sp-5); }
+.rel-grid{ display:grid; grid-template-columns:1.6fr 1fr; gap:var(--sp-5); align-items:start; }
+.rel-col{ display:flex; flex-direction:column; gap:var(--sp-5); }
+
+.rel-svg{ width:100%; height:240px; display:block; }
+
+/* Gráfico de barras (consultas por mês) */
+.bar-chart{ display:flex; align-items:flex-end; gap:var(--sp-3); height:200px; padding-top:var(--sp-2); }
+.bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; height:100%; justify-content:flex-end; }
+.bar-col__bar{ width:100%; max-width:46px; border-radius:8px 8px 0 0; background:linear-gradient(180deg, var(--vinho), var(--vinho-claro)); transition:filter var(--t-fast) var(--ease); }
+.bar-col:hover .bar-col__bar{ filter:brightness(1.08); }
+.bar-col__v{ font-size:var(--fs-caption); font-weight:800; color:var(--vinho); }
+.bar-col__l{ font-size:11px; color:var(--cinza-medio); }
+
+/* Donut de objetivos */
+.donut-wrap{ display:flex; align-items:center; gap:var(--sp-5); flex-wrap:wrap; }
+.donut{ width:150px; height:150px; flex:0 0 auto; }
+.donut svg{ width:100%; height:100%; transform:rotate(-90deg); }
+.donut__center{ }
+.donut-legend{ flex:1; min-width:150px; display:flex; flex-direction:column; gap:10px; }
+.leg{ display:flex; align-items:center; gap:10px; font-size:var(--fs-sm); }
+.leg__dot{ width:12px; height:12px; border-radius:4px; flex:0 0 auto; }
+.leg__nome{ color:var(--texto); flex:1; }
+.leg__pct{ font-weight:800; color:var(--vinho); }
+
+/* Barras horizontais (adesão / origem) — reaproveita visual do .mtd */
+.hbar{ margin-bottom:var(--sp-3); }
+.hbar:last-child{ margin-bottom:0; }
+.hbar__top{ display:flex; justify-content:space-between; font-size:var(--fs-sm); color:var(--texto); }
+.hbar__top strong{ color:var(--vinho); }
+.hbar__track{ height:8px; border-radius:var(--radius-chip); background:var(--cinza-claro); margin-top:5px; overflow:hidden; }
+.hbar__track span{ display:block; height:100%; border-radius:var(--radius-chip); background:linear-gradient(90deg, var(--vinho), var(--vinho-claro)); }
+
+@media (max-width:1000px){
+  .rel-kpis{ grid-template-columns:repeat(2,1fr); }
+  .rel-grid{ grid-template-columns:1fr; }
+}
+@media (max-width:560px){
+  .rel-kpis{ grid-template-columns:1fr 1fr; }
+  .bar-chart{ height:160px; }
+}

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-brand-title>Pacientes</title>
+  <title data-brand-title>Relatórios</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,7 +12,8 @@
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/dashboard.css" />
-  <link rel="stylesheet" href="assets/css/pacientes.css" />
+  <link rel="stylesheet" href="assets/css/financeiro.css" />
+  <link rel="stylesheet" href="assets/css/relatorios.css" />
 </head>
 <body>
   <div class="app" id="app">
@@ -26,7 +27,7 @@
 
       <nav class="menu" aria-label="Menu principal">
         <a href="dashboard.html"><span class="ico">📊</span> Dashboard</a>
-        <a href="pacientes.html" class="is-active"><span class="ico">👥</span> Pacientes</a>
+        <a href="pacientes.html"><span class="ico">👥</span> Pacientes</a>
         <a href="agenda.html"><span class="ico">📅</span> Agenda <span class="badge">7</span></a>
         <a href="prontuario.html"><span class="ico">📋</span> Prontuários</a>
         <a href="prescricoes.html"><span class="ico">🥗</span> Prescrições</a>
@@ -35,7 +36,7 @@
         <p class="menu__label">Gestão</p>
         <a href="#"><span class="ico">💬</span> Comunidade</a>
         <a href="financeiro.html"><span class="ico">💰</span> Financeiro</a>
-        <a href="relatorios.html"><span class="ico">📈</span> Relatórios</a>
+        <a href="relatorios.html" class="is-active"><span class="ico">📈</span> Relatórios</a>
 
         <p class="menu__label">Sistema</p>
         <a href="ia.html"><span class="ico">🤖</span> IA Assistente</a>
@@ -45,8 +46,8 @@
       <div class="sidebar__user">
         <span class="avatar avatar--sm avatar--rosa">AL</span>
         <div class="sidebar__user-info">
-          <div class="sidebar__user-name" id="side-user-name">Ana Luísa</div>
-          <div class="sidebar__user-crn" id="side-user-crn">CRN-3 12345</div>
+          <div class="sidebar__user-name">Ana Luísa</div>
+          <div class="sidebar__user-crn">CRN-3 12345</div>
         </div>
       </div>
     </aside>
@@ -59,49 +60,68 @@
       <header class="topbar">
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
         <div class="topbar__hello">
-          <h1>Pacientes</h1>
-          <p>Gerencie seus pacientes e acompanhe a evolução</p>
+          <h1>Relatórios</h1>
+          <p id="rel-periodo">Visão consolidada</p>
         </div>
-        <a class="icon-btn" href="index.html" title="Sair / voltar ao login" aria-label="Sair">↩</a>
+        <button class="btn btn--primary" type="button" style="margin-left:auto">⭳ Exportar PDF</button>
         <span class="avatar" id="user-avatar">AL</span>
       </header>
 
       <!-- Canvas -->
       <main class="canvas">
 
-        <!-- ===== LISTA DE PACIENTES ===== -->
-        <section class="ptable-view">
-          <div class="page-head">
-            <div>
-              <h2 class="page-head__title">Todos os pacientes</h2>
-              <p class="page-head__sub" id="pac-total">—</p>
-            </div>
-            <div class="page-head__actions">
-              <label class="search-lg">🔍 <input type="search" id="search-pac" placeholder="Buscar por nome ou objetivo…" aria-label="Buscar paciente" /></label>
-              <button class="btn btn--primary">+ Novo paciente</button>
-            </div>
+        <section class="rel-kpis" id="rel-kpis" aria-label="Indicadores gerais"></section>
+
+        <div class="rel-grid">
+          <!-- Coluna esquerda -->
+          <div class="rel-col">
+            <section class="card">
+              <div class="card__head">
+                <div>
+                  <h2 class="card__title">Evolução de pacientes ativos</h2>
+                  <p class="card__sub">Últimos 6 meses</p>
+                </div>
+              </div>
+              <div class="card__body"><div id="rel-line"></div></div>
+            </section>
+
+            <section class="card">
+              <div class="card__head">
+                <div>
+                  <h2 class="card__title">Consultas realizadas</h2>
+                  <p class="card__sub">Por mês</p>
+                </div>
+              </div>
+              <div class="card__body"><div class="bar-chart" id="rel-bars"></div></div>
+            </section>
           </div>
 
-          <div class="filters" id="filters" style="margin-top:var(--sp-4)"></div>
+          <!-- Coluna direita -->
+          <div class="rel-col">
+            <section class="card">
+              <div class="card__head"><h2 class="card__title">Objetivos dos pacientes</h2></div>
+              <div class="card__body" id="rel-donut"></div>
+            </section>
 
-          <div class="ptable" style="margin-top:var(--sp-4)">
-            <div class="ptable__head">
-              <span>Paciente</span><span>Objetivo</span><span>Status</span><span>Adesão</span><span></span>
-            </div>
-            <div class="ptable__list" id="plist2"></div>
+            <section class="card">
+              <div class="card__head"><h2 class="card__title">Adesão por tipo de plano</h2></div>
+              <div class="card__body" id="rel-adesao"></div>
+            </section>
+
+            <section class="card">
+              <div class="card__head"><h2 class="card__title">Origem dos novos pacientes</h2></div>
+              <div class="card__body" id="rel-origem"></div>
+            </section>
           </div>
-        </section>
-
-        <!-- ===== PERFIL (substitui a lista) ===== -->
-        <section class="profile" id="profile" aria-label="Perfil do paciente"></section>
+        </div>
 
       </main>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="assets/js/pacientes-data.js"></script>
-  <script src="assets/js/pacientes.js"></script>
+  <script src="assets/js/relatorios-data.js"></script>
+  <script src="assets/js/relatorios.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
