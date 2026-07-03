@@ -35,7 +35,10 @@
         <div class="auth">
           <div class="auth__buttons">
             <button class="btn btn--primary btn--lg" id="btn-entrar" type="button">Entrar</button>
-            <button class="btn btn--ghost btn--lg" id="btn-criar" type="button">Criar conta</button>
+            <!-- Signup público desativado (contas criadas pela nutricionista/admin).
+                 Para reabrir cadastro: remover o hidden abaixo E religar "Allow new users
+                 to sign up" no Supabase (Auth → Sign In / Providers). -->
+            <button class="btn btn--ghost btn--lg" id="btn-criar" type="button" hidden>Criar conta</button>
           </div>
 
           <!-- Formulário revelado inline (não é "só login e senha") -->
