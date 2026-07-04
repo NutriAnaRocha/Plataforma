@@ -25,6 +25,8 @@
     var fieldNome = document.getElementById("field-nome");
     var submit = document.getElementById("auth-submit");
     var buttonsWrap = document.querySelector(".auth__buttons");
+    var recoveryMode = false;   // true enquanto o usuário está redefinindo a senha via link do e-mail
+    var confirmField = null;    // campo "confirmar nova senha" injetado no modo recovery
 
     /* ---------- Mensagens (erro/aviso) do formulário ---------- */
     var msg = document.createElement("p");
@@ -47,6 +49,8 @@
       if (/invalid login credentials/i.test(m)) return "E-mail ou senha incorretos.";
       if (/user already registered|already been registered/i.test(m)) return "Este e-mail já tem conta. Faça login.";
       if (/password should be at least/i.test(m)) return "A senha precisa ter pelo menos 6 caracteres.";
+      if (/different from the old|should be different/i.test(m)) return "A nova senha precisa ser diferente da anterior.";
+      if (/same_password/i.test(m)) return "A nova senha precisa ser diferente da anterior.";
       if (/email.*invalid|invalid.*email/i.test(m)) return "E-mail inválido.";
       if (/offline|carregar supabase/i.test(m)) return "Sem conexão com o servidor. Verifique sua internet.";
       return m || "Não foi possível autenticar. Tente novamente.";
@@ -76,6 +80,7 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       clearMsg();
+      if (recoveryMode) { handleRecoverySubmit(); return; }
       var criar = !fieldNome.hidden;
       var email = document.getElementById("email").value.trim();
       var senha = document.getElementById("senha").value;
@@ -130,11 +135,82 @@
         var email = document.getElementById("email").value.trim();
         if (!email) { showMsg("Digite seu e-mail acima para receber o link de redefinição."); return; }
         window.NutriDBReady.then(function (c) {
-          return c.auth.resetPasswordForEmail(email);
+          // O link de recuperação volta para ESTA página; o hash é tratado em enterRecovery().
+          return c.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
         }).then(function () {
           showMsg("Enviamos um link de redefinição para o seu e-mail.", "info");
         }).catch(function (err) { showMsg(translateAuthError(err)); });
       });
+    }
+
+    /* ---------- Redefinição de senha (retorno do link do e-mail) ----------
+       O Supabase manda de volta com #access_token=…&type=recovery no hash.
+       Como detectSessionInUrl=false, tratamos manualmente: abrimos a sessão
+       do link e trocamos o formulário para o modo "nova senha". */
+    function parseHash() {
+      var out = {};
+      (location.hash.replace(/^#/, "")).split("&").forEach(function (kv) {
+        var i = kv.indexOf("=");
+        if (i > 0) out[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1));
+      });
+      return out;
+    }
+
+    function enterRecovery() {
+      recoveryMode = true;
+      openForm("entrar");                    // revela o formulário
+      fieldNome.hidden = true;
+      document.getElementById("email").closest(".field").hidden = true;
+      var row = form.querySelector(".auth-form__row"); if (row) row.hidden = true;
+      var backWrap = form.querySelector(".auth-form__back-wrap"); if (backWrap) backWrap.hidden = true;
+      var lbl = form.querySelector('label[for="senha"]'); if (lbl) lbl.textContent = "Nova senha";
+      var senhaInput = document.getElementById("senha");
+      senhaInput.value = ""; senhaInput.placeholder = "Nova senha (mín. 6 caracteres)";
+      if (!confirmField) {
+        confirmField = document.createElement("div");
+        confirmField.className = "field";
+        confirmField.innerHTML = '<label class="field__label" for="senha2">Confirmar nova senha</label>' +
+          '<input class="field__input" id="senha2" type="password" placeholder="Repita a nova senha" />';
+        var senhaField = senhaInput.closest(".field");
+        senhaField.parentNode.insertBefore(confirmField, senhaField.nextSibling);
+      }
+      submitLabel = "Salvar nova senha";
+      submit.textContent = submitLabel;
+      showMsg("Defina uma nova senha para a sua conta.", "info");
+      senhaInput.focus();
+    }
+
+    function handleRecoverySubmit() {
+      var s1 = document.getElementById("senha").value;
+      var s2 = (document.getElementById("senha2") || {}).value || "";
+      if (s1.length < 6) { showMsg("A nova senha precisa ter pelo menos 6 caracteres."); return; }
+      if (s1 !== s2) { showMsg("As senhas não conferem."); return; }
+      setBusy(true);
+      window.NutriDBReady.then(function (c) {
+        return c.auth.updateUser({ password: s1 }).then(function (res) {
+          if (res.error) throw res.error;
+          recoveryMode = false;
+          history.replaceState(null, "", location.pathname + location.search); // limpa o token do hash
+          return afterAuth(c);            // já está logado com a sessão do link → entra direto
+        });
+      }).catch(function (err) { setBusy(false); showMsg(translateAuthError(err)); });
+    }
+
+    var hashParams = parseHash();
+    if (hashParams.type === "recovery" && hashParams.access_token) {
+      window.NutriDBReady.then(function (c) {
+        return c.auth.setSession({
+          access_token: hashParams.access_token,
+          refresh_token: hashParams.refresh_token
+        });
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        enterRecovery();
+      }).catch(function () {
+        showMsg("Link de redefinição inválido ou expirado. Solicite um novo em \"Esqueci minha senha\".");
+      });
+    } else if (hashParams.error) {
+      showMsg("Link inválido ou expirado. Solicite um novo em \"Esqueci minha senha\".");
     }
 
     /* ---------- Modal de personalização ---------- */
