@@ -181,7 +181,7 @@
             '<button class="btn btn--ghost" id="pac-view" type="button" title="Abrir o portal como o paciente veria">👁 Ver como paciente</button>' +
             '<button class="btn btn--ghost" id="pac-edit" type="button">✏ Editar</button>' +
             '<button class="btn btn--ghost btn--danger" id="pac-del" type="button">🗑 Excluir</button>' +
-            '<a class="btn btn--primary" href="prontuario.html">📋 Abrir prontuário</a>' +
+            '<a class="btn btn--primary" href="prontuario.html?id=' + encodeURIComponent(p.id) + '">📋 Abrir prontuário</a>' +
           '</div>' +
         '</div>' +
       '</div>' +

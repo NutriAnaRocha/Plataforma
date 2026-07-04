@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  var COLS = "id,user_id,nome,ini,idade,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames,plano,portal_features";
+  var COLS = "id,user_id,nome,ini,idade,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames,plano,portal_features,prontuario";
 
   var TODAS_FEATURES = ["plano", "evolucao", "consultas", "chat"];
 
@@ -42,7 +42,8 @@
       evolucao: r.evolucao || { labels: [], peso: [] },
       consultas: r.consultas || [], prescricoes: r.prescricoes || [], exames: r.exames || [],
       plano: r.plano || { titulo: null, refeicoes: [] },
-      portalFeatures: Array.isArray(r.portal_features) ? r.portal_features : TODAS_FEATURES.slice()
+      portalFeatures: Array.isArray(r.portal_features) ? r.portal_features : TODAS_FEATURES.slice(),
+      prontuario: r.prontuario || null
     };
   }
 
@@ -178,6 +179,17 @@
         return (res.data && res.data.marcas) || {};
       });
     },
+    // Prontuário completo (jsonb) — salva o objeto inteiro na ficha do paciente.
+    saveProntuario: function (id, prontuario) {
+      return client().then(function (c) {
+        return c.from("pacientes").update({ prontuario: prontuario || null }).eq("id", id)
+          .select("id").single();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return true;
+      });
+    },
+
     // Adesão de vários pacientes de uma vez (para a lista). Devolve { id: marcas }.
     getAdesaoBatch: function (ids) {
       if (!ids || !ids.length) return Promise.resolve({});

@@ -6,10 +6,18 @@
 (function () {
   "use strict";
 
+  // D/P são reatribuídos quando abrimos um paciente REAL (?id=…); sem id, cai
+  // no PRONT_DATA (paciente-demo "Marina") só para demonstração do layout.
   var D = window.PRONT_DATA || {};
   var P = D.paciente || {};
+  var REAL = false; // true quando carregamos um paciente de verdade do Supabase
 
   function el(id) { return document.getElementById(id); }
+  function cap(s) { s = String(s || ""); return s ? s.charAt(0).toUpperCase() + s.slice(1) : ""; }
+  function imcClasse(v) {
+    if (v == null) return "—";
+    return v < 18.5 ? "Abaixo do peso" : v < 25 ? "Peso normal" : v < 30 ? "Sobrepeso" : v < 35 ? "Obesidade I" : v < 40 ? "Obesidade II" : "Obesidade III";
+  }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 
   /* ---------- componentes utilitários ---------- */
@@ -409,16 +417,78 @@
      CABEÇALHO + RAIL + INIT
      ============================================================ */
   document.addEventListener("DOMContentLoaded", function () {
-    renderHeader();
-    renderRail();
-    show(MODULES[0].id);
-    initAI();
-    initMobileNav();
+    var id = new URLSearchParams(location.search).get("id");
+    var boot = function () { renderHeader(); renderRail(); show(MODULES[0].id); initAI(); initMobileNav(); };
+    if (!id || !(window.NutriPacientes && window.NutriPacientes.get)) { REAL = false; boot(); return; }
+    // Enquanto carrega, mostra um placeholder mínimo no cabeçalho.
+    el("pc-head").innerHTML = '<div class="empty-state">Carregando prontuário…</div>';
+    window.NutriPacientes.get(id).then(function (pac) {
+      if (!pac) throw new Error("nao_encontrado");
+      REAL = true;
+      buildFromPatient(pac);
+      boot();
+    }).catch(function () {
+      // Sem acesso / não encontrado → não vaza dados de outro paciente: cai na demo.
+      REAL = false; boot();
+    });
   });
+
+  // Mapeia o paciente real (tabela pacientes + jsonb prontuario) para o shape D/P.
+  function buildFromPatient(pac) {
+    var pr = pac.prontuario || {};
+    var ident = pr.paciente || {};
+    P = {
+      nome: pac.nome, ini: pac.ini, sexo: pac.sexo, idade: pac.idade, status: cap(pac.status),
+      nascimento: ident.nascimento || "",
+      cpf: ident.cpf || "—", rg: ident.rg || "—",
+      email: (pac.contato && pac.contato.email) || ident.email || "—",
+      telefone: (pac.contato && pac.contato.tel) || ident.telefone || "—",
+      endereco: ident.endereco || "—", profissao: ident.profissao || "—", estadoCivil: ident.estadoCivil || "—",
+      primeiraConsulta: ident.primeiraConsulta || "—",
+      ultimoAtendimento: pac.ultConsulta || ident.ultimoAtendimento || "—",
+      proximaConsulta: pac.proxConsulta || ident.proximaConsulta || "—"
+    };
+    D = pr;
+    D.resumo = {
+      pesoAtual: pac.pesoAtual, pesoInicial: pac.pesoInicial, pesoMeta: pac.meta,
+      imc: pac.imc, imcClasse: imcClasse(pac.imc),
+      objetivo: pac.objetivo || "—", adesao: pac.adesao,
+      ultimosExames: (pr.resumo && pr.resumo.ultimosExames) || "—"
+    };
+    D.aiSugestoes = D.aiSugestoes || [];
+    D.aiRespostaDemo = D.aiRespostaDemo || "Posso ajudar com a análise deste paciente.";
+  }
+
+  // Um módulo está "vazio" quando o paciente real ainda não tem aquele registro.
+  var EMPTY_TESTS = {
+    anamnese: function () { return !D.anamnese; },
+    diario:   function () { return !(D.diario && D.diario.length); },
+    quest:    function () { return !(D.questionarios && D.questionarios.length); },
+    exames:   function () { return !(D.exames && D.exames.grupos && D.exames.grupos.length); },
+    antro:    function () { return !(D.antropometria && D.antropometria.medidas && D.antropometria.medidas.length); },
+    calc:     function () { return !D.calculos; },
+    plano:    function () { return !(D.plano && D.plano.refeicoes && D.plano.refeicoes.length); },
+    metas:    function () { return !(D.metas && D.metas.length); },
+    orient:   function () { return !(D.orientacoes && D.orientacoes.length); },
+    manip:    function () { return !(D.manipulados && D.manipulados.length); },
+    anexos:   function () { return !(D.anexos && D.anexos.length); },
+    evolucao: function () { return !(D.evolucao && D.evolucao.length); },
+    chat:     function () { return !(D.chat && D.chat.length); },
+    docs:     function () { return !(D.documentos && D.documentos.length); },
+    fin:      function () { return !(D.financeiro && D.financeiro.lancamentos && D.financeiro.lancamentos.length); }
+  };
+  function isEmpty(id) { var t = EMPTY_TESTS[id]; return t ? t() : false; }
+  function emptyModule(mod) {
+    return head(mod.label, "Ainda sem registros para este paciente.") +
+      card(null, null, '<div class="empty-state">Nenhum registro em <strong>' + esc(mod.label) + '</strong> ainda.</div>');
+  }
 
   function renderHeader() {
     var r = D.resumo || {};
-    var diff = (r.pesoAtual - r.pesoInicial);
+    var hasPeso = r.pesoAtual != null && r.pesoInicial != null;
+    var diff = hasPeso ? (r.pesoAtual - r.pesoInicial) : null;
+    var faltam = (r.pesoAtual != null && r.pesoMeta != null) ? (r.pesoAtual - r.pesoMeta).toFixed(1) + " kg" : "—";
+    function nn(v, u) { return v == null ? "—" : v + (u || ""); }
     el("pc-head").innerHTML =
       '<div class="pc-top">' +
         '<div class="pc-photo">' + esc(P.ini) + "</div>" +
@@ -432,15 +502,15 @@
         "</div>" +
       "</div>" +
       '<div class="qsum">' +
-        qs("Peso atual", r.pesoAtual + "<small> kg</small>", "Inicial " + r.pesoInicial + " kg") +
-        qs("Diferença", (diff > 0 ? "+" : "") + diff.toFixed(1) + "<small> kg</small>", (diff < 0 ? "down" : "up"), (diff < 0 ? "▼ emagreceu" : "▲ ganhou")) +
-        qs("IMC atual", r.imc + "<small> kg/m²</small>", r.imcClasse) +
-        qs("Adesão ao plano", r.adesao + "<small> %</small>", "últimas semanas") +
+        qs("Peso atual", nn(r.pesoAtual, "<small> kg</small>"), r.pesoInicial != null ? "Inicial " + r.pesoInicial + " kg" : "") +
+        qs("Diferença", diff == null ? "—" : (diff > 0 ? "+" : "") + diff.toFixed(1) + "<small> kg</small>", (diff != null && diff < 0 ? "down" : "up"), diff == null ? "" : (diff < 0 ? "▼ emagreceu" : "▲ ganhou")) +
+        qs("IMC atual", nn(r.imc, "<small> kg/m²</small>"), r.imcClasse || "") +
+        qs("Adesão ao plano", nn(r.adesao, "<small> %</small>"), "últimas semanas") +
       "</div>" +
       '<div class="qsum" style="margin-top:var(--sp-3)">' +
-        qs("Objetivo principal", "<span style='font-size:1rem'>" + esc(r.objetivo) + "</span>", "") +
-        qs("Peso meta", r.pesoMeta + "<small> kg</small>", "faltam " + (r.pesoAtual - r.pesoMeta).toFixed(1) + " kg") +
-        qs("Últimos exames", "<span style='font-size:.95rem'>" + esc(r.ultimosExames) + "</span>", "") +
+        qs("Objetivo principal", "<span style='font-size:1rem'>" + esc(r.objetivo || "—") + "</span>", "") +
+        qs("Peso meta", nn(r.pesoMeta, "<small> kg</small>"), "faltam " + faltam) +
+        qs("Últimos exames", "<span style='font-size:.95rem'>" + esc(r.ultimosExames || "—") + "</span>", "") +
         qs("Status", "<span style='font-size:1rem'>" + esc(P.status) + "</span>", "paciente") +
       "</div>";
 
@@ -466,7 +536,7 @@
 
   function show(id, userInitiated) {
     var mod = MODULES.filter(function (m) { return m.id === id; })[0] || MODULES[0];
-    el("modulo").innerHTML = mod.render();
+    el("modulo").innerHTML = (REAL && isEmpty(mod.id)) ? emptyModule(mod) : mod.render();
     el("modrail").querySelectorAll(".modrail__item").forEach(function (b) {
       b.classList.toggle("is-active", b.dataset.mod === mod.id);
     });
