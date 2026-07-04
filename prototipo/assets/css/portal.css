@@ -15,6 +15,7 @@
   padding: 10px var(--sp-4); font-size: var(--fs-sm);
   display: flex; gap: var(--sp-3); align-items: center; justify-content: center; flex-wrap: wrap;
 }
+.preview-bar[hidden] { display: none; } /* o atributo hidden precisa vencer o display:flex */
 .preview-bar__back { color: #fff; text-decoration: underline; font-weight: 600; }
 
 .portal { max-width: 720px; margin: 0 auto; padding: 0 var(--sp-4) var(--sp-7); }
