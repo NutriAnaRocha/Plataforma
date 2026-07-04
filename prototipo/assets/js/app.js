@@ -55,16 +55,19 @@
       if (/offline|carregar supabase/i.test(m)) return "Sem conexão com o servidor. Verifique sua internet.";
       return m || "Não foi possível autenticar. Tente novamente.";
     }
+    function localFlag(k) { try { return localStorage.getItem(k) === "1"; } catch (e) { return false; } }
+    function setLocalFlag(k) { try { localStorage.setItem(k, "1"); } catch (e) {} }
 
     function openForm(mode) {
       var criar = mode === "criar";
-      fieldNome.hidden = !criar;
+      if (fieldNome) fieldNome.hidden = !criar; // campo de nome só existe se o signup for reativado
       submitLabel = criar ? "Criar minha conta" : "Entrar na plataforma";
       submit.textContent = submitLabel;
       clearMsg();
       form.classList.add("is-open");
       buttonsWrap.style.display = "none";
-      (criar ? document.getElementById("nome") : document.getElementById("email")).focus();
+      var focusar = (criar && fieldNome) ? document.getElementById("nome") : document.getElementById("email");
+      if (focusar) focusar.focus();
     }
     function closeForm() {
       form.classList.remove("is-open");
@@ -81,10 +84,11 @@
       e.preventDefault();
       clearMsg();
       if (recoveryMode) { handleRecoverySubmit(); return; }
-      var criar = !fieldNome.hidden;
+      var criar = fieldNome ? !fieldNome.hidden : false;
       var email = document.getElementById("email").value.trim();
       var senha = document.getElementById("senha").value;
-      var nome = document.getElementById("nome").value.trim();
+      var nomeEl = document.getElementById("nome");
+      var nome = nomeEl ? nomeEl.value.trim() : "";
 
       if (!email || !senha) { showMsg("Preencha e-mail e senha."); return; }
       if (criar && !nome) { showMsg("Informe seu nome."); return; }
@@ -121,7 +125,7 @@
       return c.from("profiles").select("onboarded,tipo").maybeSingle().then(function (res) {
         var tipo = (res.data && res.data.tipo) || "nutri";
         if (tipo === "paciente") { window.location.href = "portal-paciente.html"; return; }
-        var onboarded = res.data && res.data.onboarded;
+        var onboarded = (res.data && res.data.onboarded) || localFlag("nutri_onboarded");
         if (!onboarded) { setBusy(false); openPersonalize(); }
         else { goToDashboard(); }
       });
@@ -159,7 +163,7 @@
     function enterRecovery() {
       recoveryMode = true;
       openForm("entrar");                    // revela o formulário
-      fieldNome.hidden = true;
+      if (fieldNome) fieldNome.hidden = true;
       document.getElementById("email").closest(".field").hidden = true;
       var row = form.querySelector(".auth-form__row"); if (row) row.hidden = true;
       var backWrap = form.querySelector(".auth-form__back-wrap"); if (backWrap) backWrap.hidden = true;
@@ -237,19 +241,22 @@
       }).catch(function () { /* offline: mantém só o localStorage */ });
     }
 
+    // IMPORTANTE: aguardar o persistOnboarding ANTES de navegar — se redirecionar
+    // antes, o PATCH assíncrono é cancelado e onboarded nunca vira true (modal
+    // reaparecia a cada login). O localFlag garante que não repita neste device.
     save.addEventListener("click", function () {
       var selected = window.Personalize.readSelected(optGrid);
       window.Personalize.save(selected);
       if (window.Feed) window.Feed.rebuild(); // reordena o feed pela preferência
-      persistOnboarding(selected);
-      closePersonalize();
-      goToDashboard(600); // pequeno delay para o usuário ver o feed reordenar
+      setLocalFlag("nutri_onboarded");
+      save.disabled = true;
+      persistOnboarding(selected).then(function () { closePersonalize(); goToDashboard(); });
     });
     skip.addEventListener("click", function () {
       window.Personalize.save([]); // marca onboarding como feito (lista vazia)
-      persistOnboarding([]);
-      closePersonalize();
-      goToDashboard();
+      setLocalFlag("nutri_onboarded");
+      skip.disabled = true;
+      persistOnboarding([]).then(function () { closePersonalize(); goToDashboard(); });
     });
     overlay.addEventListener("click", function (e) {
       if (e.target === overlay) closePersonalize();
