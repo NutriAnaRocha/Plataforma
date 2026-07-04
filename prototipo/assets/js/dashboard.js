@@ -10,7 +10,12 @@
 
   var D = window.DASH_DATA || {};
   var pacientes = null;   // array real (preenchido no load)
+  var consultasHoje = null;
   var perfil = null;
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function isoHoje() { var d = new Date(); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function iniciaisNome(nome) { var p = String(nome || "").trim().split(/\s+/); return (((p[0] || "")[0] || "") + ((p[1] || "")[0] || "")).toUpperCase(); }
 
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
@@ -43,9 +48,20 @@
       renderChartReal();
       renderPacientesReal();
       renderPendenciasReal();
-      renderAgenda();          // repinta empty-state real
       renderAniversariantes();
     }).catch(function () { /* mantém mock */ });
+
+    // Consultas de hoje (agenda real).
+    if (window.NutriConsultas) {
+      var hoje = isoHoje();
+      window.NutriConsultas.listRange(hoje, hoje).then(function (cs) {
+        consultasHoje = cs || [];
+        renderAgendaReal();
+        if (pacientes) renderStatsReal();   // atualiza card "Consultas hoje"
+      }).catch(function () { renderAgenda(); });
+    } else {
+      renderAgenda();
+    }
   }
 
   /* ---------- Topbar ---------- */
@@ -108,26 +124,54 @@
     var comAdesao = pacientes.filter(function (p) { return typeof p.adesao === "number"; });
     var adesaoMedia = comAdesao.length
       ? Math.round(comAdesao.reduce(function (a, p) { return a + p.adesao; }, 0) / comAdesao.length) : 0;
+    var nHoje = consultasHoje ? consultasHoje.filter(function (c) { return c.status !== "cancelada"; }).length : null;
     wrap.innerHTML = [
       { label: "Pacientes ativos", valor: ativos, sub: "de " + total + " no total", ico: "👥", cor: "vinho" },
-      { label: "Precisam de atenção", valor: atencao, sub: atencao ? "revisar plano" : "tudo em dia", ico: "⚠️", cor: "alerta" },
+      { label: "Consultas hoje", valor: nHoje == null ? "—" : nHoje, sub: nHoje ? "ver agenda" : (nHoje === 0 ? "dia livre" : "carregando"), ico: "📅", cor: "rosa" },
       { label: "Adesão média", valor: adesaoMedia + "%", sub: "ao plano alimentar", ico: "📈", cor: "rosa" },
-      { label: "Inativos", valor: inativos, sub: inativos ? "reativar contato" : "nenhum", ico: "💤", cor: "rosa" }
+      { label: "Precisam de atenção", valor: atencao, sub: atencao ? "revisar plano" : "tudo em dia", ico: "⚠️", cor: "alerta" }
     ].map(function (s) { s.delta = ""; s.deltaTipo = "neutro"; return statCard(s); }).join("");
   }
 
-  /* ---------- Agenda inteligente (honesto até tabela consultas existir) ---------- */
+  /* ---------- Agenda inteligente (casca/empty) ---------- */
   function renderAgenda() {
     var wrap = el("agenda");
     if (!wrap) return;
-    // Sem tabela de consultas com data real, não há como listar "hoje".
-    setCardSub("agenda", "Agenda em tempo real chega com o módulo de consultas");
+    setCardSub("agenda", "Consultas de hoje");
     wrap.innerHTML =
       '<div class="dash-empty">' +
         '<span class="dash-empty__ico">🗓️</span>' +
-        '<p class="dash-empty__txt">As consultas do dia aparecem aqui assim que o módulo de agenda estiver ativo.</p>' +
+        '<p class="dash-empty__txt">Nenhuma consulta para hoje.</p>' +
         '<a class="btn btn--outline" href="agenda.html">Abrir agenda</a>' +
       '</div>';
+  }
+
+  /* ---------- Agenda real: consultas de hoje ---------- */
+  function renderAgendaReal() {
+    var wrap = el("agenda");
+    if (!wrap) return;
+    var cs = (consultasHoje || []).filter(function (c) { return c.status !== "cancelada"; })
+      .sort(function (a, b) { return a.inicio.localeCompare(b.inicio); });
+    var stLabel = { concluida: "Concluída", emandamento: "Em andamento", proxima: "Agendada" };
+    var ativas = cs.length;
+    var online = cs.filter(function (c) { return c.modo === "Online"; }).length;
+    setCardSub("agenda", ativas ? (ativas + " consulta" + (ativas > 1 ? "s" : "") + " hoje · " + online + " online") : "Consultas de hoje");
+    if (!cs.length) { renderAgenda(); return; }
+    wrap.innerHTML = cs.map(function (c) {
+      var h = c.inicio.split(":");
+      var modoIco = c.modo === "Online" ? "💻" : "🏥";
+      return '<a class="appt" href="agenda.html" style="text-decoration:none;color:inherit">' +
+        '<div class="appt__hora">' + h[0] + 'h<span>' + h[1] + '</span></div>' +
+        '<div class="appt__who">' +
+          '<span class="avatar avatar--sm avatar--rosa">' + esc(iniciaisNome(c.pacienteNome)) + '</span>' +
+          '<div><div class="appt__nome">' + esc(c.pacienteNome) + '</div>' +
+            '<div class="appt__meta">' + esc(c.tipo || "Consulta") +
+              '<span class="dot-sep"></span><span class="modo">' + modoIco + ' ' + esc(c.modo) + '</span></div>' +
+          '</div>' +
+        '</div>' +
+        '<span class="appt__status st-' + c.status + '">' + (stLabel[c.status] || "") + '</span>' +
+      '</a>';
+    }).join("");
   }
 
   /* ---------- Distribuição de adesão (real) ---------- */

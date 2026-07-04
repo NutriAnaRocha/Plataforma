@@ -178,3 +178,8 @@ select.field__input { appearance: auto; cursor: pointer; }
   .ag-form__grid { grid-template-columns: 1fr; }
   .aside-stack { flex-direction: column; }
 }
+
+/* Botão excluir do modal de consulta (empurra p/ esquerda, separado das ações) */
+.btn--danger { color: #B23A3A; }
+.btn--danger:hover { background: rgba(178,58,58,0.08); border-color: rgba(178,58,58,0.4); }
+#ag-del { margin-right: auto; }

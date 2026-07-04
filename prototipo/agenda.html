@@ -124,8 +124,8 @@
   <div class="modal-overlay" id="ag-modal" role="dialog" aria-modal="true" aria-label="Novo agendamento">
     <div class="modal">
       <p class="modal__eyebrow">Agenda</p>
-      <h2 class="modal__title">Novo agendamento</h2>
-      <p class="modal__sub">Preencha os dados da consulta. No protótipo, ela é adicionada ao calendário.</p>
+      <h2 class="modal__title" id="ag-title">Novo agendamento</h2>
+      <p class="modal__sub" id="ag-sub">Preencha os dados da consulta.</p>
 
       <form id="ag-form">
         <div class="ag-form__grid">
@@ -160,11 +160,22 @@
               <button class="chip" type="button" data-modo="Online" aria-pressed="false">💻 Online</button>
             </div>
           </div>
+
+          <div class="field field--light col-full" id="ag-status-wrap" hidden>
+            <label class="field__label" for="ag-status">Situação</label>
+            <select class="field__input" id="ag-status">
+              <option value="proxima">Agendada</option>
+              <option value="emandamento">Em andamento</option>
+              <option value="concluida">Concluída</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+          </div>
         </div>
 
         <div class="modal__actions">
+          <button class="btn btn--danger" type="button" id="ag-del" hidden>Excluir</button>
           <button class="btn btn--outline" type="button" id="ag-cancel">Cancelar</button>
-          <button class="btn btn--primary" type="submit">Agendar consulta</button>
+          <button class="btn btn--primary" type="submit" id="ag-submit">Agendar consulta</button>
         </div>
       </form>
     </div>
@@ -172,9 +183,11 @@
 
   <!-- Scripts -->
   <script src="assets/js/agenda-data.js"></script>
-  <script src="assets/js/agenda.js"></script>
   <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/pacientes-db.js"></script>
+  <script src="assets/js/consultas-db.js"></script>
   <script src="assets/js/auth-guard.js"></script>
+  <script src="assets/js/agenda.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
