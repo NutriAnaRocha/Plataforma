@@ -11,6 +11,20 @@
 
   var TODAS_FEATURES = ["plano", "evolucao", "consultas", "chat"];
 
+  // Teto de features por plano de assinatura da nutri (profiles.plano_nutri).
+  // 'full' libera tudo. Os planos comerciais ainda não foram definidos pela Ana:
+  // quando forem, basta acrescentar entradas aqui (ex.: basico/pro abaixo) e gravar
+  // o plano_nutri correspondente no perfil dela — o teto passa a valer sozinho na UI.
+  var TIER_FEATURES = {
+    full: TODAS_FEATURES.slice()
+    // , basico: ["plano", "evolucao"]
+    // , pro:    ["plano", "evolucao", "consultas", "chat"]
+  };
+  function tierFeatures(tier) {
+    return TIER_FEATURES[tier] ? TIER_FEATURES[tier].slice() : TODAS_FEATURES.slice(); // desconhecido → não restringe
+  }
+  var _planoNutri = null; // cache do plano da nutri logada (1 fetch por sessão)
+
   // DB row (snake) -> shape usado pela UI (camelCase, igual ao mock PAC_DATA)
   function fromRow(r) {
     return {
@@ -189,6 +203,22 @@
     },
 
     // ---- Entitlements ----
+    // Plano de assinatura da nutri logada (teto de features). Cacheado; 'full' em caso de erro.
+    getPlanoNutri: function () {
+      if (_planoNutri) return Promise.resolve(_planoNutri);
+      return client().then(function (c) {
+        return c.from("profiles").select("plano_nutri").maybeSingle();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        _planoNutri = (res.data && res.data.plano_nutri) || "full";
+        return _planoNutri;
+      }).catch(function () { return "full"; });
+    },
+    // Features que o plano da nutri permite oferecer (teto). Subconjunto de TODAS_FEATURES.
+    featuresPermitidas: function () {
+      return this.getPlanoNutri().then(function (t) { return tierFeatures(t); });
+    },
+
     // Features do portal que ESTE paciente enxerga (subconjunto de TODAS_FEATURES).
     setPortalFeatures: function (pacienteId, features) {
       var clean = (features || []).filter(function (f) { return TODAS_FEATURES.indexOf(f) >= 0; });

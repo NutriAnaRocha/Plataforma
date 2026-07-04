@@ -263,6 +263,9 @@
 .feat-toggle { display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); color: var(--texto); cursor: pointer; }
 .feat-toggle input { width: 17px; height: 17px; accent-color: var(--vinho); cursor: pointer; }
 .feat-toggle small { color: var(--texto-sutil); font-weight: 500; }
+.feat-toggle--locked { cursor: not-allowed; opacity: .55; }
+.feat-toggle--locked input { cursor: not-allowed; }
+.feat-lock { font-style: italic; }
 
 .btn--sm { padding: 8px 14px; font-size: var(--fs-sm); }
 

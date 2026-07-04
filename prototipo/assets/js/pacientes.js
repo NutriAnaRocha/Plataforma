@@ -12,6 +12,7 @@
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
 
   var state = { filtro: "Todos", busca: "", tab: "resumo", current: null, load: "loading" };
+  var tierAllowed = null; // teto de features do plano da nutri (null = ainda não carregado → sem restrição)
 
   document.addEventListener("DOMContentLoaded", function () {
     renderFilters();
@@ -137,9 +138,18 @@
     var p = P.pacientes.filter(function (x) { return x.id === id; })[0];
     if (!p) return;
     state.current = p; state.tab = "resumo";
-    renderProfile(p);
-    document.getElementById("app").classList.add("is-profile");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Carrega o teto de features do plano da nutri antes de montar o card do portal
+    // (cacheado: só a 1ª ficha aberta na sessão faz a consulta).
+    var go = function () {
+      renderProfile(p);
+      document.getElementById("app").classList.add("is-profile");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    if (tierAllowed) { go(); return; }
+    window.NutriPacientes.featuresPermitidas()
+      .then(function (a) { tierAllowed = a; })
+      .catch(function () {})
+      .then(go);
   }
   function closeProfile() {
     document.getElementById("app").classList.remove("is-profile");
@@ -279,10 +289,14 @@
   function renderPortalCard(p) {
     var feats = window.NutriPacientes.TODAS_FEATURES;
     var atuais = p.portalFeatures || feats.slice();
+    var allowed = tierAllowed || feats; // teto do plano da nutri (null → sem restrição)
     var toggles = feats.map(function (f) {
-      var on = atuais.indexOf(f) >= 0;
-      return '<label class="feat-toggle"><input type="checkbox" data-feat="' + f + '"' + (on ? " checked" : "") + '>' +
-        '<span>' + esc(FEAT_LABELS[f]) + (f === "chat" ? ' <small>(controla o envio de mensagens)</small>' : '') + '</span></label>';
+      var permitido = allowed.indexOf(f) >= 0;
+      var on = permitido && atuais.indexOf(f) >= 0;
+      var extra = permitido ? "" : ' <small class="feat-lock">(fora do seu plano)</small>';
+      return '<label class="feat-toggle' + (permitido ? "" : " feat-toggle--locked") + '">' +
+        '<input type="checkbox" data-feat="' + f + '"' + (on ? " checked" : "") + (permitido ? "" : " disabled") + '>' +
+        '<span>' + esc(FEAT_LABELS[f]) + (f === "chat" ? ' <small>(controla o envio de mensagens)</small>' : '') + extra + '</span></label>';
     }).join("");
 
     var acesso = p.userId
