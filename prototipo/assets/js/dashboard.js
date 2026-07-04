@@ -1,31 +1,56 @@
 /* ============================================================
-   DASHBOARD (Tela 2) — render dos dados mock, gráfico SVG de
-   evolução, assistente Nútri AI e navegação mobile.
-   Depende de dashboard-data.js (window.DASH_DATA).
+   DASHBOARD (Tela 2) — KPIs e listas DERIVADOS do banco real
+   (window.NutriPacientes + window.NutriPerfil). Enquanto o banco
+   carrega, mostra a casca; sem banco (file://) cai no mock DASH_DATA.
+   Agenda "de hoje" e aniversariantes dependem de dados que ainda não
+   existem (tabela consultas / data de nascimento) → empty-state honesto.
    ============================================================ */
 (function () {
   "use strict";
 
   var D = window.DASH_DATA || {};
+  var pacientes = null;   // array real (preenchido no load)
+  var perfil = null;
 
   function el(id) { return document.getElementById(id); }
-  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
 
   document.addEventListener("DOMContentLoaded", function () {
-    renderTopbar();
-    renderStats();
+    renderTopbar(D.user || {});
+    renderStatsMock();      // casca inicial (mock) até o banco responder
     renderAgenda();
-    renderChart();
-    renderPacientes();
+    renderChartMock();
+    renderPacientesMock();
     renderAniversariantes();
-    renderPendencias();
+    renderPendenciasMock();
     initAI();
     initMobileNav();
+    loadReal();
   });
 
+  /* ---------- Carga real ---------- */
+  function loadReal() {
+    if (!window.NutriPacientes) return; // file:// / offline → fica no mock
+    if (window.NutriPerfil) {
+      window.NutriPerfil.get().then(function (p) {
+        perfil = p;
+        renderTopbar({ nome: p.nome, saudacao: (p.nome || "").split(/\s+/)[0], crn: p.crn });
+      }).catch(function () {});
+    }
+    window.NutriPacientes.list().then(function (list) {
+      pacientes = list || [];
+      renderStatsReal();
+      renderChartReal();
+      renderPacientesReal();
+      renderPendenciasReal();
+      renderAgenda();          // repinta empty-state real
+      renderAniversariantes();
+    }).catch(function () { /* mantém mock */ });
+  }
+
   /* ---------- Topbar ---------- */
-  function renderTopbar() {
-    var u = D.user || {};
+  function renderTopbar(u) {
+    u = u || {};
     var hello = el("hello");
     if (hello) hello.textContent = "Olá, " + (u.saudacao || "nutricionista") + " 👋";
     var data = el("hoje");
@@ -38,156 +63,179 @@
     if (av && u.nome) av.textContent = iniciais(u.nome);
     var sName = el("side-user-name");
     var sCrn = el("side-user-crn");
-    if (sName) sName.textContent = u.nome || "Nutricionista";
+    if (sName && u.nome) sName.textContent = u.nome;
     if (sCrn) sCrn.textContent = u.crn || "";
   }
 
   function iniciais(nome) {
-    var p = String(nome).trim().split(/\s+/);
-    return ((p[0] || "")[0] || "") + ((p[1] || "")[0] || "");
+    var p = String(nome || "").trim().split(/\s+/);
+    return (((p[0] || "")[0] || "") + ((p[1] || "")[0] || "")).toUpperCase();
+  }
+
+  function setCardSub(bodyId, texto) {
+    var body = el(bodyId);
+    if (!body) return;
+    var card = body.closest(".card");
+    var sub = card && card.querySelector(".card__sub");
+    if (sub) sub.textContent = texto;
   }
 
   /* ---------- Stat cards ---------- */
-  function renderStats() {
-    var wrap = el("stats");
-    if (!wrap) return;
-    wrap.innerHTML = (D.stats || []).map(function (s) {
-      return '' +
-        '<div class="stat">' +
-          '<div class="stat__ico stat__ico--' + s.cor + '">' + s.ico + '</div>' +
-          '<div>' +
-            '<div class="stat__valor">' + esc(s.valor) + '</div>' +
-            '<div class="stat__label">' + esc(s.label) + '</div>' +
-          '</div>' +
-          '<div class="stat__foot">' +
-            '<span class="delta delta--' + s.deltaTipo + '">' + esc(s.delta) + '</span>' +
-            '<span class="stat__sub">' + esc(s.sub) + '</span>' +
-          '</div>' +
-        '</div>';
-    }).join("");
+  function statCard(s) {
+    return '' +
+      '<div class="stat">' +
+        '<div class="stat__ico stat__ico--' + s.cor + '">' + s.ico + '</div>' +
+        '<div>' +
+          '<div class="stat__valor">' + esc(s.valor) + '</div>' +
+          '<div class="stat__label">' + esc(s.label) + '</div>' +
+        '</div>' +
+        '<div class="stat__foot">' +
+          (s.delta ? '<span class="delta delta--' + s.deltaTipo + '">' + esc(s.delta) + '</span>' : '') +
+          '<span class="stat__sub">' + esc(s.sub) + '</span>' +
+        '</div>' +
+      '</div>';
+  }
+  function renderStatsMock() {
+    var wrap = el("stats"); if (!wrap) return;
+    wrap.innerHTML = (D.stats || []).map(statCard).join("");
+  }
+  function renderStatsReal() {
+    var wrap = el("stats"); if (!wrap) return;
+    var total = pacientes.length;
+    var ativos = pacientes.filter(function (p) { return p.status === "ativo"; }).length;
+    var atencao = pacientes.filter(function (p) { return p.status === "atencao"; }).length;
+    var inativos = pacientes.filter(function (p) { return p.status === "inativo"; }).length;
+    var comAdesao = pacientes.filter(function (p) { return typeof p.adesao === "number"; });
+    var adesaoMedia = comAdesao.length
+      ? Math.round(comAdesao.reduce(function (a, p) { return a + p.adesao; }, 0) / comAdesao.length) : 0;
+    wrap.innerHTML = [
+      { label: "Pacientes ativos", valor: ativos, sub: "de " + total + " no total", ico: "👥", cor: "vinho" },
+      { label: "Precisam de atenção", valor: atencao, sub: atencao ? "revisar plano" : "tudo em dia", ico: "⚠️", cor: "alerta" },
+      { label: "Adesão média", valor: adesaoMedia + "%", sub: "ao plano alimentar", ico: "📈", cor: "rosa" },
+      { label: "Inativos", valor: inativos, sub: inativos ? "reativar contato" : "nenhum", ico: "💤", cor: "rosa" }
+    ].map(function (s) { s.delta = ""; s.deltaTipo = "neutro"; return statCard(s); }).join("");
   }
 
-  /* ---------- Agenda inteligente ---------- */
+  /* ---------- Agenda inteligente (honesto até tabela consultas existir) ---------- */
   function renderAgenda() {
     var wrap = el("agenda");
     if (!wrap) return;
-    var stLabel = { concluida: "Concluída", emandamento: "Em andamento", proxima: "Agendada" };
-    wrap.innerHTML = (D.agenda || []).map(function (a) {
-      var h = a.hora.split(":");
-      var modoIco = a.modo === "Online" ? "💻" : "🏥";
-      return '' +
-        '<div class="appt">' +
-          '<div class="appt__hora">' + h[0] + 'h<span>' + h[1] + '</span></div>' +
-          '<div class="appt__who">' +
-            '<span class="avatar avatar--sm avatar--rosa">' + esc(a.ini) + '</span>' +
-            '<div>' +
-              '<div class="appt__nome">' + esc(a.paciente) + '</div>' +
-              '<div class="appt__meta">' + esc(a.tipo) +
-                '<span class="dot-sep"></span>' +
-                '<span class="modo">' + modoIco + ' ' + esc(a.modo) + '</span>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-          '<span class="appt__status st-' + a.status + '">' + stLabel[a.status] + '</span>' +
-        '</div>';
+    // Sem tabela de consultas com data real, não há como listar "hoje".
+    setCardSub("agenda", "Agenda em tempo real chega com o módulo de consultas");
+    wrap.innerHTML =
+      '<div class="dash-empty">' +
+        '<span class="dash-empty__ico">🗓️</span>' +
+        '<p class="dash-empty__txt">As consultas do dia aparecem aqui assim que o módulo de agenda estiver ativo.</p>' +
+        '<a class="btn btn--outline" href="agenda.html">Abrir agenda</a>' +
+      '</div>';
+  }
+
+  /* ---------- Distribuição de adesão (real) ---------- */
+  function renderChartMock() {
+    var wrap = el("chart"); if (!wrap || !D.evolucao) return;
+    // mantém o gráfico mock só na casca inicial (substituído por dados reais no load)
+    wrap.innerHTML = '<div class="dash-empty" style="min-height:120px"><p class="dash-empty__txt">Carregando…</p></div>';
+  }
+  function renderChartReal() {
+    var wrap = el("chart"); if (!wrap) return;
+    setCardSub("chart", "Distribuição de adesão dos seus pacientes");
+    var boa = pacientes.filter(function (p) { return p.adesao >= 70; }).length;
+    var media = pacientes.filter(function (p) { return p.adesao >= 50 && p.adesao < 70; }).length;
+    var baixa = pacientes.filter(function (p) { return p.adesao < 50; }).length;
+    var total = pacientes.length || 1;
+    function row(label, n, cls) {
+      var pct = Math.round(n / total * 100);
+      return '<div class="dash-bar">' +
+        '<div class="dash-bar__top"><span>' + label + '</span><span>' + n + ' · ' + pct + '%</span></div>' +
+        '<div class="bar"><div class="bar__fill ' + cls + '" style="width:' + pct + '%"></div></div>' +
+      '</div>';
+    }
+    wrap.innerHTML =
+      '<div class="dash-dist">' +
+        row("Boa adesão (≥70%)", boa, "is-good") +
+        row("Adesão média (50–69%)", media, "") +
+        row("Baixa adesão (<50%)", baixa, "is-low") +
+      '</div>';
+  }
+
+  /* ---------- Pacientes em foco ---------- */
+  function prowMock(p) {
+    return '<div class="prow">' +
+      '<span class="avatar avatar--sm avatar--rosa">' + esc(p.ini) + '</span>' +
+      '<div class="prow__info"><div class="prow__nome">' + esc(p.nome) + '</div>' +
+        '<div class="prow__obj">' + esc(p.obj) + ' · atualizado ' + esc(p.ult) + '</div></div>' +
+      '<div class="prow__prog"><span class="prow__pct">' + p.progresso + '%</span>' +
+        '<div class="bar"><div class="bar__fill" style="width:' + p.progresso + '%"></div></div></div>' +
+    '</div>';
+  }
+  function renderPacientesMock() {
+    var wrap = el("pacientes"); if (!wrap) return;
+    wrap.innerHTML = (D.pacientes || []).map(prowMock).join("");
+  }
+  function renderPacientesReal() {
+    var wrap = el("pacientes"); if (!wrap) return;
+    if (!pacientes.length) {
+      wrap.innerHTML = '<div class="dash-empty"><p class="dash-empty__txt">Você ainda não tem pacientes cadastrados.</p>' +
+        '<a class="btn btn--primary" href="pacientes.html">Adicionar paciente</a></div>';
+      return;
+    }
+    // Prioriza quem precisa de atenção, depois menor adesão.
+    var ord = pacientes.slice().sort(function (a, b) {
+      var wa = a.status === "atencao" ? 0 : 1, wb = b.status === "atencao" ? 0 : 1;
+      if (wa !== wb) return wa - wb;
+      return (a.adesao || 0) - (b.adesao || 0);
+    }).slice(0, 5);
+    wrap.innerHTML = ord.map(function (p) {
+      var low = p.adesao < 50 ? " is-low" : "";
+      return '<a class="prow" href="prontuario.html?id=' + encodeURIComponent(p.id) + '" style="text-decoration:none;color:inherit">' +
+        '<span class="avatar avatar--sm avatar--rosa">' + esc(p.ini) + '</span>' +
+        '<div class="prow__info"><div class="prow__nome">' + esc(p.nome) + '</div>' +
+          '<div class="prow__obj">' + esc(p.objetivo || "Sem objetivo definido") + '</div></div>' +
+        '<div class="prow__prog"><span class="prow__pct">' + (p.adesao || 0) + '%</span>' +
+          '<div class="bar"><div class="bar__fill' + low + '" style="width:' + (p.adesao || 0) + '%"></div></div></div>' +
+      '</a>';
     }).join("");
   }
 
-  /* ---------- Gráfico de evolução (SVG line + area) ---------- */
-  function renderChart() {
-    var wrap = el("chart");
-    if (!wrap || !D.evolucao) return;
-    var ev = D.evolucao;
-    var pts = ev.pontos, labels = ev.labels;
-    var W = 560, H = 200, padX = 16, padY = 24;
-    var min = Math.min.apply(null, pts), max = Math.max.apply(null, pts);
-    var span = (max - min) || 1;
-    var stepX = (W - padX * 2) / (pts.length - 1);
-
-    function x(i) { return padX + i * stepX; }
-    function y(v) { return padY + (H - padY * 2) * (1 - (v - min) / span); }
-
-    var line = pts.map(function (v, i) { return (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1); }).join(" ");
-    var area = "M" + x(0).toFixed(1) + " " + (H - padY).toFixed(1) + " " +
-               pts.map(function (v, i) { return "L" + x(i).toFixed(1) + " " + y(v).toFixed(1); }).join(" ") +
-               " L" + x(pts.length - 1).toFixed(1) + " " + (H - padY).toFixed(1) + " Z";
-
-    var dots = pts.map(function (v, i) {
-      return '<circle class="chart__pt" cx="' + x(i).toFixed(1) + '" cy="' + y(v).toFixed(1) + '" r="' + (i === pts.length - 1 ? 5 : 3.2) + '"></circle>';
-    }).join("");
-    var lbls = labels.map(function (l, i) {
-      return '<text class="chart__lbl" x="' + x(i).toFixed(1) + '" y="' + (H - 4) + '" text-anchor="middle">' + esc(l) + '</text>';
-    }).join("");
-
-    wrap.innerHTML = '' +
-      '<div class="chart__head">' +
-        '<span class="chart__big">' + esc(pts[pts.length - 1]) + ev.unidade + '</span>' +
-        '<span class="delta delta--up">▲ ' + esc(ev.resumo) + '</span>' +
-      '</div>' +
-      '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(ev.sub) + '">' +
-        '<defs><linearGradient id="gradWine" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#7B284C" stop-opacity="0.22"/>' +
-          '<stop offset="100%" stop-color="#7B284C" stop-opacity="0"/>' +
-        '</linearGradient></defs>' +
-        '<path class="chart__area" d="' + area + '"></path>' +
-        '<path class="chart__line" d="' + line + '"></path>' +
-        dots + lbls +
-      '</svg>';
-  }
-
-  /* ---------- Lista de pacientes (progresso) ---------- */
-  function renderPacientes() {
-    var wrap = el("pacientes");
-    if (!wrap) return;
-    wrap.innerHTML = (D.pacientes || []).map(function (p) {
-      return '' +
-        '<div class="prow">' +
-          '<span class="avatar avatar--sm avatar--rosa">' + esc(p.ini) + '</span>' +
-          '<div class="prow__info">' +
-            '<div class="prow__nome">' + esc(p.nome) + '</div>' +
-            '<div class="prow__obj">' + esc(p.obj) + ' · atualizado ' + esc(p.ult) + '</div>' +
-          '</div>' +
-          '<div class="prow__prog">' +
-            '<span class="prow__pct">' + p.progresso + '%</span>' +
-            '<div class="bar"><div class="bar__fill" style="width:' + p.progresso + '%"></div></div>' +
-          '</div>' +
-        '</div>';
-    }).join("");
-  }
-
-  /* ---------- Aniversariantes ---------- */
+  /* ---------- Aniversariantes (sem data de nascimento na lista → honesto) ---------- */
   function renderAniversariantes() {
-    var wrap = el("aniversariantes");
-    if (!wrap) return;
-    wrap.innerHTML = (D.aniversariantes || []).map(function (a) {
-      return '' +
-        '<div class="simple__row">' +
-          '<span class="avatar avatar--sm avatar--rosa">' + esc(a.ini) + '</span>' +
-          '<div class="simple__info">' +
-            '<div class="simple__nome">' + esc(a.nome) + '</div>' +
-            '<div class="simple__sub">Completa ' + a.idade + ' anos hoje 🎉</div>' +
-          '</div>' +
-          '<button class="btn btn--outline" style="padding:7px 13px;font-size:.78rem">Parabenizar</button>' +
-        '</div>';
-    }).join("");
+    var wrap = el("aniversariantes"); if (!wrap) return;
+    wrap.innerHTML = '<div class="dash-empty" style="min-height:90px"><p class="dash-empty__txt">Sem aniversariantes hoje.</p></div>';
   }
 
-  /* ---------- Pendências ---------- */
-  function renderPendencias() {
-    var wrap = el("pendencias");
-    if (!wrap) return;
+  /* ---------- Pendências (derivadas do estado real) ---------- */
+  function renderPendenciasMock() {
+    var wrap = el("pendencias"); if (!wrap) return;
     wrap.innerHTML = (D.pendencias || []).map(function (t) {
-      return '' +
-        '<div class="todo__item">' +
-          '<span class="todo__check"></span>' +
-          '<div>' +
-            '<div class="todo__txt">' + esc(t.texto) + '</div>' +
-            '<div class="todo__prazo' + (t.urgente ? " is-urgente" : "") + '">' +
-              (t.urgente ? "⚠ " : "") + 'Prazo: ' + esc(t.prazo) + '</div>' +
-          '</div>' +
-        '</div>';
+      return '<div class="todo__item"><span class="todo__check"></span><div>' +
+        '<div class="todo__txt">' + esc(t.texto) + '</div>' +
+        '<div class="todo__prazo' + (t.urgente ? " is-urgente" : "") + '">' + (t.urgente ? "⚠ " : "") + 'Prazo: ' + esc(t.prazo) + '</div>' +
+      '</div></div>';
     }).join("");
-    // marcar como concluída ao clicar
+    bindTodos(wrap);
+  }
+  function renderPendenciasReal() {
+    var wrap = el("pendencias"); if (!wrap) return;
+    var itens = [];
+    pacientes.filter(function (p) { return p.status === "atencao"; }).slice(0, 4).forEach(function (p) {
+      itens.push({ texto: "Revisar plano de " + p.nome, urgente: (p.adesao || 0) < 40, id: p.id });
+    });
+    pacientes.filter(function (p) { return p.status === "inativo"; }).slice(0, 2).forEach(function (p) {
+      itens.push({ texto: "Reativar contato com " + p.nome, urgente: false, id: p.id });
+    });
+    if (!itens.length) {
+      wrap.innerHTML = '<div class="dash-empty" style="min-height:90px"><p class="dash-empty__txt">Nenhuma pendência. 🎉</p></div>';
+      return;
+    }
+    wrap.innerHTML = itens.map(function (t) {
+      return '<a class="todo__item" href="prontuario.html?id=' + encodeURIComponent(t.id) + '" style="text-decoration:none;color:inherit">' +
+        '<span class="todo__check"></span><div>' +
+        '<div class="todo__txt">' + esc(t.texto) + '</div>' +
+        '<div class="todo__prazo' + (t.urgente ? " is-urgente" : "") + '">' + (t.urgente ? "⚠ prioridade" : "quando puder") + '</div>' +
+      '</div></a>';
+    }).join("");
+  }
+  function bindTodos(wrap) {
     wrap.querySelectorAll(".todo__item").forEach(function (item) {
       item.addEventListener("click", function () {
         item.style.opacity = item.style.opacity === "0.45" ? "" : "0.45";
@@ -199,7 +247,7 @@
     });
   }
 
-  /* ---------- Nútri AI ---------- */
+  /* ---------- Nútri AI (demo) ---------- */
   function initAI() {
     var fab = el("ai-fab");
     var panel = el("ai-panel");
@@ -215,7 +263,6 @@
     fab.addEventListener("click", open);
     close.addEventListener("click", hide);
 
-    // chips de sugestão
     if (suggest) {
       suggest.innerHTML = (D.aiSugestoes || []).map(function (s) {
         return '<button class="ai-suggest__chip" type="button">' + esc(s) + '</button>';
@@ -251,7 +298,7 @@
     input.addEventListener("keydown", function (e) { if (e.key === "Enter") sendMsg(input.value); });
   }
 
-  /* ---------- Navegação mobile (sidebar gaveta) ---------- */
+  /* ---------- Navegação mobile ---------- */
   function initMobileNav() {
     var app = el("app");
     var toggle = el("menu-toggle");

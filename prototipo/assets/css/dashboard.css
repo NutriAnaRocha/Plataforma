@@ -306,3 +306,20 @@
   .canvas { padding: var(--sp-4); }
   .ai-panel { right: 0; bottom: 0; width: 100vw; height: 100vh; border-radius: 0; }
 }
+
+/* ---------- Empty-states e blocos derivados do banco ---------- */
+.dash-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--sp-3); text-align: center; padding: var(--sp-5) var(--sp-4); min-height: 140px;
+}
+.dash-empty__ico { font-size: 1.8rem; opacity: .7; }
+.dash-empty__txt { color: var(--texto-sutil); font-size: var(--fs-sm); max-width: 34ch; margin: 0; }
+
+.dash-dist { display: flex; flex-direction: column; gap: var(--sp-4); padding: var(--sp-2) 0; }
+.dash-bar__top {
+  display: flex; justify-content: space-between; font-size: var(--fs-sm);
+  color: var(--texto); margin-bottom: 6px; font-weight: 600;
+}
+.dash-bar__top span:last-child { color: var(--texto-sutil); font-weight: 500; }
+.bar__fill.is-good { background: linear-gradient(90deg, #3FB27F, #2E9E6B); }
+.bar__fill.is-low { background: linear-gradient(90deg, #E59512, #C0392B); }

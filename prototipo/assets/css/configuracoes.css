@@ -109,6 +109,7 @@ select.field__input { cursor: pointer; }
   opacity: 0; pointer-events: none; transition: opacity var(--t-med), transform var(--t-med); z-index: 200;
 }
 .cfg-toast.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+.cfg-toast.is-error { background: #B4304A; }
 
 /* ---------- Responsivo ---------- */
 @media (max-width: 860px) {

@@ -1,12 +1,19 @@
 /* ============================================================
-   CONFIGURAÇÕES — abas (Perfil, Conta, Notificações, Integrações),
-   toggles, multi-seleção de especialidades e toast de salvamento.
-   Depende de configuracoes-data.js (window.CONFIG_DATA).
+   CONFIGURAÇÕES — abas (Perfil, Conta, Notificações, Integrações).
+   REAL (Supabase via window.NutriPerfil): Perfil, especialidades,
+   e-mail/senha de acesso e preferências de notificação.
+   MOCK (configuracoes-data.js): catálogo de especialidades/notificações
+   e a lista de Integrações (conectores externos ainda não implementados).
    ============================================================ */
 (function () {
   "use strict";
 
   var data = window.CONFIG_DATA || {};
+  // Perfil carregado do banco (preenchido no init). Enquanto não carrega,
+  // usa um objeto vazio — nada de dado chumbado.
+  var perfil = { nome: "", email: "", crn: "", cidade: "", telefone: "",
+    instagram: "", site: "", bio: "", especialidades: [], notifPrefs: {} };
+
   function el(id) { return document.getElementById(id); }
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
@@ -16,12 +23,19 @@
 
   /* ---------- Toast ---------- */
   var toastTimer;
-  function toast(msg) {
+  function toast(msg, erro) {
     var t = el("cfg-toast");
-    t.textContent = "✓ " + msg;
+    t.textContent = (erro ? "⚠ " : "✓ ") + msg;
+    t.classList.toggle("is-error", !!erro);
     t.classList.add("is-on");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.classList.remove("is-on"); }, 2400);
+    toastTimer = setTimeout(function () { t.classList.remove("is-on"); }, 2600);
+  }
+
+  function busy(btn, on, label) {
+    if (!btn) return;
+    if (on) { btn.dataset._txt = btn.textContent; btn.textContent = label || "Salvando…"; btn.disabled = true; }
+    else { btn.textContent = btn.dataset._txt || btn.textContent; btn.disabled = false; }
   }
 
   /* ---------- Componentes reutilizáveis ---------- */
@@ -42,30 +56,36 @@
       '<div class="card__body">' + bodyHTML + '</div></section>';
   }
 
+  function iniciais(nome) {
+    var parts = String(nome || "").trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return "?";
+    return ((parts[0][0] || "") + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
+  }
+
   /* ---------- Painel: Perfil ---------- */
   function renderPerfil() {
-    var p = data.perfil || {};
+    var ativas = perfil.especialidades || [];
     var chips = (data.especialidades || []).map(function (e) {
-      var on = (data.especialidadesAtivas || []).indexOf(e) > -1;
+      var on = ativas.indexOf(e) > -1;
       return '<button class="chip" type="button" data-esp="' + esc(e) + '" aria-pressed="' + on + '">' + esc(e) + '</button>';
     }).join("");
 
     var identidade =
       '<div class="cfg-photo">' +
-        '<span class="avatar avatar--rosa cfg-photo__av">AL</span>' +
+        '<span class="avatar avatar--rosa cfg-photo__av">' + esc(iniciais(perfil.nome)) + '</span>' +
         '<div class="cfg-photo__info">' +
           '<button class="btn btn--outline" type="button" id="btn-foto">Trocar foto</button>' +
           '<p class="cfg-hint">JPG ou PNG, até 2 MB.</p>' +
         '</div>' +
       '</div>' +
       '<div class="cfg-form">' +
-        field("Nome completo", "cfg-nome", p.nome) +
-        field("CRN", "cfg-crn", p.crn) +
-        field("Cidade / UF", "cfg-cidade", p.cidade) +
-        field("Telefone público", "cfg-tel", p.telefone, { type: "tel" }) +
-        field("Instagram", "cfg-insta", p.instagram) +
-        field("Site", "cfg-site", p.site) +
-        field("Bio / apresentação", "cfg-bio", p.bio, { textarea: true, rows: 3, wide: true }) +
+        field("Nome completo", "cfg-nome", perfil.nome) +
+        field("CRN", "cfg-crn", perfil.crn) +
+        field("Cidade / UF", "cfg-cidade", perfil.cidade) +
+        field("Telefone público", "cfg-tel", perfil.telefone, { type: "tel" }) +
+        field("Instagram", "cfg-insta", perfil.instagram) +
+        field("Site", "cfg-site", perfil.site) +
+        field("Bio / apresentação", "cfg-bio", perfil.bio, { textarea: true, rows: 3, wide: true }) +
       '</div>';
 
     var especial =
@@ -75,28 +95,27 @@
     el("panel-perfil").innerHTML =
       card("Dados do perfil", "Como você aparece para pacientes e na Comunidade.", identidade) +
       card("Áreas de atuação", "", especial) +
-      '<div class="cfg-actions"><button class="btn btn--primary" type="button" data-save="Perfil atualizado">Salvar alterações</button></div>';
+      '<div class="cfg-actions"><button class="btn btn--primary" type="button" data-action="save-perfil">Salvar alterações</button></div>';
   }
 
   /* ---------- Painel: Conta & Segurança ---------- */
   function renderConta() {
-    var p = data.perfil || {};
     var acesso =
       '<div class="cfg-form">' +
-        field("E-mail de acesso", "cfg-email", p.email, { type: "email" }) +
+        field("E-mail de acesso", "cfg-email", perfil.email, { type: "email" }) +
         '<label class="field field--light"><span class="field__label">Idioma</span>' +
           '<select class="field__input" id="cfg-idioma"><option>Português (Brasil)</option><option>English</option><option>Español</option></select></label>' +
         '<label class="field field--light"><span class="field__label">Fuso horário</span>' +
           '<select class="field__input" id="cfg-fuso"><option>(GMT-03:00) Brasília</option><option>(GMT-04:00) Manaus</option><option>(GMT-02:00) Fernando de Noronha</option></select></label>' +
-      '</div>';
+      '</div>' +
+      '<div class="cfg-actions"><button class="btn btn--primary" type="button" data-action="save-email">Atualizar e-mail</button></div>';
 
     var senha =
       '<div class="cfg-form">' +
-        field("Senha atual", "cfg-pass0", "", { type: "password", ph: "••••••••" }) +
         field("Nova senha", "cfg-pass1", "", { type: "password", ph: "Mínimo 8 caracteres" }) +
         field("Confirmar nova senha", "cfg-pass2", "", { type: "password", ph: "Repita a nova senha" }) +
       '</div>' +
-      '<div class="cfg-actions"><button class="btn btn--primary" type="button" data-save="Senha alterada">Alterar senha</button></div>';
+      '<div class="cfg-actions"><button class="btn btn--primary" type="button" data-action="save-senha">Alterar senha</button></div>';
 
     var duplo =
       '<div class="cfg-toggle-row">' +
@@ -108,11 +127,11 @@
     var perigo =
       '<div class="cfg-danger">' +
         '<div><strong>Excluir minha conta</strong><p class="cfg-hint">Remove permanentemente seus dados. Esta ação não pode ser desfeita.</p></div>' +
-        '<button class="btn cfg-btn-danger" type="button" data-save="Solicitação de exclusão registrada">Excluir conta</button>' +
+        '<button class="btn cfg-btn-danger" type="button" data-save="Em breve: exclusão de conta (LGPD)">Excluir conta</button>' +
       '</div>';
 
     el("panel-conta").innerHTML =
-      card("Acesso", "E-mail, idioma e fuso horário da conta.", acesso) +
+      card("Acesso", "E-mail de login da conta. Trocar o e-mail exige confirmação no novo endereço.", acesso) +
       card("Senha", "Recomendamos trocar a cada 6 meses.", senha) +
       card("Segurança", "", duplo) +
       card("Zona de perigo", "", perigo);
@@ -125,17 +144,19 @@
   }
 
   function renderNotif() {
+    var prefs = perfil.notifPrefs || {};
     var rows = (data.notificacoes || []).map(function (n) {
+      var on = (n.id in prefs) ? !!prefs[n.id] : !!n.on;
       return '<div class="cfg-toggle-row">' +
         '<div class="cfg-toggle-txt"><strong>' + esc(n.titulo) + '</strong><span>' + esc(n.desc) + '</span></div>' +
-        toggle(n.id, n.on) + '</div>';
+        toggle(n.id, on) + '</div>';
     }).join("");
     el("panel-notif").innerHTML =
       card("Preferências de notificação", "Escolha o que você quer receber e por onde.", rows) +
-      '<div class="cfg-actions"><button class="btn btn--primary" type="button" data-save="Preferências salvas">Salvar preferências</button></div>';
+      '<div class="cfg-actions"><button class="btn btn--primary" type="button" data-action="save-notif">Salvar preferências</button></div>';
   }
 
-  /* ---------- Painel: Integrações ---------- */
+  /* ---------- Painel: Integrações (mock — conectores externos ainda não implementados) ---------- */
   function renderIntegr() {
     var cards = (data.integracoes || []).map(function (i) {
       return '<article class="cfg-integr" data-integr="' + i.id + '">' +
@@ -156,6 +177,80 @@
       '<div class="cfg-integr-list">' + cards + '</div>';
   }
 
+  /* ---------- Coleta de valores ---------- */
+  function val(id) { var e = el(id); return e ? e.value : ""; }
+  function especialidadesAtivas() {
+    return Array.prototype.slice.call(document.querySelectorAll('#cfg-esp [data-esp]'))
+      .filter(function (c) { return c.getAttribute("aria-pressed") === "true"; })
+      .map(function (c) { return c.getAttribute("data-esp"); });
+  }
+  function notifSelecionadas() {
+    var out = {};
+    (data.notificacoes || []).forEach(function (n) {
+      var sw = document.querySelector('#panel-notif [data-toggle="' + n.id + '"]');
+      out[n.id] = sw ? sw.classList.contains("is-on") : !!n.on;
+    });
+    return out;
+  }
+
+  /* ---------- Ações (salvar no banco) ---------- */
+  function db() { return window.NutriPerfil; }
+
+  function savePerfil(btn) {
+    if (!db()) { toast("Banco indisponível.", true); return; }
+    busy(btn, true);
+    db().update({
+      nome: val("cfg-nome"), crn: val("cfg-crn"), cidade: val("cfg-cidade"),
+      telefone: val("cfg-tel"), instagram: val("cfg-insta"), site: val("cfg-site"),
+      bio: val("cfg-bio"), especialidades: especialidadesAtivas()
+    }).then(function (p) {
+      perfil = p; renderPerfil();
+      toast("Perfil atualizado");
+    }).catch(function (e) {
+      toast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
+    }).then(function () { busy(btn, false); });
+  }
+
+  function saveEmail(btn) {
+    if (!db()) { toast("Banco indisponível.", true); return; }
+    var email = (val("cfg-email") || "").trim();
+    if (!/.+@.+\..+/.test(email)) { toast("E-mail inválido.", true); return; }
+    if (email === perfil.email) { toast("E-mail sem alteração."); return; }
+    busy(btn, true, "Enviando…");
+    db().updateEmail(email).then(function () {
+      toast("Confirme no e-mail novo para concluir a troca.");
+    }).catch(function (e) {
+      toast("Não foi possível trocar o e-mail. " + (e && e.message ? e.message : ""), true);
+    }).then(function () { busy(btn, false); });
+  }
+
+  function saveSenha(btn) {
+    if (!db()) { toast("Banco indisponível.", true); return; }
+    var p1 = val("cfg-pass1"), p2 = val("cfg-pass2");
+    if (p1.length < 8) { toast("A senha precisa de pelo menos 8 caracteres.", true); return; }
+    if (p1 !== p2) { toast("As senhas não conferem.", true); return; }
+    busy(btn, true);
+    db().updatePassword(p1).then(function () {
+      var a = el("cfg-pass1"), b = el("cfg-pass2"); if (a) a.value = ""; if (b) b.value = "";
+      toast("Senha alterada");
+    }).catch(function (e) {
+      toast("Não foi possível alterar a senha. " + (e && e.message ? e.message : ""), true);
+    }).then(function () { busy(btn, false); });
+  }
+
+  function saveNotif(btn) {
+    if (!db()) { toast("Banco indisponível.", true); return; }
+    busy(btn, true);
+    var prefs = notifSelecionadas();
+    db().update({ notifPrefs: prefs }).then(function (p) {
+      perfil = p; toast("Preferências salvas");
+    }).catch(function (e) {
+      toast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
+    }).then(function () { busy(btn, false); });
+  }
+
+  var ACTIONS = { "save-perfil": savePerfil, "save-email": saveEmail, "save-senha": saveSenha, "save-notif": saveNotif };
+
   /* ---------- Interações ---------- */
   function wire() {
     // Abas
@@ -169,7 +264,7 @@
       });
     });
 
-    // Delegação global do canvas: toggles, chips, botões salvar, integrações
+    // Delegação global do canvas: toggles, chips, ações, integrações
     document.querySelector(".cfg-panels").addEventListener("click", function (e) {
       var sw = e.target.closest(".switch");
       if (sw) {
@@ -191,6 +286,8 @@
         if (item) { item.conectado = !item.conectado; renderIntegr(); toast(item.conectado ? item.nome + " conectado" : item.nome + " desconectado"); }
         return;
       }
+      var act = e.target.closest("[data-action]");
+      if (act) { var fn = ACTIONS[act.getAttribute("data-action")]; if (fn) fn(act); return; }
       var save = e.target.closest("[data-save]");
       if (save) { toast(save.getAttribute("data-save")); }
     });
@@ -203,13 +300,21 @@
     if (s) s.addEventListener("click", function () { app.classList.remove("nav-open"); });
   }
 
+  function renderAll() {
+    renderPerfil(); renderConta(); renderNotif(); renderIntegr();
+  }
+
   function init() {
-    renderPerfil();
-    renderConta();
-    renderNotif();
-    renderIntegr();
+    renderAll();      // pinta a casca (campos vazios) enquanto carrega
     wire();
     initMobileNav();
+    // Carrega o perfil real e repinta.
+    if (window.NutriPerfil) {
+      window.NutriPerfil.get().then(function (p) {
+        perfil = p;
+        renderPerfil(); renderNotif(); renderConta();
+      }).catch(function () { /* offline/file:// — mantém a casca vazia */ });
+    }
   }
 
   document.addEventListener("DOMContentLoaded", init);
