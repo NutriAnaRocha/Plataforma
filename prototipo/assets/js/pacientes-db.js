@@ -164,6 +164,18 @@
         return (res.data && res.data.marcas) || {};
       });
     },
+    // Adesão de vários pacientes de uma vez (para a lista). Devolve { id: marcas }.
+    getAdesaoBatch: function (ids) {
+      if (!ids || !ids.length) return Promise.resolve({});
+      return client().then(function (c) {
+        return c.from("plano_adesao").select("paciente_id,marcas").in("paciente_id", ids);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        var map = {};
+        (res.data || []).forEach(function (r) { map[r.paciente_id] = r.marcas || {}; });
+        return map;
+      });
+    },
     setAdesao: function (pacienteId, marcas) {
       return client().then(function (c) {
         return c.from("plano_adesao").upsert(

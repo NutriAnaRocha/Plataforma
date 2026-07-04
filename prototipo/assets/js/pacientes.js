@@ -123,6 +123,7 @@
       r.addEventListener("click", open);
       r.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
     });
+    refreshListAdesao(rows);
   }
 
   function initSearch() {
@@ -228,21 +229,47 @@
   }
 
   // Adesão REAL: % de itens do plano que o paciente marcou (tabela plano_adesao).
-  // Substitui o número manual quando existe um plano com itens.
-  function refreshAdesaoReal(p) {
+  // Devolve { pct, feitos, total } ou null quando não há plano com itens.
+  function realAdesao(p, marcas) {
     var refs = (p.plano && p.plano.refeicoes) || [];
     var total = refs.reduce(function (s, r) { return s + ((r.itens || []).length); }, 0);
-    if (!total) return; // sem plano publicado: mantém o valor manual da ficha
+    if (!total) return null;
+    var feitos = 0;
+    refs.forEach(function (r, ri) { (r.itens || []).forEach(function (_it, ii) { if ((marcas || {})[ri + ":" + ii] === true) feitos++; }); });
+    return { pct: Math.round(feitos * 100 / total), feitos: feitos, total: total };
+  }
+
+  // Substitui o número manual pela adesão real na FICHA quando existe plano publicado.
+  function refreshAdesaoReal(p) {
+    if (!realAdesao(p, {})) return; // sem plano publicado: mantém o valor manual da ficha
     window.NutriPacientes.getAdesao(p.id).then(function (marcas) {
-      var feitos = 0;
-      refs.forEach(function (r, ri) { (r.itens || []).forEach(function (_it, ii) { if (marcas[ri + ":" + ii] === true) feitos++; }); });
-      var pct = Math.round(feitos * 100 / total);
+      var info = realAdesao(p, marcas);
+      if (!info) return;
       var val = el("adesao-val"), hintEl = el("adesao-hint");
-      if (val) val.textContent = pct;
+      if (val) val.textContent = info.pct;
       if (hintEl) {
-        var cls = pct >= 70 ? "delta--up" : pct >= 50 ? "delta--neutro" : "delta--down";
-        hintEl.outerHTML = '<span id="adesao-hint"><span class="delta ' + cls + '">' + feitos + '/' + total + ' itens · marcado pelo paciente</span></span>';
+        var cls = info.pct >= 70 ? "delta--up" : info.pct >= 50 ? "delta--neutro" : "delta--down";
+        hintEl.outerHTML = '<span id="adesao-hint"><span class="delta ' + cls + '">' + info.feitos + '/' + info.total + ' itens · marcado pelo paciente</span></span>';
       }
+    }).catch(function () { /* silencioso: mantém o valor manual */ });
+  }
+
+  // Idem na LISTA: uma query em lote e atualiza a barra dos pacientes com plano.
+  function refreshListAdesao(rows) {
+    var comPlano = rows.filter(function (p) { return !!realAdesao(p, {}); });
+    if (!comPlano.length) return;
+    window.NutriPacientes.getAdesaoBatch(comPlano.map(function (p) { return p.id; })).then(function (map) {
+      comPlano.forEach(function (p) {
+        var info = realAdesao(p, map[p.id] || {});
+        if (!info) return;
+        var row = document.querySelector('.prow2[data-id="' + p.id + '"]');
+        if (!row) return;
+        var fill = row.querySelector(".bar__fill"), val = row.querySelector(".val"),
+            cell = row.querySelector(".pcell-adesao");
+        if (fill) { fill.style.width = info.pct + "%"; fill.classList.toggle("is-low", info.pct < 50); }
+        if (val) val.textContent = info.pct + "%";
+        if (cell) cell.title = info.feitos + "/" + info.total + " itens marcados pelo paciente";
+      });
     }).catch(function () { /* silencioso: mantém o valor manual */ });
   }
 
