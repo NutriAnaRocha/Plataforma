@@ -80,9 +80,11 @@
         '<span class="rx-card__av ' + (p.cor === "vinho" ? "vinho" : "") + '" style="width:48px;height:48px">' + esc(p.iniciais) + '</span>' +
         '<div><div class="rx-dhead__tit">' + esc(p.paciente) + '</div>' +
         '<div class="rx-dhead__sub">' + esc(p.objetivo) + ' · ' + p.kcal + ' kcal/dia</div></div>' +
-        '<div class="rx-dhead__actions"><button class="btn btn--ghost">Duplicar</button>' +
-          '<button class="btn btn--outline" type="button" data-pdf="' + esc(p.id) + '">🖨️ Gerar PDF</button>' +
-          '<button class="btn btn--primary">Editar plano</button></div>' +
+        '<div class="rx-dhead__actions">' +
+          '<button class="btn btn--ghost" type="button" data-view="' + esc(p.id) + '">👁️ Visualizar</button>' +
+          '<button class="btn btn--outline" type="button" data-edit="' + esc(p.id) + '">✏️ Editar</button>' +
+          '<button class="btn btn--primary" type="button" data-pdf="' + esc(p.id) + '">🖨️ Gerar PDF</button>' +
+        '</div>' +
       '</div>' +
       '<div class="rx-macros">' +
         '<div class="macro"><div class="macro__v">' + mc.cho + '%</div><div class="macro__l">Carboidrato</div></div>' +
@@ -133,16 +135,20 @@
       'Em caso de dúvidas, entre em contato pelo canal informado no cabeçalho.</div>';
   }
 
-  function gerarPDF(id) {
-    if (!window.NutriDoc) { alert("Motor de documento indisponível."); return; }
-    var p = (D.planos || []).filter(function (x) { return x.id === id; })[0];
-    if (!p) return;
-    window.NutriDoc.imprimir(perfil, {
+  function docSpec(p) {
+    return {
       tipo: "Prescrição Nutricional",
       paciente: p.paciente,
       data: hoje(),
       bodyHTML: corpoPrescricao(p)
-    });
+    };
+  }
+  function acaoDoc(id, modo) {
+    if (!window.NutriDoc) { alert("Motor de documento indisponível."); return; }
+    var p = (D.planos || []).filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    if (modo === "view") window.NutriDoc.visualizar(perfil, docSpec(p));
+    else window.NutriDoc.imprimir(perfil, docSpec(p));
   }
 
   /* Modelos */
@@ -174,11 +180,15 @@
     if (search) search.addEventListener("input", function () { renderList(search.value); });
     initMobileNav();
 
-    // Botão "Gerar PDF" no detalhe (delegação — o detalhe é repintado).
+    // Ações do detalhe (delegação — o detalhe é repintado): Visualizar / Editar / Gerar PDF.
     var detail = el("rx-detail");
     if (detail) detail.addEventListener("click", function (e) {
-      var b = e.target.closest("[data-pdf]");
-      if (b) gerarPDF(b.getAttribute("data-pdf"));
+      var view = e.target.closest("[data-view]");
+      if (view) { acaoDoc(view.getAttribute("data-view"), "view"); return; }
+      var pdf = e.target.closest("[data-pdf]");
+      if (pdf) { acaoDoc(pdf.getAttribute("data-pdf"), "pdf"); return; }
+      var edit = e.target.closest("[data-edit]");
+      if (edit) { alert("Edição do plano em breve — nesta fase o foco foi visualizar e gerar o PDF com a sua identidade."); return; }
     });
 
     // Carrega a identidade da nutri para aplicar nos PDFs (offline → usa padrão).

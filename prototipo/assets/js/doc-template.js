@@ -209,13 +209,18 @@
       '</div>';
   }
 
-  function paginaCompleta(perfil, doc, comAcoes) {
+  function paginaCompleta(perfil, doc, opts) {
+    opts = opts || {};
     var id = resolver(perfil, doc);
-    var acoes = comAcoes
+    var acoes = opts.acoes
       ? '<div class="doc-actions">' +
           '<button class="doc-btn doc-btn--primary" onclick="window.print()">🖨️ Salvar como PDF / Imprimir</button>' +
           '<button class="doc-btn doc-btn--ghost" onclick="window.close()">Fechar</button>' +
         '</div>'
+      : '';
+    // Auto-abre a impressão (para "Gerar PDF"). Pequeno atraso para as fontes/imagens.
+    var autoPrint = opts.autoPrint
+      ? '<script>window.addEventListener("load",function(){setTimeout(function(){window.print();},350);});<\/script>'
       : '';
     return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8" />' +
       '<meta name="viewport" content="width=device-width, initial-scale=1.0" />' +
@@ -223,26 +228,31 @@
       '<link rel="preconnect" href="https://fonts.googleapis.com" />' +
       '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />' +
       '<style>' + styleHTML(id.cores) + '</style></head><body>' +
-      acoes + corpoDocumento(perfil, doc) +
+      acoes + corpoDocumento(perfil, doc) + autoPrint +
       '</body></html>';
+  }
+
+  function abrirEmAba(perfil, doc, autoPrint) {
+    var w = window.open("", "_blank");
+    if (!w) { alert("Permita pop-ups para abrir o documento."); return; }
+    w.document.open();
+    w.document.write(paginaCompleta(perfil, doc, { acoes: true, autoPrint: autoPrint }));
+    w.document.close();
   }
 
   window.NutriDoc = {
     CORES_PADRAO: CORES_PADRAO,
 
     // HTML standalone completo (com barra de ações imprimir/fechar).
-    documentoHTML: function (perfil, doc) { return paginaCompleta(perfil, doc, true); },
+    documentoHTML: function (perfil, doc) { return paginaCompleta(perfil, doc, { acoes: true }); },
 
     // HTML para preview embutido (srcdoc do iframe) — sem barra de ações.
-    previewHTML: function (perfil, doc) { return paginaCompleta(perfil, doc, false); },
+    previewHTML: function (perfil, doc) { return paginaCompleta(perfil, doc, {}); },
 
-    // Abre o documento numa nova aba já pronto para imprimir/salvar em PDF.
-    imprimir: function (perfil, doc) {
-      var w = window.open("", "_blank");
-      if (!w) { alert("Permita pop-ups para gerar o documento."); return; }
-      w.document.open();
-      w.document.write(paginaCompleta(perfil, doc, true));
-      w.document.close();
-    }
+    // Abre o documento numa nova aba (modo leitura), com botão de imprimir disponível.
+    visualizar: function (perfil, doc) { abrirEmAba(perfil, doc, false); },
+
+    // Abre o documento numa nova aba e já dispara a impressão / Salvar como PDF.
+    imprimir: function (perfil, doc) { abrirEmAba(perfil, doc, true); }
   };
 })();
