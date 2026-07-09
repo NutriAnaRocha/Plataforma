@@ -45,6 +45,9 @@
 
     /* Leitor em tela cheia */
     .biblio-reader { position: fixed; inset: 0; z-index: 60; background: var(--branco); display: flex; flex-direction: column; }
+    /* O atributo [hidden] precisa vencer o display:flex acima (senão o leitor
+       fica SEMPRE por cima, cobrindo a biblioteca inteira em branco). */
+    .biblio-reader[hidden] { display: none; }
     .biblio-reader__bar { display: flex; align-items: center; gap: var(--sp-3); padding: .6rem var(--sp-4);
       border-bottom: 1px solid var(--cinza-borda); background: var(--branco); }
     .biblio-reader__bar strong { font-family: var(--font-display); color: var(--vinho); font-size: 1rem;
