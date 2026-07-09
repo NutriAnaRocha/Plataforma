@@ -50,6 +50,22 @@
     return cards.filter(function (c) { return c.categoria === state.categoria; });
   }
 
+  // Só é um artigo de verdade quando há link real (não "#" nem vazio).
+  function hasRealLink(c) {
+    var l = (c.link || "").trim();
+    return !!l && l !== "#";
+  }
+
+  // Rodapé do card: com link real, direciona para o site do artigo completo
+  // (nova aba). Sem link, mostra só uma marca de prévia — nada de link morto
+  // que recarrega a página.
+  function articleLinkHTML(c) {
+    if (hasRealLink(c)) {
+      return '<a class="news-card__link" href="' + c.link + '" target="_blank" rel="noopener">📚 Ler artigo completo →</a>';
+    }
+    return '<span class="news-card__preview">📄 Prévia — artigo completo em breve</span>';
+  }
+
   /* ---------- Render ---------- */
   function cardHTML(c) {
     return '' +
@@ -68,7 +84,7 @@
         '</div>' +
         '<div class="news-card__foot">' +
           '<span class="evid">Nível de evidência ' + stars(c.evidencia) + '</span>' +
-          '<a class="news-card__link" href="' + c.link + '" target="_blank" rel="noopener">📚 Ler artigo completo →</a>' +
+          articleLinkHTML(c) +
         '</div>' +
       '</article>';
   }

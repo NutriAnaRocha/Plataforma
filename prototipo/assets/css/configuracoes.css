@@ -45,7 +45,9 @@ select.field__input { cursor: pointer; }
 /* ---------- Foto de perfil ---------- */
 .cfg-photo { display: flex; align-items: center; gap: var(--sp-4); margin-bottom: var(--sp-5); }
 .cfg-photo__av { width: 72px; height: 72px; font-size: 1.3rem; }
-.cfg-photo__info { display: flex; flex-direction: column; gap: var(--sp-2); }
+.cfg-photo__img { object-fit: cover; padding: 0; }
+.cfg-photo__info { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp-2); }
+.cfg-photo__rm { color: var(--texto-sutil); padding-left: 0; padding-right: 0; }
 
 /* ---------- Chips de especialidade ---------- */
 .cfg-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }

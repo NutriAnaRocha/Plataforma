@@ -222,6 +222,15 @@ a { color: inherit; }
   gap: 6px;
 }
 .news-card__link:hover { gap: 10px; }
+/* Estado "prévia": ainda sem link do artigo — rótulo discreto, não clicável */
+.news-card__preview {
+  font-weight: 700;
+  color: var(--texto-sutil);
+  font-size: var(--fs-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
 
 /* ---- Faixa "Atualização da Semana" ---- */
 .highlight-week {

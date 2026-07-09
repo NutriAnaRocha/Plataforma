@@ -70,11 +70,17 @@
       return '<button class="chip" type="button" data-esp="' + esc(e) + '" aria-pressed="' + on + '">' + esc(e) + '</button>';
     }).join("");
 
+    var av = perfil.avatarUrl
+      ? '<img class="avatar avatar--rosa cfg-photo__av cfg-photo__img" alt="Foto de perfil" src="' + esc(perfil.avatarUrl) + '" />'
+      : '<span class="avatar avatar--rosa cfg-photo__av">' + esc(iniciais(perfil.nome)) + '</span>';
+
     var identidade =
       '<div class="cfg-photo">' +
-        '<span class="avatar avatar--rosa cfg-photo__av">' + esc(iniciais(perfil.nome)) + '</span>' +
+        av +
         '<div class="cfg-photo__info">' +
+          '<input type="file" id="cfg-foto-input" accept="image/png,image/jpeg,image/webp" hidden />' +
           '<button class="btn btn--outline" type="button" id="btn-foto">Trocar foto</button>' +
+          (perfil.avatarUrl ? '<button class="btn btn--ghost cfg-photo__rm" type="button" id="btn-foto-rm">Remover foto</button>' : '') +
           '<p class="cfg-hint">JPG ou PNG, até 2 MB.</p>' +
         '</div>' +
       '</div>' +
@@ -251,6 +257,62 @@
 
   var ACTIONS = { "save-perfil": savePerfil, "save-email": saveEmail, "save-senha": saveSenha, "save-notif": saveNotif };
 
+  /* ---------- Foto de perfil ---------- */
+  // Lê o arquivo, redimensiona para no máx. 320px e devolve um JPEG data URL leve.
+  function processarFoto(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onerror = function () { reject(new Error("não foi possível ler o arquivo")); };
+      reader.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error("imagem inválida")); };
+        img.onload = function () {
+          var MAX = 320;
+          var w = img.naturalWidth, h = img.naturalHeight;
+          var escala = Math.min(1, MAX / Math.max(w, h));
+          var cw = Math.round(w * escala), ch = Math.round(h * escala);
+          var cv = document.createElement("canvas");
+          cv.width = cw; cv.height = ch;
+          cv.getContext("2d").drawImage(img, 0, 0, cw, ch);
+          resolve(cv.toDataURL("image/jpeg", 0.82));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function trocarFoto(file) {
+    if (!file) return;
+    if (!/^image\/(png|jpe?g|webp)$/i.test(file.type)) { toast("Use uma imagem JPG, PNG ou WEBP.", true); return; }
+    if (file.size > 2 * 1024 * 1024) { toast("A imagem passa de 2 MB. Escolha uma menor.", true); return; }
+    if (!db()) { toast("Banco indisponível.", true); return; }
+    var btn = el("btn-foto");
+    busy(btn, true, "Enviando…");
+    processarFoto(file).then(function (dataUrl) {
+      return db().update({ avatarUrl: dataUrl });
+    }).then(function (p) {
+      perfil = p; renderPerfil();
+      toast("Foto atualizada");
+    }).catch(function (e) {
+      toast("Não foi possível trocar a foto. " + (e && e.message ? e.message : ""), true);
+      busy(btn, false);
+    });
+  }
+
+  function removerFoto() {
+    if (!db()) { toast("Banco indisponível.", true); return; }
+    var btn = el("btn-foto-rm");
+    busy(btn, true, "Removendo…");
+    db().update({ avatarUrl: "" }).then(function (p) {
+      perfil = p; renderPerfil();
+      toast("Foto removida");
+    }).catch(function (e) {
+      toast("Não foi possível remover a foto. " + (e && e.message ? e.message : ""), true);
+      busy(btn, false);
+    });
+  }
+
   /* ---------- Interações ---------- */
   function wire() {
     // Abas
@@ -264,8 +326,20 @@
       });
     });
 
+    var panels = document.querySelector(".cfg-panels");
+
+    // Troca de foto: o botão abre o seletor de arquivo; a escolha dispara o upload.
+    panels.addEventListener("change", function (e) {
+      if (e.target && e.target.id === "cfg-foto-input") {
+        trocarFoto(e.target.files && e.target.files[0]);
+        e.target.value = ""; // permite reescolher o mesmo arquivo depois
+      }
+    });
+
     // Delegação global do canvas: toggles, chips, ações, integrações
-    document.querySelector(".cfg-panels").addEventListener("click", function (e) {
+    panels.addEventListener("click", function (e) {
+      if (e.target.closest("#btn-foto")) { var inp = el("cfg-foto-input"); if (inp) inp.click(); return; }
+      if (e.target.closest("#btn-foto-rm")) { removerFoto(); return; }
       var sw = e.target.closest(".switch");
       if (sw) {
         var on = sw.classList.toggle("is-on");

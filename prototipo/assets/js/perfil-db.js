@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  var COLS = "id,nome,email,crn,cidade,telefone,instagram,site,bio,especialidades,notif_prefs";
+  var COLS = "id,nome,email,crn,cidade,telefone,instagram,site,bio,especialidades,notif_prefs,avatar_url";
 
   function client() { return window.NutriDBReady; }
 
@@ -24,7 +24,8 @@
       site: r.site || "",
       bio: r.bio || "",
       especialidades: Array.isArray(r.especialidades) ? r.especialidades : [],
-      notifPrefs: r.notif_prefs || {}
+      notifPrefs: r.notif_prefs || {},
+      avatarUrl: r.avatar_url || ""
     };
   }
 
@@ -52,6 +53,7 @@
       if ("bio" in patch) row.bio = (patch.bio || "").trim() || null;
       if ("especialidades" in patch) row.especialidades = patch.especialidades || [];
       if ("notifPrefs" in patch) row.notif_prefs = patch.notifPrefs || {};
+      if ("avatarUrl" in patch) row.avatar_url = patch.avatarUrl || null;
       var C;
       return client().then(function (c) {
         C = c;
