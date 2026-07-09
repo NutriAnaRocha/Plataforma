@@ -15,7 +15,9 @@
   var FRAME = document.getElementById("biblio-frame");
   var RTITLE = document.getElementById("biblio-reader-title");
   // URL da vitrine/checkout p/ quem ainda não tem o material (fallback).
-  var COMPRAR_URL = "https://wa.me/5521999999999"; // TODO: trocar pela vitrine/checkout
+  // WhatsApp da Ana com mensagem pronta; trocar por checkout quando houver gateway.
+  var COMPRAR_URL = "https://wa.me/5521994094557?text=" +
+    encodeURIComponent("Oi! Quero adquirir um dos e-books da biblioteca. Pode me passar como funciona?");
 
   var blobEmUso = null; // object URL atual do leitor (revogado ao fechar)
 
