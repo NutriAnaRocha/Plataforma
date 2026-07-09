@@ -121,7 +121,10 @@
     });
 
     // Decide destino após autenticar. Paciente -> portal; nutri -> 1º acesso (personalização) ou dashboard.
+    // Exceção: ?next=pagina.html (ex.: vindo do "acessar minha biblioteca") tem prioridade p/ qualquer tipo.
     function afterAuth(c) {
+      var next = new URLSearchParams(location.search).get("next");
+      if (next && /^[a-z0-9-]+\.html$/i.test(next)) { window.location.href = next; return Promise.resolve(); }
       return c.from("profiles").select("onboarded,tipo").maybeSingle().then(function (res) {
         var tipo = (res.data && res.data.tipo) || "nutri";
         if (tipo === "paciente") { window.location.href = "portal-paciente.html"; return; }
