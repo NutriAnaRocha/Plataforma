@@ -20,6 +20,13 @@
   var blobEmUso = null; // object URL atual do leitor (revogado ao fechar)
 
   window.NutriDBReady.then(function (c) {
+    // Logout (botão "Sair" com [data-logout]) — auth-guard.js não roda aqui.
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest("[data-logout]")) return;
+      e.preventDefault();
+      c.auth.signOut().then(function () { window.location.replace("index.html"); });
+    });
+
     return c.auth.getSession().then(function (r) {
       if (!r.data.session) { window.location.replace("index.html?next=biblioteca.html"); return; }
       var user = r.data.session.user;
