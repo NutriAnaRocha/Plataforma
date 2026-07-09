@@ -1,0 +1,103 @@
+/* ============================================================
+   PERFIL PROFISSIONAL — estilos específicos.
+   Reusa .cfg-grid/.cfg-tabs/.cfg-panels/.cfg-form/.field--light
+   de configuracoes.css + core. Aqui só o que é novo.
+   ============================================================ */
+
+.pp-block { margin-top: var(--sp-4); }
+.pp-block > .field__label { display: block; margin-bottom: var(--sp-2); }
+
+/* ---------- Checkboxes de área de atuação ---------- */
+.pp-checks { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.pp-check {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: 9px 14px; border: 1px solid var(--cinza-borda); border-radius: var(--radius-chip);
+  cursor: pointer; font-size: var(--fs-sm); font-weight: 600; color: var(--texto);
+  transition: all var(--t-fast); background: var(--branco);
+}
+.pp-check:hover { border-color: var(--vinho); }
+.pp-check input { position: absolute; opacity: 0; width: 0; height: 0; }
+.pp-check__box {
+  width: 18px; height: 18px; border-radius: 6px; border: 2px solid var(--cinza-borda);
+  flex: none; display: grid; place-items: center; transition: all var(--t-fast);
+}
+.pp-check.is-on { border-color: var(--vinho); background: var(--rosa-suave); color: var(--vinho); }
+.pp-check.is-on .pp-check__box { background: var(--vinho); border-color: var(--vinho); }
+.pp-check.is-on .pp-check__box::after { content: "✓"; color: #fff; font-size: 12px; font-weight: 800; }
+.pp-outro { margin-top: var(--sp-3); max-width: 460px; }
+
+/* ---------- Slots de upload (logo/carimbo/assinatura) ---------- */
+.pp-slots { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+.pp-slot {
+  display: flex; gap: var(--sp-4); align-items: center;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  padding: var(--sp-4); background: var(--branco);
+}
+.pp-slot__preview {
+  width: 96px; height: 96px; flex: none; border-radius: var(--radius-sm);
+  background: var(--cinza-claro);
+  background-image: linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%);
+  background-size: 14px 14px; background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+  display: grid; place-items: center; overflow: hidden;
+}
+.pp-slot__img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.pp-slot__empty { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-align: center; }
+.pp-slot__info { min-width: 0; }
+.pp-slot__tit { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-body); margin-bottom: 2px; }
+.pp-slot__btns { display: flex; gap: var(--sp-2); margin-top: var(--sp-3); flex-wrap: wrap; }
+.pp-slot__btns .btn { padding: 7px 14px; font-size: var(--fs-sm); }
+
+/* ---------- Assinatura desenhada ---------- */
+.pp-sign { margin-top: var(--sp-4); }
+.pp-sign__tit { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-sm); margin-bottom: var(--sp-2); }
+.pp-sign__pad {
+  width: 100%; max-width: 600px; height: auto; aspect-ratio: 600 / 180;
+  border: 2px dashed var(--cinza-borda); border-radius: var(--radius-sm);
+  background: #fff; touch-action: none; cursor: crosshair; display: block;
+}
+.pp-sign__btns { display: flex; gap: var(--sp-2); margin-top: var(--sp-3); }
+
+/* ---------- Paleta de cores ---------- */
+.pp-palette { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--sp-4); }
+.pp-swatch { display: flex; align-items: center; gap: var(--sp-3); }
+.pp-swatch__dot {
+  width: 46px; height: 46px; flex: none; border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); position: relative; overflow: hidden; cursor: pointer;
+}
+.pp-swatch__dot input[type="color"] {
+  position: absolute; inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px);
+  border: none; padding: 0; background: none; cursor: pointer; opacity: 0;
+}
+.pp-swatch__meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pp-swatch__label { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
+.pp-swatch__hex {
+  font-family: var(--font-ui); font-size: var(--fs-sm); font-weight: 600; color: var(--texto);
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-sm); padding: 5px 9px; width: 110px; text-transform: uppercase;
+}
+.pp-swatch__hex:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+
+/* ---------- Preview de documentos ---------- */
+.pp-preview-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-3); }
+.pp-doc-chips { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+.pp-doc-chip {
+  border: 1px solid var(--cinza-borda); background: var(--branco); color: var(--texto);
+  border-radius: var(--radius-chip); padding: 8px 16px; font: inherit; font-size: var(--fs-sm);
+  font-weight: 600; cursor: pointer; transition: all var(--t-fast);
+}
+.pp-doc-chip:hover { border-color: var(--vinho); color: var(--vinho); }
+.pp-doc-chip.is-on { background: var(--vinho); border-color: var(--vinho); color: #fff; }
+.pp-preview-frame {
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  overflow: hidden; box-shadow: var(--shadow-md); background: #e9e9ee;
+}
+.pp-preview-frame iframe { width: 100%; height: 78vh; min-height: 520px; border: none; display: block; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 720px) {
+  .pp-slots { grid-template-columns: 1fr; }
+  .pp-slot { flex-direction: column; align-items: flex-start; }
+  .pp-preview-head { flex-direction: column; align-items: stretch; }
+  .pp-preview-head .btn { width: 100%; }
+  .pp-preview-frame iframe { height: 68vh; }
+}

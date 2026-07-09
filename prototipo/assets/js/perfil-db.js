@@ -7,12 +7,18 @@
 (function () {
   "use strict";
 
-  var COLS = "id,nome,email,crn,cidade,telefone,instagram,site,bio,especialidades,notif_prefs,avatar_url";
+  var COLS = "id,nome,email,crn,cidade,telefone,instagram,site,bio,especialidades,notif_prefs,avatar_url," +
+    "logo_url,carimbo_url,assinatura_url,area_atuacao,area_atuacao_outro,contato_profissional,brand_colors";
+
+  // Paleta padrão (identidade Ana Luísa Rocha) — usada quando a nutri ainda
+  // não personalizou as cores. Mantida em sincronia com a migração 0011.
+  var CORES_PADRAO = { primaria: "#7B284C", secundaria: "#F4DCE5", destaque: "#9C3D63", fundo: "#FFFFFF" };
 
   function client() { return window.NutriDBReady; }
 
   function fromRow(r) {
     r = r || {};
+    var cores = r.brand_colors && typeof r.brand_colors === "object" ? r.brand_colors : {};
     return {
       id: r.id,
       nome: r.nome || "",
@@ -25,11 +31,26 @@
       bio: r.bio || "",
       especialidades: Array.isArray(r.especialidades) ? r.especialidades : [],
       notifPrefs: r.notif_prefs || {},
-      avatarUrl: r.avatar_url || ""
+      avatarUrl: r.avatar_url || "",
+      // Identidade profissional
+      logoUrl: r.logo_url || "",
+      carimboUrl: r.carimbo_url || "",
+      assinaturaUrl: r.assinatura_url || "",
+      areaAtuacao: Array.isArray(r.area_atuacao) ? r.area_atuacao : [],
+      areaAtuacaoOutro: r.area_atuacao_outro || "",
+      contatoProfissional: r.contato_profissional || "",
+      brandColors: {
+        primaria: cores.primaria || CORES_PADRAO.primaria,
+        secundaria: cores.secundaria || CORES_PADRAO.secundaria,
+        destaque: cores.destaque || CORES_PADRAO.destaque,
+        fundo: cores.fundo || CORES_PADRAO.fundo
+      }
     };
   }
 
   var api = {
+    CORES_PADRAO: CORES_PADRAO,
+
     // Perfil da nutri logada (linha única via RLS).
     get: function () {
       return client().then(function (c) {
@@ -54,6 +75,14 @@
       if ("especialidades" in patch) row.especialidades = patch.especialidades || [];
       if ("notifPrefs" in patch) row.notif_prefs = patch.notifPrefs || {};
       if ("avatarUrl" in patch) row.avatar_url = patch.avatarUrl || null;
+      // Identidade profissional
+      if ("logoUrl" in patch) row.logo_url = patch.logoUrl || null;
+      if ("carimboUrl" in patch) row.carimbo_url = patch.carimboUrl || null;
+      if ("assinaturaUrl" in patch) row.assinatura_url = patch.assinaturaUrl || null;
+      if ("areaAtuacao" in patch) row.area_atuacao = patch.areaAtuacao || [];
+      if ("areaAtuacaoOutro" in patch) row.area_atuacao_outro = (patch.areaAtuacaoOutro || "").trim() || null;
+      if ("contatoProfissional" in patch) row.contato_profissional = (patch.contatoProfissional || "").trim() || null;
+      if ("brandColors" in patch) row.brand_colors = patch.brandColors || {};
       var C;
       return client().then(function (c) {
         C = c;

@@ -15,6 +15,18 @@
     var titleEl = document.querySelector("[data-brand-title]");
     if (titleEl) titleEl.textContent = BRAND + " · Plataforma para Nutricionistas";
 
+    // Avatar da topbar abre o Perfil Profissional (a não ser que já seja um link).
+    var avatar = document.getElementById("user-avatar");
+    if (avatar && avatar.tagName !== "A") {
+      avatar.style.cursor = "pointer";
+      avatar.setAttribute("title", "Meu Perfil Profissional");
+      avatar.setAttribute("role", "button");
+      avatar.setAttribute("tabindex", "0");
+      var irPerfil = function () { window.location.href = "perfil-profissional.html"; };
+      avatar.addEventListener("click", irPerfil);
+      avatar.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); irPerfil(); } });
+    }
+
     /* ---------- Login: revelar formulário inline ---------- */
     var form = document.getElementById("auth-form");
     if (!form) return; // página sem login (ex.: dashboard) — só injeta a marca acima

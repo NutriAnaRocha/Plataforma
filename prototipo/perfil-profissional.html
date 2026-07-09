@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-brand-title>Pacientes</title>
+  <title data-brand-title>Perfil Profissional</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,7 +12,8 @@
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/dashboard.css" />
-  <link rel="stylesheet" href="assets/css/pacientes.css" />
+  <link rel="stylesheet" href="assets/css/configuracoes.css" />
+  <link rel="stylesheet" href="assets/css/perfil-profissional.css" />
 </head>
 <body>
   <div class="app" id="app">
@@ -26,7 +27,7 @@
 
       <nav class="menu" aria-label="Menu principal">
         <a href="dashboard.html"><span class="ico">📊</span> Dashboard</a>
-        <a href="pacientes.html" class="is-active"><span class="ico">👥</span> Pacientes</a>
+        <a href="pacientes.html"><span class="ico">👥</span> Pacientes</a>
         <a href="agenda.html"><span class="ico">📅</span> Agenda <span class="badge">7</span></a>
         <a href="prontuario.html"><span class="ico">📋</span> Prontuários</a>
         <a href="prescricoes.html"><span class="ico">🥗</span> Prescrições</a>
@@ -38,13 +39,13 @@
         <a href="relatorios.html"><span class="ico">📈</span> Relatórios</a>
 
         <p class="menu__label">Sistema</p>
-        <a href="perfil-profissional.html"><span class="ico">🎨</span> Perfil Profissional</a>
+        <a href="perfil-profissional.html" class="is-active"><span class="ico">🎨</span> Perfil Profissional</a>
         <a href="ia.html"><span class="ico">🤖</span> IA Assistente</a>
         <a href="configuracoes.html"><span class="ico">⚙️</span> Configurações</a>
       </nav>
 
       <div class="sidebar__user">
-        <span class="avatar avatar--sm avatar--rosa">AL</span>
+        <span class="avatar avatar--sm avatar--rosa" id="side-user-av">AL</span>
         <div class="sidebar__user-info">
           <div class="sidebar__user-name" id="side-user-name">Ana Luísa</div>
           <div class="sidebar__user-crn" id="side-user-crn">CRN-3 12345</div>
@@ -60,52 +61,45 @@
       <header class="topbar">
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
         <div class="topbar__hello">
-          <h1>Pacientes</h1>
-          <p>Gerencie seus pacientes e acompanhe a evolução</p>
+          <h1>Perfil Profissional</h1>
+          <p>O centro de identidade da sua clínica — configure uma vez, use em tudo</p>
         </div>
-        <a class="icon-btn" href="index.html" title="Sair" aria-label="Sair" data-logout>↩</a>
+        <a class="icon-btn" href="index.html" title="Sair" aria-label="Sair" data-logout style="margin-left:auto">↩</a>
         <span class="avatar" id="user-avatar">AL</span>
       </header>
 
       <!-- Canvas -->
       <main class="canvas">
+        <div class="cfg-grid">
 
-        <!-- ===== LISTA DE PACIENTES ===== -->
-        <section class="ptable-view">
-          <div class="page-head">
-            <div>
-              <h2 class="page-head__title">Todos os pacientes</h2>
-              <p class="page-head__sub" id="pac-total">—</p>
-            </div>
-            <div class="page-head__actions">
-              <label class="search-lg">🔍 <input type="search" id="search-pac" placeholder="Buscar por nome ou objetivo…" aria-label="Buscar paciente" /></label>
-              <button class="btn btn--primary" id="btn-novo-pac" type="button">+ Novo paciente</button>
-            </div>
+          <!-- Abas -->
+          <nav class="cfg-tabs" id="pp-tabs" aria-label="Seções do perfil profissional">
+            <button class="cfg-tab is-active" data-tab="dados" type="button"><span class="cfg-tab__ico">👤</span> Dados profissionais</button>
+            <button class="cfg-tab" data-tab="identidade" type="button"><span class="cfg-tab__ico">🎨</span> Identidade Visual</button>
+            <button class="cfg-tab" data-tab="preview" type="button"><span class="cfg-tab__ico">📄</span> Preview de documentos</button>
+          </nav>
+
+          <!-- Painéis -->
+          <div class="cfg-panels">
+            <section class="cfg-panel is-active" data-panel="dados" id="panel-dados"></section>
+            <section class="cfg-panel" data-panel="identidade" id="panel-identidade"></section>
+            <section class="cfg-panel" data-panel="preview" id="panel-preview"></section>
           </div>
 
-          <div class="filters" id="filters" style="margin-top:var(--sp-4)"></div>
-
-          <div class="ptable" style="margin-top:var(--sp-4)">
-            <div class="ptable__head">
-              <span>Paciente</span><span>Objetivo</span><span>Status</span><span>Adesão</span><span></span>
-            </div>
-            <div class="ptable__list" id="plist2"></div>
-          </div>
-        </section>
-
-        <!-- ===== PERFIL (substitui a lista) ===== -->
-        <section class="profile" id="profile" aria-label="Perfil do paciente"></section>
-
+        </div>
       </main>
     </div>
   </div>
 
+  <!-- Toast -->
+  <div class="cfg-toast" id="cfg-toast" role="status" aria-live="polite"></div>
+
   <!-- Scripts -->
   <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/perfil-db.js"></script>
+  <script src="assets/js/doc-template.js"></script>
   <script src="assets/js/auth-guard.js"></script>
-  <script src="assets/js/pacientes-data.js"></script>
-  <script src="assets/js/pacientes-db.js"></script>
-  <script src="assets/js/pacientes.js"></script>
+  <script src="assets/js/perfil-profissional.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
