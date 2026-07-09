@@ -8,8 +8,8 @@
 (function () {
   "use strict";
 
-  var SUPABASE_URL = "https://ghdnaghkvbkjqqkunqav.supabase.co";
-  var SUPABASE_ANON_KEY = "sb_publishable_aAetguhZaRHSmedE2vFNKQ_mU9bjkMJ";
+  var SUPABASE_URL = "https://btsqrpxzlkmucrfvsytl.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_WinaFUxjvv0ODjSs7sT2dQ_k7GlLLxh";
   var CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 
   window.NutriDBReady = new Promise(function (resolve, reject) {
