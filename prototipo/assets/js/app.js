@@ -128,7 +128,13 @@
       return c.from("profiles").select("onboarded,tipo").maybeSingle().then(function (res) {
         var tipo = (res.data && res.data.tipo) || "nutri";
         if (tipo === "paciente") { window.location.href = "portal-paciente.html"; return; }
-        var onboarded = (res.data && res.data.onboarded) || localFlag("nutri_onboarded");
+        // Considera "já respondeu" por QUALQUER sinal confiável: perfil no banco,
+        // flag local deste device, ou áreas já salvas localmente. Assim o modal
+        // não reaparece a cada login mesmo que a gravação no banco tenha falhado.
+        var dbOnboarded = !!(res.data && res.data.onboarded);
+        var onboarded = dbOnboarded || localFlag("nutri_onboarded") ||
+                        (window.Personalize && window.Personalize.hasOnboarded());
+        if (dbOnboarded) setLocalFlag("nutri_onboarded"); // memoriza p/ logins futuros
         if (!onboarded) { setBusy(false); openPersonalize(); }
         else { goToDashboard(); }
       });
@@ -237,9 +243,13 @@
       return window.NutriDBReady.then(function (c) {
         return c.auth.getUser().then(function (u) {
           if (!u.data.user) return;
+          // upsert (não update) para gravar mesmo que a linha de perfil ainda
+          // não exista — garante que onboarded=true persista no banco.
           return c.from("profiles")
-            .update({ especialidades: selected, onboarded: true })
-            .eq("id", u.data.user.id);
+            .upsert(
+              { id: u.data.user.id, especialidades: selected, onboarded: true },
+              { onConflict: "id" }
+            );
         });
       }).catch(function () { /* offline: mantém só o localStorage */ });
     }
@@ -261,8 +271,14 @@
       skip.disabled = true;
       persistOnboarding([]).then(function () { closePersonalize(); goToDashboard(); });
     });
+    // Fechar clicando fora conta como "Pular": registra o onboarding e segue
+    // para o dashboard — nunca deixa a pessoa presa nem faz o modal reaparecer.
     overlay.addEventListener("click", function (e) {
-      if (e.target === overlay) closePersonalize();
+      if (e.target === overlay) {
+        window.Personalize.save([]);
+        setLocalFlag("nutri_onboarded");
+        persistOnboarding([]).then(function () { closePersonalize(); goToDashboard(); });
+      }
     });
 
     /* ---------- Navegação ---------- */

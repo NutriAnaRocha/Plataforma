@@ -62,6 +62,15 @@ window.DASH_DATA = {
     { texto: "Fechar relatório financeiro do mês",         prazo: "sex, 27",   urgente: false }
   ],
 
+  /* Notificações (sino da topbar) */
+  notificacoes: [
+    { ico: "🧪", texto: "Novos exames de <strong>Camila Nogueira</strong> aguardam sua análise.", quando: "há 20 min", href: "exames.html", lida: false },
+    { ico: "📅", texto: "<strong>Bruno Tavares</strong> confirmou a consulta das 13:00.",       quando: "há 1 h",   href: "agenda.html", lida: false },
+    { ico: "💬", texto: "Nova mensagem de <strong>Marina Costa</strong> na comunidade.",         quando: "há 2 h",   href: "comunidade.html", lida: false },
+    { ico: "🎂", texto: "3 pacientes fazem aniversário hoje — que tal uma mensagem?",            quando: "hoje",     href: "#", lida: true },
+    { ico: "📈", texto: "Relatório mensal de adesão já está disponível.",                        quando: "ontem",    href: "relatorios.html", lida: true }
+  ],
+
   /* Sugestões rápidas do Nútri AI */
   aiSugestoes: [
     "Resuma a evolução da Marina Costa",

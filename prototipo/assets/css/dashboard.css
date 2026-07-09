@@ -112,6 +112,46 @@
   background: var(--vinho); color: var(--branco);
 }
 
+/* ---------- Notificações (sino) ---------- */
+.notif { position: relative; flex: none; }
+.notif__panel {
+  position: absolute; top: calc(100% + 10px); right: 0; z-index: 40;
+  width: 340px; max-width: calc(100vw - 32px);
+  background: var(--branco); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-card); box-shadow: var(--shadow-lg);
+  overflow: hidden; opacity: 0; transform: translateY(-6px) scale(.98);
+  pointer-events: none; transition: opacity var(--t-fast), transform var(--t-fast);
+}
+.notif__panel.is-open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+.notif__head {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3);
+  padding: var(--sp-4); border-bottom: 1px solid var(--cinza-borda);
+}
+.notif__title { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-body); }
+.notif__clear {
+  background: none; border: none; cursor: pointer; padding: 0;
+  color: var(--vinho); font: inherit; font-size: var(--fs-caption); font-weight: 600;
+}
+.notif__clear:hover { text-decoration: underline; }
+.notif__list { max-height: 380px; overflow-y: auto; }
+.notif__item {
+  display: flex; gap: var(--sp-3); align-items: flex-start;
+  padding: var(--sp-3) var(--sp-4); text-decoration: none; color: inherit;
+  border-bottom: 1px solid var(--cinza-borda); transition: background var(--t-fast);
+}
+.notif__item:last-child { border-bottom: none; }
+.notif__item:hover { background: var(--rosa-suave); }
+.notif__item.is-unread { background: rgba(123, 40, 76, 0.045); }
+.notif__ico { font-size: 1.15rem; line-height: 1.3; flex: none; }
+.notif__body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.notif__txt { font-size: var(--fs-sm); line-height: 1.4; color: var(--texto); }
+.notif__when { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+.notif__item.is-unread .notif__txt::before {
+  content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 6px;
+  border-radius: 50%; background: var(--vinho); vertical-align: middle;
+}
+.notif__empty { padding: var(--sp-6) var(--sp-4); text-align: center; color: var(--texto-sutil); font-size: var(--fs-sm); line-height: 1.6; }
+
 /* ---------- CANVAS ---------- */
 .canvas { padding: var(--sp-6); display: flex; flex-direction: column; gap: var(--sp-5); }
 

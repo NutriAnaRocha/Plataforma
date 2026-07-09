@@ -64,7 +64,16 @@
         <label class="topbar__search">
           🔍 <input type="search" placeholder="Buscar paciente, exame, prescrição…" aria-label="Buscar" />
         </label>
-        <button class="icon-btn" type="button" aria-label="Notificações">🔔<span class="ping"></span></button>
+        <div class="notif" id="notif">
+          <button class="icon-btn" id="notif-btn" type="button" aria-label="Notificações" aria-haspopup="true" aria-expanded="false">🔔<span class="ping" id="notif-ping"></span></button>
+          <div class="notif__panel" id="notif-panel" role="dialog" aria-label="Notificações">
+            <div class="notif__head">
+              <span class="notif__title">Notificações</span>
+              <button class="notif__clear" id="notif-clear" type="button">Marcar todas como lidas</button>
+            </div>
+            <div class="notif__list" id="notif-list"></div>
+          </div>
+        </div>
         <a class="icon-btn" href="index.html" title="Sair" aria-label="Sair" data-logout>↩</a>
         <span class="avatar" id="user-avatar">AL</span>
       </header>

@@ -50,20 +50,13 @@
     return cards.filter(function (c) { return c.categoria === state.categoria; });
   }
 
-  // Só é um artigo de verdade quando há link real (não "#" nem vazio).
-  function hasRealLink(c) {
-    var l = (c.link || "").trim();
-    return !!l && l !== "#";
-  }
-
-  // Rodapé do card: com link real, direciona para o site do artigo completo
-  // (nova aba). Sem link, mostra só uma marca de prévia — nada de link morto
-  // que recarrega a página.
+  // Rodapé do card: SEMPRE direciona para a página interna do artigo
+  // (artigo.html?id=…), que mostra o resumo científico completo e, quando
+  // existir, o link para o estudo original. Nada de link morto ("#") que
+  // apenas recarrega a página.
   function articleLinkHTML(c) {
-    if (hasRealLink(c)) {
-      return '<a class="news-card__link" href="' + c.link + '" target="_blank" rel="noopener">📚 Ler artigo completo →</a>';
-    }
-    return '<span class="news-card__preview">📄 Prévia — artigo completo em breve</span>';
+    return '<a class="news-card__link" href="artigo.html?id=' +
+           encodeURIComponent(c.id) + '">📚 Ler artigo completo →</a>';
   }
 
   /* ---------- Render ---------- */

@@ -30,6 +30,7 @@
     renderPendenciasMock();
     initAI();
     initMobileNav();
+    initNotif();
     loadReal();
   });
 
@@ -340,6 +341,76 @@
 
     send.addEventListener("click", function () { sendMsg(input.value); });
     input.addEventListener("keydown", function (e) { if (e.key === "Enter") sendMsg(input.value); });
+  }
+
+  /* ---------- Notificações (sino da topbar) ---------- */
+  function initNotif() {
+    var wrap = el("notif");
+    var btn = el("notif-btn");
+    var panel = el("notif-panel");
+    var list = el("notif-list");
+    var ping = el("notif-ping");
+    var clearBtn = el("notif-clear");
+    if (!wrap || !btn || !panel || !list) return;
+
+    var itens = (D.notificacoes || []).slice();
+
+    function naoLidas() { return itens.filter(function (n) { return !n.lida; }).length; }
+
+    function updatePing() {
+      var n = naoLidas();
+      if (ping) ping.style.display = n > 0 ? "" : "none";
+    }
+
+    function render() {
+      if (!itens.length) {
+        list.innerHTML = '<div class="notif__empty">Você está em dia! 🎉<br>Nenhuma notificação nova.</div>';
+        return;
+      }
+      list.innerHTML = itens.map(function (n, i) {
+        return '<a class="notif__item' + (n.lida ? "" : " is-unread") + '" ' +
+                 'href="' + esc(n.href || "#") + '" data-i="' + i + '">' +
+                 '<span class="notif__ico">' + esc(n.ico || "🔔") + '</span>' +
+                 '<span class="notif__body">' +
+                   '<span class="notif__txt">' + (n.texto || "") + '</span>' +
+                   '<span class="notif__when">' + esc(n.quando || "") + '</span>' +
+                 '</span>' +
+               '</a>';
+      }).join("");
+    }
+
+    function open() { panel.classList.add("is-open"); btn.setAttribute("aria-expanded", "true"); }
+    function hide() { panel.classList.remove("is-open"); btn.setAttribute("aria-expanded", "false"); }
+    function toggle() { panel.classList.contains("is-open") ? hide() : open(); }
+
+    btn.addEventListener("click", function (e) { e.stopPropagation(); toggle(); });
+
+    // Clicar num item marca como lido; se o destino for "#", não navega.
+    list.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest(".notif__item");
+      if (!a) return;
+      var i = parseInt(a.getAttribute("data-i"), 10);
+      if (itens[i]) itens[i].lida = true;
+      updatePing();
+      var href = a.getAttribute("href");
+      if (!href || href === "#") { e.preventDefault(); a.classList.remove("is-unread"); }
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        itens.forEach(function (n) { n.lida = true; });
+        render(); updatePing();
+      });
+    }
+
+    // Fecha ao clicar fora ou apertar Esc.
+    document.addEventListener("click", function (e) {
+      if (panel.classList.contains("is-open") && !wrap.contains(e.target)) hide();
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
+
+    render();
+    updatePing();
   }
 
   /* ---------- Navegação mobile ---------- */
