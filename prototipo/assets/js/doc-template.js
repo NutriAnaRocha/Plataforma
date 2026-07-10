@@ -105,30 +105,31 @@
   }
 
   /* ---------- Cabeçalho ----------
-     Com logo: mostra SÓ a logo no topo (ela já traz o nome da marca) +
-     uma linha discreta com CRN · contato. Sem logo: usa o nome em texto. */
-  function headerHTML(id) {
-    var contatos = [];
-    if (id.crn) contatos.push(esc(id.crn));
-    if (id.contato) contatos.push(esc(id.contato));
-    if (id.instagram) contatos.push("@" + esc(id.instagram.replace(/^@/, "")));
-    if (id.site) contatos.push(esc(id.site));
-    var linhaContato = contatos.length
-      ? '<div class="doc-head__contato">' + contatos.join(' · ') + '</div>' : '';
+     Papel timbrado: logo pequena de um lado e, no canto oposto, um bloco
+     de texto com nome, título, CRN e contato. Sem logo, o bloco vira o
+     próprio cabeçalho à esquerda. */
+  function blocoIdentidade(id) {
+    var crnTxt = id.crn ? (/crn/i.test(id.crn) ? esc(id.crn) : "CRN " + esc(id.crn)) : "";
+    var linhas = "";
+    linhas += '<div class="doc-head__nome">' + esc(id.nome) + '</div>';
+    linhas += '<div class="doc-head__role">Nutricionista</div>';
+    if (crnTxt) linhas += '<div class="doc-head__crn">' + crnTxt + '</div>';
+    if (id.contato) linhas += '<div class="doc-head__tel">' + esc(id.contato) + '</div>';
+    if (id.instagram) linhas += '<div class="doc-head__tel">@' + esc(id.instagram.replace(/^@/, "")) + '</div>';
+    return '<div class="doc-head__bloco">' + linhas + '</div>';
+  }
 
+  function headerHTML(id) {
     var head;
     if (id.logoUrl) {
       head = '<header class="doc-head doc-head--logo">' +
         '<img class="doc-logo doc-logo--solo" src="' + esc(id.logoUrl) + '" alt="Logo" />' +
-        linhaContato +
+        blocoIdentidade(id) +
       '</header>';
     } else {
-      head = '<header class="doc-head">' +
+      head = '<header class="doc-head doc-head--texto">' +
         '<div class="doc-logo doc-logo--fallback">' + esc(iniciais(id.nome)) + '</div>' +
-        '<div class="doc-head__id">' +
-          '<div class="doc-head__nome">' + esc(id.nome) + '</div>' +
-          linhaContato +
-        '</div>' +
+        blocoIdentidade(id) +
       '</header>';
     }
     return head + '<div class="doc-rule"></div>';
@@ -190,22 +191,25 @@
       /* ornamentos de fundo (marca d\'água delicada) */
       '.doc-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}' +
       '.doc-bg svg{display:block;width:100%;height:auto;}' +
-      '.doc-bg__silhueta{position:absolute;left:50%;top:53%;width:64%;max-width:150mm;transform:translate(-50%,-50%);color:var(--doc-primaria);opacity:.06;}' +
-      '.doc-bg__flor{position:absolute;width:32mm;color:var(--doc-destaque);opacity:.13;}' +
+      '.doc-bg__silhueta{position:absolute;left:50%;top:52%;width:80%;max-width:172mm;transform:translate(-50%,-50%);color:var(--doc-primaria);opacity:.11;}' +
+      '.doc-bg__flor{position:absolute;width:42mm;color:var(--doc-destaque);opacity:.26;}' +
       '.doc-bg__flor--tl{top:0;left:0;}' +
       '.doc-bg__flor--tr{top:0;right:0;transform:scaleX(-1);}' +
       '.doc-bg__flor--bl{bottom:0;left:0;transform:scaleY(-1);}' +
       '.doc-bg__flor--br{bottom:0;right:0;transform:scale(-1,-1);}' +
       '.doc-head,.doc-rule,.doc-title,.doc-body,.doc-foot{position:relative;z-index:1;}' +
 
-      /* header */
-      '.doc-head{display:flex;align-items:center;gap:16px;}' +
-      '.doc-head--logo{flex-direction:column;align-items:flex-start;gap:6px;}' +
+      /* header — logo pequena de um lado, bloco de texto no canto oposto */
+      '.doc-head{display:flex;align-items:center;justify-content:space-between;gap:16px;}' +
       '.doc-logo{width:74px;height:74px;object-fit:contain;flex:none;}' +
-      '.doc-logo--solo{width:auto;height:88px;max-width:70%;object-fit:contain;}' +
-      '.doc-logo--fallback{border-radius:50%;background:var(--doc-primaria);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;}' +
-      '.doc-head__nome{font-size:20px;font-weight:800;color:var(--doc-primaria);line-height:1.2;}' +
-      '.doc-head__contato{font-size:11.5px;color:#777;margin-top:3px;letter-spacing:.2px;}' +
+      '.doc-logo--solo{width:auto;height:56px;max-width:46%;object-fit:contain;}' +
+      '.doc-logo--fallback{border-radius:50%;background:var(--doc-primaria);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;width:52px;height:52px;}' +
+      '.doc-head__bloco{text-align:right;line-height:1.32;}' +
+      '.doc-head--texto .doc-head__bloco{text-align:left;}' +
+      '.doc-head__nome{font-size:14px;font-weight:800;color:var(--doc-primaria);}' +
+      '.doc-head__role{font-size:11px;font-weight:600;color:#555;}' +
+      '.doc-head__crn{font-size:10.5px;color:#777;margin-top:1px;}' +
+      '.doc-head__tel{font-size:10.5px;color:#777;}' +
       '.doc-rule{height:3px;background:linear-gradient(90deg,var(--doc-primaria),var(--doc-destaque));border-radius:3px;margin:12px 0 0;}' +
 
       /* título */
@@ -224,7 +228,7 @@
       '.doc-chip{display:inline-block;background:var(--doc-secundaria);color:var(--doc-primaria);font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;margin:0 4px 4px 0;}' +
 
       /* refeições (usado pela prescrição) */
-      '.doc-meal{border:1px solid #eee;border-radius:10px;padding:10px 12px;margin-bottom:9px;break-inside:avoid;}' +
+      '.doc-meal{border:1px solid #eee;border-radius:10px;padding:10px 12px;margin-bottom:9px;break-inside:avoid;background:rgba(255,255,255,.55);}' +
       '.doc-meal__head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px;}' +
       '.doc-meal__nome{font-weight:700;color:var(--doc-primaria);font-size:13px;}' +
       '.doc-meal__hora{font-size:11px;color:#888;font-weight:600;}' +
