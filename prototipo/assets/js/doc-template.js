@@ -36,6 +36,16 @@
     return ((p[0][0] || "") + (p.length > 1 ? p[p.length - 1][0] : "")).toUpperCase();
   }
 
+  // Formata telefone brasileiro com parênteses: 21994094557 -> (21) 99409-4557.
+  // Se não parecer um telefone (ex.: e-mail), devolve como está.
+  function formatTel(v) {
+    var s = String(v == null ? "" : v).trim();
+    var d = s.replace(/\D/g, "");
+    if (d.length === 11) return "(" + d.slice(0, 2) + ") " + d.slice(2, 7) + "-" + d.slice(7);
+    if (d.length === 10) return "(" + d.slice(0, 2) + ") " + d.slice(2, 6) + "-" + d.slice(6);
+    return s;
+  }
+
   /* ---------- Ornamentos do fundo (marca d'água delicada) ----------
      Silhueta feminina em linha ao centro + ramos florais nos cantos.
      Tudo em SVG inline (sem imagem externa), com opacidade bem baixa
@@ -114,7 +124,7 @@
     linhas += '<div class="doc-head__nome">' + esc(id.nome) + '</div>';
     linhas += '<div class="doc-head__role">Nutricionista</div>';
     if (crnTxt) linhas += '<div class="doc-head__crn">' + crnTxt + '</div>';
-    if (id.contato) linhas += '<div class="doc-head__tel">' + esc(id.contato) + '</div>';
+    if (id.contato) linhas += '<div class="doc-head__tel">' + esc(formatTel(id.contato)) + '</div>';
     if (id.instagram) linhas += '<div class="doc-head__tel">@' + esc(id.instagram.replace(/^@/, "")) + '</div>';
     return '<div class="doc-head__bloco">' + linhas + '</div>';
   }
