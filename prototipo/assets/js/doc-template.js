@@ -36,6 +36,51 @@
     return ((p[0][0] || "") + (p.length > 1 ? p[p.length - 1][0] : "")).toUpperCase();
   }
 
+  /* ---------- Ornamentos do fundo (marca d'água delicada) ----------
+     Silhueta feminina em linha ao centro + ramos florais nos cantos.
+     Tudo em SVG inline (sem imagem externa), com opacidade bem baixa
+     via CSS para não atrapalhar a leitura. */
+  function florSVG(x, y, s) {
+    var petals = "";
+    for (var i = 0; i < 5; i++) {
+      petals += '<ellipse cx="0" cy="-9" rx="3.4" ry="7.5" transform="rotate(' + (i * 72) + ')"/>';
+    }
+    return '<g transform="translate(' + x + ',' + y + ') scale(' + s + ')" fill="currentColor">' +
+      petals + '<circle r="2.6" fill="#fff"/><circle r="2.6" fill="currentColor" opacity=".35"/></g>';
+  }
+
+  // Ramo floral que sai de um canto (origem em 0,0).
+  var RAMO =
+    '<svg viewBox="0 0 170 170" xmlns="http://www.w3.org/2000/svg">' +
+      '<g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">' +
+        '<path d="M4 4 C 48 24 82 54 96 108"/>' +
+        '<path d="M22 26 C 46 30 58 46 58 46"/>' +
+        '<path d="M12 56 C 40 58 54 74 54 74"/>' +
+      '</g>' +
+      '<path d="M42 24 C 62 12 80 26 70 48 C 54 54 42 40 42 24 Z" fill="currentColor" opacity=".5"/>' +
+      '<path d="M34 66 C 56 56 72 72 60 92 C 44 94 34 82 34 66 Z" fill="currentColor" opacity=".45"/>' +
+      florSVG(98, 112, 1.05) +
+      florSVG(60, 50, 0.72) +
+    '</svg>';
+
+  // Silhueta/linha feminina (rosto de perfil + cabelo fluido) — motivo elegante.
+  var SILHUETA =
+    '<svg viewBox="0 0 260 340" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M150 32 C 96 32 68 82 78 130 C 82 154 64 172 74 204 C 80 236 66 254 98 268"/>' +
+      '<path d="M150 32 C 192 38 202 92 192 124 C 186 144 168 152 176 166 C 182 176 172 184 168 194 C 162 206 172 216 160 226 C 150 234 156 248 172 252"/>' +
+      '<path d="M150 32 C 128 27 108 36 98 56"/>' +
+    '</svg>';
+
+  function decoracaoHTML() {
+    return '<div class="doc-bg" aria-hidden="true">' +
+      '<div class="doc-bg__silhueta">' + SILHUETA + '</div>' +
+      '<div class="doc-bg__flor doc-bg__flor--tl">' + RAMO + '</div>' +
+      '<div class="doc-bg__flor doc-bg__flor--tr">' + RAMO + '</div>' +
+      '<div class="doc-bg__flor doc-bg__flor--bl">' + RAMO + '</div>' +
+      '<div class="doc-bg__flor doc-bg__flor--br">' + RAMO + '</div>' +
+    '</div>';
+  }
+
   // Mescla perfil + override do documento específico.
   function resolver(perfil, doc) {
     perfil = perfil || {};
@@ -59,27 +104,34 @@
     };
   }
 
-  /* ---------- Cabeçalho ---------- */
+  /* ---------- Cabeçalho ----------
+     Com logo: mostra SÓ a logo no topo (ela já traz o nome da marca) +
+     uma linha discreta com CRN · contato. Sem logo: usa o nome em texto. */
   function headerHTML(id) {
-    var marca = id.logoUrl
-      ? '<img class="doc-logo" src="' + esc(id.logoUrl) + '" alt="Logo" />'
-      : '<div class="doc-logo doc-logo--fallback">' + esc(iniciais(id.nome)) + '</div>';
-
     var contatos = [];
+    if (id.crn) contatos.push(esc(id.crn));
     if (id.contato) contatos.push(esc(id.contato));
     if (id.instagram) contatos.push("@" + esc(id.instagram.replace(/^@/, "")));
     if (id.site) contatos.push(esc(id.site));
+    var linhaContato = contatos.length
+      ? '<div class="doc-head__contato">' + contatos.join(' · ') + '</div>' : '';
 
-    return '' +
-      '<header class="doc-head">' +
-        marca +
+    var head;
+    if (id.logoUrl) {
+      head = '<header class="doc-head doc-head--logo">' +
+        '<img class="doc-logo doc-logo--solo" src="' + esc(id.logoUrl) + '" alt="Logo" />' +
+        linhaContato +
+      '</header>';
+    } else {
+      head = '<header class="doc-head">' +
+        '<div class="doc-logo doc-logo--fallback">' + esc(iniciais(id.nome)) + '</div>' +
         '<div class="doc-head__id">' +
           '<div class="doc-head__nome">' + esc(id.nome) + '</div>' +
-          (id.crn ? '<div class="doc-head__crn">' + esc(id.crn) + '</div>' : '') +
-          (contatos.length ? '<div class="doc-head__contato">' + contatos.join(' · ') + '</div>' : '') +
+          linhaContato +
         '</div>' +
-      '</header>' +
-      '<div class="doc-rule"></div>';
+      '</header>';
+    }
+    return head + '<div class="doc-rule"></div>';
   }
 
   /* ---------- Faixa do título ---------- */
@@ -133,16 +185,28 @@
       '}' +
       '*{box-sizing:border-box;margin:0;padding:0;}' +
       'body{font-family:"Montserrat","Segoe UI",system-ui,sans-serif;color:#2b2b2b;background:#e9e9ee;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
-      '.doc-page{background:var(--doc-fundo);width:210mm;min-height:297mm;margin:16px auto;padding:20mm 18mm;box-shadow:0 6px 30px rgba(0,0,0,.15);position:relative;display:flex;flex-direction:column;}' +
+      '.doc-page{background:var(--doc-fundo);width:210mm;min-height:297mm;margin:16px auto;padding:12mm 14mm;box-shadow:0 6px 30px rgba(0,0,0,.15);position:relative;overflow:hidden;display:flex;flex-direction:column;}' +
+
+      /* ornamentos de fundo (marca d\'água delicada) */
+      '.doc-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}' +
+      '.doc-bg svg{display:block;width:100%;height:auto;}' +
+      '.doc-bg__silhueta{position:absolute;left:50%;top:53%;width:64%;max-width:150mm;transform:translate(-50%,-50%);color:var(--doc-primaria);opacity:.06;}' +
+      '.doc-bg__flor{position:absolute;width:32mm;color:var(--doc-destaque);opacity:.13;}' +
+      '.doc-bg__flor--tl{top:0;left:0;}' +
+      '.doc-bg__flor--tr{top:0;right:0;transform:scaleX(-1);}' +
+      '.doc-bg__flor--bl{bottom:0;left:0;transform:scaleY(-1);}' +
+      '.doc-bg__flor--br{bottom:0;right:0;transform:scale(-1,-1);}' +
+      '.doc-head,.doc-rule,.doc-title,.doc-body,.doc-foot{position:relative;z-index:1;}' +
 
       /* header */
       '.doc-head{display:flex;align-items:center;gap:16px;}' +
+      '.doc-head--logo{flex-direction:column;align-items:flex-start;gap:6px;}' +
       '.doc-logo{width:74px;height:74px;object-fit:contain;flex:none;}' +
+      '.doc-logo--solo{width:auto;height:88px;max-width:70%;object-fit:contain;}' +
       '.doc-logo--fallback{border-radius:50%;background:var(--doc-primaria);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;}' +
       '.doc-head__nome{font-size:20px;font-weight:800;color:var(--doc-primaria);line-height:1.2;}' +
-      '.doc-head__crn{font-size:12.5px;font-weight:600;color:#666;margin-top:2px;}' +
-      '.doc-head__contato{font-size:11.5px;color:#777;margin-top:3px;}' +
-      '.doc-rule{height:3px;background:linear-gradient(90deg,var(--doc-primaria),var(--doc-destaque));border-radius:3px;margin:14px 0 0;}' +
+      '.doc-head__contato{font-size:11.5px;color:#777;margin-top:3px;letter-spacing:.2px;}' +
+      '.doc-rule{height:3px;background:linear-gradient(90deg,var(--doc-primaria),var(--doc-destaque));border-radius:3px;margin:12px 0 0;}' +
 
       /* título */
       '.doc-title{margin:22px 0 18px;}' +
@@ -192,7 +256,7 @@
       '@media print{' +
         'body{background:#fff;}' +
         '.doc-actions{display:none !important;}' +
-        '.doc-page{margin:0;box-shadow:none;width:auto;min-height:auto;padding:14mm 16mm;}' +
+        '.doc-page{margin:0;box-shadow:none;width:auto;min-height:auto;padding:10mm 12mm;}' +
         '@page{size:A4;margin:0;}' +
       '}';
   }
@@ -202,6 +266,7 @@
     var id = resolver(perfil, doc);
     return '' +
       '<div class="doc-page">' +
+        decoracaoHTML() +
         headerHTML(id) +
         tituloHTML(doc) +
         '<div class="doc-body">' + (doc.bodyHTML || "") + '</div>' +
