@@ -496,6 +496,8 @@
       '<div>' +
         '<div class="info-block"><p class="info-block__label">Contato</p>' +
           '<p class="info-block__text">📞 ' + esc(p.contato.tel) + '<br>✉ ' + esc(p.contato.email) + '<br>📍 ' + esc(p.contato.cidade) + '</p></div>' +
+        (p.dataNascimento ? '<div class="info-block"><p class="info-block__label">Nascimento</p>' +
+          '<p class="info-block__text">🎂 ' + esc(fmtData(p.dataNascimento)) + '</p></div>' : "") +
         '<div class="info-block"><p class="info-block__label">Agenda</p>' +
           '<p class="info-block__text">Última consulta: <strong>' + esc(p.ultConsulta) + '</strong><br>Próxima: <strong>' + esc(p.proxConsulta) + '</strong></p></div>' +
         '<div class="info-block"><p class="info-block__label">Antropometria</p>' +
@@ -612,6 +614,20 @@
   /* ---------- Modal de formulário ---------- */
   var formOverlay = null;
 
+  // "YYYY-MM-DD" -> idade em anos completos (ou null).
+  function idadeAnos(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    if (!m) return null;
+    var h = new Date(), a = h.getFullYear() - (+m[1]), d = (h.getMonth() + 1) - (+m[2]);
+    if (d < 0 || (d === 0 && h.getDate() < (+m[3]))) a--;
+    return (a >= 0 && a < 130) ? a : null;
+  }
+  // "YYYY-MM-DD" -> "DD/MM/YYYY".
+  function fmtData(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    return m ? (m[3] + "/" + m[2] + "/" + m[1]) : "";
+  }
+
   function field(label, name, val, opts) {
     opts = opts || {};
     var v = esc(val == null ? "" : val);
@@ -646,7 +662,8 @@
           '<p class="pf-msg" hidden></p>' +
           '<div class="pf-grid">' +
             field("Nome completo", "nome", p.nome, { required: true, wide: true }) +
-            field("Idade", "idade", p.idade, { type: "number", step: "1" }) +
+            field("Data de nascimento", "dataNascimento", p.dataNascimento, { type: "date" }) +
+            field("Idade (auto pela data)", "idade", p.idade, { type: "number", step: "1", placeholder: "preenchida pela data" }) +
             field("Sexo", "sexo", p.sexo || "F", { type: "select", options: [{ v: "F", l: "Feminino" }, { v: "M", l: "Masculino" }] }) +
             field("Objetivo", "objetivo", p.objetivo, { wide: true }) +
             field("Status", "status", p.status || "ativo", { type: "select", options: [{ v: "ativo", l: "Ativo" }, { v: "atencao", l: "Atenção" }, { v: "inativo", l: "Inativo" }] }) +
@@ -678,6 +695,16 @@
     formOverlay.addEventListener("click", function (e) { if (e.target === formOverlay) closeIt(); });
     formOverlay.querySelector("[name=nome]").focus();
 
+    // Ao escolher a data de nascimento, preenche a idade automaticamente.
+    var nascInp = formOverlay.querySelector("[name=dataNascimento]");
+    var idadeInp = formOverlay.querySelector("[name=idade]");
+    if (nascInp && idadeInp) {
+      nascInp.addEventListener("change", function () {
+        var a = idadeAnos(nascInp.value);
+        if (a != null) idadeInp.value = a;
+      });
+    }
+
     formOverlay.querySelector("#pf-form").addEventListener("submit", function (e) {
       e.preventDefault();
       saveForm(e.target, edit ? p : null, closeIt);
@@ -694,7 +721,7 @@
     if (!nome) { msg.textContent = "Informe o nome do paciente."; msg.hidden = false; return; }
 
     var payload = {
-      nome: nome, idade: g("idade"), sexo: g("sexo"), objetivo: g("objetivo"),
+      nome: nome, idade: g("idade"), dataNascimento: g("dataNascimento"), sexo: g("sexo"), objetivo: g("objetivo"),
       status: g("status"), adesao: g("adesao"),
       pesoInicial: g("pesoInicial"), pesoAtual: g("pesoAtual"), meta: g("meta"), altura: g("altura"),
       contato: { tel: g("tel"), email: g("email"), cidade: g("cidade") },

@@ -7,7 +7,19 @@
 (function () {
   "use strict";
 
-  var COLS = "id,user_id,nome,ini,idade,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames,plano,portal_features,prontuario";
+  var COLS = "id,user_id,nome,ini,idade,data_nascimento,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames,plano,portal_features,prontuario";
+
+  // Idade (anos completos) a partir de uma data ISO "YYYY-MM-DD".
+  function idadeDeNascimento(iso) {
+    if (!iso) return null;
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso));
+    if (!m) return null;
+    var hoje = new Date();
+    var anos = hoje.getFullYear() - (+m[1]);
+    var mes = (hoje.getMonth() + 1) - (+m[2]);
+    if (mes < 0 || (mes === 0 && hoje.getDate() < (+m[3]))) anos--;
+    return (anos >= 0 && anos < 130) ? anos : null;
+  }
 
   var TODAS_FEATURES = ["plano", "evolucao", "consultas", "chat"];
 
@@ -31,7 +43,7 @@
       id: r.id,
       userId: r.user_id || null,
       nome: r.nome, ini: r.ini || iniciais(r.nome),
-      idade: r.idade, sexo: r.sexo,
+      idade: r.idade, dataNascimento: r.data_nascimento || "", sexo: r.sexo,
       objetivo: r.objetivo, status: r.status || "ativo", adesao: r.adesao || 0,
       pesoAtual: numOrNull(r.peso_atual), pesoInicial: numOrNull(r.peso_inicial),
       meta: numOrNull(r.meta), altura: numOrNull(r.altura), imc: numOrNull(r.imc),
@@ -52,10 +64,15 @@
     var altura = numOrNull(p.altura), pesoAtual = numOrNull(p.pesoAtual);
     var imc = numOrNull(p.imc);
     if (imc == null && pesoAtual != null && altura) imc = +(pesoAtual / (altura * altura)).toFixed(1);
+    // Nascimento manda: se informado, a idade é calculada automaticamente.
+    var nasc = (p.dataNascimento || "").trim() || null;
+    var idade = intOrNull(p.idade);
+    if (nasc) { var calc = idadeDeNascimento(nasc); if (calc != null) idade = calc; }
     return {
       nome: (p.nome || "").trim(),
       ini: iniciais(p.nome),
-      idade: intOrNull(p.idade),
+      idade: idade,
+      data_nascimento: nasc,
       sexo: p.sexo || null,
       objetivo: p.objetivo || null,
       status: p.status || "ativo",
