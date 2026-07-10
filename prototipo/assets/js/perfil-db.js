@@ -8,7 +8,8 @@
   "use strict";
 
   var COLS = "id,nome,email,crn,cidade,telefone,instagram,site,bio,especialidades,notif_prefs,avatar_url," +
-    "logo_url,carimbo_url,assinatura_url,area_atuacao,area_atuacao_outro,contato_profissional,brand_colors";
+    "logo_url,carimbo_url,assinatura_url,area_atuacao,area_atuacao_outro,contato_profissional,brand_colors," +
+    "whatsapp_config";
 
   // Paleta padrão (identidade Ana Luísa Rocha) — usada quando a nutri ainda
   // não personalizou as cores. Mantida em sincronia com a migração 0011.
@@ -44,7 +45,8 @@
         secundaria: cores.secundaria || CORES_PADRAO.secundaria,
         destaque: cores.destaque || CORES_PADRAO.destaque,
         fundo: cores.fundo || CORES_PADRAO.fundo
-      }
+      },
+      whatsappConfig: (r.whatsapp_config && typeof r.whatsapp_config === "object") ? r.whatsapp_config : {}
     };
   }
 
@@ -83,6 +85,7 @@
       if ("areaAtuacaoOutro" in patch) row.area_atuacao_outro = (patch.areaAtuacaoOutro || "").trim() || null;
       if ("contatoProfissional" in patch) row.contato_profissional = (patch.contatoProfissional || "").trim() || null;
       if ("brandColors" in patch) row.brand_colors = patch.brandColors || {};
+      if ("whatsappConfig" in patch) row.whatsapp_config = patch.whatsappConfig || {};
       var C;
       return client().then(function (c) {
         C = c;

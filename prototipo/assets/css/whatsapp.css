@@ -1,0 +1,105 @@
+/* ============================================================
+   WHATSAPP — central de automações.
+   Reusa .cfg-grid/.cfg-tabs/.cfg-panels/.card/.field/.switch/.btn.
+   ============================================================ */
+
+/* Aviso topo */
+.wa-aviso {
+  display: flex; gap: var(--sp-3); align-items: flex-start;
+  background: var(--rosa-suave); border: 1px solid var(--cinza-borda);
+  border-left: 4px solid var(--vinho); border-radius: var(--radius-card);
+  padding: var(--sp-4); margin-bottom: var(--sp-5); font-size: var(--fs-sm);
+  color: var(--texto); line-height: 1.5;
+}
+.wa-aviso__ico { font-size: 1.2rem; flex: none; }
+.wa-aviso strong { color: var(--vinho); }
+
+/* ---------- Conexão ---------- */
+.wa-status { display: flex; align-items: center; gap: var(--sp-4); flex-wrap: wrap; }
+.wa-status__pill {
+  display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: var(--fs-sm);
+  padding: 8px 16px; border-radius: var(--radius-chip); flex: none;
+}
+.wa-status__pill--on { background: #E7F6EC; color: #1F7A3D; }
+.wa-status__pill--wait { background: #FDF6E3; color: #A57A15; }
+.wa-status__pill--off { background: #FCEBEC; color: #B4304A; }
+.wa-status__info { flex: 1; min-width: 180px; }
+.wa-status__num { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-body); }
+
+.wa-qr { display: flex; gap: var(--sp-4); align-items: center; margin-top: var(--sp-4); padding-top: var(--sp-4); border-top: 1px solid var(--cinza-borda); }
+.wa-qr__box {
+  width: 128px; height: 128px; flex: none; border-radius: var(--radius-sm);
+  border: 2px dashed var(--cinza-borda); background: var(--cinza-claro);
+  display: grid; place-items: center; text-align: center; font-weight: 700; color: var(--texto-sutil); font-size: var(--fs-sm);
+}
+.wa-qr__txt strong { color: var(--vinho); display: block; margin-bottom: 4px; }
+
+/* ---------- Automações ---------- */
+.wa-actions-top { display: flex; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-2); }
+.wa-sec { font-size: var(--fs-h3); color: var(--vinho); font-weight: 700; margin: var(--sp-3) 0; }
+
+.wa-auto { transition: opacity var(--t-fast); }
+.wa-auto.is-off { opacity: .62; }
+.wa-auto__head { display: flex; align-items: center; gap: var(--sp-3); }
+.wa-auto__ico {
+  width: 42px; height: 42px; flex: none; border-radius: 12px; display: grid; place-items: center;
+  background: var(--rosa-suave); font-size: 1.2rem;
+}
+.wa-auto__meta { flex: 1; min-width: 0; }
+.wa-auto__tit { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-body); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.wa-tag-custom { background: var(--vinho); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .3px; }
+.wa-auto__quando { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; margin-top: 2px; }
+.wa-auto__gatilho { font-size: var(--fs-sm); color: var(--texto-sutil); margin: var(--sp-3) 0 0; line-height: 1.45; }
+
+.wa-auto__grid { display: grid; grid-template-columns: 1fr 320px; gap: var(--sp-4); margin-top: var(--sp-4); }
+.wa-auto__edit { min-width: 0; }
+
+/* toolbar de variáveis/emojis */
+.wa-tools { display: flex; flex-direction: column; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+.wa-tools__row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.wa-tools__lbl { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; margin-right: 4px; }
+.wa-chip {
+  border: 1px solid var(--cinza-borda); background: var(--branco); color: var(--vinho);
+  border-radius: var(--radius-sm); padding: 4px 9px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all var(--t-fast);
+}
+.wa-chip:hover { background: var(--rosa-suave); border-color: var(--vinho); }
+.wa-emoji { border: none; background: none; cursor: pointer; font-size: 1.05rem; padding: 2px 4px; border-radius: 6px; transition: background var(--t-fast); }
+.wa-emoji:hover { background: var(--rosa-suave); }
+
+.wa-ta {
+  width: 100%; border: 1px solid var(--cinza-borda); border-radius: var(--radius-input);
+  padding: var(--sp-3); font: inherit; font-size: var(--fs-sm); line-height: 1.5; color: var(--texto);
+  resize: vertical; min-height: 150px; background: var(--branco);
+}
+.wa-ta:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+.wa-remove { margin-top: var(--sp-2); color: #B4304A; padding: 6px 12px; font-size: var(--fs-sm); }
+
+/* prévia estilo WhatsApp */
+.wa-auto__pv { min-width: 0; }
+.wa-pv-head { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; margin-bottom: var(--sp-2); }
+.wa-pv-screen {
+  background: #E6DDD4;
+  background-image: linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35));
+  border-radius: var(--radius-card); padding: var(--sp-4); min-height: 150px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.wa-bubble {
+  align-self: flex-start; max-width: 92%; background: #fff; border-radius: 10px 10px 10px 2px;
+  padding: 8px 10px 6px; box-shadow: 0 1px 1px rgba(0,0,0,.12); position: relative;
+}
+.wa-bubble__txt { font-size: 13px; line-height: 1.45; color: #111; white-space: normal; word-break: break-word; }
+.wa-bubble__meta { display: block; text-align: right; font-size: 10px; color: #8aa; margin-top: 2px; }
+
+/* histórico vazio */
+.wa-empty { text-align: center; padding: var(--sp-6) var(--sp-4); }
+.wa-empty__ico { font-size: 2.4rem; margin-bottom: var(--sp-2); }
+.wa-empty h3 { color: var(--vinho); font-size: var(--fs-h3); margin-bottom: var(--sp-2); }
+.wa-empty .cfg-hint { max-width: 460px; margin: 0 auto var(--sp-2); }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 860px) {
+  .wa-auto__grid { grid-template-columns: 1fr; }
+  .wa-actions-top { flex-direction: column; }
+  .wa-actions-top .btn { width: 100%; }
+}
