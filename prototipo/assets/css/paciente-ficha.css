@@ -1,0 +1,144 @@
+/* =====================================================
+   FICHA DO PACIENTE — prontuário completo (nova versão).
+   Complementa pacientes.css. Classes prefixadas com f*/qact.
+   ===================================================== */
+
+/* Cabeçalho */
+.fhead-card { padding: var(--sp-5); }
+.fhead { display: flex; gap: var(--sp-4); align-items: flex-start; flex-wrap: wrap; }
+.fhead__avatar {
+  width: 84px; height: 84px; flex: none; border-radius: 20px;
+  object-fit: cover; display: grid; place-items: center;
+  font-weight: 800; font-size: 1.6rem; background: var(--vinho); color: #fff; box-shadow: var(--shadow-md);
+}
+.fhead__id { flex: 1; min-width: 240px; }
+.fhead__name {
+  font-size: 1.35rem; font-weight: 800; color: var(--cinza-escuro);
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: var(--sp-3);
+}
+.fhead__grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--sp-3) var(--sp-4);
+}
+.ffield { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ffield__lbl { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
+.ffield__val { font-size: var(--fs-sm); color: var(--texto); font-weight: 600; overflow-wrap: anywhere; }
+.fhead__side { display: flex; flex-direction: column; gap: 6px; flex: none; }
+
+/* Ações rápidas */
+.qacts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--sp-2); margin-top: var(--sp-5); padding-top: var(--sp-4); border-top: 1px solid var(--cinza-borda);
+}
+.qact {
+  display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;
+  background: var(--rosa-suave); border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  padding: var(--sp-3) var(--sp-2); transition: all var(--t-fast); font: inherit;
+}
+.qact:hover { border-color: var(--vinho); background: var(--rosa); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.qact__ico { font-size: 1.4rem; }
+.qact__lbl { font-size: var(--fs-caption); font-weight: 700; color: var(--vinho); text-align: center; line-height: 1.2; }
+
+/* Corpo: menu lateral + painel */
+.ficha { display: grid; grid-template-columns: 272px 1fr; gap: var(--sp-5); align-items: start; }
+.ficha__menu {
+  display: flex; flex-direction: column; gap: 4px; position: sticky; top: var(--sp-4);
+  background: var(--branco); border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  padding: var(--sp-3); box-shadow: var(--shadow-sm); max-height: calc(100vh - 40px); overflow-y: auto;
+}
+.fmenu-item {
+  display: flex; align-items: flex-start; gap: 10px; text-align: left; cursor: pointer;
+  background: none; border: none; border-radius: var(--radius-sm); padding: 10px 12px; font: inherit;
+  transition: background var(--t-fast);
+}
+.fmenu-item:hover { background: var(--rosa-suave); }
+.fmenu-item.is-active { background: var(--vinho); }
+.fmenu-item__ico { font-size: 1.1rem; flex: none; line-height: 1.3; }
+.fmenu-item__body { display: flex; flex-direction: column; min-width: 0; }
+.fmenu-item__tit { font-size: var(--fs-sm); font-weight: 700; color: var(--cinza-escuro); }
+.fmenu-item__sub { font-size: 10.5px; color: var(--texto-sutil); line-height: 1.3; margin-top: 1px; }
+.fmenu-item.is-active .fmenu-item__tit,
+.fmenu-item.is-active .fmenu-item__sub { color: #fff; }
+.fmenu-item.is-active .fmenu-item__sub { opacity: .8; }
+
+.ficha__main { min-width: 0; display: flex; flex-direction: column; gap: var(--sp-4); }
+
+/* Seções */
+.fsec {
+  background: var(--branco); border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm); padding: var(--sp-5);
+}
+.fsec__title { font-size: var(--fs-h3); font-weight: 700; color: var(--vinho); margin-bottom: var(--sp-4); }
+.ftxt { font-size: var(--fs-sm); line-height: 1.6; color: var(--texto); margin-bottom: var(--sp-2); overflow-wrap: anywhere; }
+.fmuted { color: var(--texto-sutil); font-weight: 600; }
+.finfo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--sp-4); }
+
+/* Métricas antropométricas */
+.fmetric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: var(--sp-3); }
+.fmetric { background: var(--rosa-suave); border-radius: var(--radius-card); padding: var(--sp-4); text-align: center; }
+.fmetric__lbl { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
+.fmetric__val { font-size: 1.5rem; font-weight: 800; color: var(--vinho); margin: 4px 0 2px; }
+.fmetric__hint { font-size: var(--fs-caption); color: var(--texto-sutil); }
+
+/* Placeholder "em breve" */
+.fbreve {
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;
+  padding: var(--sp-5); border: 1px dashed var(--cinza-borda); border-radius: var(--radius-card); color: var(--texto-sutil);
+}
+.fbreve__ico { font-size: 1.8rem; }
+.fbreve p { font-size: var(--fs-sm); max-width: 460px; line-height: 1.5; }
+.fbreve__tag { font-size: var(--fs-caption); font-weight: 700; color: var(--vinho); background: var(--rosa-suave); padding: 4px 12px; border-radius: var(--radius-chip); }
+
+/* Upload */
+.fupload {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+  padding: var(--sp-5); border: 2px dashed var(--cinza-borda); border-radius: var(--radius-card); color: var(--texto-sutil);
+}
+.fupload__ico { font-size: 1.6rem; }
+.fupload p { font-size: var(--fs-sm); }
+
+/* Plano — refeições */
+.fmeal { border: 1px solid var(--cinza-borda); border-radius: var(--radius-sm); padding: var(--sp-3); margin-bottom: var(--sp-2); }
+.fmeal__head { font-weight: 700; color: var(--vinho); font-size: var(--fs-sm); margin-bottom: 6px; }
+.fmeal__item { display: flex; justify-content: space-between; gap: 10px; font-size: var(--fs-sm); padding: 3px 0; border-top: 1px dashed var(--cinza-borda); }
+.fmeal__item:first-of-type { border-top: none; }
+
+/* Metas */
+.fgoal { display: flex; gap: var(--sp-3); align-items: flex-start; background: var(--rosa-suave); border-radius: var(--radius-card); padding: var(--sp-4); }
+.fgoal__ico { font-size: 1.4rem; flex: none; }
+
+/* Linha do tempo */
+.ftimeline { position: relative; padding-left: 8px; }
+.ftl { display: flex; gap: var(--sp-3); position: relative; padding-bottom: var(--sp-4); }
+.ftl:not(:last-child)::before {
+  content: ""; position: absolute; left: 17px; top: 34px; bottom: 0; width: 2px; background: var(--cinza-borda);
+}
+.ftl__dot {
+  width: 36px; height: 36px; flex: none; border-radius: 50%; display: grid; place-items: center;
+  background: var(--rosa-suave); border: 1px solid var(--cinza-borda); font-size: 1rem; z-index: 1;
+}
+.ftl__body { flex: 1; min-width: 0; padding-top: 2px; }
+.ftl__head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.ftl__tipo { font-weight: 700; color: var(--vinho); font-size: var(--fs-sm); }
+.ftl__data { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+.ftl__txt { font-size: var(--fs-sm); color: var(--texto); margin-top: 2px; line-height: 1.5; }
+
+/* Toast da ficha */
+.pac-toast {
+  position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(12px);
+  background: var(--vinho); color: #fff; font-weight: 600; font-size: var(--fs-sm);
+  padding: 12px 20px; border-radius: var(--radius-chip); box-shadow: var(--shadow-lg);
+  opacity: 0; pointer-events: none; transition: all var(--t-med); z-index: 200; max-width: 90vw; text-align: center;
+}
+.pac-toast.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+.pac-toast.is-error { background: #B4304A; }
+
+/* Responsivo */
+@media (max-width: 900px) {
+  .ficha { grid-template-columns: 1fr; }
+  .ficha__menu {
+    position: static; flex-direction: row; overflow-x: auto; max-height: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .fmenu-item { flex: none; min-width: 190px; }
+  .fhead__side { flex-direction: row; flex-wrap: wrap; }
+}

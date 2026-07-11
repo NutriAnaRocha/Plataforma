@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  var COLS = "id,user_id,nome,ini,idade,data_nascimento,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames,plano,portal_features,prontuario";
+  var COLS = "id,user_id,nome,ini,idade,data_nascimento,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames,plano,portal_features,prontuario,created_at";
 
   // Idade (anos completos) a partir de uma data ISO "YYYY-MM-DD".
   function idadeDeNascimento(iso) {
@@ -55,7 +55,8 @@
       consultas: r.consultas || [], prescricoes: r.prescricoes || [], exames: r.exames || [],
       plano: r.plano || { titulo: null, refeicoes: [] },
       portalFeatures: Array.isArray(r.portal_features) ? r.portal_features : TODAS_FEATURES.slice(),
-      prontuario: r.prontuario || null
+      prontuario: r.prontuario || null,
+      criadoEm: r.created_at || ""
     };
   }
 

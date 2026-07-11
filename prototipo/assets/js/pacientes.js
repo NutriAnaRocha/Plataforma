@@ -155,72 +155,336 @@
     document.getElementById("app").classList.remove("is-profile");
   }
 
+  /* ============================================================
+     FICHA DO PACIENTE — prontuário completo numa tela só.
+     Cabeçalho + ações rápidas + menu lateral de seções + painel.
+     ============================================================ */
+  var SECOES = [
+    { id: "perfil",       ico: "👤", tit: "Perfil do Paciente",     sub: ["Dados pessoais", "Objetivos", "Observações gerais"] },
+    { id: "anamnese",     ico: "📝", tit: "Anamnese",               sub: ["Anamnese inicial", "Anamneses de retorno", "Histórico completo"] },
+    { id: "exames",       ico: "🧪", tit: "Exames",                 sub: ["Upload de exames", "Visualização", "Histórico"] },
+    { id: "antropometria",ico: "📏", tit: "Antropometria",          sub: ["Peso, altura, IMC", "Circunferências", "Dobras", "Evolução gráfica"] },
+    { id: "plano",        ico: "🥗", tit: "Planejamento Alimentar", sub: ["Plano atual", "Planos anteriores", "Histórico"] },
+    { id: "metas",        ico: "🎯", tit: "Metas",                  sub: ["Metas ativas", "Concluídas", "Evolução"] },
+    { id: "prescricoes",  ico: "💊", tit: "Prescrições",            sub: ["Suplementação", "Fitoterapia", "Manipulados"] },
+    { id: "orientacoes",  ico: "📄", tit: "Orientações",            sub: ["Atuais", "Histórico"] },
+    { id: "arquivos",     ico: "📎", tit: "Arquivos",               sub: ["PDFs", "Fotos", "Documentos"] },
+    { id: "comunicacao",  ico: "💬", tit: "Comunicação",            sub: ["WhatsApp", "Mensagens automáticas", "Respostas"] },
+    { id: "financeiro",   ico: "💰", tit: "Financeiro",             sub: ["Consultas pagas", "Pendências", "Notas/Recibos"] },
+    { id: "prontuario",   ico: "📋", tit: "Prontuário",             sub: ["Evoluções clínicas", "Linha do tempo"] }
+  ];
+
+  var ACOES_RAPIDAS = [
+    { id: "consulta",       ico: "🩺", label: "Nova Consulta" },
+    { id: "anamnese",       ico: "📝", label: "Nova Anamnese" },
+    { id: "antropometria",  ico: "📏", label: "Nova Avaliação" },
+    { id: "plano",          ico: "🥗", label: "Novo Plano" },
+    { id: "prescricao",     ico: "💊", label: "Nova Prescrição" },
+    { id: "orientacao",     ico: "📄", label: "Nova Orientação" },
+    { id: "whatsapp",       ico: "💬", label: "Enviar WhatsApp" },
+    { id: "retorno",        ico: "📅", label: "Agendar Retorno" }
+  ];
+
+  function soDigitos(s) { return String(s || "").replace(/\D/g, ""); }
+  function fmtCadastro(iso) {
+    if (!iso) return "—";
+    try {
+      var d = new Date(iso);
+      if (isNaN(d)) return "—";
+      return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+    } catch (e) { return "—"; }
+  }
+
+  function hgField(lbl, val) {
+    return '<div class="ffield"><span class="ffield__lbl">' + lbl + '</span>' +
+      '<span class="ffield__val">' + (val == null || val === "" ? "—" : val) + '</span></div>';
+  }
+
   function renderProfile(p) {
     var wrap = el("profile");
-    var metaMeta = (p.meta != null ? "Meta " + p.meta + " kg" : "Sem meta de peso");
-    var hint = p.adesao >= 70 ? '<span class="delta delta--up">Boa adesão</span>'
-             : p.adesao >= 50 ? '<span class="delta delta--neutro">Adesão média</span>'
-             : '<span class="delta delta--down">Adesão baixa</span>';
-    var deltaPeso = (p.pesoAtual - p.pesoInicial);
-    var deltaTxt = (deltaPeso <= 0 ? "▼ " : "▲ ") + Math.abs(deltaPeso).toFixed(1) + " kg";
-    var deltaCls = deltaPeso <= 0 ? "delta--up" : "delta--neutro";
+    if (!state.section) state.section = "perfil";
+
+    var idadeTxt = (p.idade != null && p.idade !== "" ? p.idade + " anos" : "—");
+    var sexoTxt = p.sexo === "F" ? "Feminino" : p.sexo === "M" ? "Masculino" : "—";
+    var acesso = p.userId ? '<span class="pill pill-ativo">Portal ativo</span>' : "";
+
+    var acoes = ACOES_RAPIDAS.map(function (a) {
+      return '<button class="qact" type="button" data-qa="' + a.id + '">' +
+        '<span class="qact__ico">' + a.ico + '</span><span class="qact__lbl">' + a.label + '</span></button>';
+    }).join("");
+
+    var menu = SECOES.map(function (s) {
+      return '<button class="fmenu-item' + (s.id === state.section ? " is-active" : "") + '" type="button" data-sec="' + s.id + '">' +
+        '<span class="fmenu-item__ico">' + s.ico + '</span>' +
+        '<span class="fmenu-item__body"><span class="fmenu-item__tit">' + s.tit + '</span>' +
+        '<span class="fmenu-item__sub">' + s.sub.join(" · ") + '</span></span></button>';
+    }).join("");
 
     wrap.innerHTML = '' +
       '<button class="back-link" id="back-list">‹ Voltar para a lista</button>' +
 
-      '<div class="card" style="padding:var(--sp-5)">' +
-        '<div class="phead">' +
-          '<span class="phead__avatar">' + esc(p.ini) + '</span>' +
-          '<div class="phead__id">' +
-            '<h1 class="phead__name">' + esc(p.nome) + ' <span class="pill pill-' + p.status + '">' + statusMap[p.status] + '</span></h1>' +
-            '<p class="phead__meta">' + p.idade + ' anos · ' + (p.sexo === "F" ? "Feminino" : "Masculino") +
-              ' · ' + esc(p.objetivo) + ' · ' + esc(p.contato.cidade) + '</p>' +
-            '<div class="phead__tags">' + (p.tags || []).map(function (t) { return '<span class="mini-tag">' + esc(t) + '</span>'; }).join("") + '</div>' +
+      // ----- Cabeçalho do paciente -----
+      '<div class="card fhead-card">' +
+        '<div class="fhead">' +
+          (p.avatarUrl
+            ? '<img class="fhead__avatar" src="' + esc(p.avatarUrl) + '" alt="" />'
+            : '<span class="fhead__avatar fhead__avatar--ini">' + esc(p.ini) + '</span>') +
+          '<div class="fhead__id">' +
+            '<h1 class="fhead__name">' + esc(p.nome) +
+              ' <span class="pill pill-' + p.status + '">' + statusMap[p.status] + '</span> ' + acesso + '</h1>' +
+            '<div class="fhead__grid">' +
+              hgField("Idade", idadeTxt) +
+              hgField("Sexo", sexoTxt) +
+              hgField("Telefone", esc(p.contato.tel || "—")) +
+              hgField("E-mail", esc(p.contato.email || "—")) +
+              hgField("Cadastro", fmtCadastro(p.criadoEm)) +
+              hgField("Última consulta", esc(p.ultConsulta || "—")) +
+              hgField("Próxima consulta", esc(p.proxConsulta || "—")) +
+              hgField("Objetivo", esc(p.objetivo || "—")) +
+            '</div>' +
           '</div>' +
-          '<div class="phead__actions">' +
-            '<button class="btn btn--ghost" id="pac-view" type="button" title="Abrir o portal como o paciente veria">👁 Ver como paciente</button>' +
-            '<button class="btn btn--ghost" id="pac-edit" type="button">✏ Editar</button>' +
-            '<button class="btn btn--ghost btn--danger" id="pac-del" type="button">🗑 Excluir</button>' +
-            '<a class="btn btn--primary" href="prontuario.html?id=' + encodeURIComponent(p.id) + '">📋 Abrir prontuário</a>' +
+          '<div class="fhead__side">' +
+            '<button class="btn btn--ghost btn--sm" id="pac-view" type="button" title="Ver como paciente">👁 Portal</button>' +
+            '<button class="btn btn--ghost btn--sm" id="pac-edit" type="button">✏ Editar</button>' +
+            '<button class="btn btn--ghost btn--sm btn--danger" id="pac-del" type="button">🗑 Excluir</button>' +
           '</div>' +
         '</div>' +
+        '<div class="qacts">' + acoes + '</div>' +
       '</div>' +
 
-      '<div class="pstats">' +
-        pstat("Peso atual", p.pesoAtual + '<small> kg</small>', '<span class="delta ' + deltaCls + '">' + deltaTxt + '</span>') +
-        pstat("IMC", p.imc + '', '<span class="pstat__hint" style="color:var(--texto-sutil)">' + imcClasse(p.imc) + '</span>') +
-        pstat("Meta", (p.meta != null ? p.meta + '<small> kg</small>' : '—'), '<span class="pstat__hint" style="color:var(--texto-sutil)">' + esc(metaMeta) + '</span>') +
-        pstat("Adesão", '<span id="adesao-val">' + p.adesao + '</span><small>%</small>', '<span id="adesao-hint">' + hint + '</span>') +
-      '</div>' +
-
-      renderPortalCard(p) +
-
-      '<div class="card" style="padding:0">' +
-        '<div class="tabs" id="tabs" style="padding:0 var(--sp-4)">' +
-          tabBtn("resumo", "Resumo") + tabBtn("evolucao", "Evolução") + tabBtn("consultas", "Consultas") +
-          tabBtn("prescricoes", "Prescrições") + tabBtn("exames", "Exames") + tabBtn("mensagens", "Mensagens") +
-        '</div>' +
-        '<div style="padding:var(--sp-5)">' +
-          pane("resumo", paneResumo(p)) +
-          pane("evolucao", paneEvolucao(p)) +
-          pane("consultas", paneConsultas(p)) +
-          pane("prescricoes", paneLista(p.prescricoes, "🥗", "Nenhuma prescrição registrada.")) +
-          pane("exames", paneLista(p.exames, "🧪", "Nenhum exame registrado.")) +
-          pane("mensagens", paneChat()) +
-        '</div>' +
+      // ----- Corpo: menu lateral + painel -----
+      '<div class="ficha">' +
+        '<nav class="ficha__menu" id="ficha-menu" aria-label="Seções do paciente">' + menu + '</nav>' +
+        '<div class="ficha__main" id="ficha-main"></div>' +
       '</div>';
 
     el("back-list").addEventListener("click", closeProfile);
     el("pac-view").addEventListener("click", function () { window.open("portal-paciente.html?preview=" + encodeURIComponent(p.id), "_blank"); });
     el("pac-edit").addEventListener("click", function () { openForm(p); });
     el("pac-del").addEventListener("click", function () { confirmDelete(p); });
-    wirePortalCard(p);
-    refreshAdesaoReal(p);
-    initChatPane(p);
-    wrap.querySelectorAll(".tab").forEach(function (t) {
-      t.addEventListener("click", function () { switchTab(t.getAttribute("data-t")); });
+
+    el("ficha-menu").addEventListener("click", function (e) {
+      var b = e.target.closest(".fmenu-item"); if (!b) return;
+      state.section = b.getAttribute("data-sec");
+      wrap.querySelectorAll(".fmenu-item").forEach(function (x) { x.classList.toggle("is-active", x === b); });
+      renderSection(p);
     });
-    drawWeightChart(p);
+
+    wrap.querySelector(".qacts").addEventListener("click", function (e) {
+      var b = e.target.closest(".qact"); if (!b) return;
+      acaoRapida(p, b.getAttribute("data-qa"));
+    });
+
+    renderSection(p);
+  }
+
+  /* ---------- Ações rápidas ---------- */
+  function irParaSecao(p, sec) {
+    state.section = sec;
+    el("profile").querySelectorAll(".fmenu-item").forEach(function (x) { x.classList.toggle("is-active", x.getAttribute("data-sec") === sec); });
+    renderSection(p);
+    var main = el("ficha-main"); if (main) main.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function acaoRapida(p, id) {
+    if (id === "whatsapp") {
+      var tel = soDigitos(p.contato.tel);
+      if (!tel) { pacToast("Este paciente não tem telefone cadastrado.", true); return; }
+      var num = tel.length <= 11 ? "55" + tel : tel;
+      window.open("https://wa.me/" + num, "_blank");
+      return;
+    }
+    if (id === "consulta" || id === "retorno") { window.location.href = "agenda.html"; return; }
+    if (id === "prescricao") { window.location.href = "prescricoes.html"; return; }
+    var mapSec = { anamnese: "anamnese", antropometria: "antropometria", plano: "plano", orientacao: "orientacoes" };
+    if (mapSec[id]) { irParaSecao(p, mapSec[id]); pacToast("Abrindo " + mapSec[id] + " — edição completa em breve."); return; }
+    pacToast("Em breve nesta seção. 💜");
+  }
+
+  /* ---------- Render da seção ativa ---------- */
+  function renderSection(p) {
+    var main = el("ficha-main");
+    if (!main) return;
+    var sec = state.section;
+    var html;
+    switch (sec) {
+      case "anamnese":      html = secAnamnese(p); break;
+      case "exames":        html = secExames(p); break;
+      case "antropometria": html = secAntropometria(p); break;
+      case "plano":         html = secPlano(p); break;
+      case "metas":         html = secMetas(p); break;
+      case "prescricoes":   html = secPrescricoes(p); break;
+      case "orientacoes":   html = secOrientacoes(p); break;
+      case "arquivos":      html = secArquivos(p); break;
+      case "comunicacao":   html = secComunicacao(p); break;
+      case "financeiro":    html = secFinanceiro(p); break;
+      case "prontuario":    html = secProntuario(p); break;
+      default:              html = secPerfil(p);
+    }
+    main.innerHTML = html;
+
+    // Fiação por seção
+    if (sec === "antropometria") drawWeightChart(p);
+    if (sec === "perfil") { wirePortalCard(p); refreshAdesaoReal(p); }
+    if (sec === "comunicacao") { initChatPane(p); loadChatPane(p); }
+  }
+
+  /* ---------- Blocos utilitários das seções ---------- */
+  function secWrap(titulo, inner) {
+    return '<section class="fsec"><h2 class="fsec__title">' + esc(titulo) + '</h2>' + inner + '</section>';
+  }
+  function emBreve(txt) {
+    return '<div class="fbreve"><span class="fbreve__ico">🚧</span>' +
+      '<p>' + esc(txt) + '</p><span class="fbreve__tag">Em construção — vamos detalhar juntas</span></div>';
+  }
+
+  /* ---------- Seções ---------- */
+  function secPerfil(p) {
+    var dados = '<div class="finfo-grid">' +
+      hgField("Nome completo", esc(p.nome)) +
+      hgField("Nascimento", p.dataNascimento ? esc(fmtData(p.dataNascimento)) : "—") +
+      hgField("Idade", (p.idade != null && p.idade !== "" ? p.idade + " anos" : "—")) +
+      hgField("Sexo", p.sexo === "F" ? "Feminino" : p.sexo === "M" ? "Masculino" : "—") +
+      hgField("Telefone", esc(p.contato.tel || "—")) +
+      hgField("E-mail", esc(p.contato.email || "—")) +
+      hgField("Cidade", esc(p.contato.cidade || "—")) +
+      hgField("Cadastro", fmtCadastro(p.criadoEm)) +
+    '</div>';
+    var objetivos = '<p class="ftxt">' + esc(p.objetivo || "Sem objetivo definido.") + '</p>' +
+      (p.meta != null ? '<p class="ftxt"><strong>Meta de peso:</strong> ' + p.meta + ' kg</p>' : '') +
+      ((p.tags || []).length ? '<div class="fhead__tags">' + p.tags.map(function (t) { return '<span class="mini-tag">' + esc(t) + '</span>'; }).join("") + '</div>' : '');
+    var obs = '<p class="ftxt">' + esc(p.observacoes || "Sem observações registradas.") + '</p>';
+
+    return secWrap("Dados pessoais", dados) +
+      secWrap("Objetivos", objetivos) +
+      secWrap("Observações gerais", obs) +
+      renderPortalCard(p);
+  }
+
+  function secAnamnese(p) {
+    var inicial = p.anamnese
+      ? '<p class="ftxt">' + esc(p.anamnese) + '</p>'
+      : '<div class="empty-state">Nenhuma anamnese inicial registrada.</div>';
+    var restr = p.restricoes
+      ? '<p class="ftxt">' + esc(p.restricoes) + '</p>'
+      : '<div class="empty-state">Sem restrições/alergias registradas.</div>';
+    return secWrap("Anamnese inicial", inicial) +
+      secWrap("Restrições & alergias", restr) +
+      secWrap("Anamneses de retorno & histórico", emBreve("Aqui ficará o histórico de anamneses de retorno, com data e comparação entre elas."));
+  }
+
+  function secExames(p) {
+    var lista = paneLista(p.exames, "🧪", "Nenhum exame registrado ainda.");
+    var upload = '<div class="fupload"><span class="fupload__ico">⬆️</span>' +
+      '<p>Arraste um PDF/imagem de exame ou clique para enviar.</p>' +
+      '<button class="btn btn--outline btn--sm" type="button" data-qa-inline="upload-exame">Enviar exame</button></div>';
+    return secWrap("Upload de exames", upload) +
+      secWrap("Exames do paciente", lista) +
+      secWrap("Histórico", emBreve("Linha do tempo dos exames com comparação de marcadores ao longo do tempo."));
+  }
+
+  function secAntropometria(p) {
+    var cards = '<div class="fmetric-grid">' +
+      fmetric("Peso atual", (p.pesoAtual != null ? p.pesoAtual + " kg" : "—")) +
+      fmetric("Peso inicial", (p.pesoInicial != null ? p.pesoInicial + " kg" : "—")) +
+      fmetric("Altura", (p.altura ? p.altura.toFixed(2) + " m" : "—")) +
+      fmetric("IMC", (p.imc != null ? p.imc + "" : "—"), (p.imc != null ? imcClasse(p.imc) : "")) +
+      fmetric("Meta", (p.meta != null ? p.meta + " kg" : "—")) +
+      fmetric("Variação", (p.pesoAtual != null && p.pesoInicial != null ? (p.pesoAtual - p.pesoInicial).toFixed(1) + " kg" : "—")) +
+    '</div>';
+    var chart = '<div class="chart" id="weight-chart"></div>';
+    return secWrap("Peso · Altura · IMC", cards) +
+      secWrap("Evolução gráfica", chart) +
+      secWrap("Circunferências", emBreve("Cintura, quadril, braço, panturrilha… com evolução por medida.")) +
+      secWrap("Dobras cutâneas", emBreve("Registro de dobras e cálculo de percentual de gordura."));
+  }
+  function fmetric(lbl, val, hint) {
+    return '<div class="fmetric"><div class="fmetric__lbl">' + lbl + '</div>' +
+      '<div class="fmetric__val">' + val + '</div>' +
+      (hint ? '<div class="fmetric__hint">' + esc(hint) + '</div>' : '') + '</div>';
+  }
+
+  function secPlano(p) {
+    var atual;
+    if (p.plano && (p.plano.titulo || (p.plano.refeicoes || []).length)) {
+      var refs = (p.plano.refeicoes || []).map(function (r) {
+        var itens = (r.itens || []).map(function (i) {
+          return '<div class="fmeal__item"><span>' + esc(i.alimento || i.nome || "") + '</span><span>' + esc(i.qtd || "") + '</span></div>';
+        }).join("");
+        return '<div class="fmeal"><div class="fmeal__head">' + esc(r.nome || r.hora || "Refeição") + '</div>' + itens + '</div>';
+      }).join("");
+      atual = '<p class="ftxt"><strong>' + esc(p.plano.titulo || "Plano alimentar atual") + '</strong></p>' + (refs || '<div class="empty-state">Plano sem refeições detalhadas.</div>');
+    } else {
+      atual = '<div class="empty-state">Nenhum plano alimentar publicado. Crie em Prescrições ou use o botão “Novo Plano”.</div>';
+    }
+    return secWrap("Plano alimentar atual", atual) +
+      secWrap("Planos anteriores & histórico de alterações", emBreve("Versões anteriores do plano e o que mudou em cada revisão."));
+  }
+
+  function secMetas(p) {
+    var ativa = p.objetivo
+      ? '<div class="fgoal"><span class="fgoal__ico">🎯</span><div><strong>' + esc(p.objetivo) + '</strong>' +
+        (p.meta != null ? '<p class="ftxt">Meta de peso: ' + p.meta + ' kg · atual: ' + (p.pesoAtual != null ? p.pesoAtual + ' kg' : '—') + '</p>' : '') + '</div></div>'
+      : '<div class="empty-state">Nenhuma meta ativa.</div>';
+    return secWrap("Metas ativas", ativa) +
+      secWrap("Metas concluídas & evolução", emBreve("Histórico de metas batidas e a evolução rumo a cada uma."));
+  }
+
+  function secPrescricoes(p) {
+    var lista = paneLista(p.prescricoes, "💊", "Nenhuma prescrição registrada.");
+    return secWrap("Prescrições do paciente", lista) +
+      secWrap("Suplementação · Fitoterapia · Manipulados", emBreve("Prescrições separadas por tipo, com posologia e período — e geração de PDF com a sua identidade."));
+  }
+
+  function secOrientacoes(p) {
+    return secWrap("Orientações atuais", emBreve("Orientações nutricionais entregues ao paciente (com geração de PDF com a sua marca).")) +
+      secWrap("Histórico de orientações", emBreve("Todas as orientações já enviadas, por data."));
+  }
+
+  function secArquivos(p) {
+    return secWrap("Arquivos do paciente", emBreve("PDFs, fotos e documentos enviados — organizados por tipo e data."));
+  }
+
+  function secComunicacao(p) {
+    var chat = '<p class="ftxt fmuted">Conversa do portal (paciente ↔ você):</p>' + paneChat();
+    return secWrap("Mensagens (portal)", chat) +
+      secWrap("WhatsApp & automáticas", emBreve("Histórico de WhatsApp, mensagens automáticas enviadas e respostas do paciente aparecem aqui quando o motor de envio for conectado."));
+  }
+
+  function secFinanceiro(p) {
+    return secWrap("Financeiro do paciente", emBreve("Consultas pagas, pendências, notas fiscais e recibos deste paciente.")) ;
+  }
+
+  function secProntuario(p) {
+    var eventos = [];
+    (p.consultas || []).forEach(function (c) { eventos.push({ ico: "🩺", tipo: "Consulta", data: c.data, txt: (c.tipo ? esc(c.tipo) + " — " : "") + esc(c.nota || "") }); });
+    (p.prescricoes || []).forEach(function (x) { eventos.push({ ico: "💊", tipo: "Prescrição", data: x.data, txt: esc(x.titulo || "") }); });
+    (p.exames || []).forEach(function (x) { eventos.push({ ico: "🧪", tipo: "Exame", data: x.data, txt: esc(x.titulo || "") }); });
+    if (p.plano && p.plano.titulo) eventos.push({ ico: "🥗", tipo: "Plano alimentar", data: "", txt: esc(p.plano.titulo) });
+    if (p.criadoEm) eventos.push({ ico: "✅", tipo: "Cadastro", data: fmtCadastro(p.criadoEm), txt: "Paciente cadastrado na plataforma" });
+
+    var linha = eventos.length
+      ? '<div class="ftimeline">' + eventos.map(function (e) {
+          return '<div class="ftl"><div class="ftl__dot">' + e.ico + '</div>' +
+            '<div class="ftl__body"><div class="ftl__head"><span class="ftl__tipo">' + e.tipo + '</span>' +
+            (e.data ? '<span class="ftl__data">' + esc(e.data) + '</span>' : '') + '</div>' +
+            (e.txt ? '<p class="ftl__txt">' + e.txt + '</p>' : '') + '</div></div>';
+        }).join("") + '</div>'
+      : '<div class="empty-state">A linha do tempo vai se montando conforme consultas, planos, exames e mensagens forem acontecendo.</div>';
+
+    return secWrap("Linha do tempo do paciente", linha) +
+      secWrap("Evoluções clínicas", emBreve("Registro cronológico das evoluções clínicas escritas por você a cada atendimento."));
+  }
+
+  /* ---------- Toast simples da ficha ---------- */
+  var pacToastTimer;
+  function pacToast(msg, erro) {
+    var t = el("pac-toast");
+    if (!t) { t = document.createElement("div"); t.id = "pac-toast"; t.className = "pac-toast"; document.body.appendChild(t); }
+    t.textContent = msg;
+    t.classList.toggle("is-error", !!erro);
+    t.classList.add("is-on");
+    clearTimeout(pacToastTimer);
+    pacToastTimer = setTimeout(function () { t.classList.remove("is-on"); }, 2600);
   }
 
   function pstat(lbl, val, hint) {
