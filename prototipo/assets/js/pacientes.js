@@ -226,8 +226,8 @@
       // ----- Cabeçalho do paciente -----
       '<div class="card fhead-card">' +
         '<div class="fhead">' +
-          (p.avatarUrl
-            ? '<img class="fhead__avatar" src="' + esc(p.avatarUrl) + '" alt="" />'
+          (p.fotoUrl
+            ? '<img class="fhead__avatar" src="' + esc(p.fotoUrl) + '" alt="" />'
             : '<span class="fhead__avatar fhead__avatar--ini">' + esc(p.ini) + '</span>') +
           '<div class="fhead__id">' +
             '<h1 class="fhead__name">' + esc(p.nome) +
@@ -323,7 +323,16 @@
     main.innerHTML = html;
 
     // Fiação por seção
-    if (sec === "antropometria") drawWeightChart(p);
+    if (sec === "antropometria" && window.Antropometria) {
+      window.Antropometria.wire(p, {
+        toast: pacToast,
+        onSaved: function (saved) {
+          for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
+          state.current = saved;
+          renderProfile(saved);
+        }
+      });
+    }
     if (sec === "perfil") { wirePortalCard(p); refreshAdesaoReal(p); }
     if (sec === "comunicacao") { initChatPane(p); loadChatPane(p); }
   }
@@ -383,19 +392,12 @@
   }
 
   function secAntropometria(p) {
-    var cards = '<div class="fmetric-grid">' +
+    if (window.Antropometria) return window.Antropometria.render(p);
+    // Fallback simples (caso o módulo não carregue)
+    return secWrap("Antropometria", '<div class="fmetric-grid">' +
       fmetric("Peso atual", (p.pesoAtual != null ? p.pesoAtual + " kg" : "—")) +
-      fmetric("Peso inicial", (p.pesoInicial != null ? p.pesoInicial + " kg" : "—")) +
       fmetric("Altura", (p.altura ? p.altura.toFixed(2) + " m" : "—")) +
-      fmetric("IMC", (p.imc != null ? p.imc + "" : "—"), (p.imc != null ? imcClasse(p.imc) : "")) +
-      fmetric("Meta", (p.meta != null ? p.meta + " kg" : "—")) +
-      fmetric("Variação", (p.pesoAtual != null && p.pesoInicial != null ? (p.pesoAtual - p.pesoInicial).toFixed(1) + " kg" : "—")) +
-    '</div>';
-    var chart = '<div class="chart" id="weight-chart"></div>';
-    return secWrap("Peso · Altura · IMC", cards) +
-      secWrap("Evolução gráfica", chart) +
-      secWrap("Circunferências", emBreve("Cintura, quadril, braço, panturrilha… com evolução por medida.")) +
-      secWrap("Dobras cutâneas", emBreve("Registro de dobras e cálculo de percentual de gordura."));
+      fmetric("IMC", (p.imc != null ? p.imc + "" : "—"), (p.imc != null ? imcClasse(p.imc) : "")) + '</div>');
   }
   function fmetric(lbl, val, hint) {
     return '<div class="fmetric"><div class="fmetric__lbl">' + lbl + '</div>' +
@@ -924,25 +926,22 @@
           '<button class="pf-close" type="button" aria-label="Fechar">✕</button></div>' +
         '<form class="pf-form" id="pf-form">' +
           '<p class="pf-msg" hidden></p>' +
+          '<div class="pf-foto">' +
+            (p.fotoUrl
+              ? '<img class="pf-foto__img" id="pf-foto-prev" src="' + esc(p.fotoUrl) + '" alt="" />'
+              : '<span class="pf-foto__img pf-foto__img--ini" id="pf-foto-prev">' + esc(iniciais(p.nome) || "📷") + '</span>') +
+            '<div class="pf-foto__side">' +
+              '<span class="pf-foto__lbl">Foto do paciente</span>' +
+              '<input type="file" id="pf-foto-input" accept="image/png,image/jpeg,image/webp" hidden />' +
+              '<button class="btn btn--outline btn--sm" type="button" id="pf-foto-btn">' + (p.fotoUrl ? "Trocar foto" : "Enviar foto") + '</button>' +
+              '<span class="pf-foto__hint">JPG ou PNG, até 3 MB (opcional).</span>' +
+            '</div>' +
+          '</div>' +
           '<div class="pf-grid">' +
             field("Nome completo", "nome", p.nome, { required: true, wide: true }) +
             field("Data de nascimento", "dataNascimento", p.dataNascimento, { type: "date" }) +
-            field("Idade (auto pela data)", "idade", p.idade, { type: "number", step: "1", placeholder: "preenchida pela data" }) +
-            field("Sexo", "sexo", p.sexo || "F", { type: "select", options: [{ v: "F", l: "Feminino" }, { v: "M", l: "Masculino" }] }) +
-            field("Objetivo", "objetivo", p.objetivo, { wide: true }) +
-            field("Status", "status", p.status || "ativo", { type: "select", options: [{ v: "ativo", l: "Ativo" }, { v: "atencao", l: "Atenção" }, { v: "inativo", l: "Inativo" }] }) +
-            field("Adesão (%)", "adesao", p.adesao, { type: "number", step: "1" }) +
-            field("Peso inicial (kg)", "pesoInicial", p.pesoInicial, { type: "number" }) +
-            field("Peso atual (kg)", "pesoAtual", p.pesoAtual, { type: "number" }) +
-            field("Meta (kg)", "meta", p.meta, { type: "number" }) +
-            field("Altura (m)", "altura", p.altura, { type: "number", placeholder: "1.68" }) +
-            field("Telefone", "tel", c.tel, {}) +
-            field("E-mail", "email", c.email, { type: "email" }) +
-            field("Cidade", "cidade", c.cidade, { wide: true }) +
-            field("Tags (separadas por vírgula)", "tags", (p.tags || []).join(", "), { wide: true }) +
-            field("Anamnese", "anamnese", p.anamnese, { type: "textarea", rows: 3, wide: true }) +
-            field("Restrições & alergias", "restricoes", p.restricoes, { type: "textarea", rows: 2, wide: true }) +
-            field("Observações clínicas", "observacoes", p.observacoes, { type: "textarea", rows: 2, wide: true }) +
+            field("CPF", "cpf", p.cpf, { placeholder: "000.000.000-00" }) +
+            field("Telefone", "tel", c.tel, { type: "tel", wide: true, placeholder: "(21) 99999-9999" }) +
           '</div>' +
           '<div class="pf-actions">' +
             '<button class="btn btn--ghost" type="button" id="pf-cancel">Cancelar</button>' +
@@ -959,19 +958,55 @@
     formOverlay.addEventListener("click", function (e) { if (e.target === formOverlay) closeIt(); });
     formOverlay.querySelector("[name=nome]").focus();
 
-    // Ao escolher a data de nascimento, preenche a idade automaticamente.
-    var nascInp = formOverlay.querySelector("[name=dataNascimento]");
-    var idadeInp = formOverlay.querySelector("[name=idade]");
-    if (nascInp && idadeInp) {
-      nascInp.addEventListener("change", function () {
-        var a = idadeAnos(nascInp.value);
-        if (a != null) idadeInp.value = a;
+    // Foto do paciente: escolhe arquivo, comprime e guarda como data URL no form.
+    var formEl = formOverlay.querySelector("#pf-form");
+    formEl._fotoUrl = p.fotoUrl || "";
+    var fotoInput = formOverlay.querySelector("#pf-foto-input");
+    var fotoBtn = formOverlay.querySelector("#pf-foto-btn");
+    var fotoPrev = formOverlay.querySelector("#pf-foto-prev");
+    if (fotoBtn && fotoInput) {
+      fotoBtn.addEventListener("click", function () { fotoInput.click(); });
+      fotoInput.addEventListener("change", function () {
+        var file = fotoInput.files && fotoInput.files[0];
+        fotoInput.value = "";
+        if (!file) return;
+        if (!/^image\/(png|jpe?g|webp)$/i.test(file.type)) { alert("Use uma imagem JPG, PNG ou WEBP."); return; }
+        if (file.size > 3 * 1024 * 1024) { alert("A imagem passa de 3 MB. Escolha uma menor."); return; }
+        processarFotoPaciente(file).then(function (dataUrl) {
+          formEl._fotoUrl = dataUrl;
+          var novo = document.createElement("img");
+          novo.className = "pf-foto__img"; novo.id = "pf-foto-prev"; novo.src = dataUrl; novo.alt = "";
+          fotoPrev.replaceWith(novo); fotoPrev = novo;
+          fotoBtn.textContent = "Trocar foto";
+        }).catch(function () { alert("Não foi possível carregar a foto."); });
       });
     }
 
-    formOverlay.querySelector("#pf-form").addEventListener("submit", function (e) {
+    formEl.addEventListener("submit", function (e) {
       e.preventDefault();
       saveForm(e.target, edit ? p : null, closeIt);
+    });
+  }
+
+  // Redimensiona a foto do paciente para no máx. 360px e devolve JPEG data URL.
+  function processarFotoPaciente(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onerror = function () { reject(new Error("read")); };
+      reader.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error("img")); };
+        img.onload = function () {
+          var MAX = 360, w = img.naturalWidth, h = img.naturalHeight;
+          var s = Math.min(1, MAX / Math.max(w, h));
+          var cw = Math.round(w * s), ch = Math.round(h * s);
+          var cv = document.createElement("canvas"); cv.width = cw; cv.height = ch;
+          cv.getContext("2d").drawImage(img, 0, 0, cw, ch);
+          resolve(cv.toDataURL("image/jpeg", 0.82));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
     });
   }
 
@@ -984,23 +1019,17 @@
     var nome = g("nome");
     if (!nome) { msg.textContent = "Informe o nome do paciente."; msg.hidden = false; return; }
 
-    var payload = {
-      nome: nome, idade: g("idade"), dataNascimento: g("dataNascimento"), sexo: g("sexo"), objetivo: g("objetivo"),
-      status: g("status"), adesao: g("adesao"),
-      pesoInicial: g("pesoInicial"), pesoAtual: g("pesoAtual"), meta: g("meta"), altura: g("altura"),
-      contato: { tel: g("tel"), email: g("email"), cidade: g("cidade") },
-      tags: g("tags").split(",").map(function (t) { return t.trim(); }).filter(Boolean),
-      anamnese: g("anamnese"), restricoes: g("restricoes"), observacoes: g("observacoes")
-    };
-    // Preserva as estruturas ricas ao editar (não são editáveis por este form).
-    if (existing) {
-      payload.evolucao = existing.evolucao;
-      payload.consultas = existing.consultas;
-      payload.prescricoes = existing.prescricoes;
-      payload.exames = existing.exames;
-      payload.ultConsulta = existing.ultConsulta;
-      payload.proxConsulta = existing.proxConsulta;
-    }
+    // Cadastro enxuto: nome, foto, nascimento, CPF, telefone. Ao editar,
+    // parte do paciente existente para NÃO apagar os demais campos (geridos
+    // nas seções da ficha: antropometria, plano, anamnese, etc.).
+    var base = existing ? Object.assign({}, existing) : { status: "ativo" };
+    var payload = Object.assign(base, {
+      nome: nome,
+      dataNascimento: g("dataNascimento"),
+      cpf: g("cpf"),
+      fotoUrl: form._fotoUrl || "",
+      contato: Object.assign({}, (existing && existing.contato) || {}, { tel: g("tel") })
+    });
 
     save.disabled = true; save.textContent = "Salvando…"; msg.hidden = true;
     var op = existing ? window.NutriPacientes.update(existing.id, payload)

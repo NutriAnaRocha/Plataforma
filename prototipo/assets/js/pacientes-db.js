@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  var COLS = "id,user_id,nome,ini,idade,data_nascimento,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,evolucao,consultas,prescricoes,exames,plano,portal_features,prontuario,created_at";
+  var COLS = "id,user_id,nome,ini,idade,data_nascimento,cpf,foto_url,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,antropometria,evolucao,consultas,prescricoes,exames,plano,portal_features,prontuario,created_at";
 
   // Idade (anos completos) a partir de uma data ISO "YYYY-MM-DD".
   function idadeDeNascimento(iso) {
@@ -43,7 +43,10 @@
       id: r.id,
       userId: r.user_id || null,
       nome: r.nome, ini: r.ini || iniciais(r.nome),
-      idade: r.idade, dataNascimento: r.data_nascimento || "", sexo: r.sexo,
+      idade: r.idade, dataNascimento: r.data_nascimento || "",
+      cpf: r.cpf || "", fotoUrl: r.foto_url || "",
+      antropometria: (r.antropometria && typeof r.antropometria === "object") ? r.antropometria : {},
+      sexo: r.sexo,
       objetivo: r.objetivo, status: r.status || "ativo", adesao: r.adesao || 0,
       pesoAtual: numOrNull(r.peso_atual), pesoInicial: numOrNull(r.peso_inicial),
       meta: numOrNull(r.meta), altura: numOrNull(r.altura), imc: numOrNull(r.imc),
@@ -74,6 +77,9 @@
       ini: iniciais(p.nome),
       idade: idade,
       data_nascimento: nasc,
+      cpf: (p.cpf || "").trim() || null,
+      foto_url: p.fotoUrl || null,
+      antropometria: p.antropometria || {},
       sexo: p.sexo || null,
       objetivo: p.objetivo || null,
       status: p.status || "ativo",
