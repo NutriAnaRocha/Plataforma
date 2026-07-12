@@ -115,7 +115,7 @@
 
     list: function () {
       return client().then(function (c) {
-        return c.from("pacientes").select(COLS).order("nome", { ascending: true });
+        return c.from("pacientes").select("*").order("nome", { ascending: true });
       }).then(function (res) {
         if (res.error) throw res.error;
         return (res.data || []).map(fromRow);
@@ -124,7 +124,7 @@
 
     get: function (id) {
       return client().then(function (c) {
-        return c.from("pacientes").select(COLS).eq("id", id).maybeSingle();
+        return c.from("pacientes").select("*").eq("id", id).maybeSingle();
       }).then(function (res) {
         if (res.error) throw res.error;
         return res.data ? fromRow(res.data) : null;
@@ -133,7 +133,7 @@
 
     create: function (p) {
       return client().then(function (c) {
-        return c.from("pacientes").insert(toRow(p)).select(COLS).single();
+        return c.from("pacientes").insert(toRow(p)).select("*").single();
       }).then(function (res) {
         if (res.error) throw res.error;
         return fromRow(res.data);
@@ -142,7 +142,7 @@
 
     update: function (id, p) {
       return client().then(function (c) {
-        return c.from("pacientes").update(toRow(p)).eq("id", id).select(COLS).single();
+        return c.from("pacientes").update(toRow(p)).eq("id", id).select("*").single();
       }).then(function (res) {
         if (res.error) throw res.error;
         return fromRow(res.data);
@@ -165,7 +165,7 @@
       if (!mock.length) return Promise.resolve([]);
       var rows = mock.map(toRow);
       return client().then(function (c) {
-        return c.from("pacientes").insert(rows).select(COLS);
+        return c.from("pacientes").insert(rows).select("*");
       }).then(function (res) {
         if (res.error) throw res.error;
         return (res.data || []).map(fromRow);
