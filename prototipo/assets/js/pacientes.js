@@ -1042,9 +1042,18 @@
         renderFilters(); renderList();
         if (existing) { var fresh = rows.filter(function (x) { return x.id === saved.id; })[0]; if (fresh) openProfile(fresh.id); }
       });
-    }).catch(function () {
+    }).catch(function (err) {
       save.disabled = false; save.textContent = existing ? "Salvar alterações" : "Cadastrar paciente";
-      msg.textContent = "Não foi possível salvar. Verifique a conexão e tente novamente."; msg.hidden = false;
+      var m = (err && err.message) || "";
+      var amigo;
+      if (/schema cache|column .* does not exist|could not find/i.test(m)) {
+        amigo = "O banco ainda não tem os campos novos do cadastro. Rode a migração 0015 no Supabase (cpf, foto_url, antropometria) e o reload do schema.";
+      } else if (/offline|failed to fetch|networkerror|load supabase/i.test(m)) {
+        amigo = "Sem conexão com o servidor. Verifique sua internet e tente de novo.";
+      } else {
+        amigo = "Não foi possível salvar. " + (m || "Tente novamente.");
+      }
+      msg.textContent = amigo; msg.hidden = false;
     });
   }
 })();
