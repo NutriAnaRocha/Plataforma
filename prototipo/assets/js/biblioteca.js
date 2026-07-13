@@ -113,7 +113,8 @@
 
     var acao = liberado
       ? '<button class="btn btn--primary btn--block biblio-ler" type="button">Ler agora</button>'
-      : '<a class="btn btn--ghost btn--block" href="' + COMPRAR_URL + '" target="_blank" rel="noopener">🔒 Adquirir</a>';
+      : ((eb.previa_url ? '<button class="btn btn--primary btn--block biblio-previa" type="button">Ver prévia</button>' : "") +
+         '<a class="btn btn--ghost btn--block" href="' + COMPRAR_URL + '" target="_blank" rel="noopener">🔒 Adquirir</a>');
 
     card.innerHTML =
       '<div class="biblio-cover-wrap">' + capa + selo + "</div>" +
@@ -128,8 +129,20 @@
       card.querySelector(".biblio-ler").addEventListener("click", function () {
         abrirLeitor(c, eb, this);
       });
+    } else if (eb.previa_url) {
+      var bp = card.querySelector(".biblio-previa");
+      if (bp) bp.addEventListener("click", function () { abrirPrevia(eb.previa_url, eb.titulo); });
     }
     return card;
+  }
+
+  // Prévia (público, sem download do bucket): renderiza a página de prévia no leitor.
+  function abrirPrevia(url, titulo) {
+    if (blobEmUso) { URL.revokeObjectURL(blobEmUso); blobEmUso = null; }
+    FRAME.src = url;
+    RTITLE.textContent = (titulo || "E-book") + " — prévia";
+    READER.hidden = false;
+    document.body.style.overflow = "hidden";
   }
 
   function abrirLeitor(c, eb, btn) {
