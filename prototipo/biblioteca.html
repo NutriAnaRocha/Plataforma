@@ -43,6 +43,11 @@
 
     .biblio-empty, #biblio-loading { color: var(--texto-sutil); text-align: center; padding: var(--sp-7) 0; }
 
+    /* Seções por categoria */
+    .biblio-section { margin-bottom: var(--sp-7); }
+    .biblio-cat { font-family: var(--font-display); color: var(--vinho); font-size: var(--fs-h2);
+      margin: 0 0 var(--sp-4); padding-bottom: .5rem; border-bottom: 1px solid var(--cinza-borda); }
+
     /* Leitor em tela cheia */
     .biblio-reader { position: fixed; inset: 0; z-index: 60; background: var(--branco); display: flex; flex-direction: column; }
     /* O atributo [hidden] precisa vencer o display:flex acima (senão o leitor
@@ -84,7 +89,7 @@
     </section>
 
     <p id="biblio-loading">Carregando sua biblioteca…</p>
-    <div class="biblio-grid" id="biblio-grid"></div>
+    <div id="biblio-catalogo"></div>
   </div>
 
   <!-- Leitor em tela cheia -->

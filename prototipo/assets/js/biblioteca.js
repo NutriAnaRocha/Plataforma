@@ -8,7 +8,7 @@
 (function () {
   "use strict";
 
-  var CATALOGO = document.getElementById("biblio-grid");
+  var CATALOGO = document.getElementById("biblio-catalogo");
   var LOADING = document.getElementById("biblio-loading");
   var HI = document.getElementById("biblio-hi");
   var READER = document.getElementById("biblio-reader");
@@ -73,39 +73,63 @@
       CATALOGO.innerHTML = '<p class="biblio-empty">Nenhum material disponível ainda.</p>';
       return;
     }
+    // Agrupa por categoria, preservando a ordem em que aparecem (já vêm por 'ordem').
+    var ordemCats = [];
+    var grupos = {};
     ebooks.forEach(function (eb) {
-      var liberado = temAcesso(eb);
-      var card = document.createElement("article");
-      card.className = "biblio-card" + (liberado ? "" : " is-locked");
-
-      var capa = eb.capa_url
-        ? '<img class="biblio-cover" src="' + eb.capa_url + '" alt="">'
-        : '<div class="biblio-cover biblio-cover--ph">' + escapeHtml(eb.titulo) + "</div>";
-
-      var selo = eb.gratuito
-        ? '<span class="biblio-badge biblio-badge--free">Grátis</span>'
-        : (liberado ? '<span class="biblio-badge biblio-badge--own">Adquirido</span>' : "");
-
-      var acao = liberado
-        ? '<button class="btn btn--primary btn--block biblio-ler" type="button">Ler agora</button>'
-        : '<a class="btn btn--ghost btn--block" href="' + COMPRAR_URL + '" target="_blank" rel="noopener">🔒 Adquirir</a>';
-
-      card.innerHTML =
-        '<div class="biblio-cover-wrap">' + capa + selo + "</div>" +
-        '<div class="biblio-body">' +
-          "<h3>" + escapeHtml(eb.titulo) + "</h3>" +
-          (eb.subtitulo ? "<p>" + escapeHtml(eb.subtitulo) + "</p>" : "") +
-          '<div class="biblio-foot"></div>' +
-        "</div>";
-      card.querySelector(".biblio-foot").innerHTML = acao;
-
-      if (liberado) {
-        card.querySelector(".biblio-ler").addEventListener("click", function () {
-          abrirLeitor(c, eb, this);
-        });
-      }
-      CATALOGO.appendChild(card);
+      var cat = (eb.categoria && String(eb.categoria).trim()) || "Materiais";
+      if (!grupos[cat]) { grupos[cat] = []; ordemCats.push(cat); }
+      grupos[cat].push(eb);
     });
+
+    ordemCats.forEach(function (cat) {
+      var sec = document.createElement("section");
+      sec.className = "biblio-section";
+      var h = document.createElement("h2");
+      h.className = "biblio-cat";
+      h.textContent = cat;
+      var grid = document.createElement("div");
+      grid.className = "biblio-grid";
+      grupos[cat].forEach(function (eb) {
+        grid.appendChild(criarCard(c, eb, temAcesso(eb)));
+      });
+      sec.appendChild(h);
+      sec.appendChild(grid);
+      CATALOGO.appendChild(sec);
+    });
+  }
+
+  function criarCard(c, eb, liberado) {
+    var card = document.createElement("article");
+    card.className = "biblio-card" + (liberado ? "" : " is-locked");
+
+    var capa = eb.capa_url
+      ? '<img class="biblio-cover" src="' + eb.capa_url + '" alt="">'
+      : '<div class="biblio-cover biblio-cover--ph">' + escapeHtml(eb.titulo) + "</div>";
+
+    var selo = eb.gratuito
+      ? '<span class="biblio-badge biblio-badge--free">Grátis</span>'
+      : (liberado ? '<span class="biblio-badge biblio-badge--own">Adquirido</span>' : "");
+
+    var acao = liberado
+      ? '<button class="btn btn--primary btn--block biblio-ler" type="button">Ler agora</button>'
+      : '<a class="btn btn--ghost btn--block" href="' + COMPRAR_URL + '" target="_blank" rel="noopener">🔒 Adquirir</a>';
+
+    card.innerHTML =
+      '<div class="biblio-cover-wrap">' + capa + selo + "</div>" +
+      '<div class="biblio-body">' +
+        "<h3>" + escapeHtml(eb.titulo) + "</h3>" +
+        (eb.subtitulo ? "<p>" + escapeHtml(eb.subtitulo) + "</p>" : "") +
+        '<div class="biblio-foot"></div>' +
+      "</div>";
+    card.querySelector(".biblio-foot").innerHTML = acao;
+
+    if (liberado) {
+      card.querySelector(".biblio-ler").addEventListener("click", function () {
+        abrirLeitor(c, eb, this);
+      });
+    }
+    return card;
   }
 
   function abrirLeitor(c, eb, btn) {
