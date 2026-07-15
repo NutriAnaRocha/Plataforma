@@ -17,6 +17,10 @@
   }
 
   var state = { filtro: "Todos", busca: "", tab: "resumo", current: null, load: "loading" };
+  var perfilNutri = {}; // identidade da nutri (para PDFs de exames); carregada abaixo
+  if (window.NutriPerfil) {
+    window.NutriPerfil.get().then(function (pf) { if (pf) perfilNutri = pf; }).catch(function () {});
+  }
   var tierAllowed = null; // teto de features do plano da nutri (null = ainda não carregado → sem restrição)
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -392,6 +396,17 @@
         }
       });
     }
+    if (sec === "exames" && window.Exames) {
+      window.Exames.wire(p, {
+        toast: pacToast,
+        perfil: perfilNutri,
+        onSaved: function (saved) {
+          for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
+          state.current = saved;
+          renderProfile(saved);
+        }
+      });
+    }
     if (sec === "perfil") { wirePortalCard(p); refreshAdesaoReal(p); }
     if (sec === "comunicacao") { initChatPane(p); loadChatPane(p); }
   }
@@ -430,13 +445,9 @@
   }
 
   function secExames(p) {
-    var lista = paneLista(p.exames, "🧪", "Nenhum exame registrado ainda.");
-    var upload = '<div class="fupload"><span class="fupload__ico">⬆️</span>' +
-      '<p>Arraste um PDF/imagem de exame ou clique para enviar.</p>' +
-      '<button class="btn btn--outline btn--sm" type="button" data-qa-inline="upload-exame">Enviar exame</button></div>';
-    return secWrap("Upload de exames", upload) +
-      secWrap("Exames do paciente", lista) +
-      secWrap("Histórico", emBreve("Linha do tempo dos exames com comparação de marcadores ao longo do tempo."));
+    if (window.Exames) return window.Exames.render(p);
+    // Fallback simples (caso o módulo não carregue)
+    return secWrap("Exames do paciente", paneLista(p.exames, "🧪", "Nenhum exame registrado ainda."));
   }
 
   function secAntropometria(p) {
