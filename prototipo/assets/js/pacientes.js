@@ -10,6 +10,11 @@
 
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+  function iniciaisNome(nome) {
+    var p = String(nome || "").trim().split(/\s+/).filter(Boolean);
+    if (!p.length) return "";
+    return ((p[0][0] || "") + (p.length > 1 ? p[p.length - 1][0] : "")).toUpperCase();
+  }
 
   var state = { filtro: "Todos", busca: "", tab: "resumo", current: null, load: "loading" };
   var tierAllowed = null; // teto de features do plano da nutri (null = ainda não carregado → sem restrição)
@@ -929,7 +934,7 @@
           '<div class="pf-foto">' +
             (p.fotoUrl
               ? '<img class="pf-foto__img" id="pf-foto-prev" src="' + esc(p.fotoUrl) + '" alt="" />'
-              : '<span class="pf-foto__img pf-foto__img--ini" id="pf-foto-prev">' + esc(iniciais(p.nome) || "📷") + '</span>') +
+              : '<span class="pf-foto__img pf-foto__img--ini" id="pf-foto-prev">' + esc(iniciaisNome(p.nome) || "📷") + '</span>') +
             '<div class="pf-foto__side">' +
               '<span class="pf-foto__lbl">Foto do paciente</span>' +
               '<input type="file" id="pf-foto-input" accept="image/png,image/jpeg,image/webp" hidden />' +
