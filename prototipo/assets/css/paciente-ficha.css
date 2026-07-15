@@ -132,6 +132,33 @@
 .pac-toast.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
 .pac-toast.is-error { background: #B4304A; }
 
+/* Lápis de edição no cabeçalho */
+.fhead__edit {
+  border: none; background: var(--rosa-suave); cursor: pointer; font-size: 0.95rem;
+  width: 30px; height: 30px; border-radius: 50%; vertical-align: middle;
+  transition: background var(--t-fast); line-height: 1;
+}
+.fhead__edit:hover { background: var(--rosa); }
+
+/* Cabeçalho de seção com botão de ação (Adicionar/Editar) */
+.fsec__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.fsec__head .fsec__title { margin-bottom: 0; }
+.fsec__add {
+  border: 1px solid var(--vinho); background: var(--branco); color: var(--vinho);
+  border-radius: var(--radius-chip); padding: 6px 14px; font: inherit; font-size: var(--fs-sm);
+  font-weight: 700; cursor: pointer; flex: none; transition: all var(--t-fast);
+}
+.fsec__add:hover { background: var(--vinho); color: #fff; }
+
+/* Editor inline (textarea + ações) */
+.fedit {
+  width: 100%; border: 1px solid var(--cinza-borda); border-radius: var(--radius-input);
+  padding: var(--sp-3); font: inherit; font-size: var(--fs-sm); line-height: 1.6; color: var(--texto);
+  resize: vertical; min-height: 120px; background: var(--branco);
+}
+.fedit:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+.fedit__actions { display: flex; justify-content: flex-end; gap: var(--sp-2); margin-top: var(--sp-3); }
+
 /* Responsivo */
 @media (max-width: 900px) {
   .ficha { grid-template-columns: 1fr; }

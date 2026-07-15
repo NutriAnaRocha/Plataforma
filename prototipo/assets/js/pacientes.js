@@ -236,7 +236,8 @@
             : '<span class="fhead__avatar fhead__avatar--ini">' + esc(p.ini) + '</span>') +
           '<div class="fhead__id">' +
             '<h1 class="fhead__name">' + esc(p.nome) +
-              ' <span class="pill pill-' + p.status + '">' + statusMap[p.status] + '</span> ' + acesso + '</h1>' +
+              ' <span class="pill pill-' + p.status + '">' + statusMap[p.status] + '</span> ' + acesso +
+              ' <button class="fhead__edit" id="pac-edit" type="button" title="Editar dados do paciente" aria-label="Editar">✏️</button></h1>' +
             '<div class="fhead__grid">' +
               hgField("Idade", idadeTxt) +
               hgField("Sexo", sexoTxt) +
@@ -250,7 +251,6 @@
           '</div>' +
           '<div class="fhead__side">' +
             '<button class="btn btn--ghost btn--sm" id="pac-view" type="button" title="Ver como paciente">👁 Portal</button>' +
-            '<button class="btn btn--ghost btn--sm" id="pac-edit" type="button">✏ Editar</button>' +
             '<button class="btn btn--ghost btn--sm btn--danger" id="pac-del" type="button">🗑 Excluir</button>' +
           '</div>' +
         '</div>' +
@@ -280,7 +280,61 @@
       acaoRapida(p, b.getAttribute("data-qa"));
     });
 
+    // Edição inline dos campos de texto da ficha (anamnese, restrições, etc.)
+    el("ficha-main").addEventListener("click", function (e) {
+      var ed = e.target.closest("[data-edit-campo]");
+      if (ed) { abrirEditorCampo(p, ed.getAttribute("data-edit-campo")); return; }
+      var cc = e.target.closest("[data-cancel-campo]");
+      if (cc) { renderSection(p); return; }
+      var sv = e.target.closest("[data-save-campo]");
+      if (sv) { salvarCampo(p, sv.getAttribute("data-save-campo"), sv); return; }
+    });
+
     renderSection(p);
+  }
+
+  /* ---------- Campos de texto editáveis (inline) ---------- */
+  // Bloco com título + botão (+ Adicionar / ✏️ Editar) e o conteúdo (ou vazio).
+  function campoEditavel(titulo, campo, valor, placeholder) {
+    var tem = valor != null && String(valor).trim() !== "";
+    var body = tem
+      ? '<p class="ftxt">' + esc(valor).replace(/\n/g, "<br>") + '</p>'
+      : '<div class="empty-state">' + esc(placeholder) + '</div>';
+    var btn = '<button class="fsec__add" type="button" data-edit-campo="' + campo + '">' +
+      (tem ? "✏️ Editar" : "＋ Adicionar") + '</button>';
+    return '<section class="fsec">' +
+      '<div class="fsec__head"><h2 class="fsec__title">' + esc(titulo) + '</h2>' + btn + '</div>' +
+      '<div data-campo-box="' + campo + '">' + body + '</div></section>';
+  }
+
+  function abrirEditorCampo(p, campo) {
+    var box = el("ficha-main").querySelector('[data-campo-box="' + campo + '"]');
+    if (!box) return;
+    var val = p[campo] || "";
+    box.innerHTML =
+      '<textarea class="fedit" id="fedit-' + campo + '" rows="6" placeholder="Escreva aqui…">' + esc(val) + '</textarea>' +
+      '<div class="fedit__actions">' +
+        '<button class="btn btn--ghost btn--sm" type="button" data-cancel-campo="' + campo + '">Cancelar</button>' +
+        '<button class="btn btn--primary btn--sm" type="button" data-save-campo="' + campo + '">Salvar</button>' +
+      '</div>';
+    var ta = document.getElementById("fedit-" + campo);
+    if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+  }
+
+  function salvarCampo(p, campo, btn) {
+    var ta = document.getElementById("fedit-" + campo);
+    var val = ta ? ta.value : "";
+    if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; }
+    var patch = Object.assign({}, p); patch[campo] = val;
+    window.NutriPacientes.update(p.id, patch).then(function (saved) {
+      for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
+      state.current = saved;
+      renderProfile(saved);   // re-renderiza mantendo a seção atual
+      pacToast("Salvo");
+    }).catch(function (e) {
+      if (btn) { btn.disabled = false; btn.textContent = "Salvar"; }
+      pacToast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
+    });
   }
 
   /* ---------- Ações rápidas ---------- */
@@ -363,26 +417,15 @@
       hgField("Cidade", esc(p.contato.cidade || "—")) +
       hgField("Cadastro", fmtCadastro(p.criadoEm)) +
     '</div>';
-    var objetivos = '<p class="ftxt">' + esc(p.objetivo || "Sem objetivo definido.") + '</p>' +
-      (p.meta != null ? '<p class="ftxt"><strong>Meta de peso:</strong> ' + p.meta + ' kg</p>' : '') +
-      ((p.tags || []).length ? '<div class="fhead__tags">' + p.tags.map(function (t) { return '<span class="mini-tag">' + esc(t) + '</span>'; }).join("") + '</div>' : '');
-    var obs = '<p class="ftxt">' + esc(p.observacoes || "Sem observações registradas.") + '</p>';
-
     return secWrap("Dados pessoais", dados) +
-      secWrap("Objetivos", objetivos) +
-      secWrap("Observações gerais", obs) +
+      campoEditavel("Objetivos", "objetivo", p.objetivo, "Nenhum objetivo definido. Clique em “Adicionar”.") +
+      campoEditavel("Observações gerais", "observacoes", p.observacoes, "Sem observações registradas.") +
       renderPortalCard(p);
   }
 
   function secAnamnese(p) {
-    var inicial = p.anamnese
-      ? '<p class="ftxt">' + esc(p.anamnese) + '</p>'
-      : '<div class="empty-state">Nenhuma anamnese inicial registrada.</div>';
-    var restr = p.restricoes
-      ? '<p class="ftxt">' + esc(p.restricoes) + '</p>'
-      : '<div class="empty-state">Sem restrições/alergias registradas.</div>';
-    return secWrap("Anamnese inicial", inicial) +
-      secWrap("Restrições & alergias", restr) +
+    return campoEditavel("Anamnese inicial", "anamnese", p.anamnese, "Nenhuma anamnese inicial registrada. Clique em “Adicionar” para escrever.") +
+      campoEditavel("Restrições & alergias", "restricoes", p.restricoes, "Sem restrições/alergias registradas.") +
       secWrap("Anamneses de retorno & histórico", emBreve("Aqui ficará o histórico de anamneses de retorno, com data e comparação entre elas."));
   }
 
@@ -945,6 +988,7 @@
           '<div class="pf-grid">' +
             field("Nome completo", "nome", p.nome, { required: true, wide: true }) +
             field("Data de nascimento", "dataNascimento", p.dataNascimento, { type: "date" }) +
+            field("Sexo", "sexo", p.sexo || "", { type: "select", options: [{ v: "", l: "—" }, { v: "F", l: "Feminino" }, { v: "M", l: "Masculino" }] }) +
             field("CPF", "cpf", p.cpf, { placeholder: "000.000.000-00" }) +
             field("Telefone", "tel", c.tel, { type: "tel", wide: true, placeholder: "(21) 99999-9999" }) +
           '</div>' +
@@ -1031,6 +1075,7 @@
     var payload = Object.assign(base, {
       nome: nome,
       dataNascimento: g("dataNascimento"),
+      sexo: g("sexo") || null,
       cpf: g("cpf"),
       fotoUrl: form._fotoUrl || "",
       contato: Object.assign({}, (existing && existing.contato) || {}, { tel: g("tel") })
