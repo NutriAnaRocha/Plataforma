@@ -35,9 +35,14 @@
         <div class="auth">
           <div class="auth__buttons">
             <button class="btn btn--primary btn--lg" id="btn-entrar" type="button">Entrar</button>
-            <!-- Signup público desativado (contas criadas pela nutricionista/admin).
-                 Para reabrir cadastro: remover o hidden abaixo E religar "Allow new users
-                 to sign up" no Supabase (Auth → Sign In / Providers). -->
+            <!-- Signup público desativado nos DOIS lugares (16/07/2026): este botão
+                 (hidden) e o `disable_signup=true` no Supabase — antes só a UI escondia,
+                 e a API /auth/v1/signup ainda aceitava cadastro (quem se cadastrasse
+                 virava 'nutri' e caía num painel vazio). Contas são criadas pela
+                 nutricionista/admin, pelo webhook da compra (invite) ou pela function
+                 create-patient-access — todas via API admin, que NÃO passa pelo
+                 disable_signup. Para reabrir: remover o hidden E religar "Allow new
+                 users to sign up" no Supabase (Auth → Sign In / Providers). -->
             <button class="btn btn--ghost btn--lg" id="btn-criar" type="button" hidden>Criar conta</button>
           </div>
 
