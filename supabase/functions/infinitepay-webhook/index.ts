@@ -39,9 +39,11 @@ const BIBLIOTECA_URL =
   "https://nutrianarocha.github.io/Plataforma/prototipo/biblioteca.html";
 
 // order_nsu (fixo no link de checkout) -> slug do catálogo da biblioteca.
+// Estes são os slugs CANÔNICOS, que casam com os arquivos já existentes no
+// bucket privado 'ebooks' (ver migração 0017).
 const ORDER_TO_SLUG: Record<string, string> = {
-  "rotulos-ebook": "guia-rotulos",
-  "tentante-ebook": "guia-tentante",
+  "rotulos-ebook": "leitura-de-rotulos",
+  "tentante-ebook": "guia-completo-tentante",
   "canetas-ebook": "guia-canetas",
 };
 

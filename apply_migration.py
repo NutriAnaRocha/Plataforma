@@ -3,13 +3,16 @@
 """
 Aplica uma migração SQL no Postgres do Supabase da Plataforma Nutri.
 Uso:  python apply_migration.py supabase/migrations/0007_perfil_extra.sql
-Credenciais lidas de D:\\ClaudeCode\\.nutri-supabase-credentials
+Credenciais lidas de C:\\Users\\<user>\\.claude\\.nutri-supabase-credentials
 Pede confirmação explícita antes de rodar.
+
+Obs: exige DB_PASSWORD no arquivo de credenciais. Se não houver, use
+apply_migration_api.py (roda o SQL pela Management API, só com o PAT).
 """
 import sys, os, re
 import psycopg2
 
-CRED = r"D:\ClaudeCode\.nutri-supabase-credentials"
+CRED = os.path.join(os.path.expanduser("~"), ".claude", ".nutri-supabase-credentials")
 
 def load_creds():
     d = {}
