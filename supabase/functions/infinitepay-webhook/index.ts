@@ -33,10 +33,14 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, "Content-Type": "application/json" } });
 
 const HANDLE = Deno.env.get("INFINITEPAY_HANDLE") || "analuisarocha";
-// URL para onde o e-mail de convite/acesso leva o comprador (a biblioteca).
+// URL para onde o e-mail de convite leva o comprador: a tela de login DO SITE,
+// que trata o #access_token&type=invite e faz a pessoa criar a senha.
+// NÃO apontar para a biblioteca (nem a do site, nem a da plataforma): elas não
+// parseiam o hash do convite e descartariam o token, deixando o comprador sem
+// como criar senha. O destino precisa estar na uri_allow_list do Auth.
 const BIBLIOTECA_URL =
   Deno.env.get("BIBLIOTECA_URL") ||
-  "https://nutrianarocha.github.io/Plataforma/prototipo/biblioteca.html";
+  "https://nutrianarocha.github.io/site/entrar.html";
 
 // order_nsu (fixo no link de checkout) -> slug do catálogo da biblioteca.
 // Estes são os slugs CANÔNICOS, que casam com os arquivos já existentes no
@@ -154,8 +158,11 @@ Deno.serve(async (req) => {
   if (existId) {
     userId = existId as unknown as string;
   } else {
+    // tipo: "comprador" é essencial. Sem ele, handle_new_user faz
+    // coalesce(..., 'nutri') e o comprador entra como NUTRI — caindo no
+    // dashboard da Ana ao logar na plataforma (ver migração 0018).
     const { data: novo, error: errInvite } = await admin.auth.admin.inviteUserByEmail(email, {
-      data: { nome: nome ?? "" },
+      data: { nome: nome ?? "", tipo: "comprador" },
       redirectTo: BIBLIOTECA_URL,
     });
     if (errInvite || !novo?.user) {

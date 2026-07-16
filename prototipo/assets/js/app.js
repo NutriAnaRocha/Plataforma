@@ -140,6 +140,11 @@
       return c.from("profiles").select("onboarded,tipo").maybeSingle().then(function (res) {
         var tipo = (res.data && res.data.tipo) || "nutri";
         if (tipo === "paciente") { window.location.href = "portal-paciente.html"; return; }
+        // Comprador de e-book: o lugar dele é a biblioteca do site, não o painel.
+        if (tipo === "comprador") {
+          window.location.href = "https://nutrianarocha.github.io/site/biblioteca.html";
+          return;
+        }
         // Considera "já respondeu" por QUALQUER sinal confiável: perfil no banco,
         // flag local deste device, ou áreas já salvas localmente. Assim o modal
         // não reaparece a cada login mesmo que a gravação no banco tenha falhado.
