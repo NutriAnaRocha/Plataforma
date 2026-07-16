@@ -16,7 +16,7 @@
   <style>
     .biblio-wrap { max-width: var(--maxw, 1100px); margin: 0 auto; padding: var(--sp-5) var(--sp-4) var(--sp-8); }
     .biblio-hero { margin: var(--sp-5) 0 var(--sp-6); }
-    .biblio-hero h1 { font-family: var(--font-display); color: var(--vinho); font-size: var(--fs-h1); margin: 0 0 .3em; }
+    .biblio-hero h1 { font-family: var(--font-display); font-weight: 900; color: var(--vinho); font-size: var(--fs-h1); margin: 0 0 .3em; }
     .biblio-hero p { color: var(--texto-sutil); margin: 0; max-width: 52ch; }
 
     .biblio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--sp-5); }
@@ -27,7 +27,7 @@
     .biblio-cover-wrap { position: relative; aspect-ratio: 3 / 4; overflow: hidden; }
     .biblio-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
     .biblio-cover--ph { display: flex; align-items: center; justify-content: center; text-align: center;
-      padding: var(--sp-4); font-family: var(--font-display); font-weight: 700; color: var(--branco);
+      padding: var(--sp-4); font-family: var(--font-display); font-weight: 900; color: var(--branco);
       background: linear-gradient(150deg, var(--vinho), var(--rosa)); font-size: 1.05rem; line-height: 1.25; }
     .is-locked .biblio-cover { filter: grayscale(.5) brightness(.9); }
 
@@ -45,7 +45,7 @@
 
     /* Seções por categoria */
     .biblio-section { margin-bottom: var(--sp-7); }
-    .biblio-cat { font-family: var(--font-display); color: var(--vinho); font-size: var(--fs-h2);
+    .biblio-cat { font-family: var(--font-display); font-weight: 900; color: var(--vinho); font-size: var(--fs-h2);
       margin: 0 0 var(--sp-4); padding-bottom: .5rem; border-bottom: 1px solid var(--cinza-borda); }
 
     /* Leitor em tela cheia */
@@ -55,7 +55,7 @@
     .biblio-reader[hidden] { display: none; }
     .biblio-reader__bar { display: flex; align-items: center; gap: var(--sp-3); padding: .6rem var(--sp-4);
       border-bottom: 1px solid var(--cinza-borda); background: var(--branco); }
-    .biblio-reader__bar strong { font-family: var(--font-display); color: var(--vinho); font-size: 1rem;
+    .biblio-reader__bar strong { font-family: var(--font-display); font-weight: 900; color: var(--vinho); font-size: 1rem;
       flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .biblio-reader__close { border: 1px solid var(--cinza-borda); background: var(--branco); border-radius: var(--radius-btn, 10px);
       padding: .45rem .9rem; font-weight: 600; cursor: pointer; color: var(--texto); }
