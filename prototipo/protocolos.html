@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-brand-title>Biblioteca Clínica</title>
+  <title data-brand-title>Protocolos</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,7 +17,6 @@
 <body>
   <div class="app" id="app">
 
-    <!-- ================= SIDEBAR ================= -->
     <aside class="sidebar">
       <div class="sidebar__logo">
         <span class="sidebar__mark"><img src="assets/img/logo-mark.png" alt="" /></span>
@@ -33,8 +32,8 @@
         <a href="exames.html"><span class="ico">🧪</span> Exames</a>
 
         <p class="menu__label">Inteligência Clínica</p>
-        <a href="biblioteca-clinica.html" class="is-active"><span class="ico">🔬</span> Biblioteca Clínica</a>
-        <a href="protocolos.html"><span class="ico">📑</span> Protocolos</a>
+        <a href="biblioteca-clinica.html"><span class="ico">🔬</span> Biblioteca Clínica</a>
+        <a href="protocolos.html" class="is-active"><span class="ico">📑</span> Protocolos</a>
 
         <p class="menu__label">Gestão</p>
         <a href="comunidade.html"><span class="ico">💬</span> Comunidade</a>
@@ -58,49 +57,41 @@
     </aside>
     <div class="scrim" id="scrim"></div>
 
-    <!-- ================= CONTEÚDO ================= -->
     <div class="content">
-
       <header class="topbar">
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
         <div class="topbar__hello">
-          <h1>Biblioteca Clínica</h1>
-          <p>Exames laboratoriais — interpretação clínica e funcional, com referência</p>
+          <h1>Protocolos</h1>
+          <p>Consulta rápida por condição clínica — com referência e limite de escopo</p>
         </div>
-        <button class="btn btn--primary" id="bc-novo" style="margin-left:auto" type="button">+ Novo exame</button>
         <span class="avatar" id="user-avatar">AL</span>
       </header>
 
       <main class="canvas">
-
-        <!-- Busca + filtros -->
         <div class="bc-bar">
           <div class="bc-search">
             🔍
-            <input type="search" id="bc-busca" placeholder="Buscar exame, sinônimo ou nutriente… (ex.: ferritina, cansaço, B12)"
-                   aria-label="Buscar na biblioteca" autocomplete="off" />
+            <input type="search" id="bc-busca" autocomplete="off"
+                   placeholder="Buscar condição, sintoma ou exame… (ex.: fadiga, esteatose, ferritina)"
+                   aria-label="Buscar protocolo" />
           </div>
-          <div class="bc-chips" id="bc-grupos" role="group" aria-label="Filtrar por grupo"></div>
+          <div class="bc-chips" id="bc-grupos" role="group" aria-label="Filtrar por eixo"></div>
         </div>
 
         <div class="bc-grid">
-          <!-- Lista -->
-          <section class="bc-col-lista" aria-label="Exames">
+          <section class="bc-col-lista" aria-label="Protocolos">
             <div class="bc-count" id="bc-count"></div>
             <div class="bc-list" id="bc-list"></div>
           </section>
-
-          <!-- Detalhe -->
           <section class="bc-detail" id="bc-detail" aria-live="polite"></section>
         </div>
-
       </main>
     </div>
   </div>
 
   <script src="assets/js/supabase-client.js"></script>
   <script src="assets/js/auth-guard.js"></script>
-  <script src="assets/js/biblioteca-clinica.js"></script>
+  <script src="assets/js/protocolos.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>

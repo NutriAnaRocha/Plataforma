@@ -306,6 +306,43 @@
 }
 .bc-estr p { font-size: var(--fs-sm); line-height: var(--lh-normal); }
 
+/* exames relacionados (protocolos) — cada um leva à sua entrada na biblioteca */
+.bc-exames { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.bc-exame {
+  display: inline-block;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  text-decoration: none;
+  background: var(--rosa-suave);
+  color: var(--vinho);
+  border: 1px solid var(--rosa);
+  border-radius: var(--radius-chip);
+  padding: 4px 11px;
+  transition: all var(--t-fast);
+}
+.bc-exame:hover {
+  background: var(--vinho);
+  border-color: var(--vinho);
+  color: var(--branco);
+}
+.bc-exame:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+/* exame citado que ainda não existe na biblioteca — não vira link */
+.bc-exame--off {
+  background: var(--cinza-claro);
+  border-color: var(--cinza-borda);
+  color: var(--texto-sutil);
+}
+
+/* quando encaminhar — o limite do escopo merece peso visual próprio */
+.bc-encaminhar {
+  background: var(--cinza-claro);
+  border: 1px solid var(--cinza-borda);
+  border-left: 3px solid var(--vinho);
+  border-radius: var(--radius-btn);
+  padding: var(--sp-4);
+}
+.bc-encaminhar .bc-sec__t { margin-bottom: var(--sp-1); }
+
 /* referências */
 .bc-refsci { list-style: none; margin: 0; padding: 0; }
 .bc-refsci li {
