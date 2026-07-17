@@ -54,15 +54,36 @@
     { key: "panturrilha", lbl: "Panturrilha",      x: 31, y: 140, como: "Maior perímetro da perna." }
   ];
 
-  // 7 dobras cutâneas (mm) — protocolo de Pollock
+  /* 7 dobras cutâneas (mm) — protocolo de Pollock, hemicorpo direito.
+     `como`      = referência curta, visível no card (mantém a grade densa).
+     `protocolo` = coordenada anatômica precisa + posição + pinçamento,
+                   sob demanda (o card ficaria alto demais com tudo aberto).
+     A convenção seguida é a de Jackson & Pollock, que é a das equações
+     calculadas aqui. Onde outros autores divergem (axilar, abdominal,
+     coxa), `protocolo` avisa: medir por um autor e calcular pela equação
+     de outro introduz erro sistemático. */
   var DOBRAS = [
-    { key: "peitoral",     lbl: "Peitoral (torácica)", x: 33, y: 46, lado: "frente", como: "Dobra diagonal entre a axila e o mamilo. Homens: ½ da distância; mulheres: ⅓." },
-    { key: "axilar",       lbl: "Axilar média",        x: 27, y: 60, lado: "frente", como: "Dobra vertical na linha axilar média, na altura do apêndice xifoide." },
-    { key: "triceps",      lbl: "Tríceps",             x: 57, y: 52, lado: "costas", como: "Dobra vertical na face posterior do braço, ponto médio entre acrômio e olécrano." },
-    { key: "subescapular", lbl: "Subescapular",        x: 48, y: 49, lado: "costas", como: "Dobra a 45° logo abaixo do ângulo inferior da escápula." },
-    { key: "suprailiaca",  lbl: "Suprailíaca",         x: 29, y: 78, lado: "frente", como: "Dobra diagonal acima da crista ilíaca, na linha axilar média." },
-    { key: "abdominal",    lbl: "Abdominal",           x: 45, y: 86, lado: "frente", como: "Dobra vertical cerca de 2 cm ao lado da cicatriz umbilical." },
-    { key: "coxa",         lbl: "Coxa",                x: 34, y: 110, lado: "frente", como: "Dobra vertical na face anterior da coxa, ponto médio entre a virilha e a patela." }
+    { key: "peitoral",     lbl: "Peitoral (torácica)", x: 33, y: 46, lado: "frente",
+      como: "Oblíqua, dirigida ao mamilo. Homens: ½ da distância axila–mamilo; mulheres: ⅓.",
+      protocolo: "Marcação: homens, metade da distância entre a linha axilar anterior e o mamilo; mulheres, a um terço dessa distância a partir da linha axilar anterior. Direção: oblíqua ao eixo longitudinal, para baixo e para dentro. Avaliado em pé, braço ligeiramente afastado do tronco. Destacar a dobra no sentido da linha axila–mamilo e aplicar o plicômetro 1 cm abaixo dos dedos." },
+    { key: "axilar",       lbl: "Axilar média",        x: 27, y: 60, lado: "frente",
+      como: "Linha axilar média, na altura do apêndice xifoide. Braço deslocado para trás.",
+      protocolo: "Marcação: intersecção da linha axilar média com uma horizontal na altura do apêndice xifoide do esterno. Direção: transversal por Jackson et al. (1978) — convenção das equações usadas aqui; oblíqua por Petroski (1995). Os autores divergem: use uma e mantenha a MESMA nas reavaliações. Avaliado em pé, braço deslocado para trás para expor o ponto." },
+    { key: "triceps",      lbl: "Tríceps",             x: 57, y: 52, lado: "costas",
+      como: "Vertical, face posterior do braço, ponto médio entre acrômio e olécrano.",
+      protocolo: "Marcação: ponto médio entre a borda súpero-lateral do acrômio e o olécrano, na face posterior. Marcar com o cotovelo flexionado a 90°; medir com o braço relaxado e pendente ao lado do corpo. Direção: paralela ao eixo longitudinal. Destacar a dobra 1 cm acima da marca, polegar e indicador afastados ~8 cm." },
+    { key: "subescapular", lbl: "Subescapular",        x: 48, y: 49, lado: "costas",
+      como: "2 cm abaixo do ângulo inferior da escápula, oblíqua a ~45°.",
+      protocolo: "Marcação: dois centímetros abaixo do ângulo inferior da escápula. Direção: oblíqua a ~45°, seguindo a orientação natural dos arcos costais (dirigida ínfero-lateralmente). Avaliado em pé, ombros relaxados e braços soltos. Se o ângulo for difícil de palpar, pedir para levar o braço às costas e devolver à posição antes de medir." },
+    { key: "suprailiaca",  lbl: "Suprailíaca",         x: 29, y: 78, lado: "frente",
+      como: "Metade da distância entre o último arco costal e a crista ilíaca, na linha axilar média.",
+      protocolo: "Marcação: ponto médio entre o último arco costal e a crista ilíaca, sobre a linha axilar média. Direção: oblíqua, acompanhando a linha natural da pele (ântero-inferior). Avaliado em pé, braço afastado para trás para liberar o ponto. Palpar as duas referências ósseas antes de marcar." },
+    { key: "abdominal",    lbl: "Abdominal",           x: 45, y: 86, lado: "frente",
+      como: "2 cm à direita da cicatriz umbilical, vertical.",
+      protocolo: "Marcação: aproximadamente dois centímetros à direita da cicatriz umbilical. Direção: paralela ao eixo longitudinal (vertical) — convenção de Pollock e Petroski, usada nas equações daqui. Lohman (1988) mede transversalmente. Avaliado em pé, abdome relaxado, respiração normal, sem prender o ar nem contrair." },
+    { key: "coxa",         lbl: "Coxa",                x: 34, y: 110, lado: "frente",
+      como: "Vertical, sobre o reto femoral, na metade entre a prega inguinal e a patela.",
+      protocolo: "Marcação: face anterior, sobre o reto femoral, na linha média, na metade da distância entre a prega inguinal e a borda superior da patela (Pollock & Wilmore, 1993 — convenção das equações daqui). Guedes (1985) marca a um terço. Avaliado em pé, perna direita à frente, joelho em semiflexão, peso do corpo na perna esquerda. O relaxamento do quadríceps é essencial: sem ele a dobra não se destaca." }
   ];
 
   var BIO = [
@@ -109,6 +130,10 @@
           'data-antro="' + grupo + ':' + item.key + '" value="' + (valor == null ? "" : esc(valor)) + '" placeholder="0" />' +
           '<span class="antro-card__un">' + unidade + '</span></div>' +
         '<p class="antro-card__como">' + esc(item.como) + '</p>' +
+        (item.protocolo
+          ? '<details class="antro-card__prot"><summary>Protocolo completo</summary>' +
+              '<p>' + esc(item.protocolo) + '</p></details>'
+          : '') +
       '</div>' +
     '</div>';
   }

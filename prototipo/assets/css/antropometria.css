@@ -60,6 +60,23 @@
 .antro-card__un { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; }
 .antro-card__como { font-size: 11px; color: var(--texto-sutil); line-height: 1.4; margin: 0; }
 
+/* Protocolo completo por dobra — fechado por padrão para não esticar o card.
+   A coordenada anatômica precisa só interessa na hora de marcar o ponto. */
+.antro-card__prot { margin-top: 6px; }
+.antro-card__prot summary {
+  font-size: 10.5px; font-weight: 700; color: var(--vinho);
+  cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 4px;
+  border-bottom: 1px dotted var(--vinho-claro);
+}
+.antro-card__prot summary::-webkit-details-marker { display: none; }
+.antro-card__prot summary::before { content: "▸"; font-size: 9px; transition: transform var(--t-fast); }
+.antro-card__prot[open] summary::before { transform: rotate(90deg); }
+.antro-card__prot summary:focus-visible { outline: none; box-shadow: var(--ring-foco); border-radius: 3px; }
+.antro-card__prot p {
+  font-size: 10.5px; color: var(--texto); line-height: 1.5; margin: 6px 0 0;
+  background: var(--rosa-suave); border-radius: var(--radius-sm); padding: 7px 9px;
+}
+
 /* Resultados */
 .antro-result .fmetric__val { font-size: 1.2rem; }
 .antro-obs { font-size: var(--fs-sm); color: var(--texto-sutil); margin-top: var(--sp-3); min-height: 1em; }
