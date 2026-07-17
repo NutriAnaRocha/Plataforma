@@ -407,6 +407,17 @@
         }
       });
     }
+    if (sec === "anamnese" && window.Questionarios) {
+      window.Questionarios.wire(p, {
+        toast: pacToast,
+        perfil: perfilNutri,
+        onSaved: function (saved) {
+          for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
+          state.current = saved;
+          renderProfile(saved);
+        }
+      });
+    }
     if (sec === "perfil") { wirePortalCard(p); refreshAdesaoReal(p); }
     if (sec === "comunicacao") { initChatPane(p); loadChatPane(p); }
   }
@@ -439,9 +450,12 @@
   }
 
   function secAnamnese(p) {
+    var quest = window.Questionarios
+      ? window.Questionarios.render(p)
+      : secWrap("Questionários & anamnese de retorno", emBreve("Aqui ficará o histórico de anamneses de retorno, com data e comparação entre elas."));
     return campoEditavel("Anamnese inicial", "anamnese", p.anamnese, "Nenhuma anamnese inicial registrada. Clique em “Adicionar” para escrever.") +
       campoEditavel("Restrições & alergias", "restricoes", p.restricoes, "Sem restrições/alergias registradas.") +
-      secWrap("Anamneses de retorno & histórico", emBreve("Aqui ficará o histórico de anamneses de retorno, com data e comparação entre elas."));
+      quest;
   }
 
   function secExames(p) {

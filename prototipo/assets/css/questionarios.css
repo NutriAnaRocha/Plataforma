@@ -1,0 +1,80 @@
+/* ============================================================
+   QUESTIONÁRIOS & ANAMNESE DE RETORNO — estilos da seção Anamnese.
+   Usa os tokens globais (tokens.css). Combina com paciente-ficha.css.
+   ============================================================ */
+
+.qhint {
+  font-size: var(--fs-sm); color: var(--texto-sutil); line-height: 1.5;
+  margin: 0 0 var(--sp-4);
+}
+
+/* Grade de modelos */
+.qgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--sp-3); }
+.qmodelo {
+  display: flex; flex-direction: column; gap: 8px;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  padding: var(--sp-3); background: var(--branco);
+}
+.qmodelo__top { display: flex; align-items: center; gap: 8px; }
+.qmodelo__ico { font-size: 1.3rem; line-height: 1; }
+.qmodelo__nome { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-body); }
+.qmodelo__desc { font-size: 11.5px; color: var(--texto-sutil); line-height: 1.4; margin: 0; flex: 1; }
+.qmodelo__acoes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+
+/* Formulário de preenchimento */
+.qform { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.q-field { display: flex; flex-direction: column; gap: 4px; }
+.q-field--full { grid-column: 1 / -1; }
+.q-field__lbl { font-size: var(--fs-sm); font-weight: 600; color: var(--cinza-escuro); }
+.q-field input,
+.q-field select,
+.q-field textarea {
+  font: inherit; font-size: var(--fs-sm); color: var(--texto);
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-input);
+  padding: 8px 10px; background: var(--branco); width: 100%; resize: vertical;
+}
+.q-field input:focus,
+.q-field select:focus,
+.q-field textarea:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+
+.qform__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: var(--sp-4); }
+
+/* Histórico */
+.qhist { display: flex; flex-direction: column; gap: 8px; }
+.qhist__item {
+  display: flex; align-items: center; gap: 10px; text-align: left; width: 100%;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  padding: 10px 12px; background: var(--branco); cursor: pointer; font: inherit;
+}
+.qhist__item:hover { border-color: var(--vinho); background: var(--rosa-suave); }
+.qhist__ico { font-size: 1.2rem; line-height: 1; flex: none; }
+.qhist__info { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.qhist__tit { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-sm); }
+.qhist__date { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.qhist__meta { font-size: var(--fs-caption); color: var(--vinho); font-weight: 700; flex: none; }
+
+/* Modal de detalhe */
+.qmodal {
+  position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, .45); padding: 16px;
+}
+.qmodal__box {
+  position: relative; background: var(--branco); border-radius: var(--radius-card);
+  padding: var(--sp-5, 24px) var(--sp-4, 20px); width: 100%; max-width: 560px;
+  max-height: 86vh; overflow-y: auto; box-shadow: var(--sombra-flutuante, 0 12px 40px rgba(0, 0, 0, .25));
+}
+.qmodal__x {
+  position: absolute; top: 10px; right: 12px; border: none; background: none;
+  font-size: 1.4rem; line-height: 1; color: var(--texto-sutil); cursor: pointer;
+}
+.qmodal__tit { color: var(--vinho); font-size: var(--fs-h3, 1.05rem); margin: 0 24px 2px 0; }
+.qmodal__date { font-size: var(--fs-caption); color: var(--texto-sutil); margin: 0 0 var(--sp-3); }
+.qdet__row { padding: 8px 0; border-top: 1px dashed var(--cinza-borda); }
+.qdet__row:first-of-type { border-top: none; }
+.qdet__lbl { font-size: var(--fs-sm); font-weight: 700; color: var(--cinza-escuro); }
+.qdet__val { font-size: var(--fs-sm); color: var(--texto); line-height: 1.5; margin-top: 2px; }
+
+@media (max-width: 560px) {
+  .qgrid { grid-template-columns: 1fr; }
+  .qform { grid-template-columns: 1fr; }
+}

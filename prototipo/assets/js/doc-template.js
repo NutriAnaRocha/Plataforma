@@ -30,12 +30,6 @@
     });
   }
 
-  function iniciais(nome) {
-    var p = String(nome || "").trim().split(/\s+/).filter(Boolean);
-    if (!p.length) return "N";
-    return ((p[0][0] || "") + (p.length > 1 ? p[p.length - 1][0] : "")).toUpperCase();
-  }
-
   // Formata telefone brasileiro com parênteses: 21994094557 -> (21) 99409-4557.
   // Se não parecer um telefone (ex.: e-mail), devolve como está.
   function formatTel(v) {
@@ -44,51 +38,6 @@
     if (d.length === 11) return "(" + d.slice(0, 2) + ") " + d.slice(2, 7) + "-" + d.slice(7);
     if (d.length === 10) return "(" + d.slice(0, 2) + ") " + d.slice(2, 6) + "-" + d.slice(6);
     return s;
-  }
-
-  /* ---------- Ornamentos do fundo (marca d'água delicada) ----------
-     Silhueta feminina em linha ao centro + ramos florais nos cantos.
-     Tudo em SVG inline (sem imagem externa), com opacidade bem baixa
-     via CSS para não atrapalhar a leitura. */
-  function florSVG(x, y, s) {
-    var petals = "";
-    for (var i = 0; i < 5; i++) {
-      petals += '<ellipse cx="0" cy="-9" rx="3.4" ry="7.5" transform="rotate(' + (i * 72) + ')"/>';
-    }
-    return '<g transform="translate(' + x + ',' + y + ') scale(' + s + ')" fill="currentColor">' +
-      petals + '<circle r="2.6" fill="#fff"/><circle r="2.6" fill="currentColor" opacity=".35"/></g>';
-  }
-
-  // Ramo floral que sai de um canto (origem em 0,0).
-  var RAMO =
-    '<svg viewBox="0 0 170 170" xmlns="http://www.w3.org/2000/svg">' +
-      '<g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">' +
-        '<path d="M4 4 C 48 24 82 54 96 108"/>' +
-        '<path d="M22 26 C 46 30 58 46 58 46"/>' +
-        '<path d="M12 56 C 40 58 54 74 54 74"/>' +
-      '</g>' +
-      '<path d="M42 24 C 62 12 80 26 70 48 C 54 54 42 40 42 24 Z" fill="currentColor" opacity=".5"/>' +
-      '<path d="M34 66 C 56 56 72 72 60 92 C 44 94 34 82 34 66 Z" fill="currentColor" opacity=".45"/>' +
-      florSVG(98, 112, 1.05) +
-      florSVG(60, 50, 0.72) +
-    '</svg>';
-
-  // Silhueta/linha feminina (rosto de perfil + cabelo fluido) — motivo elegante.
-  var SILHUETA =
-    '<svg viewBox="0 0 260 340" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">' +
-      '<path d="M150 32 C 96 32 68 82 78 130 C 82 154 64 172 74 204 C 80 236 66 254 98 268"/>' +
-      '<path d="M150 32 C 192 38 202 92 192 124 C 186 144 168 152 176 166 C 182 176 172 184 168 194 C 162 206 172 216 160 226 C 150 234 156 248 172 252"/>' +
-      '<path d="M150 32 C 128 27 108 36 98 56"/>' +
-    '</svg>';
-
-  function decoracaoHTML() {
-    return '<div class="doc-bg" aria-hidden="true">' +
-      '<div class="doc-bg__silhueta">' + SILHUETA + '</div>' +
-      '<div class="doc-bg__flor doc-bg__flor--tl">' + RAMO + '</div>' +
-      '<div class="doc-bg__flor doc-bg__flor--tr">' + RAMO + '</div>' +
-      '<div class="doc-bg__flor doc-bg__flor--bl">' + RAMO + '</div>' +
-      '<div class="doc-bg__flor doc-bg__flor--br">' + RAMO + '</div>' +
-    '</div>';
   }
 
   // Mescla perfil + override do documento específico.
@@ -115,9 +64,9 @@
   }
 
   /* ---------- Cabeçalho ----------
-     Papel timbrado: logo pequena de um lado e, no canto oposto, um bloco
-     de texto com nome, título, CRN e contato. Sem logo, o bloco vira o
-     próprio cabeçalho à esquerda. */
+     Sem logo e sem moldura: apenas um bloco de texto centralizado com
+     nome, título, CRN e contato. A assinatura no rodapé faz o papel de
+     carimbo. */
   function blocoIdentidade(id) {
     var crnTxt = id.crn ? (/crn/i.test(id.crn) ? esc(id.crn) : "CRN " + esc(id.crn)) : "";
     var linhas = "";
@@ -130,19 +79,7 @@
   }
 
   function headerHTML(id) {
-    var head;
-    if (id.logoUrl) {
-      head = '<header class="doc-head doc-head--logo">' +
-        '<img class="doc-logo doc-logo--solo" src="' + esc(id.logoUrl) + '" alt="Logo" />' +
-        blocoIdentidade(id) +
-      '</header>';
-    } else {
-      head = '<header class="doc-head doc-head--texto">' +
-        '<div class="doc-logo doc-logo--fallback">' + esc(iniciais(id.nome)) + '</div>' +
-        blocoIdentidade(id) +
-      '</header>';
-    }
-    return head + '<div class="doc-rule"></div>';
+    return '<header class="doc-head">' + blocoIdentidade(id) + '</header>';
   }
 
   /* ---------- Faixa do título ---------- */
@@ -159,30 +96,14 @@
 
   /* ---------- Rodapé (assinatura / carimbo) ---------- */
   function footerHTML(id) {
-    var assin = "";
-    if (id.assinaturaUrl) {
-      assin = '<div class="doc-sign">' +
-        '<img class="doc-sign__img" src="' + esc(id.assinaturaUrl) + '" alt="Assinatura" />' +
-        '<div class="doc-sign__line"></div>' +
-        '<div class="doc-sign__nome">' + esc(id.nome) + '</div>' +
-        (id.crn ? '<div class="doc-sign__crn">' + esc(id.crn) + '</div>' : '') +
-      '</div>';
-    } else {
-      assin = '<div class="doc-sign">' +
-        '<div class="doc-sign__line"></div>' +
-        '<div class="doc-sign__nome">' + esc(id.nome) + '</div>' +
-        (id.crn ? '<div class="doc-sign__crn">' + esc(id.crn) + '</div>' : '') +
-      '</div>';
-    }
-    var carimbo = id.carimboUrl
-      ? '<img class="doc-carimbo" src="' + esc(id.carimboUrl) + '" alt="Carimbo profissional" />'
-      : '';
-
-    return '' +
-      '<footer class="doc-foot">' +
-        carimbo +
-        assin +
-      '</footer>';
+    var crnTxt = id.crn ? (/crn/i.test(id.crn) ? esc(id.crn) : "CRN " + esc(id.crn)) : "";
+    var inner = "";
+    if (id.carimboUrl) inner += '<img class="doc-carimbo" src="' + esc(id.carimboUrl) + '" alt="Carimbo profissional" />';
+    if (id.assinaturaUrl) inner += '<img class="doc-sign__img" src="' + esc(id.assinaturaUrl) + '" alt="Assinatura" />';
+    inner += '<div class="doc-sign__line"></div>';
+    inner += '<div class="doc-sign__nome">' + esc(id.nome) + '</div>';
+    if (crnTxt) inner += '<div class="doc-sign__crn">' + crnTxt + '</div>';
+    return '<footer class="doc-foot"><div class="doc-sign">' + inner + '</div></footer>';
   }
 
   /* ---------- CSS do documento (paleta injetada) ---------- */
@@ -198,29 +119,13 @@
       'body{font-family:"Montserrat","Segoe UI",system-ui,sans-serif;color:#2b2b2b;background:#e9e9ee;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
       '.doc-page{background:var(--doc-fundo);width:210mm;min-height:297mm;margin:16px auto;padding:12mm 14mm;box-shadow:0 6px 30px rgba(0,0,0,.15);position:relative;overflow:hidden;display:flex;flex-direction:column;}' +
 
-      /* ornamentos de fundo (marca d\'água delicada) */
-      '.doc-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}' +
-      '.doc-bg svg{display:block;width:100%;height:auto;}' +
-      '.doc-bg__silhueta{position:absolute;left:50%;top:52%;width:80%;max-width:172mm;transform:translate(-50%,-50%);color:var(--doc-primaria);opacity:.11;}' +
-      '.doc-bg__flor{position:absolute;width:42mm;color:var(--doc-destaque);opacity:.26;}' +
-      '.doc-bg__flor--tl{top:0;left:0;}' +
-      '.doc-bg__flor--tr{top:0;right:0;transform:scaleX(-1);}' +
-      '.doc-bg__flor--bl{bottom:0;left:0;transform:scaleY(-1);}' +
-      '.doc-bg__flor--br{bottom:0;right:0;transform:scale(-1,-1);}' +
-      '.doc-head,.doc-rule,.doc-title,.doc-body,.doc-foot{position:relative;z-index:1;}' +
-
-      /* header — logo pequena de um lado, bloco de texto no canto oposto */
-      '.doc-head{display:flex;align-items:center;justify-content:space-between;gap:16px;}' +
-      '.doc-logo{width:74px;height:74px;object-fit:contain;flex:none;}' +
-      '.doc-logo--solo{width:auto;height:56px;max-width:46%;object-fit:contain;}' +
-      '.doc-logo--fallback{border-radius:50%;background:var(--doc-primaria);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;width:52px;height:52px;}' +
-      '.doc-head__bloco{text-align:right;line-height:1.32;}' +
-      '.doc-head--texto .doc-head__bloco{text-align:left;}' +
-      '.doc-head__nome{font-size:14px;font-weight:800;color:var(--doc-primaria);}' +
-      '.doc-head__role{font-size:11px;font-weight:600;color:#555;}' +
-      '.doc-head__crn{font-size:10.5px;color:#777;margin-top:1px;}' +
-      '.doc-head__tel{font-size:10.5px;color:#777;}' +
-      '.doc-rule{height:3px;background:linear-gradient(90deg,var(--doc-primaria),var(--doc-destaque));border-radius:3px;margin:12px 0 0;}' +
+      /* cabeçalho — bloco de identidade centralizado, sem logo nem moldura */
+      '.doc-head{text-align:center;line-height:1.4;}' +
+      '.doc-head__bloco{display:inline-block;}' +
+      '.doc-head__nome{font-size:16px;font-weight:800;color:var(--doc-primaria);letter-spacing:.2px;}' +
+      '.doc-head__role{font-size:11.5px;font-weight:600;color:#555;}' +
+      '.doc-head__crn{font-size:11px;color:#777;margin-top:1px;}' +
+      '.doc-head__tel{font-size:11px;color:#777;}' +
 
       /* título */
       '.doc-title{margin:22px 0 18px;}' +
@@ -252,12 +157,12 @@
       '.doc-macro__l{font-size:10px;color:#777;text-transform:uppercase;letter-spacing:.4px;}' +
       '.doc-note{background:var(--doc-secundaria);border-radius:8px;padding:10px 12px;font-size:12px;color:#444;margin:10px 0;}' +
 
-      /* rodapé */
-      '.doc-foot{margin-top:26px;padding-top:16px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;break-inside:avoid;}' +
-      '.doc-carimbo{max-height:96px;max-width:180px;object-fit:contain;opacity:.95;}' +
-      '.doc-sign{margin-left:auto;text-align:center;min-width:220px;}' +
-      '.doc-sign__img{max-height:56px;max-width:200px;object-fit:contain;display:block;margin:0 auto -6px;}' +
-      '.doc-sign__line{border-top:1.5px solid #333;margin:0 auto 6px;width:220px;}' +
+      /* rodapé — assinatura/carimbo centralizados (a assinatura faz de carimbo) */
+      '.doc-foot{margin-top:40px;padding-top:16px;display:flex;justify-content:center;break-inside:avoid;}' +
+      '.doc-sign{text-align:center;min-width:240px;}' +
+      '.doc-carimbo{display:block;max-height:110px;max-width:230px;object-fit:contain;margin:0 auto 4px;opacity:.97;}' +
+      '.doc-sign__img{max-height:60px;max-width:220px;object-fit:contain;display:block;margin:0 auto -4px;}' +
+      '.doc-sign__line{border-top:1.5px solid #333;margin:0 auto 6px;width:240px;}' +
       '.doc-sign__nome{font-weight:700;font-size:12.5px;color:#333;}' +
       '.doc-sign__crn{font-size:11px;color:#777;}' +
 
@@ -280,7 +185,6 @@
     var id = resolver(perfil, doc);
     return '' +
       '<div class="doc-page">' +
-        decoracaoHTML() +
         headerHTML(id) +
         tituloHTML(doc) +
         '<div class="doc-body">' + (doc.bodyHTML || "") + '</div>' +

@@ -85,6 +85,8 @@
       como: "Vertical, sobre o reto femoral, na metade entre a prega inguinal e a patela.",
       protocolo: "Marcação: face anterior, sobre o reto femoral, na linha média, na metade da distância entre a prega inguinal e a borda superior da patela (Pollock & Wilmore, 1993 — convenção das equações daqui). Guedes (1985) marca a um terço. Avaliado em pé, perna direita à frente, joelho em semiflexão, peso do corpo na perna esquerda. O relaxamento do quadríceps é essencial: sem ele a dobra não se destaca." }
   ];
+  // Foto de referência de cada dobra (mostra o ponto exato ao passar o mouse / tocar).
+  DOBRAS.forEach(function (x) { x.img = "assets/img/dobras/" + x.key + ".jpg"; });
 
   var BIO = [
     { key: "gordura_pct",     lbl: "% Gordura",          un: "%" },
@@ -121,9 +123,23 @@
 
   /* ---------- Render ---------- */
   function inputMed(grupo, item, unidade, valor) {
-    return '<div class="antro-card">' +
-      '<div class="antro-card__fig">' + figura(item.x, item.y) +
-        (item.lado ? '<span class="antro-card__lado">' + item.lado + '</span>' : '') + '</div>' +
+    var lado = item.lado ? '<span class="antro-card__lado">' + item.lado + '</span>' : '';
+    var fig;
+    if (item.img) {
+      // Figura clicável: mostra a foto de referência no hover (desktop) e no toque (mobile).
+      fig = '<button type="button" class="antro-card__fig antro-card__fig--img" ' +
+          'aria-label="Ver foto de referência: ' + esc(item.lbl) + '">' +
+          figura(item.x, item.y) + lado +
+          '<span class="antro-card__zoom" aria-hidden="true">🔍</span>' +
+          '<span class="antro-pop" role="tooltip">' +
+            '<img class="antro-pop__img" src="' + esc(item.img) + '" alt="Referência anatômica da dobra ' + esc(item.lbl) + '" loading="lazy" />' +
+            '<span class="antro-pop__cap">' + esc(item.lbl) + '</span>' +
+          '</span>' +
+        '</button>';
+    } else {
+      fig = '<div class="antro-card__fig">' + figura(item.x, item.y) + lado + '</div>';
+    }
+    return '<div class="antro-card">' + fig +
       '<div class="antro-card__body">' +
         '<div class="antro-card__lbl">' + esc(item.lbl) + '</div>' +
         '<div class="antro-card__input"><input type="number" step="0.1" inputmode="decimal" ' +
@@ -282,6 +298,21 @@
     root.addEventListener("input", recalc);
     root.addEventListener("change", recalc);
     recalc();
+
+    // Foto de referência das dobras: toque abre/fecha (no desktop o hover já resolve).
+    root.querySelectorAll(".antro-card__fig--img").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        var abrir = !btn.classList.contains("is-open");
+        root.querySelectorAll(".antro-card__fig--img.is-open").forEach(function (o) { o.classList.remove("is-open"); });
+        if (abrir) btn.classList.add("is-open");
+      });
+    });
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".antro-card__fig--img")) {
+        root.querySelectorAll(".antro-card__fig--img.is-open").forEach(function (o) { o.classList.remove("is-open"); });
+      }
+    });
 
     var usarJoelho = root.querySelector("#antro-usar-joelho");
     if (usarJoelho) usarJoelho.addEventListener("click", function () {

@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  var COLS = "id,user_id,nome,ini,idade,data_nascimento,cpf,foto_url,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,antropometria,evolucao,consultas,prescricoes,exames,plano,portal_features,prontuario,created_at";
+  var COLS = "id,user_id,nome,ini,idade,data_nascimento,cpf,foto_url,sexo,objetivo,status,adesao,peso_atual,peso_inicial,meta,altura,imc,ult_consulta,prox_consulta,restricoes,anamnese,observacoes,contato,tags,antropometria,evolucao,consultas,prescricoes,exames,questionarios,plano,portal_features,prontuario,created_at";
 
   // Idade (anos completos) a partir de uma data ISO "YYYY-MM-DD".
   function idadeDeNascimento(iso) {
@@ -56,6 +56,7 @@
       restricoes: r.restricoes || "", anamnese: r.anamnese || "", observacoes: r.observacoes || "",
       evolucao: r.evolucao || { labels: [], peso: [] },
       consultas: r.consultas || [], prescricoes: r.prescricoes || [], exames: r.exames || [],
+      questionarios: Array.isArray(r.questionarios) ? r.questionarios : [],
       plano: r.plano || { titulo: null, refeicoes: [] },
       portalFeatures: Array.isArray(r.portal_features) ? r.portal_features : TODAS_FEATURES.slice(),
       prontuario: r.prontuario || null,
@@ -211,6 +212,19 @@
       }).then(function (res) {
         if (res.error) throw res.error;
         return true;
+      });
+    },
+
+    // Questionários / anamneses de retorno (jsonb array) — grava só essa coluna
+    // (não passa pelo toRow, isolando a dependência do resto da ficha) e devolve
+    // o paciente atualizado no shape da UI.
+    saveQuestionarios: function (id, lista) {
+      return client().then(function (c) {
+        return c.from("pacientes").update({ questionarios: lista || [] }).eq("id", id)
+          .select("*").single();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return fromRow(res.data);
       });
     },
 
