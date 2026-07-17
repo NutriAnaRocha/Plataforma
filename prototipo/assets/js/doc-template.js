@@ -158,13 +158,13 @@
       '.doc-note{background:var(--doc-secundaria);border-radius:8px;padding:10px 12px;font-size:12px;color:#444;margin:10px 0;}' +
 
       /* rodapé — assinatura/carimbo alinhados à esquerda (a assinatura faz de carimbo) */
-      '.doc-foot{margin-top:40px;padding-top:16px;display:flex;justify-content:flex-start;break-inside:avoid;}' +
-      '.doc-sign{text-align:left;min-width:240px;}' +
-      '.doc-carimbo{display:block;max-height:110px;max-width:230px;object-fit:contain;margin:0 0 4px;opacity:.97;}' +
-      '.doc-sign__img{max-height:60px;max-width:220px;object-fit:contain;display:block;margin:0 0 -4px;}' +
-      '.doc-sign__line{border-top:1.5px solid #333;margin:0 0 6px;width:240px;}' +
-      '.doc-sign__nome{font-weight:700;font-size:12.5px;color:#333;}' +
-      '.doc-sign__crn{font-size:11px;color:#777;}' +
+      '.doc-foot{margin-top:36px;padding-top:14px;display:flex;justify-content:flex-start;break-inside:avoid;}' +
+      '.doc-sign{text-align:left;min-width:180px;}' +
+      '.doc-carimbo{display:block;max-height:58px;max-width:160px;object-fit:contain;margin:0 0 2px;opacity:.97;}' +
+      '.doc-sign__img{max-height:40px;max-width:160px;object-fit:contain;display:block;margin:0 0 -2px;}' +
+      '.doc-sign__line{border-top:1.2px solid #333;margin:0 0 5px;width:180px;}' +
+      '.doc-sign__nome{font-weight:700;font-size:11px;color:#333;}' +
+      '.doc-sign__crn{font-size:10px;color:#777;}' +
 
       /* barra de ações (só na tela, some na impressão) */
       '.doc-actions{position:sticky;top:0;z-index:10;display:flex;gap:10px;justify-content:center;padding:12px;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-bottom:1px solid #ddd;}' +
