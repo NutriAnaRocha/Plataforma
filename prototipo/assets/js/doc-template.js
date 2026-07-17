@@ -119,8 +119,8 @@
       'body{font-family:"Montserrat","Segoe UI",system-ui,sans-serif;color:#2b2b2b;background:#e9e9ee;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
       '.doc-page{background:var(--doc-fundo);width:210mm;min-height:297mm;margin:16px auto;padding:12mm 14mm;box-shadow:0 6px 30px rgba(0,0,0,.15);position:relative;overflow:hidden;display:flex;flex-direction:column;}' +
 
-      /* cabeçalho — bloco de identidade centralizado, sem logo nem moldura */
-      '.doc-head{text-align:center;line-height:1.4;}' +
+      /* cabeçalho — bloco de identidade à esquerda, sem logo nem moldura */
+      '.doc-head{text-align:left;line-height:1.4;}' +
       '.doc-head__bloco{display:inline-block;}' +
       '.doc-head__nome{font-size:16px;font-weight:800;color:var(--doc-primaria);letter-spacing:.2px;}' +
       '.doc-head__role{font-size:11.5px;font-weight:600;color:#555;}' +
@@ -157,12 +157,12 @@
       '.doc-macro__l{font-size:10px;color:#777;text-transform:uppercase;letter-spacing:.4px;}' +
       '.doc-note{background:var(--doc-secundaria);border-radius:8px;padding:10px 12px;font-size:12px;color:#444;margin:10px 0;}' +
 
-      /* rodapé — assinatura/carimbo centralizados (a assinatura faz de carimbo) */
-      '.doc-foot{margin-top:40px;padding-top:16px;display:flex;justify-content:center;break-inside:avoid;}' +
-      '.doc-sign{text-align:center;min-width:240px;}' +
-      '.doc-carimbo{display:block;max-height:110px;max-width:230px;object-fit:contain;margin:0 auto 4px;opacity:.97;}' +
-      '.doc-sign__img{max-height:60px;max-width:220px;object-fit:contain;display:block;margin:0 auto -4px;}' +
-      '.doc-sign__line{border-top:1.5px solid #333;margin:0 auto 6px;width:240px;}' +
+      /* rodapé — assinatura/carimbo alinhados à esquerda (a assinatura faz de carimbo) */
+      '.doc-foot{margin-top:40px;padding-top:16px;display:flex;justify-content:flex-start;break-inside:avoid;}' +
+      '.doc-sign{text-align:left;min-width:240px;}' +
+      '.doc-carimbo{display:block;max-height:110px;max-width:230px;object-fit:contain;margin:0 0 4px;opacity:.97;}' +
+      '.doc-sign__img{max-height:60px;max-width:220px;object-fit:contain;display:block;margin:0 0 -4px;}' +
+      '.doc-sign__line{border-top:1.5px solid #333;margin:0 0 6px;width:240px;}' +
       '.doc-sign__nome{font-weight:700;font-size:12.5px;color:#333;}' +
       '.doc-sign__crn{font-size:11px;color:#777;}' +
 
