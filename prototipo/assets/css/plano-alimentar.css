@@ -1,0 +1,106 @@
+/* ============================================================
+   PLANO ALIMENTAR — construtor estilo WebDiet. Usa tokens.css.
+   ============================================================ */
+
+.pl-hint { font-size: var(--fs-sm); color: var(--texto-sutil); margin: 0 0 var(--sp-3); }
+
+/* Tela de escolha */
+.pl-escolha { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--sp-3); }
+.pl-inicio {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-4);
+  background: var(--branco); cursor: pointer; font: inherit; transition: border-color var(--t-fast), background var(--t-fast);
+}
+.pl-inicio:hover { border-color: var(--vinho); background: var(--rosa-suave); }
+.pl-inicio__ico { font-size: 1.6rem; }
+.pl-inicio__tit { font-weight: 800; color: var(--vinho); font-size: var(--fs-body); }
+.pl-inicio__sub { font-size: var(--fs-sm); color: var(--texto-sutil); }
+
+.pl-modelos { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--sp-3); }
+.pl-modelo {
+  display: flex; flex-direction: column; gap: 4px; text-align: left;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-3);
+  background: var(--branco); cursor: pointer; font: inherit; transition: border-color var(--t-fast), background var(--t-fast);
+}
+.pl-modelo:hover { border-color: var(--vinho); background: var(--rosa-suave); }
+.pl-modelo__ico { font-size: 1.4rem; }
+.pl-modelo__nome { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-body); }
+.pl-modelo__meta { font-size: var(--fs-caption); font-weight: 700; color: var(--vinho); }
+.pl-modelo__desc { font-size: 11.5px; color: var(--texto-sutil); line-height: 1.4; }
+
+/* Editor — cabeçalho de metadados */
+.pl-meta { display: grid; grid-template-columns: 1fr 1fr 110px; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.pl-field { display: flex; flex-direction: column; gap: 3px; }
+.pl-field > span { font-size: var(--fs-caption); font-weight: 600; color: var(--cinza-escuro); }
+.pl-field input {
+  font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input); padding: 7px 9px; background: var(--branco); width: 100%;
+}
+.pl-field input:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+
+/* Refeição */
+.pl-meal { border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-3); margin-bottom: var(--sp-3); background: var(--branco); }
+.pl-meal__head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.pl-meal__nome { flex: 1; font: inherit; font-weight: 700; color: var(--vinho); border: none; border-bottom: 1px dashed var(--cinza-borda); background: none; padding: 2px 0; min-width: 0; }
+.pl-meal__nome:focus { outline: none; border-bottom-color: var(--vinho); }
+.pl-meal__hora { width: 90px; font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda); border-radius: var(--radius-input); padding: 4px 6px; }
+.pl-meal__kc { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); white-space: nowrap; }
+
+/* Item */
+.pl-items { display: flex; flex-direction: column; gap: 6px; }
+.pl-item { display: grid; grid-template-columns: 1fr 66px minmax(120px, 150px) 62px 74px 28px; gap: 6px; align-items: center; }
+.pl-item input, .pl-item select {
+  font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input); padding: 6px 8px; background: var(--branco); min-width: 0; width: 100%;
+}
+.pl-item input:focus, .pl-item select:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+.pl-item__g, .pl-item__kc { font-size: var(--fs-caption); color: var(--texto-sutil); text-align: right; white-space: nowrap; }
+.pl-item__kc { font-weight: 700; color: var(--cinza-escuro); }
+.pl-x { border: none; background: none; cursor: pointer; color: var(--texto-sutil); font-size: 14px; padding: 2px; line-height: 1; }
+.pl-x:hover { color: var(--vinho); }
+
+.pl-additem { margin-top: 8px; border: 1px dashed var(--cinza-borda); background: none; color: var(--vinho); border-radius: var(--radius-input); padding: 6px 10px; font: inherit; font-size: var(--fs-caption); font-weight: 700; cursor: pointer; }
+.pl-additem:hover { background: var(--rosa-suave); }
+.pl-addmeal { margin-top: 4px; }
+
+/* Barra de totais */
+.pl-tot, .pl-totbar .pl-tot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--rosa-suave); border-radius: var(--radius-card); padding: 10px 14px; margin: var(--sp-3) 0;
+}
+.pl-tot__kcal { font-size: var(--fs-body); color: var(--texto); }
+.pl-tot__kcal strong { font-size: 1.3rem; color: var(--vinho); font-weight: 800; }
+.pl-tot__alvo { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+.pl-tot__macros { display: flex; flex-wrap: wrap; gap: 12px; font-size: var(--fs-sm); color: var(--texto); }
+.pl-macro b { font-weight: 800; }
+.pl-macro--cho b { color: #b8860b; }
+.pl-macro--ptn b { color: #9c3d63; }
+.pl-macro--lip b { color: #2e7d6b; }
+
+.pl-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: var(--sp-3); }
+
+/* Resumo do plano salvo */
+.pl-res__acoes { display: flex; flex-wrap: wrap; gap: 6px; }
+.pl-res__obj { font-size: var(--fs-sm); color: var(--texto); margin: 0 0 var(--sp-2); }
+.pl-res__meals { display: flex; flex-direction: column; gap: var(--sp-3); }
+.pl-res__meal { border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: 10px 12px; background: var(--branco); }
+.pl-res__head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+.pl-res__nome { font-weight: 700; color: var(--vinho); }
+.pl-res__hora { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.pl-res__mealkc { margin-left: auto; font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); }
+.pl-res__item { display: flex; gap: 10px; font-size: var(--fs-sm); padding: 3px 0; border-top: 1px dashed var(--cinza-borda); }
+.pl-res__item:first-of-type { border-top: none; }
+.pl-res__item > span:first-child { flex: 1; }
+.pl-res__qt { color: var(--texto-sutil); }
+.pl-res__kc { font-weight: 700; color: var(--cinza-escuro); white-space: nowrap; }
+
+@media (max-width: 640px) {
+  .pl-meta { grid-template-columns: 1fr 1fr; }
+  .pl-item { grid-template-columns: 1fr 56px 1fr; grid-template-areas: "food food food" "qt med med" "g kc x"; }
+  .pl-item__food { grid-area: food; }
+  .pl-item__qt { grid-area: qt; }
+  .pl-item__med { grid-area: med; }
+  .pl-item__g { grid-area: g; text-align: left; }
+  .pl-item__kc { grid-area: kc; }
+  .pl-x { grid-area: x; }
+}

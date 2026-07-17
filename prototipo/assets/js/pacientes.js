@@ -358,7 +358,8 @@
     }
     if (id === "consulta" || id === "retorno") { window.location.href = "agenda.html"; return; }
     if (id === "prescricao") { window.location.href = "prescricoes.html"; return; }
-    var mapSec = { anamnese: "anamnese", antropometria: "antropometria", plano: "plano", orientacao: "orientacoes" };
+    if (id === "plano") { irParaSecao(p, "plano"); return; }
+    var mapSec = { anamnese: "anamnese", antropometria: "antropometria", orientacao: "orientacoes" };
     if (mapSec[id]) { irParaSecao(p, mapSec[id]); pacToast("Abrindo " + mapSec[id] + " — edição completa em breve."); return; }
     pacToast("Em breve nesta seção. 💜");
   }
@@ -409,6 +410,17 @@
     }
     if (sec === "anamnese" && window.Questionarios) {
       window.Questionarios.wire(p, {
+        toast: pacToast,
+        perfil: perfilNutri,
+        onSaved: function (saved) {
+          for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
+          state.current = saved;
+          renderProfile(saved);
+        }
+      });
+    }
+    if (sec === "plano" && window.PlanoAlimentar) {
+      window.PlanoAlimentar.wire(p, {
         toast: pacToast,
         perfil: perfilNutri,
         onSaved: function (saved) {
@@ -479,6 +491,8 @@
   }
 
   function secPlano(p) {
+    if (window.PlanoAlimentar) return window.PlanoAlimentar.render(p);
+    // Fallback simples (caso o módulo não carregue)
     var atual;
     if (p.plano && (p.plano.titulo || (p.plano.refeicoes || []).length)) {
       var refs = (p.plano.refeicoes || []).map(function (r) {
@@ -489,10 +503,9 @@
       }).join("");
       atual = '<p class="ftxt"><strong>' + esc(p.plano.titulo || "Plano alimentar atual") + '</strong></p>' + (refs || '<div class="empty-state">Plano sem refeições detalhadas.</div>');
     } else {
-      atual = '<div class="empty-state">Nenhum plano alimentar publicado. Crie em Prescrições ou use o botão “Novo Plano”.</div>';
+      atual = '<div class="empty-state">Nenhum plano alimentar publicado.</div>';
     }
-    return secWrap("Plano alimentar atual", atual) +
-      secWrap("Planos anteriores & histórico de alterações", emBreve("Versões anteriores do plano e o que mudou em cada revisão."));
+    return secWrap("Plano alimentar atual", atual);
   }
 
   function secMetas(p) {
