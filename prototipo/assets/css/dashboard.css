@@ -340,11 +340,31 @@
   .app.nav-open .scrim { display: block; }
   .menu-toggle { display: grid; }
   .topbar__search { display: none; }
+
+  /* Sem o espaço do desktop, o título quebrava em várias linhas e o botão
+     de ação era espremido — a topbar chegava a 200px+ de altura. Mantém
+     tudo numa linha só: título com reticências e botão sem encolher. */
+  .topbar { gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); }
+  .topbar__hello h1 {
+    font-size: var(--fs-h3);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .topbar__hello p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar .btn { flex: none; white-space: nowrap; }
 }
 @media (max-width: 560px) {
   .stats { grid-template-columns: 1fr; }
   .canvas { padding: var(--sp-4); }
   .ai-panel { right: 0; bottom: 0; width: 100vw; height: 100vh; border-radius: 0; }
+
+  /* O subtítulo é contexto, não navegação: no celular ele custa uma linha
+     inteira e empurra o conteúdo pra baixo da dobra. */
+  .topbar__hello p { display: none; }
+  .topbar .btn { padding: 9px 12px; font-size: var(--fs-caption); }
+
+  /* O avatar da topbar repete quem já está na sidebar. No celular esse
+     espaço vale mais para o título não virar reticências. */
+  .topbar > .avatar { display: none; }
 }
 
 /* ---------- Empty-states e blocos derivados do banco ---------- */

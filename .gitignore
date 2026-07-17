@@ -8,3 +8,7 @@ Thumbs.db
 # Credenciais (nunca versionar)
 *.git-credentials
 .nutri-git-credentials
+
+# Cache do Python (scripts de migração)
+__pycache__/
+*.pyc

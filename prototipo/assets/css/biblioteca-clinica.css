@@ -1,0 +1,408 @@
+/* ============================================================
+   BIBLIOTECA CLÍNICA — Exames laboratoriais
+   Usa os tokens da marca (tokens.css). Lista + detalhe, com o
+   detalhe colando no topo no desktop e virando painel no mobile.
+   ============================================================ */
+
+/* ---------- Barra de busca + filtros ---------- */
+.bc-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+
+.bc-search {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: var(--branco);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input);
+  padding: 0 var(--sp-4);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--t-fast), border-color var(--t-fast);
+}
+.bc-search:focus-within {
+  border-color: var(--vinho);
+  box-shadow: var(--ring-foco);
+}
+.bc-search input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--fs-body);
+  color: var(--texto);
+  padding: var(--sp-3) 0;
+  min-width: 0;
+}
+.bc-search input::placeholder { color: var(--texto-sutil); }
+
+.bc-chips {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.bc-chip {
+  font: inherit;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--texto-sutil);
+  background: var(--branco);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-chip);
+  padding: 6px 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--t-fast);
+}
+.bc-chip:hover { border-color: var(--vinho-claro); color: var(--vinho); }
+.bc-chip.is-active {
+  background: var(--vinho);
+  border-color: var(--vinho);
+  color: var(--branco);
+}
+.bc-chip__n {
+  opacity: .6;
+  margin-left: 5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Grid lista + detalhe ---------- */
+.bc-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.bc-count {
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+  margin-bottom: var(--sp-2);
+  font-weight: 600;
+}
+
+.bc-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  padding-right: var(--sp-1);
+}
+
+/* ---------- Item da lista ---------- */
+.bc-item {
+  text-align: left;
+  font: inherit;
+  width: 100%;
+  background: var(--branco);
+  border: 1px solid var(--cinza-borda);
+  border-left: 3px solid transparent;
+  border-radius: var(--radius-btn);
+  padding: var(--sp-3) var(--sp-4);
+  cursor: pointer;
+  transition: all var(--t-fast);
+  box-shadow: var(--shadow-sm);
+}
+.bc-item:hover {
+  border-left-color: var(--vinho-claro);
+  transform: translateX(2px);
+}
+.bc-item.is-active {
+  border-left-color: var(--vinho);
+  background: var(--rosa-suave);
+  border-color: var(--rosa);
+}
+.bc-item__nome {
+  font-weight: 700;
+  color: var(--vinho);
+  font-size: var(--fs-sm);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bc-item__meta {
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.bc-item__un {
+  font-variant-numeric: tabular-nums;
+}
+
+/* selo "meu" para conteúdo editado/criado pela nutri */
+.bc-selo {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  border-radius: var(--radius-chip);
+  padding: 1px 6px;
+  background: var(--rosa);
+  color: var(--vinho);
+  flex: none;
+}
+
+/* ---------- Detalhe ---------- */
+.bc-detail {
+  background: var(--branco);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-md);
+  padding: var(--sp-6);
+  position: sticky;
+  top: var(--sp-4);
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
+
+.bc-vazio {
+  text-align: center;
+  color: var(--texto-sutil);
+  padding: var(--sp-8) var(--sp-4);
+}
+.bc-vazio__ico { font-size: 40px; display: block; margin-bottom: var(--sp-3); opacity: .5; }
+.bc-vazio__t { font-weight: 700; color: var(--texto); margin-bottom: var(--sp-1); }
+.bc-vazio__d { font-size: var(--fs-sm); max-width: 42ch; margin: 0 auto; line-height: var(--lh-normal); }
+
+.bc-d__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-4);
+  border-bottom: 2px solid var(--rosa);
+  margin-bottom: var(--sp-5);
+}
+.bc-d__nome {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--vinho);
+  line-height: var(--lh-tight);
+}
+.bc-d__sub {
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+  margin-top: 4px;
+}
+.bc-d__acoes { display: flex; gap: var(--sp-2); flex: none; }
+
+/* faixas de referência lado a lado */
+.bc-refs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+.bc-ref {
+  background: var(--cinza-claro);
+  border-radius: var(--radius-btn);
+  padding: var(--sp-3) var(--sp-4);
+  border-left: 3px solid var(--cinza-borda);
+}
+.bc-ref--conv { border-left-color: var(--vinho); background: var(--rosa-suave); }
+.bc-ref--func { border-left-color: var(--vinho-claro); }
+.bc-ref__l {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--texto-sutil);
+  margin-bottom: 3px;
+}
+.bc-ref__v {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--texto);
+  line-height: 1.4;
+}
+
+/* seções do detalhe */
+.bc-sec { margin-bottom: var(--sp-5); }
+.bc-sec__t {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--vinho);
+  margin-bottom: var(--sp-2);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.bc-sec__t .ico { font-size: 1rem; }
+.bc-sec p {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--texto);
+}
+
+/* caixa de atenção — armadilhas de interpretação */
+.bc-atencao {
+  background: var(--rosa-suave);
+  border: 1px solid var(--rosa);
+  border-radius: var(--radius-btn);
+  padding: var(--sp-4);
+}
+.bc-atencao .bc-sec__t { margin-bottom: var(--sp-1); }
+
+/* nutrientes */
+.bc-nutri { display: flex; flex-direction: column; gap: var(--sp-2); }
+.bc-nutri__i {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: var(--sp-3);
+  font-size: var(--fs-sm);
+  padding: var(--sp-2) 0;
+  border-top: 1px dashed var(--cinza-borda);
+  line-height: var(--lh-normal);
+}
+.bc-nutri__i:first-child { border-top: 0; }
+.bc-nutri__n { font-weight: 700; color: var(--vinho); }
+.bc-nutri__r { color: var(--texto); }
+
+/* sinais e sintomas em duas colunas */
+.bc-sinais { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+.bc-sinais__c {
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-btn);
+  padding: var(--sp-3) var(--sp-4);
+}
+.bc-sinais__t {
+  font-size: var(--fs-caption);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  margin-bottom: var(--sp-2);
+  color: var(--vinho);
+}
+.bc-sinais ul { margin: 0; padding-left: 16px; }
+.bc-sinais li {
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  margin-bottom: 3px;
+  color: var(--texto);
+}
+
+/* estratégias */
+.bc-estr {
+  border-radius: var(--radius-btn);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--cinza-borda);
+  margin-bottom: var(--sp-3);
+}
+.bc-estr__t {
+  font-size: var(--fs-caption);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  color: var(--vinho);
+  margin-bottom: var(--sp-1);
+}
+.bc-estr p { font-size: var(--fs-sm); line-height: var(--lh-normal); }
+
+/* referências */
+.bc-refsci { list-style: none; margin: 0; padding: 0; }
+.bc-refsci li {
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+  line-height: 1.5;
+  padding: var(--sp-2) 0;
+  border-top: 1px dashed var(--cinza-borda);
+}
+.bc-refsci li:first-child { border-top: 0; }
+.bc-refsci b { color: var(--texto); font-weight: 600; }
+
+/* editor inline */
+.bc-edit textarea,
+.bc-edit input[type="text"] {
+  width: 100%;
+  font: inherit;
+  font-size: var(--fs-sm);
+  color: var(--texto);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--branco);
+  resize: vertical;
+  line-height: var(--lh-normal);
+}
+.bc-edit textarea:focus,
+.bc-edit input[type="text"]:focus {
+  outline: 0;
+  border-color: var(--vinho);
+  box-shadow: var(--ring-foco);
+}
+.bc-edit .bc-sec__t { margin-bottom: var(--sp-1); }
+
+.bc-aviso {
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+  background: var(--cinza-claro);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-4);
+  line-height: var(--lh-normal);
+}
+
+/* rodapé do detalhe — lembrete de que a decisão é da nutri */
+.bc-rodape {
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--cinza-borda);
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+  line-height: var(--lh-normal);
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 1100px) {
+  .bc-grid { grid-template-columns: minmax(250px, 320px) 1fr; }
+  .bc-detail { padding: var(--sp-5); }
+  .bc-nutri__i { grid-template-columns: 110px 1fr; }
+}
+
+@media (max-width: 900px) {
+  .bc-grid { grid-template-columns: 1fr; }
+  .bc-list { max-height: none; }
+  .bc-detail {
+    position: static;
+    max-height: none;
+  }
+  /* No mobile o detalhe só aparece depois de escolher um exame. */
+  .bc-detail:not(.is-open) { display: none; }
+  .bc-grid.has-selection .bc-col-lista { display: none; }
+  .bc-refs { grid-template-columns: 1fr; }
+  .bc-sinais { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .bc-detail { padding: var(--sp-4); border-radius: var(--radius-btn); }
+  .bc-d__head { flex-direction: column; gap: var(--sp-3); }
+  .bc-d__nome { font-size: 1.35rem; }
+  .bc-nutri__i { grid-template-columns: 1fr; gap: 2px; }
+  .bc-chips { overflow-x: auto; flex-wrap: nowrap; padding-bottom: var(--sp-1); }
+}
+
+/* botão voltar (só mobile) */
+.bc-voltar { display: none; }
+@media (max-width: 900px) {
+  .bc-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: inherit;
+    font-size: var(--fs-caption);
+    font-weight: 700;
+    color: var(--vinho);
+    background: none;
+    border: 0;
+    padding: 0 0 var(--sp-3);
+    cursor: pointer;
+  }
+}

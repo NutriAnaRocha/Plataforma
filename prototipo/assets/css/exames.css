@@ -73,3 +73,23 @@
   .mk-row{ grid-template-columns:1.4fr auto auto; }
   .mk-row .mk-ref, .mk-row .mk-spark{ display:none; }
 }
+
+/* ---------- Ponte com a Biblioteca Clínica (ic-link.js) ----------
+   Marcadores que existem na biblioteca viram link para a interpretação.
+   Sublinhado pontilhado para sinalizar "tem mais aqui" sem parecer um
+   link de navegação comum no meio da tabela. */
+.mk-name .ic-link {
+  color: var(--vinho);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--vinho-claro);
+  transition: all var(--t-fast);
+}
+.mk-name .ic-link:hover {
+  border-bottom-style: solid;
+  color: var(--vinho-escuro);
+}
+.mk-name .ic-link:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-foco);
+  border-radius: 3px;
+}
