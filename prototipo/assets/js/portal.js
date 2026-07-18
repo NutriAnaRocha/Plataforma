@@ -211,7 +211,7 @@
       '<span class="card__sub">peso · ' + esc(labels[0] || "") + '–' + esc(labels[labels.length - 1] || "") + '</span></div>' +
       '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Evolução de peso">' +
       '<defs><linearGradient id="gradWineP" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0%" stop-color="#7B284C" stop-opacity="0.20"/><stop offset="100%" stop-color="#7B284C" stop-opacity="0"/></linearGradient></defs>' +
+      '<stop offset="0%" stop-color="#840B55" stop-opacity="0.20"/><stop offset="100%" stop-color="#840B55" stop-opacity="0"/></linearGradient></defs>' +
       '<path class="chart__area" style="fill:url(#gradWineP)" d="' + area + '"></path>' +
       '<path class="chart__line" d="' + line + '"></path>' + dots + lbls + '</svg>';
   }

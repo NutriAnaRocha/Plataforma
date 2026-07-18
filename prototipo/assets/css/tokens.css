@@ -14,16 +14,16 @@
 
 :root {
   /* ---------- Paleta da marca ---------- */
-  --vinho: #7B284C;
-  --rosa: #F4DCE5;
+  --vinho: #840B55;
+  --rosa: #F1B2DC;
   --branco: #FFFFFF;
   --cinza-claro: #F5F5F5;
   --cinza-escuro: #3C3C3C;
 
   /* ---------- Derivadas ---------- */
-  --vinho-escuro: #5E1D3A;       /* hover / estados pressionados */
-  --vinho-claro: #9C3D63;        /* destaques sobre vinho */
-  --rosa-suave: #FBEEF3;         /* fundos muito sutis */
+  --vinho-escuro: #5E0A3D;       /* hover / estados pressionados */
+  --vinho-claro: #A82670;        /* destaques sobre vinho */
+  --rosa-suave: #FCEFF7;         /* fundos muito sutis */
   --cinza-medio: #8A8A8A;        /* textos secundários */
   --cinza-borda: #E7E7EA;        /* bordas/divisores */
   --texto: var(--cinza-escuro);
@@ -60,10 +60,10 @@
   --shadow-sm: 0 1px 2px rgba(60, 60, 60, 0.06),
                0 2px 6px rgba(60, 60, 60, 0.05);
   --shadow-md: 0 4px 12px rgba(60, 60, 60, 0.07),
-               0 12px 28px rgba(123, 40, 76, 0.08);
+               0 12px 28px rgba(132, 11, 85, 0.08);
   --shadow-lg: 0 10px 24px rgba(60, 60, 60, 0.10),
-               0 24px 60px rgba(123, 40, 76, 0.12);
-  --ring-foco: 0 0 0 3px rgba(123, 40, 76, 0.18);
+               0 24px 60px rgba(132, 11, 85, 0.12);
+  --ring-foco: 0 0 0 3px rgba(132, 11, 85, 0.18);
 
   /* ---------- Espaçamento (escala 4) ---------- */
   --sp-1: 4px;

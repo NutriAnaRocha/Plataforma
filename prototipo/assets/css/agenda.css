@@ -113,7 +113,7 @@
 .week__times { border: none; }
 .week__col { border-left: 1px solid var(--cinza-borda); cursor: pointer; }
 .week__col:last-child { border-right: 1px solid var(--cinza-borda); }
-.week__col.is-today { background-color: rgba(244, 220, 229, .28); }
+.week__col.is-today { background-color: rgba(241, 178, 220, .28); }
 
 /* =====================================================
    LATERAL — mini-calendário, resumo, legenda

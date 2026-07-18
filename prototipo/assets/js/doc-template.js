@@ -22,7 +22,7 @@
 (function () {
   "use strict";
 
-  var CORES_PADRAO = { primaria: "#7B284C", secundaria: "#F4DCE5", destaque: "#9C3D63", fundo: "#FFFFFF" };
+  var CORES_PADRAO = { primaria: "#840B55", secundaria: "#F1B2DC", destaque: "#A82670", fundo: "#FFFFFF" };
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {

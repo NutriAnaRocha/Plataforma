@@ -83,7 +83,7 @@
 .pl-tot__macros { display: flex; flex-wrap: wrap; gap: 12px; font-size: var(--fs-sm); color: var(--texto); }
 .pl-macro b { font-weight: 800; }
 .pl-macro--cho b { color: #b8860b; }
-.pl-macro--ptn b { color: #9c3d63; }
+.pl-macro--ptn b { color: #A82670; }
 .pl-macro--lip b { color: #2e7d6b; }
 
 .pl-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: var(--sp-3); }

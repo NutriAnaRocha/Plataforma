@@ -5,7 +5,7 @@
   function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
 
   // Paleta para segmentos (donut/legendas)
-  var CORES = ["#7B284C", "#A23A66", "#C65C86", "#E39CB6", "#F0C9D8"];
+  var CORES = ["#840B55", "#A23A66", "#C65C86", "#E39CB6", "#F0C9D8"];
 
   /* KPIs */
   function renderKpis() {

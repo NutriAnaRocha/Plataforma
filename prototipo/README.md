@@ -27,8 +27,8 @@ O nome é injetado automaticamente no wordmark, no rodapé, no título da aba e 
 
 | Token | Valor |
 |---|---|
-| Vinho | `#7B284C` |
-| Rosa Claro | `#F4DCE5` |
+| Vinho | `#840B55` |
+| Rosa Claro | `#F1B2DC` |
 | Branco | `#FFFFFF` |
 | Cinza Claro | `#F5F5F5` |
 | Cinza Escuro | `#3C3C3C` |

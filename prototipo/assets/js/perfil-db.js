@@ -13,7 +13,7 @@
 
   // Paleta padrão (identidade Ana Luísa Rocha) — usada quando a nutri ainda
   // não personalizou as cores. Mantida em sincronia com a migração 0011.
-  var CORES_PADRAO = { primaria: "#7B284C", secundaria: "#F4DCE5", destaque: "#9C3D63", fundo: "#FFFFFF" };
+  var CORES_PADRAO = { primaria: "#840B55", secundaria: "#F1B2DC", destaque: "#A82670", fundo: "#FFFFFF" };
 
   function client() { return window.NutriDBReady; }
 

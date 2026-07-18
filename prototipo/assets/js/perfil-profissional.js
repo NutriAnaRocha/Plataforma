@@ -14,7 +14,7 @@
     especialidades: [], contatoProfissional: "",
     logoUrl: "", carimboUrl: "", assinaturaUrl: "",
     areaAtuacao: [], areaAtuacaoOutro: "",
-    brandColors: (window.NutriPerfil && window.NutriPerfil.CORES_PADRAO) || { primaria: "#7B284C", secundaria: "#F4DCE5", destaque: "#9C3D63", fundo: "#FFFFFF" }
+    brandColors: (window.NutriPerfil && window.NutriPerfil.CORES_PADRAO) || { primaria: "#840B55", secundaria: "#F1B2DC", destaque: "#A82670", fundo: "#FFFFFF" }
   };
 
   // Áreas de atuação (checkboxes) + "Outro" com campo aberto.

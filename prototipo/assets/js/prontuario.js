@@ -58,7 +58,7 @@
     var lbls = labels.map(function (l, i) { return '<text class="chart__lbl" x="' + x(i).toFixed(1) + '" y="' + (H - 4) + '" text-anchor="middle">' + esc(l) + "</text>"; }).join("");
     return '<div class="chart"><div class="chart__head"><span class="chart__big">' + esc(pts[pts.length - 1]) + (unit || "") + "</span>" +
       (resumo ? '<span class="delta delta--up">▲ ' + esc(resumo) + "</span>" : "") + "</div>" +
-      '<svg viewBox="0 0 ' + W + " " + H + '" role="img"><defs><linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7B284C" stop-opacity="0.22"/><stop offset="100%" stop-color="#7B284C" stop-opacity="0"/></linearGradient></defs>' +
+      '<svg viewBox="0 0 ' + W + " " + H + '" role="img"><defs><linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#840B55" stop-opacity="0.22"/><stop offset="100%" stop-color="#840B55" stop-opacity="0"/></linearGradient></defs>' +
       '<path class="chart__area" d="' + area + '" style="fill:url(#gw)"></path><path class="chart__line" d="' + line + '"></path>' + dots + lbls + "</svg></div>";
   }
   function sparkline(pts) {

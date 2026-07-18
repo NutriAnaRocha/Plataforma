@@ -93,7 +93,7 @@ a { color: inherit; }
   outline: none;
   border-color: var(--rosa);
   background: var(--sobre-vinho-16);
-  box-shadow: 0 0 0 3px rgba(244, 220, 229, 0.18);
+  box-shadow: 0 0 0 3px rgba(241, 178, 220, 0.18);
 }
 
 /* Variante de campo sobre fundo claro (modal) */
