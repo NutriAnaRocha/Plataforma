@@ -10,16 +10,26 @@
 --
 -- Migration 0011 NAO foi editada de proposito: ja rodou em producao.
 --
--- IMPORTANTE: o update abaixo so toca linhas que ainda estao com o default antigo
--- INTACTO. Se a nutricionista personalizou as cores no Perfil Profissional, a escolha
--- dela e preservada.
+-- ATUALIZACAO CHAVE A CHAVE, nao do objeto inteiro. Uma versao anterior desta migration
+-- comparava o jsonb completo com o default antigo; na pratica isso NAO pegaria o perfil
+-- da nutricionista, que tinha o 'destaque' personalizado, e pegaria so uma linha de teste.
+-- Aqui cada cor e trocada apenas se ainda estiver no valor antigo, entao personalizacao
+-- deliberada e preservada e ninguem fica com a paleta velha por um detalhe.
 
 alter table public.profiles
   alter column brand_colors set default
   '{"primaria":"#840B55","secundaria":"#F1B2DC","destaque":"#A82670","fundo":"#FFFFFF"}'::jsonb;
 
 update public.profiles
-   set brand_colors = '{"primaria":"#840B55","secundaria":"#F1B2DC","destaque":"#A82670","fundo":"#FFFFFF"}'::jsonb
- where brand_colors = '{"primaria":"#7B284C","secundaria":"#F4DCE5","destaque":"#9C3D63","fundo":"#FFFFFF"}'::jsonb;
+   set brand_colors = jsonb_set(brand_colors, '{primaria}', '"#840B55"')
+ where brand_colors->>'primaria' = '#7B284C';
+
+update public.profiles
+   set brand_colors = jsonb_set(brand_colors, '{secundaria}', '"#F1B2DC"')
+ where brand_colors->>'secundaria' = '#F4DCE5';
+
+update public.profiles
+   set brand_colors = jsonb_set(brand_colors, '{destaque}', '"#A82670"')
+ where brand_colors->>'destaque' = '#9C3D63';
 
 notify pgrst, 'reload schema';
