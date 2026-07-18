@@ -54,165 +54,608 @@
     return AL_BY_NOME[valor.toLowerCase()] || acharAlimento(valor);
   }
 
-  /* ---------- MODELOS pré-prontos (6) ----------
+  /* ---------- MODELOS pré-prontos (6 × 4 metas) ----------
      Itens referenciam o alimento por busca (`q`), resolvidos no banco na
-     hora de aplicar — assim o modelo não depende de ids fixos. */
+     hora de aplicar — assim o modelo não depende de ids fixos.
+     Cada modelo tem `variacoes` por meta calórica (1200/1500/1800/2000);
+     as porções não são só escaladas — a composição é ajustada por nível. */
+  var KCALS = [1200, 1500, 1800, 2000];
+
   var MODELOS = [
     {
-      id: "emagrecimento", ico: "🔥", nome: "Emagrecimento (déficit)", metaKcal: 1500,
+      id: "emagrecimento", ico: "🔥", nome: "Emagrecimento (déficit)",
       objetivo: "Emagrecimento com déficit calórico moderado",
-      desc: "~1.500 kcal, equilibrado, com boa saciedade.",
-      refeicoes: [
-        { nome: "Café da manhã", hora: "07:30", itens: [
-          { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
-          { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
-          { q: "mamao, formosa", medida: "fatia", qtd: 1 } ] },
-        { nome: "Lanche da manhã", hora: "10:00", itens: [
-          { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 } ] },
-        { nome: "Almoço", hora: "12:30", itens: [
-          { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 3 },
-          { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
-          { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
-          { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
-          { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 } ] },
-        { nome: "Lanche da tarde", hora: "16:00", itens: [
-          { q: "banana, prata", medida: "unidade", qtd: 1 },
-          { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
-        { nome: "Jantar", hora: "19:30", itens: [
-          { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
-          { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 3 },
-          { q: "brocolis, cozido", medida: "pires", qtd: 1 } ] }
-      ]
+      desc: "Equilibrado, com boa saciedade.",
+      variacoes: {
+        1200: [
+          { nome: "Café da manhã", hora: "07:30", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 } ] },
+          { nome: "Lanche da manhã", hora: "10:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 } ] }
+        ],
+        1500: [
+          { nome: "Café da manhã", hora: "07:30", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 } ] },
+          { nome: "Lanche da manhã", hora: "10:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 5 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 } ] }
+        ],
+        1800: [
+          { nome: "Café da manhã", hora: "07:30", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da manhã", hora: "10:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 6 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 5 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ],
+        2000: [
+          { nome: "Café da manhã", hora: "07:30", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da manhã", hora: "10:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 7 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 2 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 6 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ]
+      }
     },
     {
-      id: "lowcarb", ico: "🥑", nome: "Low carb", metaKcal: 1500,
+      id: "lowcarb", ico: "🥑", nome: "Low carb",
       objetivo: "Redução de carboidratos, foco em proteína e gorduras boas",
       desc: "Baixo carboidrato, mais proteína e gorduras boas.",
-      refeicoes: [
-        { nome: "Café da manhã", hora: "08:00", itens: [
-          { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
-          { q: "queijo, minas, frescal", medida: "fatia", qtd: 1 },
-          { q: "abacate", medida: "colher de sopa", qtd: 2 } ] },
-        { nome: "Almoço", hora: "12:30", itens: [
-          { q: "carne, bovina, patinho, grelhado", medida: "porcao", qtd: 1 },
-          { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
-          { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
-          { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
-        { nome: "Lanche", hora: "16:00", itens: [
-          { q: "castanha, do para", medida: "unidade", qtd: 3 },
-          { q: "queijo, mozarela", medida: "fatia", qtd: 1 } ] },
-        { nome: "Jantar", hora: "20:00", itens: [
-          { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
-          { q: "brocolis, cozido", medida: "pires", qtd: 1 },
-          { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
-      ]
+      variacoes: {
+        1200: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 1 },
+            { q: "abacate", medida: "colher de sopa", qtd: 3 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "carne, bovina, patinho, grelhado", medida: "porcao", qtd: 1 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Lanche", hora: "16:00", itens: [
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 2 },
+            { q: "queijo, mozarela", medida: "fatia", qtd: 2 } ] },
+          { nome: "Jantar", hora: "20:00", itens: [
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ],
+        1500: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 2 },
+            { q: "abacate", medida: "colher de sopa", qtd: 3 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "carne, bovina, patinho, grelhado", medida: "porcao", qtd: 1 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 4 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Lanche", hora: "16:00", itens: [
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 3 },
+            { q: "queijo, mozarela", medida: "fatia", qtd: 2 } ] },
+          { nome: "Jantar", hora: "20:00", itens: [
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 2 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ],
+        1800: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 4 },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 2 },
+            { q: "abacate", medida: "colher de sopa", qtd: 4 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "carne, bovina, patinho, grelhado", medida: "porcao", qtd: 1 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 4 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Lanche", hora: "16:00", itens: [
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 4 },
+            { q: "queijo, mozarela", medida: "fatia", qtd: 2 },
+            { q: "abacate", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Jantar", hora: "20:00", itens: [
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 2 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 2 } ] }
+        ],
+        2000: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 4 },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 2 },
+            { q: "abacate", medida: "colher de sopa", qtd: 4 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "carne, bovina, patinho, grelhado", medida: "porcao", qtd: 2 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 4 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Lanche", hora: "16:00", itens: [
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 4 },
+            { q: "queijo, mozarela", medida: "fatia", qtd: 2 },
+            { q: "abacate", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Jantar", hora: "20:00", itens: [
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 2 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 2 } ] }
+        ]
+      }
     },
     {
-      id: "hipertrofia", ico: "💪", nome: "Hipertrofia / ganho de massa", metaKcal: 2400,
+      id: "hipertrofia", ico: "💪", nome: "Hipertrofia / ganho de massa",
       objetivo: "Ganho de massa muscular com superávit e alta proteína",
       desc: "Superávit calórico e proteína elevada.",
-      refeicoes: [
-        { nome: "Café da manhã", hora: "07:00", itens: [
-          { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
-          { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
-          { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 3 },
-          { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
-        { nome: "Lanche da manhã", hora: "10:00", itens: [
-          { q: "iogurte, natural", medida: "copo (200 ml)", qtd: 1 },
-          { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
-        { nome: "Almoço", hora: "12:30", itens: [
-          { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
-          { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
-          { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 2 },
-          { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 } ] },
-        { nome: "Pré-treino", hora: "16:00", itens: [
-          { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 4 },
-          { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 } ] },
-        { nome: "Jantar", hora: "20:00", itens: [
-          { q: "carne, bovina, patinho, grelhado", medida: "porcao", qtd: 1 },
-          { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
-          { q: "brocolis, cozido", medida: "pires", qtd: 1 } ] }
-      ]
+      variacoes: {
+        1200: [
+          { nome: "Café da manhã", hora: "07:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Lanche da manhã", hora: "10:00", itens: [
+            { q: "iogurte, natural", medida: "copo (200 ml)", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 3 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Pré-treino", hora: "16:00", itens: [
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 2 },
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 1 } ] },
+          { nome: "Jantar", hora: "20:00", itens: [
+            { q: "carne, bovina, patinho, grelhado", medida: "porcao", qtd: 1 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 2 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 } ] }
+        ],
+        1500: [
+          { nome: "Café da manhã", hora: "07:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Lanche da manhã", hora: "10:00", itens: [
+            { q: "iogurte, natural", medida: "copo (200 ml)", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Pré-treino", hora: "16:00", itens: [
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 1 } ] },
+          { nome: "Jantar", hora: "20:00", itens: [
+            { q: "carne, bovina, patinho, grelhado", medida: "porcao", qtd: 1 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 3 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 } ] }
+        ],
+        1800: [
+          { nome: "Café da manhã", hora: "07:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Lanche da manhã", hora: "10:00", itens: [
+            { q: "iogurte, natural", medida: "copo (200 ml)", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Pré-treino", hora: "16:00", itens: [
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 4 },
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 1 } ] },
+          { nome: "Jantar", hora: "20:00", itens: [
+            { q: "carne, bovina, patinho, grelhado", medida: "porcao", qtd: 1 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 } ] }
+        ],
+        2000: [
+          { nome: "Café da manhã", hora: "07:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 3 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Lanche da manhã", hora: "10:00", itens: [
+            { q: "iogurte, natural", medida: "copo (200 ml)", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 2 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Pré-treino", hora: "16:00", itens: [
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 5 },
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 1 } ] },
+          { nome: "Jantar", hora: "20:00", itens: [
+            { q: "carne, bovina, patinho, grelhado", medida: "porcao", qtd: 1 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 } ] }
+        ]
+      }
     },
     {
-      id: "intestinal", ico: "🌿", nome: "Saúde intestinal (low-FODMAP)", metaKcal: 1600,
+      id: "intestinal", ico: "🌿", nome: "Saúde intestinal (low-FODMAP)",
       objetivo: "Alívio de sintomas digestivos com abordagem low-FODMAP",
       desc: "Menos fermentáveis; foco em conforto digestivo.",
-      refeicoes: [
-        { nome: "Café da manhã", hora: "08:00", itens: [
-          { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
-          { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
-          { q: "mamao, formosa", medida: "fatia", qtd: 1 } ] },
-        { nome: "Lanche", hora: "10:30", itens: [
-          { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
-        { nome: "Almoço", hora: "12:30", itens: [
-          { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
-          { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
-          { q: "cenoura, cozida", medida: "colher de sopa", qtd: 3 },
-          { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
-        { nome: "Lanche da tarde", hora: "16:00", itens: [
-          { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 } ] },
-        { nome: "Jantar", hora: "19:30", itens: [
-          { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
-          { q: "batata, inglesa, cozida", medida: "unidade", qtd: 1 },
-          { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 } ] }
-      ]
+      variacoes: {
+        1200: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "cenoura, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "batata, inglesa, cozida", medida: "unidade", qtd: 2 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 } ] }
+        ],
+        1500: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "cenoura, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "batata, inglesa, cozida", medida: "unidade", qtd: 2 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 } ] }
+        ],
+        1800: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 6 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "cenoura, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "batata, inglesa, cozida", medida: "unidade", qtd: 2 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ],
+        2000: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 3 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 6 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 2 },
+            { q: "cenoura, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "mamao, formosa", medida: "fatia", qtd: 1 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "batata, inglesa, cozida", medida: "unidade", qtd: 2 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ]
+      }
     },
     {
-      id: "sop", ico: "🩺", nome: "SOP / resistência à insulina", metaKcal: 1500,
+      id: "sop", ico: "🩺", nome: "SOP / resistência à insulina",
       objetivo: "Controle glicêmico e da resistência à insulina (SOP)",
       desc: "Baixo índice glicêmico, fibras e proteína em cada refeição.",
-      refeicoes: [
-        { nome: "Café da manhã", hora: "08:00", itens: [
-          { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
-          { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 },
-          { q: "morango", medida: "unidade", qtd: 5 } ] },
-        { nome: "Lanche", hora: "10:30", itens: [
-          { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 } ] },
-        { nome: "Almoço", hora: "12:30", itens: [
-          { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 3 },
-          { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
-          { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
-          { q: "brocolis, cozido", medida: "pires", qtd: 1 },
-          { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
-        { nome: "Lanche da tarde", hora: "16:00", itens: [
-          { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
-          { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 } ] },
-        { nome: "Jantar", hora: "19:30", itens: [
-          { q: "salmao, sem pele, grelhado", medida: "porcao", qtd: 1 },
-          { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
-          { q: "alface, crespa, crua", medida: "pires", qtd: 1 } ] }
-      ]
+      variacoes: {
+        1200: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 3 },
+            { q: "morango", medida: "unidade", qtd: 5 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 2 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "salmao, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 } ] }
+        ],
+        1500: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 3 },
+            { q: "morango", medida: "unidade", qtd: 5 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 3 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 },
+            { q: "morango", medida: "unidade", qtd: 5 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "salmao, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 } ] }
+        ],
+        1800: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 3 },
+            { q: "morango", medida: "unidade", qtd: 6 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 4 },
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 },
+            { q: "morango", medida: "unidade", qtd: 5 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "salmao, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ],
+        2000: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 3 },
+            { q: "morango", medida: "unidade", qtd: 6 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 4 },
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 2 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 },
+            { q: "morango", medida: "unidade", qtd: 5 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "salmao, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ]
+      }
     },
     {
-      id: "vegetariano", ico: "🥗", nome: "Vegetariano", metaKcal: 1700,
+      id: "vegetariano", ico: "🥗", nome: "Vegetariano",
       objetivo: "Plano vegetariano com proteína vegetal e boa combinação",
       desc: "Sem carnes; proteína de leguminosas, ovos e laticínios.",
-      refeicoes: [
-        { nome: "Café da manhã", hora: "08:00", itens: [
-          { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
-          { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
-          { q: "queijo, minas, frescal", medida: "fatia", qtd: 1 } ] },
-        { nome: "Lanche", hora: "10:30", itens: [
-          { q: "banana, prata", medida: "unidade", qtd: 1 },
-          { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
-        { nome: "Almoço", hora: "12:30", itens: [
-          { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
-          { q: "feijao, preto, cozido", medida: "concha", qtd: 1 },
-          { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
-          { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
-          { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
-        { nome: "Lanche da tarde", hora: "16:00", itens: [
-          { q: "iogurte, natural", medida: "copo (200 ml)", qtd: 1 } ] },
-        { nome: "Jantar", hora: "19:30", itens: [
-          { q: "lentilha, cozida", medida: "concha", qtd: 1 },
-          { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 3 },
-          { q: "brocolis, cozido", medida: "pires", qtd: 1 } ] }
-      ]
+      variacoes: {
+        1200: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 1 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "feijao, preto, cozido", medida: "concha", qtd: 1 },
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural", medida: "copo (200 ml)", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "lentilha, cozida", medida: "concha", qtd: 1 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ],
+        1500: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 2 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
+            { q: "feijao, preto, cozido", medida: "concha", qtd: 1 },
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural", medida: "copo (200 ml)", qtd: 1 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "lentilha, cozida", medida: "concha", qtd: 1 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 4 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ],
+        1800: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 2 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 6 },
+            { q: "feijao, preto, cozido", medida: "concha", qtd: 1 },
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural", medida: "copo (200 ml)", qtd: 1 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "lentilha, cozida", medida: "concha", qtd: 1 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 4 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ],
+        2000: [
+          { nome: "Café da manhã", hora: "08:00", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 3 },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 2 } ] },
+          { nome: "Lanche", hora: "10:30", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 3 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 6 },
+            { q: "feijao, preto, cozido", medida: "concha", qtd: 1 },
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "iogurte, natural", medida: "copo (200 ml)", qtd: 1 },
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "lentilha, cozida", medida: "concha", qtd: 1 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 5 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ]
+      }
     }
   ];
   var MODELO_BY_ID = {};
   MODELOS.forEach(function (m) { MODELO_BY_ID[m.id] = m; });
+
+  // Constrói a fonte de expansão para um modelo numa meta calórica.
+  function fonteModelo(m, kcal) {
+    var refs = (m.variacoes && m.variacoes[kcal]) || (m.variacoes && m.variacoes[1500]) || [];
+    return { nome: m.nome, objetivo: m.objetivo, metaKcal: kcal, refeicoes: refs };
+  }
 
   /* ---------- Cálculo ---------- */
   // Resolve gramas + macros de um item cru {alimento(nome)/alimentoId, medida, qtd}.
@@ -298,12 +741,18 @@
   /* ---------- Tela de escolha ---------- */
   function escolhaHTML() {
     var modelos = MODELOS.map(function (m) {
-      return '<button class="pl-modelo" type="button" data-modelo="' + m.id + '">' +
+      var chips = KCALS.map(function (k) {
+        return '<button class="pl-modelo__kcal" type="button" data-modelo="' + m.id + '" data-kcal="' + k + '">' +
+          k + '</button>';
+      }).join("");
+      return '<div class="pl-modelo">' +
         '<span class="pl-modelo__ico">' + m.ico + '</span>' +
         '<span class="pl-modelo__nome">' + esc(m.nome) + '</span>' +
-        '<span class="pl-modelo__meta">' + (m.metaKcal ? m.metaKcal + ' kcal' : '') + '</span>' +
         '<span class="pl-modelo__desc">' + esc(m.desc) + '</span>' +
-      '</button>';
+        '<div class="pl-modelo__kcals" role="group" aria-label="Meta calórica">' +
+          '<span class="pl-modelo__kcals-lbl">kcal:</span>' + chips +
+        '</div>' +
+      '</div>';
     }).join("");
     return '' +
       '<section class="fsec">' +
@@ -439,7 +888,8 @@
     r.querySelectorAll("[data-modelo]").forEach(function (b) {
       b.addEventListener("click", function () {
         var m = MODELO_BY_ID[b.getAttribute("data-modelo")];
-        if (m) abrirEditor(expandir(m));
+        var kcal = parseInt(b.getAttribute("data-kcal"), 10) || 1500;
+        if (m) abrirEditor(expandir(fonteModelo(m, kcal)));
       });
     });
   }

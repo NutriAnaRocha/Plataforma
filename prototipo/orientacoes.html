@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-brand-title>Exames</title>
+  <title data-brand-title>Orientações</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,12 +12,11 @@
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/dashboard.css" />
-  <link rel="stylesheet" href="assets/css/exames.css" />
+  <link rel="stylesheet" href="assets/css/biblioteca-clinica.css" />
 </head>
 <body>
   <div class="app" id="app">
 
-    <!-- ================= SIDEBAR ================= -->
     <aside class="sidebar">
       <div class="sidebar__logo">
         <span class="sidebar__mark"><img src="assets/img/logo-mark.png" alt="" /></span>
@@ -30,12 +29,12 @@
         <a href="agenda.html"><span class="ico">📅</span> Agenda <span class="badge">7</span></a>
         <a href="prontuario.html"><span class="ico">📋</span> Prontuários</a>
         <a href="prescricoes.html"><span class="ico">🥗</span> Prescrições</a>
-        <a href="exames.html" class="is-active"><span class="ico">🧪</span> Exames</a>
+        <a href="exames.html"><span class="ico">🧪</span> Exames</a>
 
         <p class="menu__label">Inteligência Clínica</p>
         <a href="biblioteca-clinica.html"><span class="ico">🔬</span> Biblioteca Clínica</a>
         <a href="protocolos.html"><span class="ico">📑</span> Protocolos</a>
-        <a href="orientacoes.html"><span class="ico">📄</span> Orientações</a>
+        <a href="orientacoes.html" class="is-active"><span class="ico">📄</span> Orientações</a>
 
         <p class="menu__label">Gestão</p>
         <a href="comunidade.html"><span class="ico">💬</span> Comunidade</a>
@@ -59,44 +58,42 @@
     </aside>
     <div class="scrim" id="scrim"></div>
 
-    <!-- ================= CONTEÚDO ================= -->
     <div class="content">
-
-      <!-- Topbar -->
       <header class="topbar">
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
         <div class="topbar__hello">
-          <h1>Exames</h1>
-          <p>Resultados laboratoriais e leitura assistida por IA</p>
+          <h1>Orientações</h1>
+          <p>Textos prontos para o paciente — por condição e técnicas do dia a dia</p>
         </div>
-        <button class="btn btn--primary" style="margin-left:auto">+ Anexar exame</button>
         <span class="avatar" id="user-avatar">AL</span>
       </header>
 
-      <!-- Canvas -->
       <main class="canvas">
-
-        <div class="ex-kpis" id="ex-kpis"></div>
-
-        <div class="ex-grid">
-          <section>
-            <div class="ex-search">🔍 <input type="search" id="ex-search-input" placeholder="Buscar por paciente ou tipo de exame…" aria-label="Buscar exame" /></div>
-            <div class="ex-list" id="ex-list"></div>
-          </section>
-
-          <section class="ex-detail" id="ex-detail"></section>
+        <div class="bc-bar">
+          <div class="bc-search">
+            🔍
+            <input type="search" id="bc-busca" autocomplete="off"
+                   placeholder="Buscar orientação ou sintoma… (ex.: azia, inchaço, remolho, sono)"
+                   aria-label="Buscar orientação" />
+          </div>
+          <button class="btn btn--primary or-nova" id="or-nova" type="button">＋ Nova orientação</button>
+          <div class="bc-chips" id="bc-grupos" role="group" aria-label="Filtrar por categoria"></div>
         </div>
 
+        <div class="bc-grid">
+          <section class="bc-col-lista" aria-label="Orientações">
+            <div class="bc-count" id="bc-count"></div>
+            <div class="bc-list" id="bc-list"></div>
+          </section>
+          <section class="bc-detail" id="bc-detail" aria-live="polite"></section>
+        </div>
       </main>
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="assets/js/exames-data.js"></script>
-  <script src="assets/js/exames.js"></script>
   <script src="assets/js/supabase-client.js"></script>
   <script src="assets/js/auth-guard.js"></script>
-  <script src="assets/js/ic-link.js"></script>
+  <script src="assets/js/orientacoes.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>

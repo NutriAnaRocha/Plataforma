@@ -20,13 +20,22 @@
 .pl-modelo {
   display: flex; flex-direction: column; gap: 4px; text-align: left;
   border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-3);
-  background: var(--branco); cursor: pointer; font: inherit; transition: border-color var(--t-fast), background var(--t-fast);
+  background: var(--branco); font: inherit; transition: border-color var(--t-fast), background var(--t-fast);
 }
-.pl-modelo:hover { border-color: var(--vinho); background: var(--rosa-suave); }
+.pl-modelo:hover { border-color: var(--vinho); }
 .pl-modelo__ico { font-size: 1.4rem; }
 .pl-modelo__nome { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-body); }
-.pl-modelo__meta { font-size: var(--fs-caption); font-weight: 700; color: var(--vinho); }
 .pl-modelo__desc { font-size: 11.5px; color: var(--texto-sutil); line-height: 1.4; }
+.pl-modelo__kcals { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+.pl-modelo__kcals-lbl { font-size: 11px; font-weight: 600; color: var(--texto-sutil); text-transform: uppercase; letter-spacing: .04em; }
+.pl-modelo__kcal {
+  font: inherit; font-size: var(--fs-caption); font-weight: 700; line-height: 1;
+  color: var(--vinho); background: var(--rosa-suave); border: 1px solid transparent;
+  border-radius: 999px; padding: 6px 11px; cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+.pl-modelo__kcal:hover { background: var(--vinho); color: #fff; }
+.pl-modelo__kcal:focus-visible { outline: 2px solid var(--vinho); outline-offset: 2px; }
 
 /* Editor — cabeçalho de metadados */
 .pl-meta { display: grid; grid-template-columns: 1fr 1fr 110px; gap: var(--sp-3); margin-bottom: var(--sp-4); }
