@@ -459,3 +459,35 @@
   width: 100%; font: inherit; padding: 8px 10px;
   border: 1px solid var(--cinza-borda, #e6dade); border-radius: 8px; background: var(--branco, #fff);
 }
+
+/* ---------- Receitas ---------- */
+.rc-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.rc-tag {
+  font-size: 11.5px; font-weight: 600; color: var(--vinho);
+  background: var(--rosa-suave, #f7ecf0); border-radius: 999px; padding: 3px 10px;
+}
+.rc-ingr { margin: 0; padding-left: 18px; }
+.rc-ingr li { margin-bottom: 4px; line-height: 1.5; }
+.rc-passos { margin: 0; padding-left: 20px; }
+.rc-passos li { margin-bottom: 8px; line-height: 1.55; }
+.rc-minis { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.rc-mini { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 90px; }
+.rc-mini label { font-size: 11.5px; font-weight: 600; color: var(--texto-sutil, #8a7a80); }
+
+/* ---------- Formulações ---------- */
+.fm-formula {
+  border: 1px solid var(--cinza-borda, #e6dade); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 12px; background: var(--branco, #fff);
+}
+.fm-formula:last-child { margin-bottom: 0; }
+.fm-formula__t { font-weight: 700; color: var(--vinho); margin-bottom: 8px; }
+.fm-comps { display: flex; flex-direction: column; gap: 6px; }
+.fm-comp {
+  display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 4px 12px;
+  padding-bottom: 6px; border-bottom: 1px dashed var(--cinza-borda, #eee4e7);
+}
+.fm-comp:last-child { border-bottom: none; padding-bottom: 0; }
+.fm-comp__a { font-weight: 600; }
+.fm-comp__d { font-weight: 700; color: var(--vinho); white-space: nowrap; }
+.fm-comp__o { grid-column: 1 / -1; font-size: 12px; color: var(--texto-sutil, #8a7a80); }
+.fm-formula__pos { margin-top: 10px; font-size: 13px; color: var(--texto, #3a2b30); line-height: 1.5; }
