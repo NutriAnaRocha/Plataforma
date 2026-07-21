@@ -430,6 +430,17 @@
         }
       });
     }
+    if (sec === "orientacoes" && window.OrientacoesPaciente) {
+      window.OrientacoesPaciente.wire(p, {
+        toast: pacToast,
+        perfil: perfilNutri,
+        onSaved: function (saved) {
+          for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
+          state.current = saved;
+          renderProfile(saved);
+        }
+      });
+    }
     if (sec === "perfil") { wirePortalCard(p); refreshAdesaoReal(p); }
     if (sec === "comunicacao") { initChatPane(p); loadChatPane(p); }
   }
@@ -524,6 +535,7 @@
   }
 
   function secOrientacoes(p) {
+    if (window.OrientacoesPaciente) return window.OrientacoesPaciente.render(p);
     return secWrap("Orientações atuais", emBreve("Orientações nutricionais entregues ao paciente (com geração de PDF com a sua marca).")) +
       secWrap("Histórico de orientações", emBreve("Todas as orientações já enviadas, por data."));
   }
