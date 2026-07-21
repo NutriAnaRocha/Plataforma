@@ -13,6 +13,7 @@
   var db = null;
   var todos = [];
   var catAtiva = "todos";
+  var escopo = "todas";      // "todas" (padrão do sistema + minhas) | "minhas"
   var termo = "";
   var selecionado = null;
 
@@ -57,6 +58,7 @@
   function filtrados() {
     var t = termo.trim().toLowerCase();
     return todos.filter(function (o) {
+      if (escopo === "minhas" && !o.editavel) return false;
       if (catAtiva !== "todos" && o.categoria !== catAtiva) return false;
       if (!t) return true;
       var alvo = [
@@ -80,7 +82,12 @@
         '" data-g="' + esc(g) + '" type="button">' + esc(CAT_LABEL[g]) +
         '<span class="bc-chip__n">' + mapa[g] + "</span></button>";
     });
-    $("#bc-grupos").innerHTML = html;
+    var nMinhas = todos.filter(function (o) { return o.editavel; }).length;
+    var scope = '<span class="bc-scope">' +
+      '<button class="sc-chip' + (escopo === "todas" ? " is-active" : "") + '" data-escopo="todas" type="button">Todas</button>' +
+      '<button class="sc-chip' + (escopo === "minhas" ? " is-active" : "") + '" data-escopo="minhas" type="button">Só as minhas' +
+        (nMinhas ? ' (' + nMinhas + ")" : "") + "</button></span>";
+    $("#bc-grupos").innerHTML = scope + html;
   }
 
   function metaLinha(o) {
@@ -95,6 +102,7 @@
     var lista = filtrados();
     $("#bc-count").textContent =
       lista.length + (lista.length === 1 ? " receita" : " receitas") +
+      (escopo === "minhas" ? " · só as minhas" : "") +
       (catAtiva !== "todos" ? " · " + (CAT_LABEL[catAtiva] || catAtiva) : "");
 
     if (!lista.length) {
@@ -206,8 +214,8 @@
         '<div class="bc-d__nome">' + esc(o.nome) + "</div>" +
         '<div class="bc-d__sub">Editando</div></div></div>' +
       (o.editavel
-        ? '<div class="bc-aviso">Esta já é a sua versão. As alterações valem só para você.</div>'
-        : '<div class="bc-aviso">Esta é uma receita da base. Ao salvar, eu crio <b>uma cópia sua</b> e a base fica intacta.</div>') +
+        ? '<div class="bc-aviso">Esta é uma versão <b>privada da sua conta</b> — só você vê e edita.</div>'
+        : '<div class="bc-aviso">Esta é uma receita <b>padrão do sistema</b>. Ao salvar, eu crio <b>uma cópia privada sua</b> e o padrão fica intacto.</div>') +
       '<form class="bc-edit" id="bc-form">' +
         campoNome +
         (o.editavel ? selCat : "") +
@@ -307,6 +315,9 @@
   }
 
   document.addEventListener("click", function (ev) {
+    var sc = ev.target.closest(".sc-chip");
+    if (sc) { escopo = sc.dataset.escopo; renderCats(); render(); return; }
+
     var chip = ev.target.closest(".bc-chip");
     if (chip) { catAtiva = chip.dataset.g; renderCats(); render(); return; }
 
@@ -351,7 +362,7 @@
       '<div class="bc-vazio"><span class="bc-vazio__ico">🍳</span>' +
       '<div class="bc-vazio__t">Escolha uma receita</div>' +
       '<div class="bc-vazio__d">Receitas fit e práticas para anexar ao plano ou sugerir ao paciente. ' +
-      "Edite qualquer uma ou crie a sua no botão “Nova receita”.</div></div>";
+      "As da base são o <b>padrão do sistema</b>; ao editar ou criar, vira uma versão <b>privada da sua conta</b>.</div></div>";
     carregar();
   });
 })();
