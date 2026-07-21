@@ -502,3 +502,64 @@
 }
 .sc-chip + .sc-chip { border-left: 1px solid var(--linha, #e6dade); }
 .sc-chip.is-active { background: var(--vinho, #7a2342); color: #fff; }
+
+/* ============================================================
+   LISTA DE COMPRAS — seleção de receitas + agregação
+   ============================================================ */
+.rc-modo-compras.is-active { background: var(--vinho, #7a2342); color: #fff; border-color: var(--vinho, #7a2342); }
+
+/* Modo seleção: cartão com marcador à esquerda */
+.bc-item.is-pickmode { padding-left: 40px; position: relative; }
+.bc-item__check {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--linha, #e6dade);
+  display: grid; place-items: center; font-size: 12px; font-weight: 900; color: #fff;
+  background: var(--branco, #fff); transition: background .12s, border-color .12s;
+}
+.bc-item.is-picked { border-color: var(--vinho, #7a2342); background: var(--rosa-suave, #fbeef3); }
+.bc-item.is-picked .bc-item__check { background: var(--vinho, #7a2342); border-color: var(--vinho, #7a2342); }
+
+/* Barra flutuante */
+.rc-compras-bar {
+  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 60;
+  display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+  background: var(--branco, #fff); border: 1px solid var(--linha, #e6dade); border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.16); max-width: calc(100vw - 32px);
+}
+.rc-compras-bar__n { font-weight: 800; color: var(--vinho, #7a2342); white-space: nowrap; }
+.btn--sm { padding: 7px 12px; font-size: 13px; }
+
+/* Modal da lista */
+.rc-lc-overlay {
+  position: fixed; inset: 0; z-index: 70; background: rgba(30,10,18,.45);
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.rc-lc {
+  background: var(--branco, #fff); border-radius: 18px; width: 640px; max-width: 100%;
+  max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.rc-lc__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 22px 6px; }
+.rc-lc__titulo { margin: 0; font-size: 20px; color: var(--vinho, #7a2342); }
+.rc-lc__sub { margin: 2px 0 0; font-size: 13px; color: var(--texto-sutil, #8a7a80); }
+.rc-lc__receitas { margin: 0; padding: 0 22px 10px; font-size: 12.5px; color: var(--texto-sutil, #8a7a80); }
+.rc-lc__corpo { overflow-y: auto; padding: 4px 22px; }
+.rc-lc__setor { margin-bottom: 16px; }
+.rc-lc__setor-t {
+  display: flex; align-items: center; gap: 8px; margin: 0 0 8px;
+  font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; color: var(--cinza-escuro, #4a3d42);
+  border-bottom: 1px solid var(--linha, #e6dade); padding-bottom: 6px;
+}
+.rc-lc__setor-n { margin-left: auto; background: var(--rosa-suave, #fbeef3); color: var(--vinho, #7a2342);
+  font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; }
+.rc-lc__lista { list-style: none; margin: 0; padding: 0; }
+.rc-lc__item { padding: 3px 0; }
+.rc-lc__item label { display: flex; align-items: center; gap: 9px; cursor: pointer; font-size: 14px; color: var(--texto, #3a2d32); }
+.rc-lc__item input { width: 17px; height: 17px; accent-color: var(--vinho, #7a2342); flex: none; }
+.rc-lc__item input:checked + span { text-decoration: line-through; color: var(--texto-sutil, #8a7a80); }
+.rc-lc__origem { margin-left: auto; font-size: 11px; color: var(--texto-sutil, #8a7a80); background: var(--cinza-claro, #f4eef0); padding: 1px 7px; border-radius: 999px; white-space: nowrap; }
+.rc-lc__acoes { display: flex; gap: 8px; justify-content: flex-end; padding: 14px 22px 20px; border-top: 1px solid var(--linha, #e6dade); flex-wrap: wrap; }
+
+@media (max-width: 560px) {
+  .rc-lc__acoes { justify-content: stretch; }
+  .rc-lc__acoes .btn { flex: 1; }
+}

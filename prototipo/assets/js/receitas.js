@@ -20,6 +20,30 @@
   var CAT_LABEL = { "cafe-lanche": "Café & lanches", "refeicao": "Refeições", "doce": "Doces fit", "bebida": "Bebidas" };
   var CAT_ICO = { "cafe-lanche": "🥪", "refeicao": "🍲", "doce": "🍫", "bebida": "🥤" };
 
+  // ---- Lista de compras (seleção + agregação por setor do mercado) ----
+  var modoCompras = false;
+  var cesta = [];            // ids das receitas marcadas para a lista
+
+  // Setores do mercado, na ordem em que aparecem na lista, com palavras-chave.
+  var SETORES = [
+    { id: "hortifruti", lbl: "Hortifrúti", ico: "🥬", kw: ["banana","maçã","maca","morango","limão","limao","laranja","abacaxi","manga","maracujá","maracuja","uva","fruta","frutas vermelhas","mirtilo","figo","damasco","tâmara","tamara","couve","espinafre","alface","folha","rúcula","rucula","agrião","agriao","tomate","cebola","alho","abobrinha","berinjela","abóbora","abobora","cenoura","couve-flor","brócolis","brocolis","batata","batata-doce","batata doce","inhame","pepino","hortelã","hortela","salsinha","cheiro-verde","gengibre","ervas","legume","ervilha","palmito"] },
+    { id: "proteina", lbl: "Proteínas, ovos & peixes", ico: "🥚", kw: ["ovo","ovos","clara","frango","carne","peixe","salmão","salmao","atum","tofu","proteína de soja","proteina de soja"] },
+    { id: "laticinios", lbl: "Laticínios", ico: "🧀", kw: ["leite","iogurte","queijo","requeijão","requeijao","muçarela","mucarela","minas","cream cheese","manteiga","ghee","búfala","bufala"] },
+    { id: "mercearia", lbl: "Mercearia (grãos & secos)", ico: "🌾", kw: ["aveia","farinha","tapioca","goma","quinoa","grão-de-bico","grao-de-bico","grão de bico","arroz","chia","linhaça","linhaca","psyllium","castanha","castanhas","noz","nozes","amêndoa","amendoa","amendoim","gergelim","macadâmia","macadamia","pistache","coco","cacau","alfarroba","passas","fermento","adoçante","adocante","fibra"] },
+    { id: "diversos", lbl: "Temperos, óleos & outros", ico: "🧂", kw: ["sal","azeite","óleo","oleo","água","agua","água de coco","agua de coco","leite de coco","bebida vegetal","suco","canela","cúrcuma","curcuma","noz-moscada","noz moscada","páprica","paprica","pimenta","cominho","orégano","oregano","sálvia","salvia","vinagre","mostarda","néctar","nectar","caldo","nori","alga","tahine","pasta de amendoim"] }
+  ];
+
+  function setorDe(linha) {
+    var t = (linha || "").toLowerCase();
+    for (var i = 0; i < SETORES.length; i++) {
+      var kws = SETORES[i].kw;
+      for (var j = 0; j < kws.length; j++) {
+        if (t.indexOf(kws[j]) !== -1) return SETORES[i].id;
+      }
+    }
+    return "diversos";
+  }
+
   var $ = function (s) { return document.querySelector(s); };
 
   function esc(s) {
@@ -114,8 +138,12 @@
     }
 
     $("#bc-list").innerHTML = lista.map(function (o) {
+      var picked = cesta.indexOf(o.id) !== -1;
       return '<button class="bc-item' + (selecionado === o.id ? " is-active" : "") +
-        '" data-id="' + o.id + '" type="button">' +
+        (modoCompras ? " is-pickmode" : "") + (picked ? " is-picked" : "") +
+        '" data-id="' + o.id + '" type="button"' +
+        (modoCompras ? ' aria-pressed="' + (picked ? "true" : "false") + '"' : "") + ">" +
+        (modoCompras ? '<span class="bc-item__check" aria-hidden="true">' + (picked ? "✓" : "") + "</span>" : "") +
         '<div class="bc-item__nome">' + (CAT_ICO[o.categoria] || "") + " " + esc(o.nome) +
           (o.editavel ? '<span class="bc-selo">minha</span>' : "") +
         "</div>" +
@@ -123,6 +151,28 @@
           (o.kcal_porcao ? "<span>" + o.kcal_porcao + " kcal</span>" : "") +
         "</div></button>";
     }).join("");
+
+    renderBarraCompras();
+  }
+
+  // Barra flutuante com o contador e o botão de gerar a lista.
+  function renderBarraCompras() {
+    var barra = $("#rc-compras-bar");
+    if (!modoCompras || !cesta.length) {
+      if (barra) barra.remove();
+      return;
+    }
+    if (!barra) {
+      barra = document.createElement("div");
+      barra.id = "rc-compras-bar";
+      barra.className = "rc-compras-bar";
+      document.body.appendChild(barra);
+    }
+    var n = cesta.length;
+    barra.innerHTML =
+      '<span class="rc-compras-bar__n">🛒 ' + n + (n === 1 ? " receita" : " receitas") + "</span>" +
+      '<button class="btn btn--ghost btn--sm" id="rc-compras-limpar" type="button">Limpar</button>' +
+      '<button class="btn btn--primary btn--sm" id="rc-compras-gerar" type="button">Gerar lista de compras</button>';
   }
 
   function detalhe(o) {
@@ -314,7 +364,143 @@
     } catch (e) { alert("Não consegui copiar automaticamente."); }
   }
 
+  // ---- Lista de compras ----
+  function toggleModoCompras() {
+    modoCompras = !modoCompras;
+    var btn = $("#rc-modo-compras");
+    if (btn) {
+      btn.setAttribute("aria-pressed", modoCompras ? "true" : "false");
+      btn.classList.toggle("is-active", modoCompras);
+      btn.textContent = modoCompras ? "✕ Sair da seleção" : "🛒 Lista de compras";
+    }
+    if (!modoCompras) cesta = [];
+    // Sair do detalhe ao entrar no modo seleção (a lista fica em foco).
+    if (modoCompras && selecionado) {
+      selecionado = null;
+      $("#bc-detail").classList.remove("is-open");
+      $(".bc-grid").classList.remove("has-selection");
+    }
+    render();
+  }
+
+  function togglePick(id) {
+    var i = cesta.indexOf(id);
+    if (i === -1) cesta.push(id); else cesta.splice(i, 1);
+    render();
+  }
+
+  // Agrega os ingredientes das receitas marcadas, agrupados por setor.
+  function montarLista() {
+    var receitas = cesta
+      .map(function (id) { return todos.find(function (x) { return x.id === id; }); })
+      .filter(Boolean);
+    var grupos = {};                       // setorId -> [ { texto, receitas:[nomes] } ]
+    receitas.forEach(function (r) {
+      (r.ingredientes || []).forEach(function (linha) {
+        var s = setorDe(linha);
+        grupos[s] = grupos[s] || [];
+        // Junta itens iguais (mesmo texto), acumulando de quais receitas vieram.
+        var chave = linha.trim().toLowerCase();
+        var achado = grupos[s].find(function (it) { return it.chave === chave; });
+        if (achado) { if (achado.receitas.indexOf(r.nome) === -1) achado.receitas.push(r.nome); }
+        else grupos[s].push({ chave: chave, texto: linha.trim(), receitas: [r.nome] });
+      });
+    });
+    return { receitas: receitas, grupos: grupos };
+  }
+
+  function listaEmTexto(dados) {
+    var l = ["LISTA DE COMPRAS", "", "Receitas: " + dados.receitas.map(function (r) { return r.nome; }).join(", "), ""];
+    SETORES.forEach(function (setor) {
+      var itens = dados.grupos[setor.id];
+      if (!itens || !itens.length) return;
+      l.push(setor.lbl.toUpperCase());
+      itens.forEach(function (it) { l.push("[ ] " + it.texto); });
+      l.push("");
+    });
+    return l.join("\n");
+  }
+
+  function abrirLista() {
+    var dados = montarLista();
+    var totalItens = Object.keys(dados.grupos).reduce(function (a, k) { return a + dados.grupos[k].length; }, 0);
+
+    var corpo = SETORES.map(function (setor) {
+      var itens = dados.grupos[setor.id];
+      if (!itens || !itens.length) return "";
+      var lis = itens.map(function (it) {
+        var origem = it.receitas.length > 1
+          ? '<span class="rc-lc__origem">' + it.receitas.length + " receitas</span>"
+          : "";
+        return '<li class="rc-lc__item"><label><input type="checkbox" /> <span>' + esc(it.texto) + "</span>" + origem + "</label></li>";
+      }).join("");
+      return '<div class="rc-lc__setor"><h4 class="rc-lc__setor-t">' + setor.ico + " " + esc(setor.lbl) +
+        '<span class="rc-lc__setor-n">' + itens.length + "</span></h4><ul class=\"rc-lc__lista\">" + lis + "</ul></div>";
+    }).join("");
+
+    var receitasNomes = dados.receitas.map(function (r) { return esc(r.nome); }).join(" · ");
+
+    var ov = document.createElement("div");
+    ov.className = "rc-lc-overlay";
+    ov.id = "rc-lc-overlay";
+    ov.innerHTML =
+      '<div class="rc-lc" role="dialog" aria-modal="true" aria-label="Lista de compras">' +
+        '<div class="rc-lc__head">' +
+          '<div><h3 class="rc-lc__titulo">🛒 Lista de compras</h3>' +
+            '<p class="rc-lc__sub">' + totalItens + " itens · " + dados.receitas.length +
+            (dados.receitas.length === 1 ? " receita" : " receitas") + "</p></div>" +
+          '<button class="icon-btn" id="rc-lc-fechar" type="button" aria-label="Fechar">✕</button>' +
+        "</div>" +
+        '<p class="rc-lc__receitas">' + receitasNomes + "</p>" +
+        '<div class="rc-lc__corpo">' + corpo + "</div>" +
+        '<div class="rc-lc__acoes">' +
+          '<button class="btn btn--ghost" id="rc-lc-copiar" type="button">📋 Copiar</button>' +
+          '<button class="btn btn--ghost" id="rc-lc-imprimir" type="button">🖨 Imprimir</button>' +
+          '<button class="btn btn--primary" id="rc-lc-ok" type="button">Concluir</button>' +
+        "</div>" +
+      "</div>";
+    document.body.appendChild(ov);
+    ov.__texto = listaEmTexto(dados);
+  }
+
+  function fecharLista() {
+    var ov = $("#rc-lc-overlay");
+    if (ov) ov.remove();
+  }
+
+  function imprimirLista(texto) {
+    var w = window.open("", "_blank");
+    if (!w) { alert("Libere pop-ups para imprimir."); return; }
+    w.document.write('<pre style="font:14px/1.6 monospace;padding:24px;white-space:pre-wrap">' +
+      texto.replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }) + "</pre>");
+    w.document.close(); w.focus(); w.print();
+  }
+
   document.addEventListener("click", function (ev) {
+    // ----- Lista de compras -----
+    if (ev.target.closest("#rc-modo-compras")) { toggleModoCompras(); return; }
+    if (ev.target.closest("#rc-compras-limpar")) { cesta = []; render(); return; }
+    if (ev.target.closest("#rc-compras-gerar")) {
+      if (!cesta.length) return;
+      abrirLista(); return;
+    }
+    if (ev.target.closest("#rc-lc-fechar") || ev.target.closest("#rc-lc-ok")) { fecharLista(); return; }
+    if (ev.target.id === "rc-lc-overlay") { fecharLista(); return; }
+    if (ev.target.closest("#rc-lc-copiar")) {
+      var ov = $("#rc-lc-overlay");
+      if (ov && ov.__texto) {
+        navigator.clipboard.writeText(ov.__texto).then(function () {
+          var b = $("#rc-lc-copiar"); if (b) { b.textContent = "✓ Copiada"; setTimeout(function () { b.textContent = "📋 Copiar"; }, 1500); }
+        }).catch(function () { alert("Não consegui copiar automaticamente."); });
+      }
+      return;
+    }
+    if (ev.target.closest("#rc-lc-imprimir")) {
+      var ov2 = $("#rc-lc-overlay");
+      if (ov2 && ov2.__texto) imprimirLista(ov2.__texto);
+      return;
+    }
+
     var sc = ev.target.closest(".sc-chip");
     if (sc) { escopo = sc.dataset.escopo; renderCats(); render(); return; }
 
@@ -324,7 +510,11 @@
     if (ev.target.closest("#rc-nova")) { novaReceita(); return; }
 
     var item = ev.target.closest(".bc-item");
-    if (item) { abrirDetalhe(item.dataset.id); return; }
+    if (item) {
+      if (modoCompras) togglePick(item.dataset.id);
+      else abrirDetalhe(item.dataset.id);
+      return;
+    }
 
     if (ev.target.closest("#rc-copiar")) {
       var oc = todos.find(function (x) { return x.id === selecionado; });
