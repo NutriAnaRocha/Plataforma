@@ -301,10 +301,17 @@
     var peso = dados.peso, b = dados.bio || {};
     var mapa = { gordura_kg: b.gordura_pct, musculo_kg: b.musculo_pct };
     Object.keys(mapa).forEach(function (id) {
-      var el = root.querySelector("#bio-deriv-" + id + " .antro-field__deriv-val");
+      var box = root.querySelector("#bio-deriv-" + id);
+      var el = box && box.querySelector(".antro-field__deriv-val");
       if (!el) return;
+      var pct = num(mapa[id]);
       var kg = bioKg(mapa[id], peso);
-      el.textContent = kg != null ? "≈ " + kg.toFixed(1).replace(".", ",") + " kg" : "—";
+      // Sem peso não há como converter — avisa em vez de deixar "—" mudo.
+      var faltaPeso = pct != null && pct > 0 && peso == null;
+      box.classList.toggle("is-hint", faltaPeso);
+      el.textContent = kg != null
+        ? "≈ " + kg.toFixed(1).replace(".", ",") + " kg"
+        : (faltaPeso ? "informe o peso" : "—");
     });
   }
 
