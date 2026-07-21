@@ -430,6 +430,17 @@
         }
       });
     }
+    if (sec === "prescricoes" && window.PrescricoesPaciente) {
+      window.PrescricoesPaciente.wire(p, {
+        toast: pacToast,
+        perfil: perfilNutri,
+        onSaved: function (saved) {
+          for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
+          state.current = saved;
+          renderProfile(saved);
+        }
+      });
+    }
     if (sec === "orientacoes" && window.OrientacoesPaciente) {
       window.OrientacoesPaciente.wire(p, {
         toast: pacToast,
@@ -529,6 +540,7 @@
   }
 
   function secPrescricoes(p) {
+    if (window.PrescricoesPaciente) return window.PrescricoesPaciente.render(p);
     var lista = paneLista(p.prescricoes, "💊", "Nenhuma prescrição registrada.");
     return secWrap("Prescrições do paciente", lista) +
       secWrap("Suplementação · Fitoterapia · Manipulados", emBreve("Prescrições separadas por tipo, com posologia e período — e geração de PDF com a sua identidade."));
