@@ -88,13 +88,19 @@
   // Foto de referência de cada dobra (mostra o ponto exato ao passar o mouse / tocar).
   DOBRAS.forEach(function (x) { x.img = "assets/img/dobras/" + x.key + ".jpg"; });
 
+  /* Bioimpedância — leitura direta do aparelho (InBody, Omron, Tanita…).
+     A nutri digita o PERCENTUAL de gordura e de músculo; o sistema calcula
+     o equivalente em kg usando o peso atual (kg = peso × % / 100). `hint` =
+     referência curta de interpretação, mostrada abaixo do campo. */
   var BIO = [
-    { key: "gordura_pct",     lbl: "% Gordura",          un: "%" },
-    { key: "massa_magra",     lbl: "Massa magra",        un: "kg" },
-    { key: "massa_muscular",  lbl: "Massa muscular",     un: "kg" },
-    { key: "agua_pct",        lbl: "Água corporal",      un: "%" },
-    { key: "gordura_visc",    lbl: "Gordura visceral",   un: "nível" },
-    { key: "tmb",             lbl: "Taxa metab. basal",  un: "kcal" }
+    { key: "gordura_pct",   lbl: "% Gordura",          un: "%",     deriv: "gordura_kg", derivLbl: "Massa de gordura" },
+    { key: "musculo_pct",   lbl: "% Massa muscular",   un: "%",     deriv: "musculo_kg", derivLbl: "Massa muscular" },
+    { key: "gordura_visc",  lbl: "Gordura visceral",   un: "nível",
+      hint: "Saudável até 9; atenção de 10 a 14; alto ≥ 15 (nível InBody)." },
+    { key: "idade_metab",   lbl: "Idade metabólica",   un: "anos" },
+    { key: "agua_pct",      lbl: "Água corporal",      un: "%" },
+    { key: "peso_osseo",    lbl: "Peso ósseo",         un: "kg" },
+    { key: "tmb",           lbl: "Taxa metab. basal",  un: "kcal" }
   ];
 
   /* ---------- Cálculos ---------- */
@@ -154,11 +160,29 @@
     '</div>';
   }
 
-  function field(lbl, key, val, un, ph) {
+  function field(lbl, key, val, un, ph, hint, extra) {
     return '<label class="antro-field"><span class="antro-field__lbl">' + esc(lbl) + '</span>' +
       '<span class="antro-field__wrap"><input type="number" step="0.1" inputmode="decimal" data-antro="' + key + '" ' +
       'value="' + (val == null ? "" : esc(val)) + '"' + (ph ? ' placeholder="' + esc(ph) + '"' : "") + ' />' +
-      (un ? '<span class="antro-field__un">' + un + '</span>' : "") + '</span></label>';
+      (un ? '<span class="antro-field__un">' + un + '</span>' : "") + '</span>' +
+      (extra || "") +
+      (hint ? '<span class="antro-field__hint">' + esc(hint) + '</span>' : "") + '</label>';
+  }
+  function bioField(x, val) {
+    // Campos comuns: layout padrão (rótulo em cima, input embaixo).
+    if (!x.deriv) return field(x.lbl, "bio:" + x.key, val, x.un, null, x.hint);
+    // Campos de %: input e o kg calculado LADO A LADO, na mesma linha.
+    return '<label class="antro-field antro-field--deriv">' +
+        '<span class="antro-field__lbl">' + esc(x.lbl) + '</span>' +
+        '<span class="antro-field__row">' +
+          '<span class="antro-field__wrap"><input type="number" step="0.1" inputmode="decimal" ' +
+            'data-antro="bio:' + x.key + '" value="' + (val == null ? "" : esc(val)) + '" />' +
+            '<span class="antro-field__un">' + x.un + '</span></span>' +
+          '<span class="antro-field__deriv" id="bio-deriv-' + x.deriv + '" aria-live="polite">' +
+            '<span class="antro-field__deriv-lbl">' + esc(x.derivLbl) + '</span>' +
+            '<strong class="antro-field__deriv-val">—</strong></span>' +
+        '</span>' +
+      '</label>';
   }
 
   function render(p) {
@@ -200,8 +224,8 @@
       '</section>';
 
     var bio =
-      '<section class="fsec"><h2 class="fsec__title">Bioimpedância <small class="antro-un-hint">(opcional — do aparelho)</small></h2>' +
-        '<div class="antro-basic">' + BIO.map(function (x) { return field(x.lbl, "bio:" + x.key, b[x.key], x.un); }).join("") + '</div>' +
+      '<section class="fsec"><h2 class="fsec__title">Bioimpedância <small class="antro-un-hint">(opcional — do aparelho; kg calculado pelo peso)</small></h2>' +
+        '<div class="antro-basic">' + BIO.map(function (x) { return bioField(x, b[x.key]); }).join("") + '</div>' +
       '</section>';
 
     var result =
@@ -267,6 +291,23 @@
     return r;
   }
 
+  // Bioimpedância: kg = peso × (% / 100). Devolve null se faltar dado.
+  function bioKg(pct, peso) {
+    var p = num(pct);
+    if (p == null || peso == null || p <= 0 || p > 100) return null;
+    return +(peso * p / 100).toFixed(1);
+  }
+  function pintarBioKg(root, dados) {
+    var peso = dados.peso, b = dados.bio || {};
+    var mapa = { gordura_kg: b.gordura_pct, musculo_kg: b.musculo_pct };
+    Object.keys(mapa).forEach(function (id) {
+      var el = root.querySelector("#bio-deriv-" + id + " .antro-field__deriv-val");
+      if (!el) return;
+      var kg = bioKg(mapa[id], peso);
+      el.textContent = kg != null ? "≈ " + kg.toFixed(1).replace(".", ",") + " kg" : "—";
+    });
+  }
+
   function pintar(root, r) {
     function set(id, v) { var e = root.querySelector("#" + id); if (e) e.textContent = v; }
     set("res-imc", r.imc != null ? r.imc : "—");
@@ -294,6 +335,8 @@
       var est = estaturaJoelho(dados.alturaJoelho, idade, dados.sexo);
       var out = root.querySelector("#antro-est-joelho");
       if (out) out.textContent = est != null ? "≈ " + (est / 100).toFixed(2) + " m" : "—";
+      // Bioimpedância: converte % → kg com o peso atual (mostra ao vivo).
+      pintarBioKg(root, dados);
     }
     root.addEventListener("input", recalc);
     root.addEventListener("change", recalc);
@@ -327,10 +370,15 @@
     if (salvar) salvar.addEventListener("click", function () {
       var dados = coletar(root);
       var r = calcular(dados, idade);
+      // Guarda o kg de gordura/músculo derivado da bioimpedância (peso × %).
+      var bio = Object.assign({}, dados.bio, {
+        gordura_kg: bioKg(dados.bio.gordura_pct, dados.peso),
+        musculo_kg: bioKg(dados.bio.musculo_pct, dados.peso)
+      });
       var antropo = {
         sexo: dados.sexo || null,
         peso: dados.peso, altura: dados.altura, alturaJoelho: dados.alturaJoelho,
-        circunferencias: dados.circunferencias, dobras: dados.dobras, bio: dados.bio,
+        circunferencias: dados.circunferencias, dobras: dados.dobras, bio: bio,
         imc: r.imc, somaDobras: r.soma, gorduraPct: r.gord, massaGorda: r.mg, massaMagra: r.mm,
         atualizadoEm: new Date().toISOString()
       };

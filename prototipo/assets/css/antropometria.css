@@ -24,6 +24,23 @@
 .antro-field__wrap input, .antro-field__wrap select { border: none; outline: none; background: none; font: inherit; font-size: var(--fs-sm); padding: 9px 0; width: 100%; color: var(--texto); }
 .antro-field__wrap input:disabled { color: var(--texto-sutil); }
 .antro-field__un { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; flex: none; }
+.antro-field__hint { font-size: 10.5px; color: var(--texto-sutil); line-height: 1.35; }
+
+/* Bioimpedância — kg calculado a partir do % (peso × %), mostrado ao lado */
+.antro-field--deriv { grid-column: span 2; }
+.antro-field__row { display: flex; align-items: stretch; gap: var(--sp-2); }
+.antro-field__row .antro-field__wrap { flex: 1 1 90px; min-width: 0; }
+.antro-field__deriv {
+  flex: 1 1 130px; display: flex; flex-direction: column; justify-content: center; gap: 1px;
+  padding: 4px 10px; border-radius: var(--radius-input);
+  background: var(--rosa-suave); border: 1px solid var(--rosa-suave);
+}
+.antro-field__deriv-lbl { font-size: 10px; color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
+.antro-field__deriv-val { color: var(--vinho); font-weight: 800; font-size: var(--fs-body); line-height: 1.15; }
+
+@media (max-width: 560px) {
+  .antro-field--deriv { grid-column: auto; }
+}
 
 /* Estimativa pela altura do joelho */
 .antro-joelho {
