@@ -446,6 +446,104 @@
 
 /* ---------- Orientações (biblioteca de textos ao paciente) ---------- */
 .or-nova { white-space: nowrap; }
+
+/* Faixa de destaque: a IA pode ajudar aqui */
+.or-ia-hint {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  background: linear-gradient(100deg, var(--rosa-suave, #f7ecf0), var(--branco, #fff));
+  border: 1px solid var(--rosa, #e6c6d3);
+  border-radius: var(--radius-card, 16px);
+  padding: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-4);
+  box-shadow: var(--shadow-sm);
+}
+.or-ia-hint__ico {
+  font-size: 22px;
+  line-height: 1;
+  flex: none;
+  filter: drop-shadow(0 1px 2px rgba(122, 35, 66, .2));
+}
+.or-ia-hint__txt {
+  font-size: var(--fs-sm);
+  color: var(--texto, #3a2b30);
+  line-height: var(--lh-normal);
+}
+.or-ia-hint__txt b { color: var(--vinho, #7a2342); }
+
+/* Agrupamento da lista por eixo */
+.bc-grp { margin-bottom: var(--sp-3); }
+.bc-grp:last-child { margin-bottom: 0; }
+.bc-grp__t {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--texto-sutil, #8a7a80);
+  padding: var(--sp-2) 2px var(--sp-1);
+  position: sticky;
+  top: 0;
+  background: var(--cinza-claro, #faf6f7);
+  z-index: 1;
+}
+.bc-grp__t::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--cinza-borda, #eee4e7);
+}
+.bc-grp__n {
+  order: 3;
+  font-weight: 800;
+  color: var(--vinho, #7a2342);
+  background: var(--rosa-suave, #f7ecf0);
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-variant-numeric: tabular-nums;
+}
+.bc-grp .bc-item { margin-bottom: var(--sp-2); }
+
+/* Prévia do resumo no item da lista */
+.bc-item__resumo {
+  font-size: var(--fs-caption, 12px);
+  color: var(--texto-sutil, #8a7a80);
+  line-height: 1.45;
+  margin-bottom: 5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Caixa "Gerar com IA" no editor */
+.or-ia {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  background: linear-gradient(100deg, var(--rosa-suave, #f7ecf0), var(--branco, #fff));
+  border: 1px dashed var(--rosa, #e6c6d3);
+  border-radius: var(--radius-btn, 12px);
+  padding: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-4);
+}
+.or-ia__head { display: flex; align-items: center; gap: var(--sp-3); flex: 1; min-width: 200px; }
+.or-ia__ico { font-size: 20px; line-height: 1; flex: none; }
+.or-ia__t { font-weight: 700; color: var(--vinho, #7a2342); font-size: var(--fs-sm, 14px); }
+.or-ia__d { font-size: 11.5px; color: var(--texto-sutil, #8a7a80); line-height: 1.45; margin-top: 2px; }
+.or-ia #or-ia-gerar { white-space: nowrap; flex: none; }
+.or-ia__nota {
+  flex-basis: 100%;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--vinho, #7a2342);
+  line-height: 1.45;
+}
+.or-ia__nota--erro { color: #9a3b2f; }
 .or-resumo { font-size: 15px; color: var(--texto, #3a2b30); font-weight: 600; margin: 0; }
 .or-bloco { margin-bottom: 14px; }
 .or-bloco:last-child { margin-bottom: 0; }

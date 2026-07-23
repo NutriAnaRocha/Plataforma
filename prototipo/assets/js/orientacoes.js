@@ -107,6 +107,22 @@
     $("#bc-grupos").innerHTML = scope + html;
   }
 
+  function grupoKey(o) { return o.eixo || CAT_LABEL[o.categoria] || o.categoria || "Outras"; }
+
+  function itemHTML(o) {
+    return '<button class="bc-item' + (selecionado === o.id ? " is-active" : "") +
+      '" data-id="' + o.id + '" type="button">' +
+      '<div class="bc-item__nome">' + (CAT_ICO[o.categoria] || "") + " " + esc(o.nome) +
+        (o.editavel ? '<span class="bc-selo">minha</span>' : "") +
+      "</div>" +
+      (o.resumo ? '<div class="bc-item__resumo">' + esc(o.resumo) + "</div>" : "") +
+      '<div class="bc-item__meta"><span>' + esc(CAT_LABEL[o.categoria] || o.categoria) + "</span>" +
+        (o.grupo ? '<span>' + esc(o.grupo) + "</span>" : "") +
+        '<span>' + (o.blocos || []).length +
+          ((o.blocos || []).length === 1 ? " bloco" : " blocos") + "</span>" +
+      "</div></button>";
+  }
+
   function render() {
     var lista = filtrados();
     $("#bc-count").textContent =
@@ -122,15 +138,20 @@
       return;
     }
 
-    $("#bc-list").innerHTML = lista.map(function (o) {
-      return '<button class="bc-item' + (selecionado === o.id ? " is-active" : "") +
-        '" data-id="' + o.id + '" type="button">' +
-        '<div class="bc-item__nome">' + (CAT_ICO[o.categoria] || "") + " " + esc(o.nome) +
-          (o.editavel ? '<span class="bc-selo">minha</span>' : "") +
-        "</div>" +
-        '<div class="bc-item__meta"><span>' + esc(CAT_LABEL[o.categoria] || o.categoria) + "</span>" +
-          '<span>' + (o.blocos || []).length + " blocos</span>" +
-        "</div></button>";
+    // Agrupa por eixo (Saúde mental, Saúde intestinal, Culinária…) para dar
+    // ordem visual à lista em vez de um bloco corrido.
+    var grupos = {}, ordem = [];
+    lista.forEach(function (o) {
+      var k = grupoKey(o);
+      if (!grupos[k]) { grupos[k] = []; ordem.push(k); }
+      grupos[k].push(o);
+    });
+    ordem.sort(function (a, b) { return a.localeCompare(b, "pt-BR"); });
+
+    $("#bc-list").innerHTML = ordem.map(function (k) {
+      return '<div class="bc-grp"><div class="bc-grp__t">' + esc(k) +
+        '<span class="bc-grp__n">' + grupos[k].length + "</span></div>" +
+        grupos[k].map(itemHTML).join("") + "</div>";
     }).join("");
   }
 
@@ -231,6 +252,13 @@
         ? '<div class="bc-aviso">Esta é uma versão <b>privada da sua conta</b> — só você vê e edita.</div>'
         : '<div class="bc-aviso">Esta é uma orientação <b>padrão do sistema</b>. Ao salvar, eu crio <b>uma cópia privada sua</b> e o padrão fica intacto.</div>') +
       '<form class="bc-edit" id="bc-form">' +
+        '<div class="or-ia">' +
+          '<div class="or-ia__head"><span class="or-ia__ico">✨</span>' +
+            '<div><div class="or-ia__t">Gerar rascunho com IA</div>' +
+            '<div class="or-ia__d">A IA monta a estrutura da orientação pra você. ' +
+            'Você revisa, ajusta e valida antes de usar.</div></div></div>' +
+          '<button class="btn btn--primary btn--sm" id="or-ia-gerar" type="button">✨ Gerar com IA</button>' +
+        "</div>" +
         campoNome +
         selCat +
         campo("Resumo (1 linha)", "resumo", o.resumo, 2) +
@@ -306,6 +334,88 @@
     $("#bc-detail").innerHTML = formEdicao(todos.find(function (x) { return x.id === ins.data.id; }));
   }
 
+  // Andaime local (offline): usado como fallback quando a IA não responde.
+  function scaffoldLocal(temaL) {
+    return [
+      "# No prato",
+      "Escolhas alimentares que ajudam em " + temaL,
+      "Nutrientes e alimentos de destaque",
+      "",
+      "# Rotina do dia a dia",
+      "Horários das refeições, hidratação e sono",
+      "Atividade física adequada ao caso",
+      "",
+      "# O que costuma atrapalhar",
+      "Alimentos e hábitos a moderar",
+      "",
+      "# Atenção",
+      "Sinais que pedem avaliação médica ou reencaminhamento"
+    ].join("\n");
+  }
+
+  function iaNota(texto, erro) {
+    var box = document.querySelector(".or-ia");
+    if (!box) return;
+    var nota = box.querySelector(".or-ia__nota");
+    if (!nota) { nota = document.createElement("div"); nota.className = "or-ia__nota"; box.appendChild(nota); }
+    nota.classList.toggle("or-ia__nota--erro", !!erro);
+    nota.textContent = texto;
+  }
+
+  // Gera um rascunho de orientação chamando a edge function gerar-orientacao
+  // (OpenAI, gpt-4o-mini, chave só no secret do Supabase). A nutri revisa e
+  // valida antes de salvar. Se a IA falhar, cai no andaime local.
+  async function gerarComIA(btn) {
+    var form = $("#bc-form");
+    if (!form) return;
+    var o = todos.find(function (x) { return x.id === selecionado; });
+    var tituloEl = form.querySelector('[name="nome"]');
+    var catEl = form.querySelector('[name="categoria"]');
+    var tema = (tituloEl && tituloEl.value.trim()) || (o && o.nome) || "";
+    var categoria = (catEl && catEl.value) || (o && o.categoria) || "condicao";
+
+    if (!tema || /^nova orienta/i.test(tema)) {
+      iaNota("Dê um título ao tema (ex.: “Refluxo”, “Pré-diabetes”) antes de gerar.", true);
+      if (tituloEl) tituloEl.focus();
+      return;
+    }
+
+    var conteudoEl = form.querySelector('[name="conteudo"]');
+    if (conteudoEl && conteudoEl.value.trim() &&
+        !confirm("Substituir o conteúdo atual pelo rascunho da IA?")) return;
+
+    var resumoEl = form.querySelector('[name="resumo"]');
+    var dicaEl = form.querySelector('[name="dica_pratica"]');
+    var atencaoEl = form.querySelector('[name="atencao"]');
+
+    if (btn) { btn.disabled = true; btn.textContent = "✨ Gerando…"; }
+    iaNota("Escrevendo o rascunho com IA… isso leva alguns segundos.", false);
+
+    try {
+      var db = await window.NutriDBReady;
+      var res = await db.functions.invoke("gerar-orientacao", { body: { tema: tema, categoria: categoria } });
+      if (res.error) throw res.error;
+      var d = res.data || {};
+      if (d.error) throw new Error(d.error);
+
+      if (conteudoEl && (d.blocos || []).length) conteudoEl.value = blocosToTexto(d.blocos);
+      if (resumoEl && d.resumo) resumoEl.value = d.resumo;
+      if (dicaEl && d.dica_pratica) dicaEl.value = d.dica_pratica;
+      if (atencaoEl && d.atencao) atencaoEl.value = d.atencao;
+
+      iaNota("✓ Rascunho gerado por IA (" + (d.modelo || "IA") +
+        "). Revise cada item e ajuste ao seu paciente antes de salvar.", false);
+    } catch (e) {
+      // Fallback: andaime local, para a Ana não ficar travada.
+      if (conteudoEl && !conteudoEl.value.trim()) conteudoEl.value = scaffoldLocal(tema.toLowerCase());
+      var msg = (e && e.message) ? e.message : "IA indisponível.";
+      iaNota("Não consegui gerar com a IA agora (" + msg + "). " +
+        "Deixei um roteiro base para você preencher.", true);
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = "✨ Gerar com IA"; }
+    }
+  }
+
   async function copiar(o) {
     try {
       await navigator.clipboard.writeText(textoPlano(o));
@@ -331,6 +441,8 @@
       if (oc) copiar(oc);
       return;
     }
+    var iaBtn = ev.target.closest("#or-ia-gerar");
+    if (iaBtn) { gerarComIA(iaBtn); return; }
     if (ev.target.closest("#bc-editar")) {
       var o = todos.find(function (x) { return x.id === selecionado; });
       if (o) $("#bc-detail").innerHTML = formEdicao(o);
