@@ -693,6 +693,7 @@
   // Expande um modelo (ou plano salvo) num rascunho com itens resolvidos.
   function expandir(fonte) {
     return {
+      id: fonte.id || null,
       titulo: fonte.titulo || (fonte.nome ? "Plano — " + fonte.nome : "Plano alimentar"),
       objetivo: fonte.objetivo || "",
       metaKcal: fonte.metaKcal || "",
@@ -722,14 +723,85 @@
   /* ============================================================
      RENDER
      ============================================================ */
-  var _p = null, _ctx = null, _draft = null;
+  var _p = null, _ctx = null, _draft = null, _viewId = null;
   function toast(m, e) { if (_ctx && _ctx.toast) _ctx.toast(m, e); }
   function perfil() { return (_ctx && _ctx.perfil) || {}; }
   function root() { return document.getElementById("plano-root"); }
 
+  /* ---------- Biblioteca de planos (vários por paciente) ----------
+     Para não exigir migração de banco, a biblioteca inteira vive dentro
+     da própria coluna `plano` (jsonb): os campos do plano ATIVO ficam no
+     topo (compatível com portal/adesão/timeline que leem p.plano.refeicoes),
+     e o acervo completo em plano.planos[] + qual é o ativo em plano.ativoId. */
+  function novoId() { return "pl" + Date.now() + Math.floor(Math.random() * 1000); }
+  function byId(id) { return function (x) { return x && x.id === id; }; }
+  function limpaLib(pl) { var c = Object.assign({}, pl); delete c.planos; delete c.ativoId; return c; }
+  // Normaliza p.plano para o formato novo (planos[] + ativoId com ids estáveis).
+  // Muta o objeto em memória para que ids não mudem entre chamadas na mesma sessão.
+  function garantirLib(p) {
+    if (!p) return;
+    var pl = p.plano;
+    if (pl && Array.isArray(pl.planos)) {
+      pl.planos.forEach(function (x) { if (x && !x.id) x.id = novoId(); });
+      if (!pl.ativoId || !pl.planos.some(byId(pl.ativoId))) {
+        pl.ativoId = pl.planos.length ? pl.planos[pl.planos.length - 1].id : null;
+      }
+      return;
+    }
+    if (pl && ((pl.refeicoes && pl.refeicoes.length) || pl.titulo)) {
+      var e = limpaLib(pl); if (!e.id) e.id = novoId();
+      p.plano = Object.assign({}, e, { planos: [e], ativoId: e.id });
+    }
+  }
+  // Todos os planos do paciente.
+  function libDe(p) {
+    garantirLib(p);
+    var pl = p && p.plano;
+    return (pl && Array.isArray(pl.planos)) ? pl.planos : [];
+  }
+  // Id do plano ativo (o que o paciente enxerga); cai no mais recente se inválido.
+  function ativoIdDe(p, lib) {
+    var aid = p && p.plano && p.plano.ativoId;
+    if (aid && lib.some(byId(aid))) return aid;
+    return lib.length ? lib[lib.length - 1].id : null;
+  }
+
   function render(p) {
-    var temPlano = p.plano && p.plano.refeicoes && p.plano.refeicoes.length;
-    return '<div id="plano-root">' + (temPlano ? resumoHTML(p.plano) : escolhaHTML()) + '</div>' + datalistHTML();
+    var lib = libDe(p);
+    return '<div id="plano-root">' + (lib.length ? painelHTML(p) : escolhaHTML()) + '</div>' + datalistHTML();
+  }
+
+  // Lista de planos + detalhe do plano em foco.
+  function painelHTML(p) {
+    var lib = libDe(p);
+    var aid = ativoIdDe(p, lib);
+    var vid = (_viewId && lib.some(byId(_viewId))) ? _viewId : aid;
+    var viewed = lib.filter(byId(vid))[0] || lib[lib.length - 1];
+    return listaPlanosHTML(lib, viewed.id, aid) + resumoHTML(viewed, viewed.id === aid);
+  }
+
+  function listaPlanosHTML(lib, vid, aid) {
+    var cards = lib.map(function (pl) {
+      var t = totaisDe(pl);
+      var isView = pl.id === vid, isAtual = pl.id === aid;
+      return '<div class="pl-plano-card' + (isView ? " pl-plano-card--sel" : "") + '" data-plano="' + esc(pl.id) + '">' +
+        '<button class="pl-plano-card__open" type="button" data-open-plano="' + esc(pl.id) + '">' +
+          '<span class="pl-plano-card__tit">' + esc(pl.titulo || "Plano alimentar") +
+            (isAtual ? '<span class="pl-plano-card__badge">Atual</span>' : '') + '</span>' +
+          '<span class="pl-plano-card__sub">' + t.kcal + ' kcal' +
+            (pl.metaKcal ? ' · meta ' + esc(pl.metaKcal) : '') +
+            (pl.atualizadoEm ? ' · ' + esc(pl.atualizadoEm) : '') + '</span>' +
+        '</button>' +
+        '<button class="pl-x pl-plano-card__del" type="button" data-del-plano="' + esc(pl.id) + '" aria-label="Excluir plano" title="Excluir plano">🗑️</button>' +
+      '</div>';
+    }).join("");
+    return '' +
+      '<section class="fsec">' +
+        '<div class="fsec__head"><h2 class="fsec__title">Planos alimentares (' + lib.length + ')</h2>' +
+          '<button class="btn btn--primary btn--sm" type="button" data-pl-add>＋ Novo plano</button>' +
+        '</div>' +
+        '<div class="pl-planos">' + cards + '</div>' +
+      '</section>';
   }
 
   function datalistHTML() {
@@ -754,9 +826,11 @@
         '</div>' +
       '</div>';
     }).join("");
+    var voltar = libDe(_p).length
+      ? '<button class="btn btn--ghost btn--sm" type="button" data-pl-voltar-lista>← Voltar aos planos</button>' : '';
     return '' +
       '<section class="fsec">' +
-        '<h2 class="fsec__title">Planejamento alimentar</h2>' +
+        '<div class="fsec__head"><h2 class="fsec__title">Novo plano alimentar</h2>' + voltar + '</div>' +
         '<div class="pl-escolha">' +
           '<button class="pl-inicio pl-inicio--zero" type="button" data-do-zero>' +
             '<span class="pl-inicio__ico">✍️</span>' +
@@ -773,7 +847,7 @@
   }
 
   /* ---------- Resumo do plano salvo ---------- */
-  function resumoHTML(plano) {
+  function resumoHTML(plano, isAtual) {
     var t = totaisDe(plano), pc = pctMacros(t);
     var meals = (plano.refeicoes || []).map(function (rf) {
       var itens = (rf.itens || []).map(function (it) {
@@ -790,11 +864,12 @@
     }).join("");
     return '' +
       '<section class="fsec">' +
-        '<div class="fsec__head"><h2 class="fsec__title">' + esc(plano.titulo || "Plano alimentar atual") + '</h2>' +
+        '<div class="fsec__head"><h2 class="fsec__title">' + esc(plano.titulo || "Plano alimentar") +
+            (isAtual ? ' <span class="pl-plano-card__badge">Atual do paciente</span>' : '') + '</h2>' +
           '<div class="pl-res__acoes">' +
+            (isAtual ? '' : '<button class="btn btn--outline btn--sm" type="button" data-pl-atual>★ Tornar atual</button>') +
             '<button class="btn btn--outline btn--sm" type="button" data-pl-pdf>🖨️ PDF</button>' +
             '<button class="btn btn--outline btn--sm" type="button" data-pl-editar>✏️ Editar</button>' +
-            '<button class="btn btn--ghost btn--sm" type="button" data-pl-novo>Novo plano</button>' +
           '</div></div>' +
         (plano.objetivo ? '<p class="pl-res__obj">🎯 ' + esc(plano.objetivo) + '</p>' : '') +
         totaisBarHTML(t, pc, plano.metaKcal) +
@@ -874,15 +949,17 @@
      WIRE
      ============================================================ */
   function wire(p, ctx) {
-    _p = p; _ctx = ctx || {};
+    _p = p; _ctx = ctx || {}; _viewId = null;
     var r = root(); if (!r) return;
-    // Estado inicial: se já tem plano salvo, mostramos o resumo (bind resumo); senão a escolha.
-    if (p.plano && p.plano.refeicoes && p.plano.refeicoes.length) bindResumo();
+    // Estado inicial: se já tem plano(s) salvo(s), mostramos o painel; senão a escolha.
+    if (libDe(p).length) bindPainel();
     else bindEscolha();
   }
 
   function bindEscolha() {
     var r = root(); if (!r) return;
+    var vl = r.querySelector("[data-pl-voltar-lista]");
+    if (vl) vl.addEventListener("click", function () { mostrarPainel(); });
     var zero = r.querySelector("[data-do-zero]");
     if (zero) zero.addEventListener("click", function () { abrirEditor(planoVazio()); });
     r.querySelectorAll("[data-modelo]").forEach(function (b) {
@@ -894,14 +971,38 @@
     });
   }
 
-  function bindResumo() {
+  // Devolve o plano em foco (o que está sendo exibido no detalhe).
+  function planoEmFoco() {
+    var lib = libDe(_p);
+    var aid = ativoIdDe(_p, lib);
+    var vid = (_viewId && lib.some(byId(_viewId))) ? _viewId : aid;
+    return lib.filter(byId(vid))[0] || lib[lib.length - 1];
+  }
+  function mostrarPainel() {
     var r = root(); if (!r) return;
+    r.innerHTML = painelHTML(_p);
+    bindPainel();
+  }
+
+  function bindPainel() {
+    var r = root(); if (!r) return;
+    var foco = planoEmFoco();
+    // ---- ações do detalhe do plano em foco ----
     var ed = r.querySelector("[data-pl-editar]");
-    if (ed) ed.addEventListener("click", function () { abrirEditor(expandir(_p.plano)); });
+    if (ed) ed.addEventListener("click", function () { abrirEditor(expandir(foco)); });
     var pdf = r.querySelector("[data-pl-pdf]");
-    if (pdf) pdf.addEventListener("click", function () { gerarPDF(_p.plano); });
-    var novo = r.querySelector("[data-pl-novo]");
-    if (novo) novo.addEventListener("click", function () { r.innerHTML = escolhaHTML(); bindEscolha(); });
+    if (pdf) pdf.addEventListener("click", function () { gerarPDF(foco); });
+    var atual = r.querySelector("[data-pl-atual]");
+    if (atual) atual.addEventListener("click", function () { definirAtual(foco.id); });
+    // ---- lista: novo, trocar foco, excluir ----
+    var add = r.querySelector("[data-pl-add]");
+    if (add) add.addEventListener("click", function () { r.innerHTML = escolhaHTML(); bindEscolha(); });
+    r.querySelectorAll("[data-open-plano]").forEach(function (b) {
+      b.addEventListener("click", function () { _viewId = b.getAttribute("data-open-plano"); mostrarPainel(); });
+    });
+    r.querySelectorAll("[data-del-plano]").forEach(function (b) {
+      b.addEventListener("click", function () { excluirPlano(b.getAttribute("data-del-plano")); });
+    });
   }
 
   function abrirEditor(plano) {
@@ -915,8 +1016,8 @@
   function bindEditor() {
     var r = root(); if (!r) return;
     r.querySelector("[data-pl-voltar]").addEventListener("click", function () {
-      r.innerHTML = (_p.plano && _p.plano.refeicoes && _p.plano.refeicoes.length) ? resumoHTML(_p.plano) : escolhaHTML();
-      if (_p.plano && _p.plano.refeicoes && _p.plano.refeicoes.length) bindResumo(); else bindEscolha();
+      if (libDe(_p).length) mostrarPainel();
+      else { r.innerHTML = escolhaHTML(); bindEscolha(); }
     });
     // recalcula ao vivo
     r.addEventListener("input", function (e) {
@@ -973,6 +1074,7 @@
   function coletar() {
     var r = root();
     var plano = {
+      id: (_draft && _draft.id) || null,
       titulo: (r.querySelector("[data-pl-titulo]") || {}).value || "Plano alimentar",
       objetivo: (r.querySelector("[data-pl-objetivo]") || {}).value || "",
       metaKcal: num((r.querySelector("[data-pl-meta]") || {}).value) || "",
@@ -1028,24 +1130,73 @@
     if (bar) bar.innerHTML = totaisBarHTML(tot, pctMacros(tot), meta || "");
   }
 
-  /* ---------- Salvar ---------- */
+  /* ---------- Persistência (biblioteca dentro da coluna `plano`) ---------- */
+  // Monta o objeto da coluna `plano`: campos do ativo no topo + acervo em .planos.
+  function montarColuna(lib, ativoId) {
+    var ativo = lib.filter(byId(ativoId))[0] || lib[lib.length - 1] || null;
+    var base = ativo ? limpaLib(ativo) : { titulo: null, refeicoes: [] };
+    base.planos = lib.map(limpaLib);
+    base.ativoId = ativo ? ativo.id : null;
+    return base;
+  }
+  // Grava a biblioteca no banco; ao concluir, re-renderiza o painel (ou a escolha).
+  function persistir(lib, ativoId, viewId, okMsg, btn, btnLabel) {
+    if (!window.NutriPacientes) { toast("Banco indisponível.", true); return; }
+    var coluna = lib.length ? montarColuna(lib, ativoId) : { titulo: null, refeicoes: [] };
+    var patch = Object.assign({}, _p, { plano: coluna });
+    window.NutriPacientes.update(_p.id, patch).then(function (saved) {
+      _p = saved;
+      _viewId = (viewId && libDe(_p).some(byId(viewId))) ? viewId : null;
+      var r = root();
+      if (r) {
+        if (libDe(_p).length) { mostrarPainel(); }
+        else { r.innerHTML = escolhaHTML(); bindEscolha(); }
+      }
+      if (okMsg) toast(okMsg);
+      if (_ctx.onSaved) _ctx.onSaved(saved);
+    }).catch(function (e) {
+      if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
+      toast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
+    });
+  }
+
+  /* ---------- Salvar (cria novo ou atualiza o editado) ---------- */
   function salvar() {
     var plano = coletar();
     if (!plano.refeicoes.some(function (rf) { return rf.itens.length; })) {
       toast("Adicione ao menos um alimento.", true); return;
     }
-    if (!window.NutriPacientes) { toast("Banco indisponível.", true); return; }
+    var lib = libDe(_p).slice();
+    var idx = plano.id ? lib.map(function (x) { return x.id; }).indexOf(plano.id) : -1;
+    var novo = idx < 0;
+    if (novo) { plano.id = plano.id || novoId(); lib.push(plano); }
+    else { lib[idx] = plano; }
+    // Plano novo entra como atual do paciente; edição mantém quem já era o atual.
+    var ativoId = novo ? plano.id : ativoIdDe(_p, lib);
     var btn = root().querySelector("[data-pl-salvar]");
     if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; }
-    var patch = Object.assign({}, _p, { plano: plano });
-    window.NutriPacientes.update(_p.id, patch).then(function (saved) {
-      _p = saved;
-      toast("Plano salvo");
-      if (_ctx.onSaved) _ctx.onSaved(saved);
-    }).catch(function (e) {
-      if (btn) { btn.disabled = false; btn.textContent = "💾 Salvar plano"; }
-      toast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
-    });
+    persistir(lib, ativoId, plano.id, "Plano salvo", btn, "💾 Salvar plano");
+  }
+
+  /* ---------- Definir plano atual do paciente ---------- */
+  function definirAtual(id) {
+    var lib = libDe(_p);
+    if (!lib.some(byId(id))) return;
+    _viewId = id;
+    persistir(lib, id, id, "Plano definido como atual do paciente");
+  }
+
+  /* ---------- Excluir plano ---------- */
+  function excluirPlano(id) {
+    var lib = libDe(_p);
+    var alvo = lib.filter(byId(id))[0];
+    if (!alvo) return;
+    var msg = 'Excluir o plano "' + (alvo.titulo || "Plano alimentar") + '"? Esta ação não pode ser desfeita.';
+    if (!window.confirm(msg)) return;
+    var restante = lib.filter(function (x) { return x.id !== id; });
+    var ativoId = ativoIdDe(_p, restante); // recai no mais recente se o excluído era o atual
+    if (_viewId === id) _viewId = null;
+    persistir(restante, ativoId, ativoId, "Plano excluído");
   }
 
   /* ---------- PDF (reusa NutriDoc) ---------- */
