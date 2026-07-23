@@ -1,0 +1,52 @@
+/* ============================================================
+   LISTA DE COMPRAS + DICAS DE MARMITA — nutri e portal. Usa tokens.
+   ============================================================ */
+
+.lc-sec { margin-top: var(--sp-4); }
+.lc-badge {
+  font-size: var(--fs-caption); font-weight: 700; color: var(--vinho);
+  background: var(--rosa-suave); border-radius: 999px; padding: 4px 10px; white-space: nowrap;
+}
+
+.lc-cols { columns: 2 260px; column-gap: var(--sp-4); }
+.lc-corr { break-inside: avoid; margin-bottom: var(--sp-3); border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); background: var(--branco); overflow: hidden; }
+.lc-corr__head {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+  background: linear-gradient(180deg, var(--rosa-suave), transparent);
+  border-bottom: 1px solid var(--cinza-borda);
+}
+.lc-corr__ico { font-size: 1.1rem; }
+.lc-corr__label { font-weight: 800; color: var(--vinho); font-size: var(--fs-sm); }
+.lc-corr__n { margin-left: auto; font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); background: var(--cinza-claro); border-radius: 999px; padding: 1px 8px; }
+.lc-list { list-style: none; margin: 0; padding: 6px 12px 10px; }
+.lc-item { display: flex; align-items: baseline; gap: 8px; padding: 4px 0; border-top: 1px dashed var(--cinza-borda); font-size: var(--fs-sm); }
+.lc-item:first-child { border-top: none; }
+.lc-item__nome { flex: 1; color: var(--texto); }
+.lc-item__qt { color: var(--texto-sutil); font-size: var(--fs-caption); white-space: nowrap; font-weight: 600; }
+.lc-item--check label { display: flex; align-items: baseline; gap: 8px; cursor: pointer; width: 100%; }
+.lc-item--check input { margin-top: 2px; accent-color: var(--vinho); flex: none; }
+.lc-item--check input:checked ~ .lc-item__nome { text-decoration: line-through; color: var(--texto-sutil); }
+
+/* Dicas de marmita */
+.lc-dicas { margin-top: var(--sp-4); }
+.lc-dicas__tit { font-size: var(--fs-h3); color: var(--vinho); margin: 0 0 var(--sp-3); font-family: var(--font-display); }
+.lc-dicas__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--sp-3); }
+.lc-dica {
+  display: flex; gap: 10px; align-items: flex-start;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-3);
+  background: var(--branco);
+}
+.lc-dica__ico { font-size: 1.3rem; flex: none; }
+.lc-dica strong { display: block; color: var(--cinza-escuro); font-size: var(--fs-sm); margin-bottom: 2px; }
+.lc-dica p { margin: 0; font-size: 12px; color: var(--texto-sutil); line-height: 1.45; }
+.lc-dicas--compact .lc-dica p { font-size: 11.5px; }
+
+/* Portal */
+.lc-portal { margin-top: var(--sp-3); }
+.lc-portal__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.lc-portal__head h3 { margin: 0; color: var(--vinho); font-size: var(--fs-h3); }
+
+@media (max-width: 560px) {
+  .lc-cols { columns: 1; }
+  .lc-dicas__grid { grid-template-columns: 1fr; }
+}

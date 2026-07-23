@@ -173,8 +173,9 @@
     { id: "anamnese",     ico: "📝", tit: "Anamnese",               sub: ["Anamnese inicial", "Anamneses de retorno", "Histórico completo"] },
     { id: "exames",       ico: "🧪", tit: "Exames",                 sub: ["Upload de exames", "Visualização", "Histórico"] },
     { id: "antropometria",ico: "📏", tit: "Antropometria",          sub: ["Peso, altura, IMC", "Circunferências", "Dobras", "Evolução gráfica"] },
-    { id: "plano",        ico: "🥗", tit: "Planejamento Alimentar", sub: ["Plano atual", "Planos anteriores", "Histórico"] },
-    { id: "metas",        ico: "🎯", tit: "Metas",                  sub: ["Metas ativas", "Concluídas", "Evolução"] },
+    { id: "plano",        ico: "🥗", tit: "Planejamento Alimentar", sub: ["Plano atual", "Planos anteriores", "Lista de compras"] },
+    { id: "treino",       ico: "🏋️", tit: "Treino em casa",         sub: ["Blocos e exercícios", "Vídeos", "Liberar ao paciente"] },
+    { id: "metas",        ico: "🎯", tit: "Metas",                  sub: ["Checklist do paciente", "Metas ativas", "Evolução"] },
     { id: "prescricoes",  ico: "💊", tit: "Prescrições",            sub: ["Suplementação", "Fitoterapia", "Manipulados"] },
     { id: "orientacoes",  ico: "📄", tit: "Orientações",            sub: ["Atuais", "Histórico"] },
     { id: "arquivos",     ico: "📎", tit: "Arquivos",               sub: ["PDFs", "Fotos", "Documentos"] },
@@ -375,6 +376,7 @@
       case "exames":        html = secExames(p); break;
       case "antropometria": html = secAntropometria(p); break;
       case "plano":         html = secPlano(p); break;
+      case "treino":        html = secTreino(p); break;
       case "metas":         html = secMetas(p); break;
       case "prescricoes":   html = secPrescricoes(p); break;
       case "orientacoes":   html = secOrientacoes(p); break;
@@ -423,6 +425,26 @@
       window.PlanoAlimentar.wire(p, {
         toast: pacToast,
         perfil: perfilNutri,
+        onSaved: function (saved) {
+          for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
+          state.current = saved;
+          renderProfile(saved);
+        }
+      });
+    }
+    if (sec === "treino" && window.TreinoPaciente) {
+      window.TreinoPaciente.wire(p, {
+        toast: pacToast,
+        onSaved: function (saved) {
+          for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
+          state.current = saved;
+          renderProfile(saved);
+        }
+      });
+    }
+    if (sec === "metas" && window.MetasPaciente) {
+      window.MetasPaciente.wire(p, {
+        toast: pacToast,
         onSaved: function (saved) {
           for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
           state.current = saved;
@@ -530,13 +552,18 @@
     return secWrap("Plano alimentar atual", atual);
   }
 
+  function secTreino(p) {
+    if (window.TreinoPaciente) return window.TreinoPaciente.render(p);
+    return secWrap("Treino em casa", '<div class="empty-state">Módulo de treino indisponível.</div>');
+  }
+
   function secMetas(p) {
+    if (window.MetasPaciente) return window.MetasPaciente.render(p);
     var ativa = p.objetivo
       ? '<div class="fgoal"><span class="fgoal__ico">🎯</span><div><strong>' + esc(p.objetivo) + '</strong>' +
         (p.meta != null ? '<p class="ftxt">Meta de peso: ' + p.meta + ' kg · atual: ' + (p.pesoAtual != null ? p.pesoAtual + ' kg' : '—') + '</p>' : '') + '</div></div>'
       : '<div class="empty-state">Nenhuma meta ativa.</div>';
-    return secWrap("Metas ativas", ativa) +
-      secWrap("Metas concluídas & evolução", emBreve("Histórico de metas batidas e a evolução rumo a cada uma."));
+    return secWrap("Metas ativas", ativa);
   }
 
   function secPrescricoes(p) {

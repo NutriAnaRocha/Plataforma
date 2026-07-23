@@ -1,0 +1,33 @@
+/* ============================================================
+   METAS / CHECKLIST — ficha da nutri + portal do paciente. Usa tokens.
+   ============================================================ */
+
+/* ---- Editor (nutri) ---- */
+.mt-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.mt-item__ico { flex: none; }
+.mt-item__txt { flex: 1; font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda); border-radius: var(--radius-input); padding: 8px 10px; background: var(--branco); }
+.mt-item__txt:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+
+.mt-sugs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: var(--sp-3) 0; }
+.mt-sugs__lbl { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); text-transform: uppercase; letter-spacing: .04em; }
+.mt-sug {
+  font: inherit; font-size: var(--fs-caption); font-weight: 600; color: var(--vinho);
+  background: var(--rosa-suave); border: 1px solid transparent; border-radius: 999px; padding: 5px 10px; cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.mt-sug:hover { background: var(--vinho); color: #fff; }
+
+/* ---- Resumo (nutri) ---- */
+.mt-rlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.mt-ritem { border: 1px solid var(--cinza-borda); border-radius: var(--radius-input); padding: 8px 12px; background: var(--branco); font-size: var(--fs-sm); }
+
+/* ---- Portal (paciente) ---- */
+.mt-plist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.mt-pitem label { display: flex; align-items: center; gap: 10px; cursor: pointer;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: 12px 14px; background: var(--branco);
+  transition: border-color var(--t-fast), background var(--t-fast); }
+.mt-pitem label:hover { border-color: var(--rosa); }
+.mt-pitem input { accent-color: var(--vinho); flex: none; width: 18px; height: 18px; }
+.mt-pitem span { font-weight: 600; color: var(--texto); }
+.mt-pitem.is-done label { background: var(--rosa-suave); border-color: var(--rosa); }
+.mt-pitem.is-done span { text-decoration: line-through; color: var(--texto-sutil); }

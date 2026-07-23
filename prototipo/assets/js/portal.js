@@ -65,6 +65,8 @@
       "Próxima consulta: " + (p.proxConsulta || "a agendar");
 
     el("pane-plano").innerHTML = renderPlano(p);
+    el("pane-treino").innerHTML = window.TreinoView ? window.TreinoView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
+    el("pane-metas").innerHTML = window.MetasView ? window.MetasView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-evolucao").innerHTML = renderEvolucao(p);
     el("pane-consultas").innerHTML = renderConsultas(p);
 
@@ -83,11 +85,17 @@
   // O chat tem gate real de RLS; as demais são apenas ocultadas aqui.
   function applyFeatureGate(p) {
     var feats = Array.isArray(p.portalFeatures) ? p.portalFeatures : ["plano", "evolucao", "consultas", "chat"];
+    // Treino e Metas não são features pagas: aparecem quando há conteúdo liberado.
+    var temTreino = !!(p.treino && p.treino.publicado && (p.treino.blocos || []).length);
+    var temMetas = !!(p.metas && p.metas.publicado && (p.metas.itens || []).some(function (i) { return (i.texto || "").trim(); }));
     var tabsWrap = el("portal-tabs");
     var visiveis = [];
     tabsWrap.querySelectorAll(".ptab").forEach(function (t) {
       var id = t.getAttribute("data-t");
-      var on = feats.indexOf(id) >= 0;
+      var on;
+      if (id === "treino") on = temTreino;
+      else if (id === "metas") on = temMetas;
+      else on = feats.indexOf(id) >= 0;
       t.hidden = !on;
       if (on) visiveis.push(id);
     });
@@ -141,7 +149,7 @@
     }
     var readonly = ctx.mode === "preview";
     var multi = planos.length > 1;
-    return planos.map(function (plano, pi) {
+    var corpo = planos.map(function (plano, pi) {
       var refs = plano.refeicoes || [];
       // Só o 1º plano liberado é "interativo" (checkboxes + adesão), casando com a
       // adesão que a nutri acompanha (chaves ri:ii sobre o plano espelhado no topo).
@@ -176,6 +184,9 @@
       }).join("");
       return (multi ? '<div class="plano-sep">' + esc(plano.titulo || "Plano alimentar") + '</div>' : '') + head + body;
     }).join("");
+    // Lista de compras (uma só, do 1º plano liberado) + dicas de marmita.
+    var compras = window.ListaCompras ? window.ListaCompras.htmlPortal(planos[0], ctx.marcas, readonly) : "";
+    return corpo + compras;
   }
 
   // Marcação do plano sincronizada no banco (tabela plano_adesao, gravada pelo

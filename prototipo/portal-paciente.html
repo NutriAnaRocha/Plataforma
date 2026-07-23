@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/portal.css" />
+  <link rel="stylesheet" href="assets/css/lista-compras.css" />
+  <link rel="stylesheet" href="assets/css/treino.css" />
+  <link rel="stylesheet" href="assets/css/metas.css" />
 </head>
 <body class="portal-body">
 
@@ -47,6 +50,8 @@
     <!-- Abas -->
     <nav class="portal-tabs" id="portal-tabs" aria-label="Seções">
       <button class="ptab is-active" data-t="plano" type="button">🥗 Meu plano</button>
+      <button class="ptab" data-t="treino" type="button">🏋️ Treino</button>
+      <button class="ptab" data-t="metas" type="button">🎯 Metas</button>
       <button class="ptab" data-t="evolucao" type="button">📈 Evolução</button>
       <button class="ptab" data-t="consultas" type="button">📅 Consultas</button>
       <button class="ptab" data-t="chat" type="button">💬 Mensagens</button>
@@ -54,6 +59,8 @@
 
     <main class="portal-main" id="portal-main">
       <div class="portal-pane is-active" data-pane="plano" id="pane-plano"></div>
+      <div class="portal-pane" data-pane="treino" id="pane-treino"></div>
+      <div class="portal-pane" data-pane="metas" id="pane-metas"></div>
       <div class="portal-pane" data-pane="evolucao" id="pane-evolucao"></div>
       <div class="portal-pane" data-pane="consultas" id="pane-consultas"></div>
       <div class="portal-pane" data-pane="chat" id="pane-chat"></div>
@@ -65,6 +72,8 @@
   <!-- Scripts -->
   <script src="assets/js/supabase-client.js"></script>
   <script src="assets/js/pacientes-db.js"></script>
+  <script src="assets/js/alimentos-data.js"></script>
+  <script src="assets/js/lista-compras.js"></script>
   <script src="assets/js/portal.js"></script>
   <script src="assets/js/app.js"></script>
 </body>

@@ -892,7 +892,8 @@
         (plano.objetivo ? '<p class="pl-res__obj">🎯 ' + esc(plano.objetivo) + '</p>' : '') +
         totaisBarHTML(t, pc, plano.metaKcal) +
         '<div class="pl-res__meals">' + meals + '</div>' +
-      '</section>';
+      '</section>' +
+      (window.ListaCompras ? window.ListaCompras.htmlNutri(plano) : "");
   }
   function qtdLabel(it, c) {
     if (it.medida === "grama") return c.gramas + " g";
@@ -1240,7 +1241,8 @@
         '<span class="doc-meal__kcal">' + r0(sub) + ' kcal</span></div>' + itens + '</div>';
     }).join("");
     var body = (plano.objetivo ? '<h2>Objetivo: ' + esc(plano.objetivo) + '</h2>' : '') + macros + refs +
-      '<div class="doc-note">💡 Beba bastante água ao longo do dia. As medidas caseiras são aproximadas — siga as porções orientadas.</div>';
+      '<div class="doc-note">💡 Beba bastante água ao longo do dia. As medidas caseiras são aproximadas — siga as porções orientadas.</div>' +
+      (window.ListaCompras ? window.ListaCompras.pdfHTML(plano) : "");
     window.NutriDoc.imprimir(perfil(), {
       tipo: "Planejamento Alimentar", paciente: _p.nome, data: hojeBR(), bodyHTML: body
     });

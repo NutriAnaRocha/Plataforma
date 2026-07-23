@@ -59,6 +59,8 @@
       orientacoes: Array.isArray(r.orientacoes) ? r.orientacoes : [],
       questionarios: Array.isArray(r.questionarios) ? r.questionarios : [],
       plano: r.plano || { titulo: null, refeicoes: [] },
+      treino: (r.treino && typeof r.treino === "object") ? r.treino : null,
+      metas: (r.metas && typeof r.metas === "object") ? r.metas : null,
       portalFeatures: Array.isArray(r.portal_features) ? r.portal_features : TODAS_FEATURES.slice(),
       prontuario: r.prontuario || null,
       criadoEm: r.created_at || ""
@@ -233,6 +235,28 @@
     saveOrientacoes: function (id, lista) {
       return client().then(function (c) {
         return c.from("pacientes").update({ orientacoes: lista || [] }).eq("id", id)
+          .select("*").single();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return fromRow(res.data);
+      });
+    },
+
+    // Treino em casa (jsonb) — grava só essa coluna.
+    saveTreino: function (id, treino) {
+      return client().then(function (c) {
+        return c.from("pacientes").update({ treino: treino || null }).eq("id", id)
+          .select("*").single();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return fromRow(res.data);
+      });
+    },
+
+    // Metas / checklist (jsonb) — grava só essa coluna.
+    saveMetas: function (id, metas) {
+      return client().then(function (c) {
+        return c.from("pacientes").update({ metas: metas || null }).eq("id", id)
           .select("*").single();
       }).then(function (res) {
         if (res.error) throw res.error;

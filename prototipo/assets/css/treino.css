@@ -1,0 +1,63 @@
+/* ============================================================
+   TREINO EM CASA — ficha da nutri + portal do paciente. Usa tokens.
+   ============================================================ */
+
+/* ---- Escolha / modelos (nutri) ---- */
+.tr-modelos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--sp-3); }
+.tr-modelo {
+  display: flex; flex-direction: column; gap: 4px; text-align: left; cursor: pointer; font: inherit;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-4); background: var(--branco);
+  transition: border-color var(--t-fast), background var(--t-fast), transform var(--t-fast);
+}
+.tr-modelo:hover { border-color: var(--vinho); transform: translateY(-2px); }
+.tr-modelo--zero { border-style: dashed; }
+.tr-modelo__ico { font-size: 1.7rem; }
+.tr-modelo__nome { font-weight: 800; color: var(--vinho); font-size: var(--fs-body); }
+.tr-modelo__desc { font-size: var(--fs-caption); color: var(--texto-sutil); }
+
+/* ---- Resumo (nutri) ---- */
+.tr-blocos { display: flex; flex-direction: column; gap: var(--sp-3); }
+.tr-bloco { border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); background: var(--branco); overflow: hidden; }
+.tr-bloco__head { font-weight: 800; color: var(--vinho); padding: 8px 12px; background: linear-gradient(180deg, var(--rosa-suave), transparent); border-bottom: 1px solid var(--cinza-borda); }
+.tr-ex { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; padding: 6px 12px; border-top: 1px dashed var(--cinza-borda); font-size: var(--fs-sm); }
+.tr-ex:first-of-type { border-top: none; }
+.tr-ex__nome { font-weight: 600; color: var(--texto); }
+.tr-ex__meta { color: var(--texto-sutil); font-size: var(--fs-caption); white-space: nowrap; }
+.tr-vlink { color: var(--vinho); font-size: var(--fs-caption); text-decoration: none; font-weight: 700; }
+.tr-vlink:hover { text-decoration: underline; }
+
+/* ---- Editor (nutri) ---- */
+.tr-bloco-ed { border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-3); margin-bottom: var(--sp-3); background: var(--branco); }
+.tr-bloco-ed__head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.tr-bloco-ed__nome { flex: 1; font: inherit; font-weight: 700; color: var(--vinho); border: none; border-bottom: 1px dashed var(--cinza-borda); background: none; padding: 2px 0; }
+.tr-bloco-ed__nome:focus { outline: none; border-bottom-color: var(--vinho); }
+.tr-exs { display: flex; flex-direction: column; gap: 6px; }
+.tr-ex-ed { display: grid; grid-template-columns: 1.6fr 60px 70px 80px 1.4fr 1.4fr 26px; gap: 6px; align-items: center; }
+.tr-ex-ed input { font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda); border-radius: var(--radius-input); padding: 6px 8px; background: var(--branco); min-width: 0; width: 100%; }
+.tr-ex-ed input:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+
+/* ---- Portal (paciente) ---- */
+.tr-pbloco { margin-bottom: var(--sp-3); }
+.tr-pbloco__head { font-family: var(--font-display); font-size: var(--fs-h3); color: var(--vinho); margin-bottom: var(--sp-2); }
+.tr-pex { display: flex; gap: var(--sp-3); padding: var(--sp-2) 0; border-top: 1px dashed var(--cinza-borda); }
+.tr-pex:first-of-type { border-top: none; }
+.tr-pex.is-done { opacity: .6; }
+.tr-thumb {
+  flex: none; width: 108px; height: 68px; border-radius: var(--radius-sm); background-size: cover; background-position: center;
+  background-color: var(--cinza-claro); display: flex; align-items: center; justify-content: center; position: relative; text-decoration: none; overflow: hidden;
+}
+.tr-thumb__play { color: #fff; font-size: 1.4rem; text-shadow: 0 2px 8px rgba(0,0,0,.6); background: rgba(0,0,0,.35); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+.tr-thumb--search { background: var(--rosa-suave); color: var(--vinho); font-size: var(--fs-caption); font-weight: 700; text-align: center; padding: 4px; }
+.tr-pex__body { flex: 1; min-width: 0; }
+.tr-pex__check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.tr-pex__check input { accent-color: var(--vinho); flex: none; }
+.tr-pex__nome { font-weight: 700; color: var(--texto); }
+.tr-pex.is-done .tr-pex__nome { text-decoration: line-through; }
+.tr-pex__meta { font-size: var(--fs-caption); color: var(--texto-sutil); margin: 2px 0 0 24px; }
+.tr-pex__obs { font-size: var(--fs-caption); color: var(--vinho-claro); margin: 2px 0 0 24px; }
+
+@media (max-width: 640px) {
+  .tr-ex-ed { grid-template-columns: 1fr 1fr 26px; grid-auto-rows: auto; }
+  .tr-ex-ed__nome { grid-column: 1 / 3; }
+  .tr-ex-ed__v, .tr-ex-ed__o { grid-column: 1 / 4; }
+}
