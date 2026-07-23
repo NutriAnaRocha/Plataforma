@@ -241,6 +241,15 @@
       });
     } else if (hashParams.error) {
       showMsg("Link inválido ou expirado. Solicite um novo em \"Esqueci minha senha\".");
+    } else {
+      // App/PWA: se já há sessão ativa (e não é fluxo de recuperação nem erro),
+      // manda direto pro destino (paciente→portal, nutri→dashboard) — sem exibir
+      // a tela de login de novo. É o que dá a sensação de "abrir o app e já entrar".
+      window.NutriDBReady.then(function (c) {
+        return c.auth.getSession().then(function (r) {
+          if (r.data && r.data.session) return afterAuth(c);
+        });
+      }).catch(function () { /* offline/sem sessão: fica na tela de login */ });
     }
 
     /* ---------- Modal de personalização ---------- */
