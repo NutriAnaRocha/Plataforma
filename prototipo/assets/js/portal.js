@@ -113,33 +113,69 @@
   }
 
   /* ---------- Meu plano ---------- */
+  // Planos liberados pela nutri (flag publicado). Cai no formato antigo de plano único.
+  function planosLiberados(p) {
+    var pl = p.plano || {};
+    if (Array.isArray(pl.planos)) return pl.planos.filter(function (x) { return x && x.publicado; });
+    if ((pl.refeicoes || []).length) return [pl];
+    return [];
+  }
+  function horaRefeicao(r) { return r.hora || r.horario || ""; }
+  // Item pode ser string (formato antigo) ou objeto do construtor {alimento, medida, qtd, gramas}.
+  function itemTexto(it) {
+    if (it == null) return "";
+    if (typeof it === "string") return it;
+    var nome = it.alimento || it.nome || "";
+    var q;
+    if (it.medida && it.medida !== "grama") q = (it.qtd != null ? it.qtd + " " : "") + it.medida;
+    else if (it.gramas != null) q = it.gramas + " g";
+    else if (it.qtd != null) q = it.qtd + "";
+    return nome + (q ? " — " + q : "");
+  }
+
   function renderPlano(p) {
-    var plano = p.plano || {};
-    var refs = plano.refeicoes || [];
-    if (!refs.length) {
+    var planos = planosLiberados(p);
+    if (!planos.length) {
       return '<div class="pcard"><div class="empty-state">Seu plano alimentar ainda não foi publicado. ' +
         'Assim que sua nutricionista liberar, ele aparece aqui.</div></div>';
     }
     var readonly = ctx.mode === "preview";
-    var pct = adesaoPct(p);
-    var head = '<div class="pcard pcard--head"><h2>' + esc(plano.titulo || "Plano alimentar") + '</h2>' +
-      (plano.atualizadoEm ? '<span class="pcard__meta">Atualizado em ' + esc(plano.atualizadoEm) + '</span>' : '') +
-      '<div class="plano-adesao"><div class="plano-adesao__bar"><span id="adesao-fill" style="width:' + pct + '%"></span></div>' +
-        '<span class="plano-adesao__pct" id="adesao-pct">' + pct + '% seguido</span></div>' +
-      '<p class="pcard__hint">Marque o que você seguiu — sua nutricionista acompanha sua adesão por aqui.</p></div>';
-    var body = refs.map(function (r, ri) {
-      var itens = (r.itens || []).map(function (it, ii) {
-        var key = ri + ":" + ii;
-        var done = checkGet(key);
-        return '<li class="meal-item"><label><input type="checkbox" data-check="' + esc(key) + '"' +
-          (done ? " checked" : "") + (readonly ? " disabled" : "") + '> ' +
-          '<span>' + esc(it) + '</span></label></li>';
+    var multi = planos.length > 1;
+    return planos.map(function (plano, pi) {
+      var refs = plano.refeicoes || [];
+      // Só o 1º plano liberado é "interativo" (checkboxes + adesão), casando com a
+      // adesão que a nutri acompanha (chaves ri:ii sobre o plano espelhado no topo).
+      var interativo = pi === 0;
+      var head;
+      if (interativo) {
+        var pct = adesaoPct(p);
+        head = '<div class="pcard pcard--head"><h2>' + esc(plano.titulo || "Plano alimentar") + '</h2>' +
+          (plano.atualizadoEm ? '<span class="pcard__meta">Atualizado em ' + esc(plano.atualizadoEm) + '</span>' : '') +
+          '<div class="plano-adesao"><div class="plano-adesao__bar"><span id="adesao-fill" style="width:' + pct + '%"></span></div>' +
+            '<span class="plano-adesao__pct" id="adesao-pct">' + pct + '% seguido</span></div>' +
+          '<p class="pcard__hint">Marque o que você seguiu — sua nutricionista acompanha sua adesão por aqui.</p></div>';
+      } else {
+        head = '<div class="pcard pcard--head"><h2>' + esc(plano.titulo || "Plano alimentar") + '</h2>' +
+          (plano.atualizadoEm ? '<span class="pcard__meta">Atualizado em ' + esc(plano.atualizadoEm) + '</span>' : '') +
+          '<p class="pcard__hint">Plano adicional liberado pela sua nutricionista.</p></div>';
+      }
+      var body = refs.map(function (r, ri) {
+        var itens = (r.itens || []).map(function (it, ii) {
+          var texto = itemTexto(it);
+          if (!interativo) return '<li class="meal-item"><span>' + esc(texto) + '</span></li>';
+          var key = ri + ":" + ii;
+          var done = checkGet(key);
+          return '<li class="meal-item"><label><input type="checkbox" data-check="' + esc(key) + '"' +
+            (done ? " checked" : "") + (readonly ? " disabled" : "") + '> ' +
+            '<span>' + esc(texto) + '</span></label></li>';
+        }).join("");
+        var hora = horaRefeicao(r);
+        return '<div class="pcard meal"><div class="meal__head"><span class="meal__nome">' + esc(r.nome) + '</span>' +
+          (hora ? '<span class="meal__hora">' + esc(hora) + '</span>' : '') + '</div>' +
+          '<ul class="meal__list">' + itens + '</ul></div>';
       }).join("");
-      return '<div class="pcard meal"><div class="meal__head"><span class="meal__nome">' + esc(r.nome) + '</span>' +
-        (r.horario ? '<span class="meal__hora">' + esc(r.horario) + '</span>' : '') + '</div>' +
-        '<ul class="meal__list">' + itens + '</ul></div>';
+      return (multi ? '<div class="plano-sep">' + esc(plano.titulo || "Plano alimentar") + '</div>' : '') + head + body;
     }).join("");
-    return head + body;
   }
 
   // Marcação do plano sincronizada no banco (tabela plano_adesao, gravada pelo

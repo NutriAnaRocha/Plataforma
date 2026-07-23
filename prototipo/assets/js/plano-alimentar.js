@@ -736,21 +736,25 @@
   function novoId() { return "pl" + Date.now() + Math.floor(Math.random() * 1000); }
   function byId(id) { return function (x) { return x && x.id === id; }; }
   function limpaLib(pl) { var c = Object.assign({}, pl); delete c.planos; delete c.ativoId; return c; }
-  // Normaliza p.plano para o formato novo (planos[] + ativoId com ids estáveis).
-  // Muta o objeto em memória para que ids não mudem entre chamadas na mesma sessão.
+  // Normaliza p.plano para o formato novo (planos[] com id estável + flag
+  // `publicado` = liberado para o paciente ver no portal). Muta em memória
+  // para que ids não mudem entre chamadas na mesma sessão.
   function garantirLib(p) {
     if (!p) return;
     var pl = p.plano;
     if (pl && Array.isArray(pl.planos)) {
-      pl.planos.forEach(function (x) { if (x && !x.id) x.id = novoId(); });
-      if (!pl.ativoId || !pl.planos.some(byId(pl.ativoId))) {
-        pl.ativoId = pl.planos.length ? pl.planos[pl.planos.length - 1].id : null;
-      }
+      pl.planos.forEach(function (x) {
+        if (!x) return;
+        if (!x.id) x.id = novoId();
+        // migração: se ainda não tem o flag, o antigo "ativo" (ativoId) vira liberado.
+        if (typeof x.publicado !== "boolean") x.publicado = pl.ativoId ? (x.id === pl.ativoId) : true;
+      });
       return;
     }
     if (pl && ((pl.refeicoes && pl.refeicoes.length) || pl.titulo)) {
       var e = limpaLib(pl); if (!e.id) e.id = novoId();
-      p.plano = Object.assign({}, e, { planos: [e], ativoId: e.id });
+      if (typeof e.publicado !== "boolean") e.publicado = true; // plano único antigo: já estava visível
+      p.plano = Object.assign({}, e, { planos: [e] });
     }
   }
   // Todos os planos do paciente.
@@ -759,11 +763,10 @@
     var pl = p && p.plano;
     return (pl && Array.isArray(pl.planos)) ? pl.planos : [];
   }
-  // Id do plano ativo (o que o paciente enxerga); cai no mais recente se inválido.
-  function ativoIdDe(p, lib) {
-    var aid = p && p.plano && p.plano.ativoId;
-    if (aid && lib.some(byId(aid))) return aid;
-    return lib.length ? lib[lib.length - 1].id : null;
+  // Plano em foco por padrão: o primeiro liberado; senão o mais recente.
+  function focoPadrao(lib) {
+    var pub = lib.filter(function (x) { return x.publicado; });
+    return (pub[0] || lib[lib.length - 1] || null);
   }
 
   function render(p) {
@@ -774,32 +777,47 @@
   // Lista de planos + detalhe do plano em foco.
   function painelHTML(p) {
     var lib = libDe(p);
-    var aid = ativoIdDe(p, lib);
-    var vid = (_viewId && lib.some(byId(_viewId))) ? _viewId : aid;
-    var viewed = lib.filter(byId(vid))[0] || lib[lib.length - 1];
-    return listaPlanosHTML(lib, viewed.id, aid) + resumoHTML(viewed, viewed.id === aid);
+    var foco = (_viewId && lib.some(byId(_viewId))) ? lib.filter(byId(_viewId))[0] : focoPadrao(lib);
+    return listaPlanosHTML(lib, foco.id) + resumoHTML(foco);
   }
 
-  function listaPlanosHTML(lib, vid, aid) {
+  function toggleHTML(pl) {
+    var on = !!pl.publicado;
+    return '<button class="pl-switch' + (on ? " pl-switch--on" : "") + '" type="button" ' +
+      'role="switch" aria-checked="' + (on ? "true" : "false") + '" ' +
+      'data-toggle-plano="' + esc(pl.id) + '" ' +
+      'title="' + (on ? "Liberado para o paciente — clique para ocultar" : "Oculto — clique para liberar para o paciente") + '">' +
+      '<span class="pl-switch__knob"></span>' +
+      '<span class="pl-switch__lbl">' + (on ? "Liberado" : "Oculto") + '</span>' +
+    '</button>';
+  }
+
+  function listaPlanosHTML(lib, vid) {
     var cards = lib.map(function (pl) {
       var t = totaisDe(pl);
-      var isView = pl.id === vid, isAtual = pl.id === aid;
-      return '<div class="pl-plano-card' + (isView ? " pl-plano-card--sel" : "") + '" data-plano="' + esc(pl.id) + '">' +
+      var isView = pl.id === vid;
+      return '<div class="pl-plano-card' + (isView ? " pl-plano-card--sel" : "") +
+          (pl.publicado ? " pl-plano-card--pub" : "") + '" data-plano="' + esc(pl.id) + '">' +
         '<button class="pl-plano-card__open" type="button" data-open-plano="' + esc(pl.id) + '">' +
-          '<span class="pl-plano-card__tit">' + esc(pl.titulo || "Plano alimentar") +
-            (isAtual ? '<span class="pl-plano-card__badge">Atual</span>' : '') + '</span>' +
+          '<span class="pl-plano-card__tit">' + esc(pl.titulo || "Plano alimentar") + '</span>' +
           '<span class="pl-plano-card__sub">' + t.kcal + ' kcal' +
             (pl.metaKcal ? ' · meta ' + esc(pl.metaKcal) : '') +
             (pl.atualizadoEm ? ' · ' + esc(pl.atualizadoEm) : '') + '</span>' +
         '</button>' +
-        '<button class="pl-x pl-plano-card__del" type="button" data-del-plano="' + esc(pl.id) + '" aria-label="Excluir plano" title="Excluir plano">🗑️</button>' +
+        '<div class="pl-plano-card__foot">' + toggleHTML(pl) +
+          '<button class="pl-x pl-plano-card__del" type="button" data-del-plano="' + esc(pl.id) + '" aria-label="Excluir plano" title="Excluir plano">🗑️</button>' +
+        '</div>' +
       '</div>';
     }).join("");
+    var nPub = lib.filter(function (x) { return x.publicado; }).length;
+    var sub = nPub === 0 ? "Nenhum liberado para o paciente" :
+      nPub === 1 ? "1 liberado para o paciente" : (nPub + " liberados para o paciente");
     return '' +
       '<section class="fsec">' +
         '<div class="fsec__head"><h2 class="fsec__title">Planos alimentares (' + lib.length + ')</h2>' +
           '<button class="btn btn--primary btn--sm" type="button" data-pl-add>＋ Novo plano</button>' +
         '</div>' +
+        '<p class="pl-hint">' + sub + '. Use o botão <strong>Liberado/Oculto</strong> em cada plano para escolher o que ele vê no portal.</p>' +
         '<div class="pl-planos">' + cards + '</div>' +
       '</section>';
   }
@@ -847,7 +865,7 @@
   }
 
   /* ---------- Resumo do plano salvo ---------- */
-  function resumoHTML(plano, isAtual) {
+  function resumoHTML(plano) {
     var t = totaisDe(plano), pc = pctMacros(t);
     var meals = (plano.refeicoes || []).map(function (rf) {
       var itens = (rf.itens || []).map(function (it) {
@@ -865,9 +883,9 @@
     return '' +
       '<section class="fsec">' +
         '<div class="fsec__head"><h2 class="fsec__title">' + esc(plano.titulo || "Plano alimentar") +
-            (isAtual ? ' <span class="pl-plano-card__badge">Atual do paciente</span>' : '') + '</h2>' +
+            (plano.publicado ? ' <span class="pl-plano-card__badge">Liberado</span>' : '') + '</h2>' +
           '<div class="pl-res__acoes">' +
-            (isAtual ? '' : '<button class="btn btn--outline btn--sm" type="button" data-pl-atual>★ Tornar atual</button>') +
+            toggleHTML(plano) +
             '<button class="btn btn--outline btn--sm" type="button" data-pl-pdf>🖨️ PDF</button>' +
             '<button class="btn btn--outline btn--sm" type="button" data-pl-editar>✏️ Editar</button>' +
           '</div></div>' +
@@ -974,9 +992,7 @@
   // Devolve o plano em foco (o que está sendo exibido no detalhe).
   function planoEmFoco() {
     var lib = libDe(_p);
-    var aid = ativoIdDe(_p, lib);
-    var vid = (_viewId && lib.some(byId(_viewId))) ? _viewId : aid;
-    return lib.filter(byId(vid))[0] || lib[lib.length - 1];
+    return (_viewId && lib.some(byId(_viewId))) ? lib.filter(byId(_viewId))[0] : focoPadrao(lib);
   }
   function mostrarPainel() {
     var r = root(); if (!r) return;
@@ -992,13 +1008,14 @@
     if (ed) ed.addEventListener("click", function () { abrirEditor(expandir(foco)); });
     var pdf = r.querySelector("[data-pl-pdf]");
     if (pdf) pdf.addEventListener("click", function () { gerarPDF(foco); });
-    var atual = r.querySelector("[data-pl-atual]");
-    if (atual) atual.addEventListener("click", function () { definirAtual(foco.id); });
-    // ---- lista: novo, trocar foco, excluir ----
+    // ---- lista: novo, trocar foco, liberar/ocultar, excluir ----
     var add = r.querySelector("[data-pl-add]");
     if (add) add.addEventListener("click", function () { r.innerHTML = escolhaHTML(); bindEscolha(); });
     r.querySelectorAll("[data-open-plano]").forEach(function (b) {
       b.addEventListener("click", function () { _viewId = b.getAttribute("data-open-plano"); mostrarPainel(); });
+    });
+    r.querySelectorAll("[data-toggle-plano]").forEach(function (b) {
+      b.addEventListener("click", function () { alternarPublicado(b.getAttribute("data-toggle-plano")); });
     });
     r.querySelectorAll("[data-del-plano]").forEach(function (b) {
       b.addEventListener("click", function () { excluirPlano(b.getAttribute("data-del-plano")); });
@@ -1131,18 +1148,20 @@
   }
 
   /* ---------- Persistência (biblioteca dentro da coluna `plano`) ---------- */
-  // Monta o objeto da coluna `plano`: campos do ativo no topo + acervo em .planos.
-  function montarColuna(lib, ativoId) {
-    var ativo = lib.filter(byId(ativoId))[0] || lib[lib.length - 1] || null;
-    var base = ativo ? limpaLib(ativo) : { titulo: null, refeicoes: [] };
+  // Monta o objeto da coluna `plano`: o 1º plano LIBERADO fica espelhado no topo
+  // (portal/adesão/timeline seguem lendo plano.refeicoes) e o acervo em .planos.
+  // Se nada está liberado, o topo fica vazio (portal mostra "ainda não publicado").
+  function montarColuna(lib) {
+    var pub = lib.filter(function (x) { return x.publicado; });
+    var espelho = pub[0] || null;
+    var base = espelho ? limpaLib(espelho) : { titulo: null, refeicoes: [], publicado: false };
     base.planos = lib.map(limpaLib);
-    base.ativoId = ativo ? ativo.id : null;
     return base;
   }
   // Grava a biblioteca no banco; ao concluir, re-renderiza o painel (ou a escolha).
-  function persistir(lib, ativoId, viewId, okMsg, btn, btnLabel) {
+  function persistir(lib, viewId, okMsg, btn, btnLabel) {
     if (!window.NutriPacientes) { toast("Banco indisponível.", true); return; }
-    var coluna = lib.length ? montarColuna(lib, ativoId) : { titulo: null, refeicoes: [] };
+    var coluna = lib.length ? montarColuna(lib) : { titulo: null, refeicoes: [] };
     var patch = Object.assign({}, _p, { plano: coluna });
     window.NutriPacientes.update(_p.id, patch).then(function (saved) {
       _p = saved;
@@ -1169,21 +1188,21 @@
     var lib = libDe(_p).slice();
     var idx = plano.id ? lib.map(function (x) { return x.id; }).indexOf(plano.id) : -1;
     var novo = idx < 0;
-    if (novo) { plano.id = plano.id || novoId(); lib.push(plano); }
-    else { lib[idx] = plano; }
-    // Plano novo entra como atual do paciente; edição mantém quem já era o atual.
-    var ativoId = novo ? plano.id : ativoIdDe(_p, lib);
+    if (novo) { plano.id = plano.id || novoId(); plano.publicado = true; lib.push(plano); }
+    else { plano.publicado = !!lib[idx].publicado; lib[idx] = plano; } // edição preserva liberado/oculto
     var btn = root().querySelector("[data-pl-salvar]");
     if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; }
-    persistir(lib, ativoId, plano.id, "Plano salvo", btn, "💾 Salvar plano");
+    persistir(lib, plano.id, "Plano salvo", btn, "💾 Salvar plano");
   }
 
-  /* ---------- Definir plano atual do paciente ---------- */
-  function definirAtual(id) {
+  /* ---------- Liberar / ocultar plano para o paciente ---------- */
+  function alternarPublicado(id) {
     var lib = libDe(_p);
-    if (!lib.some(byId(id))) return;
+    var alvo = lib.filter(byId(id))[0];
+    if (!alvo) return;
+    alvo.publicado = !alvo.publicado;
     _viewId = id;
-    persistir(lib, id, id, "Plano definido como atual do paciente");
+    persistir(lib, id, alvo.publicado ? "Plano liberado para o paciente" : "Plano ocultado do paciente");
   }
 
   /* ---------- Excluir plano ---------- */
@@ -1194,9 +1213,8 @@
     var msg = 'Excluir o plano "' + (alvo.titulo || "Plano alimentar") + '"? Esta ação não pode ser desfeita.';
     if (!window.confirm(msg)) return;
     var restante = lib.filter(function (x) { return x.id !== id; });
-    var ativoId = ativoIdDe(_p, restante); // recai no mais recente se o excluído era o atual
     if (_viewId === id) _viewId = null;
-    persistir(restante, ativoId, ativoId, "Plano excluído");
+    persistir(restante, null, "Plano excluído");
   }
 
   /* ---------- PDF (reusa NutriDoc) ---------- */
