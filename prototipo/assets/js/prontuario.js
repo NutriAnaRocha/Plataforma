@@ -218,6 +218,13 @@
 
   /* ---------- 6 · Cálculos ---------- */
   function mCalc() {
+    // Paciente real: calculadora interativa (TMB/GET/VET). Demo: layout estático.
+    if (REAL && window.CalcTMB) {
+      var savedInfo = D.calculos && D.calculos.atualizadoEm
+        ? '<span class="modpane__saved">Último cálculo salvo em ' + esc(D.calculos.atualizadoEm) + '</span>' : "";
+      return head("Cálculos Nutricionais", "Taxa metabólica basal · gasto energético · VET", savedInfo) +
+        window.CalcTMB.render(D.calcBase || {}, D.calculos || null);
+    }
     var c = D.calculos || {};
     var html = head("Cálculos Nutricionais", "Fórmula ativa: " + c.formula);
     var chips = (c.formulasDisponiveis || []).map(function (f) {
@@ -702,6 +709,25 @@
     };
     D.aiSugestoes = D.aiSugestoes || [];
     D.aiRespostaDemo = D.aiRespostaDemo || "Posso ajudar com a análise deste paciente.";
+
+    // Base para a calculadora de TMB/GET (peso/altura/idade/sexo do cadastro).
+    D.calculos = pac.calculos || null;
+    D.calcBase = {
+      sexo: pac.sexo || "F", idade: pac.idade || "",
+      peso: pac.pesoAtual != null ? pac.pesoAtual : "",
+      altura: pac.altura != null ? Math.round(pac.altura * 100) : "",
+      massaMagra: "",
+      objetivoId: objetivoParaCalc(pac.objetivo)
+    };
+  }
+  // Mapeia o objetivo textual do cadastro para um objetivo da calculadora.
+  function objetivoParaCalc(txt) {
+    var t = String(txt || "").toLowerCase();
+    if (/emagre|perder|défic|defic/.test(t)) return "emagrecer_mod";
+    if (/hipertrof|massa|muscul/.test(t)) return "hipertrofia";
+    if (/ganho de peso|ganhar/.test(t)) return "ganhar";
+    if (/acamad|repleç|recuper/.test(t)) return "recuperacao";
+    return "manter";
   }
 
   // Um módulo está "vazio" quando o paciente real ainda não tem aquele registro.
@@ -711,7 +737,7 @@
     quest:    function () { return !(D.questionarios && D.questionarios.length); },
     exames:   function () { return !(D.exames && D.exames.grupos && D.exames.grupos.length); },
     antro:    function () { return !(D.antropometria && D.antropometria.medidas && D.antropometria.medidas.length); },
-    calc:     function () { return !D.calculos; },
+    calc:     function () { return false; }, // a calculadora está sempre disponível
     plano:    function () { return !(D.plano && D.plano.refeicoes && D.plano.refeicoes.length); },
     metas:    function () { return !(D.metas && D.metas.length); },
     orient:   function () { return !(D.orientacoes && D.orientacoes.length); },
@@ -789,6 +815,7 @@
     });
     bindFoodChecks();
     bindEdit();
+    if (mod.id === "calc" && REAL) bindCalc();
     /* rola até o topo do painel só quando o usuário troca de módulo (evita rolar no load) */
     if (userInitiated) window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -796,6 +823,28 @@
   function bindFoodChecks() {
     el("modulo").querySelectorAll("[data-check]").forEach(function (c) {
       c.addEventListener("click", function () { c.classList.toggle("is-on"); });
+    });
+  }
+
+  // Calculadora de TMB/GET: recálculo ao vivo + salvar no prontuário.
+  function bindCalc() {
+    if (!window.CalcTMB) return;
+    window.CalcTMB.wire({
+      toast: function (m, err) { toast(m, false, err); },
+      save: function (calc) {
+        if (!PID || !(window.NutriPacientes && window.NutriPacientes.saveCalculos)) {
+          return Promise.reject(new Error("salvamento indisponível"));
+        }
+        return window.NutriPacientes.saveCalculos(PID, calc).then(function (saved) {
+          D.calculos = saved.calculos || calc;
+          var el0 = document.querySelector(".modpane__saved");
+          if (el0) el0.textContent = "Último cálculo salvo em " + (D.calculos.atualizadoEm || "");
+          return true;
+        });
+      },
+      usarNoPlano: function (calc) {
+        toast("VET de " + (calc.vet || "—") + " kcal — use como meta ao montar o Planejamento Alimentar.");
+      }
     });
   }
 

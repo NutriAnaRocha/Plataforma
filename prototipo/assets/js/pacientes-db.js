@@ -61,6 +61,7 @@
       plano: r.plano || { titulo: null, refeicoes: [] },
       treino: (r.treino && typeof r.treino === "object") ? r.treino : null,
       metas: (r.metas && typeof r.metas === "object") ? r.metas : null,
+      calculos: (r.calculos && typeof r.calculos === "object") ? r.calculos : null,
       portalFeatures: Array.isArray(r.portal_features) ? r.portal_features : TODAS_FEATURES.slice(),
       prontuario: r.prontuario || null,
       criadoEm: r.created_at || ""
@@ -246,6 +247,17 @@
     saveTreino: function (id, treino) {
       return client().then(function (c) {
         return c.from("pacientes").update({ treino: treino || null }).eq("id", id)
+          .select("*").single();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return fromRow(res.data);
+      });
+    },
+
+    // Cálculos nutricionais (jsonb) — grava só essa coluna.
+    saveCalculos: function (id, calculos) {
+      return client().then(function (c) {
+        return c.from("pacientes").update({ calculos: calculos || null }).eq("id", id)
           .select("*").single();
       }).then(function (res) {
         if (res.error) throw res.error;

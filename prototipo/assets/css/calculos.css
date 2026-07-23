@@ -1,0 +1,66 @@
+/* ============================================================
+   CÁLCULOS NUTRICIONAIS (TMB/GET/VET) — Prontuário. Usa tokens.
+   ============================================================ */
+
+.calc { display: flex; flex-direction: column; gap: var(--sp-3); }
+.modpane__saved { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+
+.calc-card { border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); background: var(--branco); padding: var(--sp-4); box-shadow: var(--shadow-sm); }
+.calc-card__t { font-weight: 800; color: var(--vinho); font-size: var(--fs-sm); margin-bottom: var(--sp-3); letter-spacing: .01em; }
+
+.calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--sp-3); }
+.calc-field { display: flex; flex-direction: column; gap: 4px; }
+.calc-field__lbl { font-size: var(--fs-caption); font-weight: 700; color: var(--cinza-escuro); }
+.calc-field__hint { font-size: 11px; color: var(--texto-sutil); }
+.calc-field select, .calc-field input {
+  font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input); padding: 9px 10px; background: var(--branco); width: 100%;
+}
+.calc-field select:focus, .calc-field input:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+
+/* Resultados TMB / GET / VET */
+.calc-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-3); }
+.calc-tile {
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-4);
+  background: linear-gradient(180deg, var(--rosa-suave), var(--branco)); text-align: center;
+}
+.calc-tile--vet { background: linear-gradient(180deg, var(--vinho), var(--vinho-escuro)); border-color: var(--vinho); }
+.calc-tile__lbl { font-size: var(--fs-caption); font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--texto-sutil); }
+.calc-tile--vet .calc-tile__lbl { color: var(--rosa); }
+.calc-tile__val { font-size: 2rem; font-weight: 800; color: var(--vinho); line-height: 1.1; margin: 4px 0; }
+.calc-tile__val small { font-size: .7rem; font-weight: 600; color: var(--texto-sutil); margin-left: 4px; }
+.calc-tile--vet .calc-tile__val, .calc-tile--vet .calc-tile__val small { color: #fff; }
+.calc-tile__sub { font-size: 11.5px; color: var(--texto-sutil); }
+.calc-tile--vet .calc-tile__sub { color: var(--sobre-vinho-70); }
+
+/* Macros */
+.calc-macros { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-3); }
+.calc-macro__top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+.calc-macro__lbl { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); }
+.calc-macro__g { font-weight: 800; color: var(--vinho); }
+.calc-bar { height: 8px; border-radius: 999px; background: var(--cinza-claro); overflow: hidden; }
+.calc-bar span { display: block; height: 100%; border-radius: 999px; }
+.calc-macro--cho .calc-bar span { background: #A82670; }
+.calc-macro--carb .calc-bar span { background: #b8860b; }
+.calc-macro--lip .calc-bar span { background: #2e7d6b; }
+.calc-macro__foot { font-size: 11.5px; color: var(--texto-sutil); margin-top: 4px; }
+
+/* Comparativo */
+.calc-comp { display: flex; flex-direction: column; }
+.calc-comp__row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm); border-top: 1px dashed var(--cinza-borda); font-size: var(--fs-sm); }
+.calc-comp__row:first-child { border-top: none; }
+.calc-comp__row.is-active { background: var(--rosa-suave); font-weight: 700; }
+.calc-comp__nome { display: flex; flex-direction: column; }
+.calc-comp__nome small { font-weight: 400; font-size: 11px; color: var(--texto-sutil); }
+.calc-comp__val { font-weight: 800; color: var(--vinho); white-space: nowrap; }
+
+/* Memória de cálculo */
+.calc-mem { font-size: var(--fs-sm); color: var(--texto); line-height: 1.7; }
+.calc-mem div { padding: 2px 0; }
+
+.calc-hint { font-size: 11.5px; color: var(--texto-sutil); margin: var(--sp-2) 0 0; }
+.calc-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 640px) {
+  .calc-results, .calc-macros { grid-template-columns: 1fr; }
+}
