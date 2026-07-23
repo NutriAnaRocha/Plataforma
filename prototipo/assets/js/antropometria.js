@@ -219,7 +219,10 @@
       '</section>';
 
     var dobras =
-      '<section class="fsec"><h2 class="fsec__title">Dobras cutâneas <small class="antro-un-hint">(mm) · 7 dobras (Pollock)</small></h2>' +
+      '<section class="fsec"><h2 class="fsec__title">Dobras cutâneas <small class="antro-un-hint">(mm) · 7 dobras (Pollock)</small>' +
+          '<a class="antro-doc-link" href="assets/docs/protocolo-dobras-cutaneas.pdf" target="_blank" rel="noopener" ' +
+            'title="Guia de técnica: localização, pinçamento, ordem e registro">📄 Protocolo de dobras (PDF)</a>' +
+        '</h2>' +
         '<div class="antro-grid">' + DOBRAS.map(function (x) { return inputMed("dobra", x, "mm", d[x.key]); }).join("") + '</div>' +
       '</section>';
 

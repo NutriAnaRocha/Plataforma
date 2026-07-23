@@ -16,6 +16,16 @@
 /* Campos base / bioimpedância */
 .antro { display: flex; flex-direction: column; gap: var(--sp-4); }
 .antro-un-hint { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+.antro-doc-link {
+  float: right; font-size: var(--fs-caption); font-weight: 700; color: var(--vinho);
+  text-decoration: none; border: 1px solid var(--cinza-borda); border-radius: 999px;
+  padding: 4px 12px; background: var(--branco); transition: background var(--t-fast), border-color var(--t-fast);
+}
+.antro-doc-link:hover { background: var(--rosa-suave); border-color: var(--vinho); }
+.antro-doc-link:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+@media (max-width: 560px) {
+  .antro-doc-link { float: none; display: inline-block; margin-top: 6px; }
+}
 .antro-basic { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--sp-3); }
 .antro-field { display: flex; flex-direction: column; gap: 4px; }
 .antro-field__lbl { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
