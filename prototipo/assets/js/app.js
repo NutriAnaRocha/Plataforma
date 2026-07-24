@@ -6,7 +6,7 @@
   "use strict";
 
   /* ▼▼▼ TROCAR O NOME DA PLATAFORMA AQUI (único lugar) ▼▼▼ */
-  var BRAND = "NutriPlat";
+  var BRAND = "NutriLab";
   /* ▲▲▲ ----------------------------------------------- ▲▲▲ */
 
   document.addEventListener("DOMContentLoaded", function () {
