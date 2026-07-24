@@ -402,13 +402,17 @@
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
     return m ? m[3] + "/" + m[2] + "/" + m[1] : "";
   }
-  function fotoCard(f) {
+  // url = URL exibível já resolvida (assinada/preview/legado). Sem ela, o card
+  // nasce "carregando" e é hidratado depois (hidratarFotos).
+  function fotoCard(f, url) {
     var tipo = (FOTO_TIPOS.filter(function (t) { return t.key === f.tipo; })[0] || {}).lbl || "Foto";
     var meta = [tipo];
     if (f.peso != null && f.peso !== "") meta.push(String(f.peso).replace(".", ",") + " kg");
-    return '<figure class="evo-card" data-foto-id="' + esc(f.id) + '">' +
+    var src = url || f.data || "";
+    var imgAttr = src ? 'src="' + esc(src) + '"' : '';
+    return '<figure class="evo-card' + (src ? '' : ' is-loading') + '" data-foto-id="' + esc(f.id) + '">' +
       '<button type="button" class="evo-card__img" data-foto-zoom="' + esc(f.id) + '" aria-label="Ampliar foto">' +
-        '<img src="' + esc(f.data) + '" alt="Foto de evolução — ' + esc(tipo) + '" loading="lazy" /></button>' +
+        '<img data-foto-img="' + esc(f.id) + '" ' + imgAttr + ' alt="Foto de evolução — ' + esc(tipo) + '" loading="lazy" /></button>' +
       '<figcaption class="evo-card__cap">' +
         '<span class="evo-card__date">' + esc(fmtDataFoto(f.dataISO)) + '</span>' +
         '<span class="evo-card__meta">' + esc(meta.join(" · ")) + '</span>' +
@@ -423,7 +427,7 @@
     });
     var hoje = new Date().toISOString().slice(0, 10);
     var galeria = fotos.length
-      ? '<div class="evo-grid" id="evo-grid">' + fotos.map(fotoCard).join("") + '</div>'
+      ? '<div class="evo-grid" id="evo-grid">' + fotos.map(function (f) { return fotoCard(f); }).join("") + '</div>'
       : '<div class="evo-empty" id="evo-grid"><span class="evo-empty__ico">📸</span>' +
           '<p>Nenhuma foto ainda. Envie a primeira para começar o acompanhamento visual do paciente.</p></div>';
     return '<section class="fsec antro-fotos"><h2 class="fsec__title">Evolução com foto ' +
@@ -712,6 +716,11 @@
       }), r: r };
     }
 
+    // URLs exibíveis: preview local (blob recém-enviado) e assinadas do bucket.
+    var previewUrls = {};   // fotoId -> objectURL (enquanto a assinada não chega)
+    var signedMap = {};     // path   -> signedUrl
+    function dispUrl(f) { return previewUrls[f.id] || (f.path && signedMap[f.path]) || f.data || ""; }
+
     function refreshFotos() {
       var grid = root.querySelector("#evo-grid");
       if (!grid) return;
@@ -721,8 +730,23 @@
         grid.innerHTML = '<span class="evo-empty__ico">📸</span><p>Nenhuma foto ainda. Envie a primeira para começar o acompanhamento visual do paciente.</p>';
       } else {
         grid.className = "evo-grid"; grid.id = "evo-grid";
-        grid.innerHTML = ord.map(fotoCard).join("");
+        grid.innerHTML = ord.map(function (f) { return fotoCard(f, dispUrl(f)); }).join("");
       }
+      hidratarFotos();
+    }
+    // Busca URLs assinadas das fotos que estão no bucket e ainda sem URL exibível.
+    function hidratarFotos() {
+      if (!window.NutriPacientes || !window.NutriPacientes.assinarFotosEvolucao) return;
+      var pend = fotos.filter(function (f) { return f.path && !signedMap[f.path] && !previewUrls[f.id]; });
+      if (!pend.length) return;
+      window.NutriPacientes.assinarFotosEvolucao(pend.map(function (f) { return f.path; })).then(function (mapa) {
+        Object.keys(mapa).forEach(function (k) { signedMap[k] = mapa[k]; });
+        pend.forEach(function (f) {
+          var u = dispUrl(f); if (!u) return;
+          var img = root.querySelector('[data-foto-img="' + f.id + '"]');
+          if (img) { img.src = u; var card = img.closest(".evo-card"); if (card) card.classList.remove("is-loading"); }
+        });
+      }).catch(function () {});
     }
     function salvarFotos(cb) {
       if (!window.NutriPacientes) { opts.toast && opts.toast("Banco indisponível.", true); return; }
@@ -743,29 +767,42 @@
         fileInp.value = "";
         if (!file) return;
         if (!/^image\/(png|jpe?g|webp)$/i.test(file.type)) { opts.toast && opts.toast("Use uma imagem JPG, PNG ou WEBP.", true); return; }
-        if (file.size > 8 * 1024 * 1024) { opts.toast && opts.toast("A imagem passa de 8 MB. Escolha uma menor.", true); return; }
+        if (file.size > 12 * 1024 * 1024) { opts.toast && opts.toast("A imagem passa de 12 MB. Escolha uma menor.", true); return; }
+        if (!window.NutriPacientes || !window.NutriPacientes.uploadFotoEvolucao) { opts.toast && opts.toast("Envio de fotos indisponível.", true); return; }
         addBtn.disabled = true; addBtn.textContent = "Enviando…";
-        redimensionarFoto(file, 720, 0.82).then(function (dataUrl) {
-          var dataInp = root.querySelector("#evo-data");
-          var pesoInp = root.querySelector("#evo-peso");
-          var novo = {
-            id: "f" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-            data: dataUrl,
-            tipo: (root.querySelector("#evo-tipo") || {}).value || "frente",
-            dataISO: (dataInp && dataInp.value) || new Date().toISOString().slice(0, 10),
-            peso: pesoInp && pesoInp.value !== "" ? num(pesoInp.value) : null,
-            obs: ((root.querySelector("#evo-obs") || {}).value || "").trim() || null
-          };
+        var fotoId = "f" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        var dataInp = root.querySelector("#evo-data");
+        var pesoInp = root.querySelector("#evo-peso");
+        var novo = {
+          id: fotoId,
+          path: null,
+          tipo: (root.querySelector("#evo-tipo") || {}).value || "frente",
+          dataISO: (dataInp && dataInp.value) || new Date().toISOString().slice(0, 10),
+          peso: pesoInp && pesoInp.value !== "" ? num(pesoInp.value) : null,
+          obs: ((root.querySelector("#evo-obs") || {}).value || "").trim() || null
+        };
+        redimensionarFotoBlob(file, 900, 0.85).then(function (blob) {
+          try { previewUrls[fotoId] = URL.createObjectURL(blob); } catch (e) {}
+          return window.NutriPacientes.uploadFotoEvolucao(p.id, fotoId, blob);
+        }).then(function (path) {
+          novo.path = path;
           fotos.push(novo);
           refreshFotos();
           salvarFotos(function (ok) {
             addBtn.disabled = false; addBtn.textContent = "＋ Enviar foto";
-            if (ok) { opts.toast && opts.toast("Foto adicionada 📸"); if (pesoInp) pesoInp.value = ""; var ob = root.querySelector("#evo-obs"); if (ob) ob.value = ""; }
-            else { fotos = fotos.filter(function (f) { return f.id !== novo.id; }); refreshFotos(); }
+            if (ok) {
+              opts.toast && opts.toast("Foto adicionada 📸");
+              if (pesoInp) pesoInp.value = ""; var ob = root.querySelector("#evo-obs"); if (ob) ob.value = "";
+            } else {
+              // rollback: remove do array e apaga o objeto órfão do bucket
+              fotos = fotos.filter(function (f) { return f.id !== fotoId; });
+              window.NutriPacientes.removerFotoEvolucao(path);
+              refreshFotos();
+            }
           });
-        }).catch(function () {
+        }).catch(function (e) {
           addBtn.disabled = false; addBtn.textContent = "＋ Enviar foto";
-          opts.toast && opts.toast("Não foi possível carregar a foto.", true);
+          opts.toast && opts.toast("Não foi possível enviar a foto. " + (e && e.message ? e.message : ""), true);
         });
       });
     }
@@ -776,18 +813,25 @@
         var idDel = del.getAttribute("data-foto-del");
         if (!window.confirm("Remover esta foto de evolução?")) return;
         var bkp = fotos.slice();
+        var alvo = fotos.filter(function (f) { return f.id === idDel; })[0];
         fotos = fotos.filter(function (f) { return f.id !== idDel; });
         refreshFotos();
-        salvarFotos(function (ok) { if (!ok) { fotos = bkp; refreshFotos(); } else { opts.toast && opts.toast("Foto removida"); } });
+        salvarFotos(function (ok) {
+          if (!ok) { fotos = bkp; refreshFotos(); return; }
+          // Só apaga o arquivo do bucket depois que a ficha salvou sem a foto.
+          if (alvo && alvo.path && window.NutriPacientes.removerFotoEvolucao) window.NutriPacientes.removerFotoEvolucao(alvo.path);
+          opts.toast && opts.toast("Foto removida");
+        });
         return;
       }
       var zoom = e.target.closest && e.target.closest("[data-foto-zoom]");
       if (zoom) {
         var idZ = zoom.getAttribute("data-foto-zoom");
         var f = fotos.filter(function (x) { return x.id === idZ; })[0];
-        if (f) abrirLightbox(f);
+        if (f) abrirLightbox(f, dispUrl(f));
       }
     });
+    hidratarFotos();
 
     var usarJoelho = root.querySelector("#antro-usar-joelho");
     if (usarJoelho) usarJoelho.addEventListener("click", function () {
@@ -813,8 +857,9 @@
     });
   }
 
-  /* Redimensiona a foto para no máx. `max` px (lado maior) e devolve JPEG data URL. */
-  function redimensionarFoto(file, max, q) {
+  /* Redimensiona a foto para no máx. `max` px (lado maior) e devolve um Blob JPEG
+     (para enviar ao bucket, sem inflar em base64). */
+  function redimensionarFotoBlob(file, max, q) {
     return new Promise(function (resolve, reject) {
       var reader = new FileReader();
       reader.onerror = function () { reject(new Error("read")); };
@@ -827,7 +872,17 @@
           var cw = Math.round(w * s), ch = Math.round(h * s);
           var cv = document.createElement("canvas"); cv.width = cw; cv.height = ch;
           cv.getContext("2d").drawImage(img, 0, 0, cw, ch);
-          resolve(cv.toDataURL("image/jpeg", q || 0.82));
+          if (cv.toBlob) {
+            cv.toBlob(function (b) { b ? resolve(b) : reject(new Error("blob")); }, "image/jpeg", q || 0.85);
+          } else {
+            // Fallback: converte a data URL em Blob manualmente.
+            try {
+              var d = cv.toDataURL("image/jpeg", q || 0.85), bin = atob(d.split(",")[1]);
+              var arr = new Uint8Array(bin.length);
+              for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+              resolve(new Blob([arr], { type: "image/jpeg" }));
+            } catch (e) { reject(e); }
+          }
         };
         img.src = reader.result;
       };
@@ -835,15 +890,15 @@
     });
   }
 
-  /* Lightbox simples para ver a foto ampliada. */
-  function abrirLightbox(f) {
+  /* Lightbox simples para ver a foto ampliada. url = URL já exibível. */
+  function abrirLightbox(f, url) {
     var tipo = (FOTO_TIPOS.filter(function (t) { return t.key === f.tipo; })[0] || {}).lbl || "Foto";
     var cap = [fmtDataFoto(f.dataISO), tipo];
     if (f.peso != null && f.peso !== "") cap.push(String(f.peso).replace(".", ",") + " kg");
     var ov = document.createElement("div");
     ov.className = "evo-lb";
     ov.innerHTML = '<button class="evo-lb__close" aria-label="Fechar">✕</button>' +
-      '<figure class="evo-lb__fig"><img src="' + esc(f.data) + '" alt="Foto de evolução ampliada" />' +
+      '<figure class="evo-lb__fig"><img src="' + esc(url || f.data || "") + '" alt="Foto de evolução ampliada" />' +
       '<figcaption>' + esc(cap.join(" · ")) + (f.obs ? ' — ' + esc(f.obs) : '') + '</figcaption></figure>';
     function fechar() { ov.remove(); document.removeEventListener("keydown", onKey); }
     function onKey(e) { if (e.key === "Escape") fechar(); }

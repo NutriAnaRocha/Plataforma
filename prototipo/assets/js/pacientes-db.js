@@ -163,6 +163,42 @@
       });
     },
 
+    // ---- Fotos de evolução (bucket privado 'evolucao') ----
+    // Caminho: '<pacienteId>/<fotoId>.jpg'. RLS libera a nutri dona (gerir)
+    // e o paciente dono (ler). Ver migração 0035.
+    uploadFotoEvolucao: function (pacienteId, fotoId, blob) {
+      var path = pacienteId + "/" + fotoId + ".jpg";
+      return client().then(function (c) {
+        return c.storage.from("evolucao").upload(path, blob, { contentType: "image/jpeg", upsert: true });
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return path;
+      });
+    },
+    removerFotoEvolucao: function (path) {
+      if (!path) return Promise.resolve(true);
+      return client().then(function (c) {
+        return c.storage.from("evolucao").remove([path]);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return true;
+      });
+    },
+    // Gera URLs assinadas (temporárias) para uma lista de caminhos.
+    // Devolve um mapa { path: signedUrl }. Caminhos que falharem ficam de fora.
+    assinarFotosEvolucao: function (paths, expiresIn) {
+      var lista = (paths || []).filter(Boolean);
+      if (!lista.length) return Promise.resolve({});
+      return client().then(function (c) {
+        return c.storage.from("evolucao").createSignedUrls(lista, expiresIn || 7200);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        var mapa = {};
+        (res.data || []).forEach(function (r) { if (r && r.signedUrl && !r.error) mapa[r.path] = r.signedUrl; });
+        return mapa;
+      });
+    },
+
     // Popular a conta com os pacientes de exemplo (window.PAC_DATA). Um clique, idempotência
     // fica por conta do chamador (só oferece quando a lista está vazia).
     seedExamples: function () {

@@ -238,6 +238,14 @@
 }
 .evo-card__img { display: block; width: 100%; padding: 0; border: none; background: var(--cinza-claro); cursor: zoom-in; }
 .evo-card__img img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+/* Enquanto a URL assinada não chega, o card mostra um brilho de carregamento. */
+.evo-card.is-loading .evo-card__img {
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(100deg, var(--cinza-claro) 30%, #eee 50%, var(--cinza-claro) 70%);
+  background-size: 200% 100%; animation: evo-shimmer 1.2s infinite;
+}
+.evo-card.is-loading .evo-card__img img { min-height: 0; }
+@keyframes evo-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 .evo-card__cap { padding: var(--sp-2) var(--sp-3) var(--sp-3); display: flex; flex-direction: column; gap: 1px; }
 .evo-card__date { font-weight: 800; color: var(--vinho); font-size: var(--fs-sm); }
 .evo-card__meta { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }

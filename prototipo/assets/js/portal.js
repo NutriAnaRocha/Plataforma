@@ -68,6 +68,7 @@
     el("pane-treino").innerHTML = window.TreinoView ? window.TreinoView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-metas").innerHTML = window.MetasView ? window.MetasView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-evolucao").innerHTML = renderEvolucao(p);
+    hidratarFotosPortal(p);
     el("pane-consultas").innerHTML = renderConsultas(p);
 
     // Abas
@@ -233,9 +234,14 @@
   }
   function stat(l, v) { return '<div class="pstat"><div class="pstat__lbl">' + esc(l) + '</div><div class="pstat__val">' + esc(v) + '</div></div>'; }
 
-  /* Fotos de evolução que a nutri enviou (só leitura no portal). */
+  /* Fotos de evolução que a nutri enviou (só leitura no portal).
+     Os arquivos ficam num bucket privado; aqui resolvemos URLs assinadas
+     (o RLS libera porque o paciente é dono da ficha). Fotos antigas em
+     base64 (f.data) continuam funcionando. */
   var FOTO_LBL = { frente: "Frente", lado: "Lado", costas: "Costas" };
+  var portalSigned = {}; // path -> signedUrl
   function fmtDataFoto(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || "")); return m ? m[3] + "/" + m[2] + "/" + m[1] : ""; }
+  function fotoUrlPortal(f) { return (f.path && portalSigned[f.path]) || f.data || ""; }
   function renderFotosEvolucao(p) {
     var fotos = ((p.antropometria || {}).fotos || []).slice()
       .sort(function (a, b) { return String(b.dataISO || "").localeCompare(String(a.dataISO || "")); });
@@ -244,9 +250,10 @@
       var tipo = FOTO_LBL[f.tipo] || "Foto";
       var meta = [tipo];
       if (f.peso != null && f.peso !== "") meta.push(String(f.peso).replace(".", ",") + " kg");
-      return '<figure class="evo-card">' +
+      var src = fotoUrlPortal(f);
+      return '<figure class="evo-card' + (src ? '' : ' is-loading') + '">' +
         '<button type="button" class="evo-card__img" data-pfoto="' + esc(f.id) + '" aria-label="Ampliar foto">' +
-          '<img src="' + esc(f.data) + '" alt="Foto de evolução — ' + esc(tipo) + '" loading="lazy" /></button>' +
+          '<img data-foto-img="' + esc(f.id) + '" ' + (src ? 'src="' + esc(src) + '"' : '') + ' alt="Foto de evolução — ' + esc(tipo) + '" loading="lazy" /></button>' +
         '<figcaption class="evo-card__cap">' +
           '<span class="evo-card__date">' + esc(fmtDataFoto(f.dataISO)) + '</span>' +
           '<span class="evo-card__meta">' + esc(meta.join(" · ")) + '</span>' +
@@ -256,6 +263,21 @@
     return '<div class="pcard"><h2 class="pcard__title">Sua evolução em fotos</h2>' +
       '<p class="card__sub" style="margin:-4px 0 12px">Registros que sua nutricionista adicionou. Toque para ampliar.</p>' +
       '<div class="evo-grid">' + cards + '</div></div>';
+  }
+  // Busca as URLs assinadas e preenche as imagens do painel de evolução.
+  function hidratarFotosPortal(p) {
+    if (!window.NutriPacientes || !window.NutriPacientes.assinarFotosEvolucao) return;
+    var fotos = (p.antropometria || {}).fotos || [];
+    var pend = fotos.filter(function (f) { return f.path && !portalSigned[f.path]; });
+    if (!pend.length) return;
+    window.NutriPacientes.assinarFotosEvolucao(pend.map(function (f) { return f.path; })).then(function (mapa) {
+      Object.keys(mapa).forEach(function (k) { portalSigned[k] = mapa[k]; });
+      pend.forEach(function (f) {
+        var u = fotoUrlPortal(f); if (!u) return;
+        var img = document.querySelector('[data-foto-img="' + f.id + '"]');
+        if (img) { img.src = u; var card = img.closest(".evo-card"); if (card) card.classList.remove("is-loading"); }
+      });
+    }).catch(function () {});
   }
   // Lightbox das fotos no portal (delegação global).
   document.addEventListener("click", function (e) {
@@ -270,7 +292,7 @@
     var ov = document.createElement("div");
     ov.className = "evo-lb";
     ov.innerHTML = '<button class="evo-lb__close" aria-label="Fechar">✕</button>' +
-      '<figure class="evo-lb__fig"><img src="' + esc(f.data) + '" alt="Foto de evolução ampliada" />' +
+      '<figure class="evo-lb__fig"><img src="' + esc(fotoUrlPortal(f)) + '" alt="Foto de evolução ampliada" />' +
       '<figcaption>' + esc(cap.join(" · ")) + (f.obs ? " — " + esc(f.obs) : "") + '</figcaption></figure>';
     function fechar() { ov.remove(); document.removeEventListener("keydown", onKey); }
     function onKey(ev) { if (ev.key === "Escape") fechar(); }
