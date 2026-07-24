@@ -127,6 +127,135 @@
     return "Obesidade";
   }
 
+  /* ============================================================
+     RAIO X CORPORAL — estimativas a partir das CIRCUNFERÊNCIAS
+     (não das fotos: nenhuma equação valida % de gordura por foto;
+     as fotos servem de acompanhamento visual). Todas as fórmulas
+     abaixo são validadas na literatura e usam medidas que a nutri
+     já coleta na antropometria.
+     ============================================================ */
+  var COR = { verde: "#1B8A5A", teal: "#2E9E6B", ambar: "#E0A100", vermelho: "#B23A3A", vinho: "#840B55", cinza: "#8A8A8A" };
+
+  // RFM — Relative Fat Mass (Woolcott & Bergman, 2018; validado vs DXA).
+  // Usa altura e cintura na MESMA unidade (cm). Devolve % de gordura.
+  function rfm(alturaCm, cinturaCm, sexo) {
+    if (!alturaCm || !cinturaCm || (sexo !== "M" && sexo !== "F")) return null;
+    var base = sexo === "M" ? 64 : 76;
+    var v = base - 20 * (alturaCm / cinturaCm);
+    return (v > 3 && v < 75) ? +v.toFixed(1) : null;
+  }
+  // US Navy (circunferências) — outra estimativa de % de gordura.
+  // Homem: cintura no umbigo (usamos abdômen); mulher: cintura + quadril.
+  function navyBF(sexo, alturaCm, pescoco, cintura, abdomen, quadril) {
+    if (!alturaCm || !pescoco) return null;
+    var v;
+    if (sexo === "M") {
+      var waist = abdomen || cintura;
+      if (!waist || waist - pescoco <= 0) return null;
+      v = 495 / (1.0324 - 0.19077 * Math.log10(waist - pescoco) + 0.15456 * Math.log10(alturaCm)) - 450;
+    } else if (sexo === "F") {
+      if (!cintura || !quadril || cintura + quadril - pescoco <= 0) return null;
+      v = 495 / (1.29579 - 0.35004 * Math.log10(cintura + quadril - pescoco) + 0.22100 * Math.log10(alturaCm)) - 450;
+    } else return null;
+    return (v > 3 && v < 75) ? +v.toFixed(1) : null;
+  }
+
+  // Faixa de % de gordura (referência ACE) → nome + cor + índice (0..4) na escala.
+  function faixaGordura(pct, sexo) {
+    if (pct == null || (sexo !== "M" && sexo !== "F")) return null;
+    var cortes = sexo === "M" ? [6, 14, 18, 25] : [14, 21, 25, 32];
+    var nomes = ["Essencial", "Atlético", "Em forma", "Aceitável", "Elevado"];
+    var cores = [COR.teal, COR.verde, COR.verde, COR.ambar, COR.vermelho];
+    var i = 0;
+    while (i < cortes.length && pct >= cortes[i]) i++;
+    return { nome: nomes[i], cor: cores[i], i: i };
+  }
+
+  // Risco cardiovascular por circunferência (cintura absoluta + RCE + RCQ).
+  function riscoCardio(cinturaCm, alturaCm, quadrilCm, sexo) {
+    var motivos = [], pontos = 0, ind = {};
+    if (cinturaCm && (sexo === "M" || sexo === "F")) {
+      var alto = sexo === "M" ? 102 : 88, aum = sexo === "M" ? 94 : 80;
+      ind.cintura = cinturaCm;
+      if (cinturaCm >= alto) { pontos += 2; motivos.push("Cintura ≥ " + alto + " cm (risco alto)"); }
+      else if (cinturaCm >= aum) { pontos += 1; motivos.push("Cintura ≥ " + aum + " cm (risco aumentado)"); }
+    }
+    if (cinturaCm && alturaCm) {
+      var rce = +(cinturaCm / alturaCm).toFixed(2); ind.rce = rce;
+      if (rce >= 0.6) { pontos += 2; motivos.push("Cintura/estatura ≥ 0,60 (risco alto)"); }
+      else if (rce >= 0.5) { pontos += 1; motivos.push("Cintura/estatura ≥ 0,50 (risco aumentado)"); }
+    }
+    if (cinturaCm && quadrilCm) {
+      var rcq = +(cinturaCm / quadrilCm).toFixed(2); ind.rcq = rcq;
+      var lim = sexo === "M" ? 0.90 : 0.85;
+      if (rcq >= lim) { pontos += 1; motivos.push("Cintura/quadril ≥ " + lim.toFixed(2).replace(".", ",") + " (adiposidade central)"); }
+    }
+    var nivel, cor;
+    if (!Object.keys(ind).length) { nivel = null; cor = COR.cinza; }
+    else if (pontos >= 3) { nivel = "Alto"; cor = COR.vermelho; }
+    else if (pontos >= 1) { nivel = "Moderado"; cor = COR.ambar; }
+    else { nivel = "Baixo"; cor = COR.verde; }
+    return { nivel: nivel, cor: cor, pontos: pontos, motivos: motivos, ind: ind };
+  }
+
+  /* Silhueta que "engorda/emagrece" conforme o % de gordura e muda de cor
+     conforme a faixa. scaleX no tronco/membros dá a leitura visual pedida. */
+  function corpoSilhueta(bf, faixa) {
+    var cor = faixa ? faixa.cor : COR.rosa;
+    // 15% ≈ referência magra; cada ponto acima alarga um pouco o corpo.
+    var sx = bf == null ? 1 : Math.max(0.84, Math.min(1.22, 0.9 + (bf - 15) / 90));
+    return '<svg class="bc-fig" viewBox="0 0 80 165" aria-hidden="true">' +
+      '<g class="bc-fig__body" style="fill:' + cor + '" transform="translate(40,0) scale(' + sx.toFixed(3) + ',1) translate(-40,0)">' +
+        '<circle cx="40" cy="14" r="9"/>' +
+        '<rect x="36.5" y="22" width="7" height="6" rx="2"/>' +
+        '<path d="M27 31 Q40 26 53 31 L55 92 Q40 99 25 92 Z"/>' +
+        '<path d="M28 33 L17 72 L22 74 L33 39 Z"/>' +
+        '<path d="M52 33 L63 72 L58 74 L47 39 Z"/>' +
+        '<path d="M30 92 L26 151 L33 151 L38 96 Z"/>' +
+        '<path d="M50 92 L54 151 L47 151 L42 96 Z"/>' +
+      '</g></svg>';
+  }
+  // Anel (donut) de percentual.
+  function donut(pct, cor, lbl) {
+    var p = (pct == null || pct < 0) ? 0 : Math.min(100, pct);
+    var r = 26, c = 2 * Math.PI * r, off = c * (1 - p / 100);
+    return '<div class="bc-donut">' +
+      '<svg viewBox="0 0 64 64"><circle class="bc-donut__bg" cx="32" cy="32" r="' + r + '"/>' +
+        '<circle class="bc-donut__fg" cx="32" cy="32" r="' + r + '" style="stroke:' + cor + ';stroke-dasharray:' + c.toFixed(1) + ';stroke-dashoffset:' + off.toFixed(1) + '"/></svg>' +
+      '<div class="bc-donut__mid"><strong>' + (pct == null ? "—" : pct.toFixed(1).replace(".", ",")) + '</strong><span>%</span></div>' +
+      '<div class="bc-donut__lbl">' + esc(lbl) + '</div></div>';
+  }
+  /* Composição corporal visual reaproveitada pela bioimpedância e pelo raio X.
+     gord/musc em %; sexo p/ faixa; kgPeso p/ converter (opcional). */
+  function bodyComp(gord, musc, sexo, kgPeso, origem, musLbl) {
+    musLbl = musLbl || "Músculo";
+    var faixa = faixaGordura(gord, sexo);
+    var escala = "";
+    if (faixa) {
+      var seg = ["Essencial", "Atlético", "Em forma", "Aceitável", "Elevado"];
+      var cores = [COR.teal, COR.verde, COR.verde, COR.ambar, COR.vermelho];
+      escala = '<div class="bc-scale"><div class="bc-scale__track">' +
+        seg.map(function (s, i) { return '<span class="bc-scale__seg' + (i === faixa.i ? " is-on" : "") + '" style="--c:' + cores[i] + '" title="' + s + '"></span>'; }).join("") +
+        '</div><div class="bc-scale__now" style="color:' + faixa.cor + '">' + esc(faixa.nome) + '</div></div>';
+    }
+    var mgKg = (gord != null && kgPeso) ? (kgPeso * gord / 100) : null;
+    var mmKg = (musc != null && kgPeso) ? (kgPeso * musc / 100) : null;
+    var extra = '';
+    if (mgKg != null || mmKg != null) {
+      extra = '<div class="bc-kgs">' +
+        (mgKg != null ? '<span class="bc-kg"><b style="color:' + COR.ambar + '">' + mgKg.toFixed(1).replace(".", ",") + ' kg</b> gordura</span>' : '') +
+        (mmKg != null ? '<span class="bc-kg"><b style="color:' + COR.vinho + '">' + mmKg.toFixed(1).replace(".", ",") + ' kg</b> ' + esc(musLbl.toLowerCase()) + '</span>' : '') +
+        '</div>';
+    }
+    return '<div class="bc">' +
+      '<div class="bc__fig">' + corpoSilhueta(gord, faixa) + '</div>' +
+      '<div class="bc__data">' +
+        '<div class="bc__donuts">' + donut(gord, COR.ambar, "Gordura") + donut(musc, COR.vinho, musLbl) + '</div>' +
+        escala + extra +
+        (origem ? '<p class="bc__src">' + esc(origem) + '</p>' : '') +
+      '</div></div>';
+  }
+
   /* ---------- Render ---------- */
   function inputMed(grupo, item, unidade, valor) {
     var lado = item.lado ? '<span class="antro-card__lado">' + item.lado + '</span>' : '';
@@ -229,7 +358,19 @@
     var bio =
       '<section class="fsec"><h2 class="fsec__title">Bioimpedância <small class="antro-un-hint">(opcional — do aparelho; kg calculado pelo peso)</small></h2>' +
         '<div class="antro-basic">' + BIO.map(function (x) { return bioField(x, b[x.key]); }).join("") + '</div>' +
+        '<div class="bc-wrap" id="bio-corpo"></div>' +
       '</section>';
+
+    var raiox =
+      '<section class="fsec antro-raiox"><h2 class="fsec__title">Raio X corporal ' +
+          '<small class="antro-un-hint">estimativa a partir das circunferências</small></h2>' +
+        '<div class="bc-wrap" id="raiox-corpo"></div>' +
+        '<div class="raiox-grid" id="raiox-ind"></div>' +
+        '<div class="raiox-risco" id="raiox-risco"></div>' +
+        '<p class="antro-obs" id="raiox-obs"></p>' +
+      '</section>';
+
+    var fotos = secFotos(p);
 
     var result =
       '<section class="fsec antro-result"><h2 class="fsec__title">Resultados</h2>' +
@@ -244,11 +385,67 @@
         '</div>' +
       '</section>';
 
-    return '<div class="antro" id="antro-root">' + topo + circ + dobras + bio + result + '</div>';
+    return '<div class="antro" id="antro-root">' + topo + circ + dobras + bio + raiox + fotos + result + '</div>';
   }
   function resCard(lbl, id) {
     return '<div class="fmetric"><div class="fmetric__lbl">' + lbl + '</div>' +
       '<div class="fmetric__val" id="' + id + '">—</div></div>';
+  }
+
+  /* ---------- Evolução com foto ---------- */
+  var FOTO_TIPOS = [
+    { key: "frente", lbl: "Frente" },
+    { key: "lado",   lbl: "Lado" },
+    { key: "costas", lbl: "Costas" }
+  ];
+  function fmtDataFoto(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    return m ? m[3] + "/" + m[2] + "/" + m[1] : "";
+  }
+  function fotoCard(f) {
+    var tipo = (FOTO_TIPOS.filter(function (t) { return t.key === f.tipo; })[0] || {}).lbl || "Foto";
+    var meta = [tipo];
+    if (f.peso != null && f.peso !== "") meta.push(String(f.peso).replace(".", ",") + " kg");
+    return '<figure class="evo-card" data-foto-id="' + esc(f.id) + '">' +
+      '<button type="button" class="evo-card__img" data-foto-zoom="' + esc(f.id) + '" aria-label="Ampliar foto">' +
+        '<img src="' + esc(f.data) + '" alt="Foto de evolução — ' + esc(tipo) + '" loading="lazy" /></button>' +
+      '<figcaption class="evo-card__cap">' +
+        '<span class="evo-card__date">' + esc(fmtDataFoto(f.dataISO)) + '</span>' +
+        '<span class="evo-card__meta">' + esc(meta.join(" · ")) + '</span>' +
+        (f.obs ? '<span class="evo-card__obs">' + esc(f.obs) + '</span>' : '') +
+      '</figcaption>' +
+      '<button type="button" class="evo-card__del" data-foto-del="' + esc(f.id) + '" aria-label="Remover foto" title="Remover">✕</button>' +
+    '</figure>';
+  }
+  function secFotos(p) {
+    var fotos = ((p.antropometria || {}).fotos || []).slice().sort(function (a, b) {
+      return String(b.dataISO || "").localeCompare(String(a.dataISO || ""));
+    });
+    var hoje = new Date().toISOString().slice(0, 10);
+    var galeria = fotos.length
+      ? '<div class="evo-grid" id="evo-grid">' + fotos.map(fotoCard).join("") + '</div>'
+      : '<div class="evo-empty" id="evo-grid"><span class="evo-empty__ico">📸</span>' +
+          '<p>Nenhuma foto ainda. Envie a primeira para começar o acompanhamento visual do paciente.</p></div>';
+    return '<section class="fsec antro-fotos"><h2 class="fsec__title">Evolução com foto ' +
+        '<small class="antro-un-hint">o paciente vê no portal</small></h2>' +
+      '<div class="evo-add">' +
+        '<label class="antro-field"><span class="antro-field__lbl">Data</span>' +
+          '<span class="antro-field__wrap"><input type="date" id="evo-data" value="' + hoje + '" /></span></label>' +
+        '<label class="antro-field"><span class="antro-field__lbl">Ângulo</span>' +
+          '<span class="antro-field__wrap"><select id="evo-tipo">' +
+            FOTO_TIPOS.map(function (t) { return '<option value="' + t.key + '">' + t.lbl + '</option>'; }).join("") +
+          '</select></span></label>' +
+        '<label class="antro-field"><span class="antro-field__lbl">Peso (opcional)</span>' +
+          '<span class="antro-field__wrap"><input type="number" step="0.1" inputmode="decimal" id="evo-peso" placeholder="kg" /></span></label>' +
+        '<label class="antro-field evo-add__obs"><span class="antro-field__lbl">Observação (opcional)</span>' +
+          '<span class="antro-field__wrap"><input type="text" id="evo-obs" placeholder="ex.: pós 30 dias" /></span></label>' +
+        '<div class="evo-add__actions">' +
+          '<input type="file" id="evo-file" accept="image/png,image/jpeg,image/webp" hidden />' +
+          '<button type="button" class="btn btn--primary btn--sm" id="evo-add-btn">＋ Enviar foto</button>' +
+        '</div>' +
+      '</div>' +
+      galeria +
+    '</section>';
   }
 
   /* ---------- Leitura + cálculo ao vivo ---------- */
@@ -330,6 +527,111 @@
     if (obs) obs.textContent = (r.obs || []).join(" ");
   }
 
+  /* Raio X: combina RFM + US Navy (média) e o risco cardiovascular. */
+  function calcRaioX(dados) {
+    var sexo = dados.sexo;
+    var alturaCm = dados.altura ? +(dados.altura * 100).toFixed(1) : null;
+    var c = dados.circunferencias || {};
+    var cintura = num(c.cintura), abdomen = num(c.abdomen), quadril = num(c.quadril), pescoco = num(c.pescoco);
+    var peso = dados.peso;
+    var bfRfm = rfm(alturaCm, cintura, sexo);
+    var bfNavy = navyBF(sexo, alturaCm, pescoco, cintura, abdomen, quadril);
+    var ests = [bfRfm, bfNavy].filter(function (v) { return v != null; });
+    var bf = ests.length ? +(ests.reduce(function (a, b) { return a + b; }, 0) / ests.length).toFixed(1) : null;
+    var mgKg = (bf != null && peso) ? +(peso * bf / 100).toFixed(1) : null;
+    var mmKg = (bf != null && peso) ? +(peso - mgKg).toFixed(1) : null;
+    var mmPct = (mmKg != null && peso) ? +(mmKg / peso * 100).toFixed(1) : null;
+    var risco = riscoCardio(cintura, alturaCm, quadril, sexo);
+    return { bf: bf, bfRfm: bfRfm, bfNavy: bfNavy, mgKg: mgKg, mmKg: mmKg, mmPct: mmPct,
+      risco: risco, alturaCm: alturaCm, cintura: cintura, abdomen: abdomen, quadril: quadril, pescoco: pescoco, peso: peso, sexo: sexo };
+  }
+
+  function raioxIndCard(lbl, val, ref, cor) {
+    return '<div class="raiox-ind" style="--c:' + (cor || COR.cinza) + '">' +
+      '<div class="raiox-ind__lbl">' + esc(lbl) + '</div>' +
+      '<div class="raiox-ind__val">' + val + '</div>' +
+      (ref ? '<div class="raiox-ind__ref">' + esc(ref) + '</div>' : '') + '</div>';
+  }
+  function pintarRaioX(root, dados) {
+    var host = root.querySelector("#raiox-corpo");
+    if (!host) return;
+    var rx = calcRaioX(dados);
+    var falta = [];
+    if (rx.sexo !== "M" && rx.sexo !== "F") falta.push("sexo");
+    if (!rx.alturaCm) falta.push("altura");
+    if (!rx.cintura) falta.push("circunferência da cintura");
+
+    if (rx.bf == null && rx.risco.nivel == null) {
+      host.innerHTML = '<div class="raiox-hint">Informe ' + falta.join(", ") +
+        ' para gerar o raio X. A estimativa usa cintura, quadril, pescoço e altura.</div>';
+      root.querySelector("#raiox-ind").innerHTML = "";
+      root.querySelector("#raiox-risco").innerHTML = "";
+      var o0 = root.querySelector("#raiox-obs"); if (o0) o0.textContent = "";
+      return;
+    }
+    host.innerHTML = bodyComp(rx.bf, rx.mmPct, rx.sexo, rx.peso, null, "Massa magra");
+
+    // Indicadores
+    var cards = "";
+    if (rx.bfRfm != null) cards += raioxIndCard("% Gordura (RFM)", rx.bfRfm.toFixed(1).replace(".", ",") + "%", "vs. DXA", COR.ambar);
+    if (rx.bfNavy != null) cards += raioxIndCard("% Gordura (Navy)", rx.bfNavy.toFixed(1).replace(".", ",") + "%", "circunferências", COR.ambar);
+    if (rx.mmKg != null) cards += raioxIndCard("Massa magra", rx.mmKg.toFixed(1).replace(".", ",") + " kg", (rx.mmPct != null ? rx.mmPct.toFixed(0) + "% do peso" : ""), COR.vinho);
+    if (rx.risco.ind.rce != null) {
+      var rce = rx.risco.ind.rce, corRce = rce >= 0.6 ? COR.vermelho : rce >= 0.5 ? COR.ambar : COR.verde;
+      cards += raioxIndCard("Cintura/estatura", String(rce).replace(".", ","), "ideal < 0,50", corRce);
+    }
+    if (rx.risco.ind.rcq != null) {
+      var lim = rx.sexo === "M" ? 0.90 : 0.85, corRcq = rx.risco.ind.rcq >= lim ? COR.ambar : COR.verde;
+      cards += raioxIndCard("Cintura/quadril", String(rx.risco.ind.rcq).replace(".", ","), "limite " + lim.toFixed(2).replace(".", ","), corRcq);
+    }
+    if (rx.cintura) {
+      var limA = rx.sexo === "M" ? 94 : 80, limB = rx.sexo === "M" ? 102 : 88;
+      var corCin = rx.cintura >= limB ? COR.vermelho : rx.cintura >= limA ? COR.ambar : COR.verde;
+      cards += raioxIndCard("Cintura", rx.cintura.toFixed(1).replace(".", ",") + " cm", "alerta ≥ " + limA + " cm", corCin);
+    }
+    root.querySelector("#raiox-ind").innerHTML = cards;
+
+    // Risco cardiovascular
+    var rk = rx.risco, rbox = root.querySelector("#raiox-risco");
+    if (rk.nivel) {
+      rbox.innerHTML = '<div class="raiox-risco__card" style="--c:' + rk.cor + '">' +
+        '<div class="raiox-risco__top"><span class="raiox-risco__dot"></span>' +
+          '<span class="raiox-risco__lbl">Risco cardiovascular</span>' +
+          '<span class="raiox-risco__nivel">' + esc(rk.nivel) + '</span></div>' +
+        (rk.motivos.length
+          ? '<ul class="raiox-risco__motivos">' + rk.motivos.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join("") + '</ul>'
+          : '<p class="raiox-risco__ok">Nenhum marcador de adiposidade central elevado. 👏</p>') +
+      '</div>';
+    } else { rbox.innerHTML = ""; }
+
+    var obs = root.querySelector("#raiox-obs");
+    if (obs) obs.textContent = "Estimativas por fórmulas validadas (RFM, US Navy, OMS). Não substituem DXA/bioimpedância; use como triagem e acompanhamento.";
+  }
+
+  // Bioimpedância: monta o corpo visual a partir do que a nutri digitou.
+  function pintarBioCorpo(root, dados) {
+    var host = root.querySelector("#bio-corpo");
+    if (!host) return;
+    var b = dados.bio || {};
+    var g = num(b.gordura_pct), m = num(b.musculo_pct);
+    if (g == null && m == null) {
+      host.innerHTML = '<div class="raiox-hint">Digite o % de gordura e de músculo do aparelho para ver a composição corporal ilustrada.</div>';
+      return;
+    }
+    var chips = "";
+    var visc = num(b.gordura_visc);
+    if (visc != null) {
+      var corV = visc >= 15 ? COR.vermelho : visc >= 10 ? COR.ambar : COR.verde;
+      chips += '<span class="bc-chip" style="--c:' + corV + '"><b>' + visc + '</b> gordura visceral</span>';
+    }
+    if (num(b.agua_pct) != null) chips += '<span class="bc-chip" style="--c:' + COR.teal + '"><b>' + num(b.agua_pct) + '%</b> água</span>';
+    if (num(b.idade_metab) != null) chips += '<span class="bc-chip" style="--c:' + COR.vinho + '"><b>' + num(b.idade_metab) + '</b> idade metab.</span>';
+    if (num(b.tmb) != null) chips += '<span class="bc-chip" style="--c:' + COR.vinho + '"><b>' + num(b.tmb) + '</b> kcal TMB</span>';
+    if (num(b.peso_osseo) != null) chips += '<span class="bc-chip" style="--c:' + COR.cinza + '"><b>' + num(b.peso_osseo) + '</b> kg ósseo</span>';
+    host.innerHTML = bodyComp(g, m, dados.sexo, dados.peso, null, "Músculo") +
+      (chips ? '<div class="bc-chips">' + chips + '</div>' : '');
+  }
+
   /* ---------- Fiação ---------- */
   function wire(p, opts) {
     opts = opts || {};
@@ -347,6 +649,9 @@
       if (out) out.textContent = est != null ? "≈ " + (est / 100).toFixed(2) + " m" : "—";
       // Bioimpedância: converte % → kg com o peso atual (mostra ao vivo).
       pintarBioKg(root, dados);
+      pintarBioCorpo(root, dados);
+      // Raio X corporal ao vivo a partir das circunferências.
+      pintarRaioX(root, dados);
     }
     root.addEventListener("input", recalc);
     root.addEventListener("change", recalc);
@@ -367,6 +672,123 @@
       }
     });
 
+    /* ----- Evolução com foto ----- */
+    // Lista viva das fotos (persistida na hora, independente do "Salvar avaliação").
+    var fotos = (((p.antropometria || {}).fotos) || []).slice();
+    var addBtn = root.querySelector("#evo-add-btn");
+    var fileInp = root.querySelector("#evo-file");
+
+    // Monta o objeto antropometria a partir do que está AGORA no formulário
+    // + as fotos. Usado tanto pelo "Salvar avaliação" quanto pelo salvar de
+    // fotos, para que nenhuma medida digitada se perca no re-render.
+    function buildPatch() {
+      var dados = coletar(root);
+      var r = calcular(dados, idade);
+      var bio = Object.assign({}, dados.bio, {
+        gordura_kg: bioKg(dados.bio.gordura_pct, dados.peso),
+        musculo_kg: bioKg(dados.bio.musculo_pct, dados.peso)
+      });
+      var rx = calcRaioX(dados);
+      var antropo = {
+        sexo: dados.sexo || null,
+        peso: dados.peso, altura: dados.altura, alturaJoelho: dados.alturaJoelho,
+        circunferencias: dados.circunferencias, dobras: dados.dobras, bio: bio,
+        imc: r.imc, somaDobras: r.soma, gorduraPct: r.gord, massaGorda: r.mg, massaMagra: r.mm,
+        fotos: fotos,
+        raioX: {
+          gorduraPct: rx.bf, gorduraRFM: rx.bfRfm, gorduraNavy: rx.bfNavy,
+          massaGordaKg: rx.mgKg, massaMagraKg: rx.mmKg, massaMagraPct: rx.mmPct,
+          riscoCardio: rx.risco.nivel, riscoPontos: rx.risco.pontos,
+          rce: rx.risco.ind.rce, rcq: rx.risco.ind.rcq, cintura: rx.cintura
+        },
+        atualizadoEm: new Date().toISOString()
+      };
+      return { patch: Object.assign({}, p, {
+        antropometria: antropo,
+        sexo: dados.sexo || p.sexo,
+        pesoAtual: dados.peso != null ? dados.peso : p.pesoAtual,
+        altura: dados.altura != null ? dados.altura : p.altura,
+        imc: r.imc != null ? r.imc : p.imc
+      }), r: r };
+    }
+
+    function refreshFotos() {
+      var grid = root.querySelector("#evo-grid");
+      if (!grid) return;
+      var ord = fotos.slice().sort(function (a, b) { return String(b.dataISO || "").localeCompare(String(a.dataISO || "")); });
+      if (!ord.length) {
+        grid.className = "evo-empty"; grid.id = "evo-grid";
+        grid.innerHTML = '<span class="evo-empty__ico">📸</span><p>Nenhuma foto ainda. Envie a primeira para começar o acompanhamento visual do paciente.</p>';
+      } else {
+        grid.className = "evo-grid"; grid.id = "evo-grid";
+        grid.innerHTML = ord.map(fotoCard).join("");
+      }
+    }
+    function salvarFotos(cb) {
+      if (!window.NutriPacientes) { opts.toast && opts.toast("Banco indisponível.", true); return; }
+      var patch = buildPatch().patch;
+      window.NutriPacientes.update(p.id, patch).then(function (saved) {
+        p = saved;
+        opts.onSaved && opts.onSaved(saved);
+        cb && cb(true);
+      }).catch(function (e) {
+        opts.toast && opts.toast("Não foi possível salvar a foto. " + (e && e.message ? e.message : ""), true);
+        cb && cb(false);
+      });
+    }
+    if (addBtn && fileInp) {
+      addBtn.addEventListener("click", function () { fileInp.click(); });
+      fileInp.addEventListener("change", function () {
+        var file = fileInp.files && fileInp.files[0];
+        fileInp.value = "";
+        if (!file) return;
+        if (!/^image\/(png|jpe?g|webp)$/i.test(file.type)) { opts.toast && opts.toast("Use uma imagem JPG, PNG ou WEBP.", true); return; }
+        if (file.size > 8 * 1024 * 1024) { opts.toast && opts.toast("A imagem passa de 8 MB. Escolha uma menor.", true); return; }
+        addBtn.disabled = true; addBtn.textContent = "Enviando…";
+        redimensionarFoto(file, 720, 0.82).then(function (dataUrl) {
+          var dataInp = root.querySelector("#evo-data");
+          var pesoInp = root.querySelector("#evo-peso");
+          var novo = {
+            id: "f" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+            data: dataUrl,
+            tipo: (root.querySelector("#evo-tipo") || {}).value || "frente",
+            dataISO: (dataInp && dataInp.value) || new Date().toISOString().slice(0, 10),
+            peso: pesoInp && pesoInp.value !== "" ? num(pesoInp.value) : null,
+            obs: ((root.querySelector("#evo-obs") || {}).value || "").trim() || null
+          };
+          fotos.push(novo);
+          refreshFotos();
+          salvarFotos(function (ok) {
+            addBtn.disabled = false; addBtn.textContent = "＋ Enviar foto";
+            if (ok) { opts.toast && opts.toast("Foto adicionada 📸"); if (pesoInp) pesoInp.value = ""; var ob = root.querySelector("#evo-obs"); if (ob) ob.value = ""; }
+            else { fotos = fotos.filter(function (f) { return f.id !== novo.id; }); refreshFotos(); }
+          });
+        }).catch(function () {
+          addBtn.disabled = false; addBtn.textContent = "＋ Enviar foto";
+          opts.toast && opts.toast("Não foi possível carregar a foto.", true);
+        });
+      });
+    }
+    // Remover / ampliar foto (delegação de eventos na grade).
+    root.addEventListener("click", function (e) {
+      var del = e.target.closest && e.target.closest("[data-foto-del]");
+      if (del) {
+        var idDel = del.getAttribute("data-foto-del");
+        if (!window.confirm("Remover esta foto de evolução?")) return;
+        var bkp = fotos.slice();
+        fotos = fotos.filter(function (f) { return f.id !== idDel; });
+        refreshFotos();
+        salvarFotos(function (ok) { if (!ok) { fotos = bkp; refreshFotos(); } else { opts.toast && opts.toast("Foto removida"); } });
+        return;
+      }
+      var zoom = e.target.closest && e.target.closest("[data-foto-zoom]");
+      if (zoom) {
+        var idZ = zoom.getAttribute("data-foto-zoom");
+        var f = fotos.filter(function (x) { return x.id === idZ; })[0];
+        if (f) abrirLightbox(f);
+      }
+    });
+
     var usarJoelho = root.querySelector("#antro-usar-joelho");
     if (usarJoelho) usarJoelho.addEventListener("click", function () {
       var dados = coletar(root);
@@ -378,29 +800,9 @@
 
     var salvar = root.querySelector("#antro-salvar");
     if (salvar) salvar.addEventListener("click", function () {
-      var dados = coletar(root);
-      var r = calcular(dados, idade);
-      // Guarda o kg de gordura/músculo derivado da bioimpedância (peso × %).
-      var bio = Object.assign({}, dados.bio, {
-        gordura_kg: bioKg(dados.bio.gordura_pct, dados.peso),
-        musculo_kg: bioKg(dados.bio.musculo_pct, dados.peso)
-      });
-      var antropo = {
-        sexo: dados.sexo || null,
-        peso: dados.peso, altura: dados.altura, alturaJoelho: dados.alturaJoelho,
-        circunferencias: dados.circunferencias, dobras: dados.dobras, bio: bio,
-        imc: r.imc, somaDobras: r.soma, gorduraPct: r.gord, massaGorda: r.mg, massaMagra: r.mm,
-        atualizadoEm: new Date().toISOString()
-      };
       if (!window.NutriPacientes) { opts.toast && opts.toast("Banco indisponível.", true); return; }
       salvar.disabled = true; salvar.textContent = "Salvando…";
-      var patch = Object.assign({}, p, {
-        antropometria: antropo,
-        sexo: dados.sexo || p.sexo,
-        pesoAtual: dados.peso != null ? dados.peso : p.pesoAtual,
-        altura: dados.altura != null ? dados.altura : p.altura,
-        imc: r.imc != null ? r.imc : p.imc
-      });
+      var patch = buildPatch().patch;
       window.NutriPacientes.update(p.id, patch).then(function (saved) {
         opts.toast && opts.toast("Avaliação salva");
         opts.onSaved && opts.onSaved(saved);
@@ -409,6 +811,45 @@
         opts.toast && opts.toast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
       });
     });
+  }
+
+  /* Redimensiona a foto para no máx. `max` px (lado maior) e devolve JPEG data URL. */
+  function redimensionarFoto(file, max, q) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onerror = function () { reject(new Error("read")); };
+      reader.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error("img")); };
+        img.onload = function () {
+          var w = img.naturalWidth, h = img.naturalHeight;
+          var s = Math.min(1, max / Math.max(w, h));
+          var cw = Math.round(w * s), ch = Math.round(h * s);
+          var cv = document.createElement("canvas"); cv.width = cw; cv.height = ch;
+          cv.getContext("2d").drawImage(img, 0, 0, cw, ch);
+          resolve(cv.toDataURL("image/jpeg", q || 0.82));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /* Lightbox simples para ver a foto ampliada. */
+  function abrirLightbox(f) {
+    var tipo = (FOTO_TIPOS.filter(function (t) { return t.key === f.tipo; })[0] || {}).lbl || "Foto";
+    var cap = [fmtDataFoto(f.dataISO), tipo];
+    if (f.peso != null && f.peso !== "") cap.push(String(f.peso).replace(".", ",") + " kg");
+    var ov = document.createElement("div");
+    ov.className = "evo-lb";
+    ov.innerHTML = '<button class="evo-lb__close" aria-label="Fechar">✕</button>' +
+      '<figure class="evo-lb__fig"><img src="' + esc(f.data) + '" alt="Foto de evolução ampliada" />' +
+      '<figcaption>' + esc(cap.join(" · ")) + (f.obs ? ' — ' + esc(f.obs) : '') + '</figcaption></figure>';
+    function fechar() { ov.remove(); document.removeEventListener("keydown", onKey); }
+    function onKey(e) { if (e.key === "Escape") fechar(); }
+    ov.addEventListener("click", function (e) { if (e.target === ov || e.target.closest(".evo-lb__close")) fechar(); });
+    document.addEventListener("keydown", onKey);
+    document.body.appendChild(ov);
   }
 
   window.Antropometria = { render: render, wire: wire };

@@ -140,3 +140,142 @@
 @media (max-width: 560px) {
   .antro-grid { grid-template-columns: 1fr; }
 }
+
+/* =====================================================
+   COMPOSIÇÃO CORPORAL — corpo ilustrado + anéis
+   (usado pela Bioimpedância e pelo Raio X)
+   ===================================================== */
+.bc-wrap { margin-top: var(--sp-4); }
+.bc {
+  display: flex; align-items: center; gap: var(--sp-5); flex-wrap: wrap;
+  padding: var(--sp-4); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-card); background: var(--branco);
+}
+.bc__fig { flex: none; width: 108px; display: grid; place-items: center; }
+.bc-fig { width: 108px; height: auto; display: block; filter: drop-shadow(0 4px 10px rgba(132, 11, 85, .12)); }
+.bc-fig__body { transition: transform var(--t-med), fill var(--t-med); }
+.bc__data { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.bc__donuts { display: flex; gap: var(--sp-5); }
+.bc-donut { display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
+.bc-donut svg { width: 76px; height: 76px; transform: rotate(-90deg); }
+.bc-donut__bg { fill: none; stroke: var(--cinza-borda); stroke-width: 7; }
+.bc-donut__fg { fill: none; stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset var(--t-slow); }
+.bc-donut__mid { position: absolute; top: 26px; left: 0; right: 0; text-align: center; line-height: 1; }
+.bc-donut__mid strong { font-size: 1.05rem; color: var(--texto); }
+.bc-donut__mid span { font-size: .6rem; color: var(--texto-sutil); }
+.bc-donut__lbl { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); text-transform: uppercase; letter-spacing: .3px; }
+
+/* Escala de faixa (essencial → elevado) com marcador */
+.bc-scale { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+.bc-scale__track { display: flex; gap: 3px; flex: 1 1 160px; min-width: 140px; }
+.bc-scale__seg { flex: 1; height: 8px; border-radius: 999px; background: var(--c); opacity: .28; transition: opacity var(--t-fast), transform var(--t-fast); }
+.bc-scale__seg.is-on { opacity: 1; transform: scaleY(1.5); }
+.bc-scale__now { font-weight: 800; font-size: var(--fs-sm); flex: none; }
+.bc-kgs { display: flex; gap: var(--sp-4); flex-wrap: wrap; font-size: var(--fs-sm); color: var(--texto-sutil); }
+.bc-kg b { font-weight: 800; }
+.bc__src { font-size: 11px; color: var(--texto-sutil); margin: 0; }
+
+/* Chips de métricas da bioimpedância (visceral, água, TMB…) */
+.bc-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-3); }
+.bc-chip {
+  display: inline-flex; align-items: baseline; gap: 5px; font-size: var(--fs-caption);
+  color: var(--texto-sutil); font-weight: 600; padding: 5px 11px; border-radius: 999px;
+  background: var(--branco); border: 1px solid var(--cinza-borda);
+  border-left: 4px solid var(--c);
+}
+.bc-chip b { font-size: var(--fs-body); font-weight: 800; color: var(--c); }
+
+/* =====================================================
+   RAIO X CORPORAL
+   ===================================================== */
+.antro-raiox .fsec__title { align-items: baseline; }
+.raiox-hint {
+  font-size: var(--fs-sm); color: var(--texto-sutil); line-height: 1.5;
+  padding: var(--sp-4); border: 1px dashed var(--cinza-borda);
+  border-radius: var(--radius-card); background: var(--rosa-suave);
+}
+.raiox-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--sp-3); margin-top: var(--sp-4);
+}
+.raiox-ind {
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  padding: var(--sp-3) var(--sp-4); background: var(--branco); border-top: 4px solid var(--c);
+}
+.raiox-ind__lbl { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); text-transform: uppercase; letter-spacing: .3px; }
+.raiox-ind__val { font-size: 1.35rem; font-weight: 800; color: var(--c); line-height: 1.1; margin-top: 3px; }
+.raiox-ind__ref { font-size: 11px; color: var(--texto-sutil); margin-top: 2px; }
+
+.raiox-risco { margin-top: var(--sp-4); }
+.raiox-risco__card {
+  border: 1px solid var(--cinza-borda); border-left: 5px solid var(--c);
+  border-radius: var(--radius-card); padding: var(--sp-4); background: var(--branco);
+}
+.raiox-risco__top { display: flex; align-items: center; gap: var(--sp-2); }
+.raiox-risco__dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); flex: none; }
+.raiox-risco__lbl { font-weight: 700; color: var(--texto); font-size: var(--fs-sm); }
+.raiox-risco__nivel { margin-left: auto; font-weight: 800; color: var(--c); font-size: var(--fs-body); text-transform: uppercase; letter-spacing: .3px; }
+.raiox-risco__motivos { margin: var(--sp-3) 0 0; padding-left: 18px; }
+.raiox-risco__motivos li { font-size: var(--fs-sm); color: var(--texto); line-height: 1.6; }
+.raiox-risco__ok { margin: var(--sp-2) 0 0; font-size: var(--fs-sm); color: var(--texto-sutil); }
+
+/* =====================================================
+   EVOLUÇÃO COM FOTO
+   ===================================================== */
+.evo-add {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--sp-3); align-items: end; padding: var(--sp-4);
+  background: var(--rosa-suave); border-radius: var(--radius-card); margin-bottom: var(--sp-4);
+}
+.evo-add__obs { grid-column: span 2; }
+.evo-add__actions { display: flex; align-items: end; }
+.evo-add__actions .btn { width: 100%; }
+
+.evo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--sp-3); }
+.evo-card {
+  position: relative; margin: 0; border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-card); overflow: hidden; background: var(--branco); box-shadow: var(--shadow-sm);
+}
+.evo-card__img { display: block; width: 100%; padding: 0; border: none; background: var(--cinza-claro); cursor: zoom-in; }
+.evo-card__img img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+.evo-card__cap { padding: var(--sp-2) var(--sp-3) var(--sp-3); display: flex; flex-direction: column; gap: 1px; }
+.evo-card__date { font-weight: 800; color: var(--vinho); font-size: var(--fs-sm); }
+.evo-card__meta { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+.evo-card__obs { font-size: 11px; color: var(--texto-sutil); margin-top: 2px; line-height: 1.4; }
+.evo-card__del {
+  position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border-radius: 50%;
+  border: none; background: rgba(0, 0, 0, .5); color: #fff; font-size: 13px; cursor: pointer;
+  display: grid; place-items: center; opacity: 0; transition: opacity var(--t-fast); -webkit-tap-highlight-color: transparent;
+}
+.evo-card:hover .evo-card__del, .evo-card:focus-within .evo-card__del { opacity: 1; }
+.evo-card__del:hover { background: var(--vinho); }
+
+.evo-empty {
+  display: flex; flex-direction: column; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-6) var(--sp-4); text-align: center; color: var(--texto-sutil);
+  border: 1px dashed var(--cinza-borda); border-radius: var(--radius-card);
+}
+.evo-empty__ico { font-size: 2rem; }
+.evo-empty p { margin: 0; font-size: var(--fs-sm); max-width: 42ch; }
+
+/* Lightbox */
+.evo-lb {
+  position: fixed; inset: 0; z-index: 200; background: rgba(20, 6, 15, .82);
+  display: grid; place-items: center; padding: var(--sp-4); animation: evo-fade var(--t-fast);
+}
+@keyframes evo-fade { from { opacity: 0; } to { opacity: 1; } }
+.evo-lb__fig { margin: 0; max-width: min(92vw, 560px); text-align: center; }
+.evo-lb__fig img { display: block; width: 100%; max-height: 78vh; object-fit: contain; border-radius: var(--radius-card); box-shadow: var(--shadow-lg); }
+.evo-lb__fig figcaption { color: #fff; font-size: var(--fs-sm); margin-top: var(--sp-3); }
+.evo-lb__close {
+  position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: rgba(255, 255, 255, .16); color: #fff; font-size: 18px; cursor: pointer;
+}
+.evo-lb__close:hover { background: rgba(255, 255, 255, .3); }
+
+@media (max-width: 560px) {
+  .bc { justify-content: center; text-align: left; }
+  .raiox-grid { grid-template-columns: 1fr 1fr; }
+  .evo-add__obs { grid-column: 1 / -1; }
+  .evo-grid { grid-template-columns: 1fr 1fr; }
+}

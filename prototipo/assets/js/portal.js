@@ -228,9 +228,56 @@
         stat("Variação total", difTxt) +
         stat("Meta", (p.meta != null ? p.meta + " kg" : "Sem meta")) +
         stat("IMC", (p.imc != null ? String(p.imc) : "—")) +
-      '</div>';
+      '</div>' +
+      renderFotosEvolucao(p);
   }
   function stat(l, v) { return '<div class="pstat"><div class="pstat__lbl">' + esc(l) + '</div><div class="pstat__val">' + esc(v) + '</div></div>'; }
+
+  /* Fotos de evolução que a nutri enviou (só leitura no portal). */
+  var FOTO_LBL = { frente: "Frente", lado: "Lado", costas: "Costas" };
+  function fmtDataFoto(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || "")); return m ? m[3] + "/" + m[2] + "/" + m[1] : ""; }
+  function renderFotosEvolucao(p) {
+    var fotos = ((p.antropometria || {}).fotos || []).slice()
+      .sort(function (a, b) { return String(b.dataISO || "").localeCompare(String(a.dataISO || "")); });
+    if (!fotos.length) return "";
+    var cards = fotos.map(function (f) {
+      var tipo = FOTO_LBL[f.tipo] || "Foto";
+      var meta = [tipo];
+      if (f.peso != null && f.peso !== "") meta.push(String(f.peso).replace(".", ",") + " kg");
+      return '<figure class="evo-card">' +
+        '<button type="button" class="evo-card__img" data-pfoto="' + esc(f.id) + '" aria-label="Ampliar foto">' +
+          '<img src="' + esc(f.data) + '" alt="Foto de evolução — ' + esc(tipo) + '" loading="lazy" /></button>' +
+        '<figcaption class="evo-card__cap">' +
+          '<span class="evo-card__date">' + esc(fmtDataFoto(f.dataISO)) + '</span>' +
+          '<span class="evo-card__meta">' + esc(meta.join(" · ")) + '</span>' +
+          (f.obs ? '<span class="evo-card__obs">' + esc(f.obs) + '</span>' : '') +
+        '</figcaption></figure>';
+    }).join("");
+    return '<div class="pcard"><h2 class="pcard__title">Sua evolução em fotos</h2>' +
+      '<p class="card__sub" style="margin:-4px 0 12px">Registros que sua nutricionista adicionou. Toque para ampliar.</p>' +
+      '<div class="evo-grid">' + cards + '</div></div>';
+  }
+  // Lightbox das fotos no portal (delegação global).
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest("[data-pfoto]");
+    if (!btn || !ctx.paciente) return;
+    var id = btn.getAttribute("data-pfoto");
+    var f = (((ctx.paciente.antropometria || {}).fotos) || []).filter(function (x) { return x.id === id; })[0];
+    if (!f) return;
+    var tipo = FOTO_LBL[f.tipo] || "Foto";
+    var cap = [fmtDataFoto(f.dataISO), tipo];
+    if (f.peso != null && f.peso !== "") cap.push(String(f.peso).replace(".", ",") + " kg");
+    var ov = document.createElement("div");
+    ov.className = "evo-lb";
+    ov.innerHTML = '<button class="evo-lb__close" aria-label="Fechar">✕</button>' +
+      '<figure class="evo-lb__fig"><img src="' + esc(f.data) + '" alt="Foto de evolução ampliada" />' +
+      '<figcaption>' + esc(cap.join(" · ")) + (f.obs ? " — " + esc(f.obs) : "") + '</figcaption></figure>';
+    function fechar() { ov.remove(); document.removeEventListener("keydown", onKey); }
+    function onKey(ev) { if (ev.key === "Escape") fechar(); }
+    ov.addEventListener("click", function (ev) { if (ev.target === ov || ev.target.closest(".evo-lb__close")) fechar(); });
+    document.addEventListener("keydown", onKey);
+    document.body.appendChild(ov);
+  });
 
   function drawWeightChart(p) {
     var host = el("weight-chart");
