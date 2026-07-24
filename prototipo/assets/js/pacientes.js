@@ -174,7 +174,7 @@
     { id: "exames",       ico: "🧪", tit: "Exames",                 sub: ["Upload de exames", "Visualização", "Histórico"] },
     { id: "antropometria",ico: "📏", tit: "Antropometria",          sub: ["Peso, altura, IMC", "Circunferências", "Dobras", "Evolução gráfica"] },
     { id: "plano",        ico: "🥗", tit: "Planejamento Alimentar", sub: ["Plano atual", "Planos anteriores", "Lista de compras"] },
-    { id: "treino",       ico: "🏋️", tit: "Treino em casa",         sub: ["Blocos e exercícios", "Vídeos", "Liberar ao paciente"] },
+    // { id: "treino",    ico: "🏋️", tit: "Treino em casa",         sub: ["Blocos e exercícios", "Vídeos", "Liberar ao paciente"] }, // PROJETO FUTURO — oculto por ora (código preservado em treino-paciente.js)
     { id: "metas",        ico: "🎯", tit: "Metas",                  sub: ["Checklist do paciente", "Metas ativas", "Evolução"] },
     { id: "prescricoes",  ico: "💊", tit: "Prescrições",            sub: ["Suplementação", "Fitoterapia", "Manipulados"] },
     { id: "orientacoes",  ico: "📄", tit: "Orientações",            sub: ["Atuais", "Histórico"] },

@@ -86,8 +86,9 @@
   // O chat tem gate real de RLS; as demais são apenas ocultadas aqui.
   function applyFeatureGate(p) {
     var feats = Array.isArray(p.portalFeatures) ? p.portalFeatures : ["plano", "evolucao", "consultas", "chat"];
-    // Treino e Metas não são features pagas: aparecem quando há conteúdo liberado.
-    var temTreino = !!(p.treino && p.treino.publicado && (p.treino.blocos || []).length);
+    // Metas não é feature paga: aparece quando há conteúdo liberado.
+    var TREINO_ATIVO = false; // PROJETO FUTURO — Treino em casa oculto por ora (código preservado)
+    var temTreino = TREINO_ATIVO && !!(p.treino && p.treino.publicado && (p.treino.blocos || []).length);
     var temMetas = !!(p.metas && p.metas.publicado && (p.metas.itens || []).some(function (i) { return (i.texto || "").trim(); }));
     var tabsWrap = el("portal-tabs");
     var visiveis = [];
