@@ -304,7 +304,151 @@
     }).then(function () { busy(btn, false); });
   }
 
-  var ACTIONS = { "save-perfil": savePerfil, "save-email": saveEmail, "save-senha": saveSenha, "save-notif": saveNotif };
+  /* ---------- Painel: Admin (só para a Ana) — convidar nutricionistas ----------
+     Cadastro público é fechado; contas de nutri nascem por convite. Este
+     painel chama a edge function create-nutri-access, que exige
+     profiles.is_admin=true. A senha gerada volta aqui p/ a Ana repassar. */
+  var convites = [];   // lista carregada de nutri_convites
+
+  function renderAdmin() {
+    var form =
+      '<div class="cfg-form">' +
+        field("Nome da nutricionista", "adm-nome", "", { ph: "Ex.: Marina Alves" }) +
+        field("E-mail de acesso", "adm-email", "", { type: "email", ph: "email@dela.com" }) +
+        field("Observação (opcional)", "adm-obs", "", { ph: "Ex.: amiga, fase de testes" }) +
+      '</div>' +
+      '<div class="cfg-actions">' +
+        '<button class="btn btn--primary" type="button" data-action="invite-nutri">Criar acesso e gerar senha</button>' +
+      '</div>' +
+      '<div id="adm-result"></div>';
+
+    var lista = convites.length
+      ? '<div class="cfg-convites">' + convites.map(function (c) {
+          return '<div class="cfg-toggle-row">' +
+            '<div class="cfg-toggle-txt"><strong>' + esc(c.nome || "(sem nome)") + '</strong>' +
+              '<span>' + esc(c.email) + ' · ' + esc((c.created_at || "").slice(0, 10)) + '</span></div>' +
+            '<span class="cfg-badge cfg-badge--on">' + esc(c.status || "ativo") + '</span></div>';
+        }).join("") + '</div>'
+      : '<p class="cfg-hint">Nenhuma nutricionista convidada ainda.</p>';
+
+    el("panel-admin").innerHTML =
+      card("Convidar nutricionista",
+        "Crie o acesso de outra nutri. Ela recebe e-mail + senha e entra pela tela de login. A carteira dela começa vazia, mas a Inteligência Clínica já vem completa.",
+        form) +
+      card("Nutricionistas convidadas", "", lista);
+  }
+
+  function copiar(texto, btn) {
+    var done = function () {
+      if (!btn) return;
+      var t = btn.textContent; btn.textContent = "Copiado ✓";
+      setTimeout(function () { btn.textContent = t; }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto).then(done).catch(function () { toast("Copie manualmente.", true); });
+    } else {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = texto; document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); document.body.removeChild(ta); done();
+      } catch (e) { toast("Copie manualmente.", true); }
+    }
+  }
+
+  function inviteNutri(btn) {
+    if (!window.NutriDBReady) { toast("Banco indisponível.", true); return; }
+    var nome = (val("adm-nome") || "").trim();
+    var email = (val("adm-email") || "").trim().toLowerCase();
+    var obs = (val("adm-obs") || "").trim();
+    if (!nome) { toast("Informe o nome.", true); return; }
+    if (!/.+@.+\..+/.test(email)) { toast("E-mail inválido.", true); return; }
+    busy(btn, true, "Criando…");
+    window.NutriDBReady.then(function (c) {
+      return c.functions.invoke("create-nutri-access", {
+        body: { nome: nome, email: email, observacao: obs || undefined }
+      });
+    }).then(function (res) {
+      if (res.error) {
+        // functions.invoke embrulha erro HTTP; tenta extrair o código do corpo.
+        if (res.error.context && res.error.context.json) {
+          return res.error.context.json().then(function (b) { throw new Error(b && b.error || "falha"); });
+        }
+        throw new Error("falha");
+      }
+      var d = res.data || {};
+      if (d.error) throw new Error(d.error);
+      mostrarCredenciais(nome, d.email, d.senha);
+      // limpa o formulário e recarrega a lista
+      ["adm-nome", "adm-email", "adm-obs"].forEach(function (id) { var e = el(id); if (e) e.value = ""; });
+      carregarConvites();
+      toast("Acesso criado!");
+    }).catch(function (e) {
+      var m = (e && e.message) || "";
+      var amigavel = m === "email_em_uso" ? "Esse e-mail já tem conta."
+        : m === "nao_autorizado" ? "Só a administradora pode convidar."
+        : m === "email_invalido" ? "E-mail inválido."
+        : "Não foi possível criar o acesso. " + m;
+      toast(amigavel, true);
+    }).then(function () { busy(btn, false); });
+  }
+
+  function mostrarCredenciais(nome, email, senha) {
+    var box = el("adm-result");
+    if (!box) return;
+    var login = location.origin + location.pathname.replace(/[^/]+$/, "index.html");
+    var msg =
+      "Oi, " + nome + "! Criei seu acesso à plataforma 💚\n\n" +
+      "Entre em: " + login + "\n" +
+      "E-mail: " + email + "\n" +
+      "Senha: " + senha + "\n\n" +
+      "É só entrar e, se quiser, trocar a senha em Configurações.";
+    box.innerHTML =
+      '<div class="cfg-cred">' +
+        '<p class="cfg-cred__title">✅ Acesso criado. Envie estes dados para ela:</p>' +
+        '<div class="cfg-cred__row"><span>E-mail</span><code>' + esc(email) + '</code></div>' +
+        '<div class="cfg-cred__row"><span>Senha</span><code>' + esc(senha) + '</code></div>' +
+        '<div class="cfg-actions" style="margin-top:var(--sp-3)">' +
+          '<button class="btn btn--primary" type="button" data-copy="' + esc(msg) + '">Copiar mensagem pronta</button>' +
+        '</div>' +
+        '<p class="cfg-hint">A senha não fica salva em lugar nenhum depois que você sai desta tela — copie agora.</p>' +
+      '</div>';
+  }
+
+  function carregarConvites() {
+    if (!window.NutriDBReady) return;
+    window.NutriDBReady.then(function (c) {
+      return c.from("nutri_convites").select("nome,email,status,created_at").order("created_at", { ascending: false });
+    }).then(function (res) {
+      convites = (res && res.data) || [];
+      renderAdmin();
+    }).catch(function () { /* silencioso */ });
+  }
+
+  // Se o usuário é admin, injeta a aba + painel Admin e carrega os convites.
+  function checkAdmin() {
+    if (!window.NutriDBReady) return;
+    window.NutriDBReady.then(function (c) {
+      return c.from("profiles").select("is_admin").maybeSingle();
+    }).then(function (res) {
+      if (!res || !res.data || res.data.is_admin !== true) return;
+      if (el("panel-admin")) return; // já montado
+      var tabs = el("cfg-tabs");
+      var panels = document.querySelector(".cfg-panels");
+      if (!tabs || !panels) return;
+      var tab = document.createElement("button");
+      tab.className = "cfg-tab"; tab.type = "button"; tab.setAttribute("data-tab", "admin");
+      tab.innerHTML = '<span class="cfg-tab__ico">🛡️</span> Admin';
+      tabs.appendChild(tab);
+      var panel = document.createElement("section");
+      panel.className = "cfg-panel"; panel.setAttribute("data-panel", "admin"); panel.id = "panel-admin";
+      panels.appendChild(panel);
+      renderAdmin();
+      carregarConvites();
+    }).catch(function () { /* não é admin ou offline: nada muda */ });
+  }
+
+  var ACTIONS = { "save-perfil": savePerfil, "save-email": saveEmail, "save-senha": saveSenha,
+    "save-notif": saveNotif, "invite-nutri": inviteNutri };
 
   /* ---------- Foto de perfil ---------- */
   // Lê o arquivo, redimensiona para no máx. 320px e devolve um JPEG data URL leve.
@@ -412,6 +556,8 @@
         if (item) { item.conectado = !item.conectado; renderIntegr(); toast(item.conectado ? item.nome + " conectado" : item.nome + " desconectado"); }
         return;
       }
+      var copyBtn = e.target.closest("[data-copy]");
+      if (copyBtn) { copiar(copyBtn.getAttribute("data-copy"), copyBtn); return; }
       var act = e.target.closest("[data-action]");
       if (act) { var fn = ACTIONS[act.getAttribute("data-action")]; if (fn) fn(act); return; }
       var save = e.target.closest("[data-save]");
@@ -457,6 +603,7 @@
     if (qs.get("tab")) abrirTab(qs.get("tab"));
     tratarRetornoGoogle();
     refreshGoogle();
+    checkAdmin();     // injeta a aba Admin se a pessoa for administradora
   }
 
   document.addEventListener("DOMContentLoaded", init);
