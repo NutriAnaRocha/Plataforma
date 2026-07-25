@@ -34,10 +34,10 @@ window.CONFIG_DATA = {
 
   /* Integrações disponíveis */
   integracoes: [
-    { id: "google", nome: "Google Agenda", ico: "📅", desc: "Sincronize seus atendimentos com o Google Calendar automaticamente.", conectado: true, conta: "ana.luisa@gmail.com" },
+    { id: "google", nome: "Google Agenda", ico: "📅", desc: "Sincronize seus atendimentos com o Google Calendar automaticamente.", conectado: false, conta: "" },
     { id: "whatsapp", nome: "WhatsApp", ico: "💬", desc: "Envie lembretes e confirmações de consulta direto no WhatsApp do paciente.", conectado: true, conta: "(11) 98888-1234" },
     { id: "pagamentos", nome: "Gateway de Pagamento", ico: "💳", desc: "Receba pagamentos online e gere cobranças recorrentes de pacotes.", conectado: false, conta: "" },
-    { id: "meet", nome: "Google Meet / Zoom", ico: "🎥", desc: "Gere o link da teleconsulta automaticamente ao agendar online.", conectado: false, conta: "" },
+    { id: "meet", nome: "Google Meet", ico: "🎥", desc: "Gera o link do Meet automaticamente na teleconsulta. Vem junto com o Google Agenda.", conectado: false, conta: "" },
     { id: "nfe", nome: "Emissor de Nota Fiscal", ico: "🧾", desc: "Emita NFS-e automaticamente a cada pagamento recebido.", conectado: false, conta: "" }
   ]
 };

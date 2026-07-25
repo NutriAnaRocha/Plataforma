@@ -347,7 +347,14 @@
       setTipo(edit.tipo);
       setModo(edit.modo || "Presencial");
       el("ag-status").value = edit.status || "proxima";
+      // Link do Meet (só aparece em teleconsulta já sincronizada).
+      var mw = el("ag-meet-wrap");
+      if (mw) {
+        if (edit.meetUrl) { el("ag-meet-link").href = edit.meetUrl; mw.hidden = false; }
+        else mw.hidden = true;
+      }
     } else {
+      var mw0 = el("ag-meet-wrap"); if (mw0) mw0.hidden = true;
       var d = prefill.date || selectedDate();
       el("ag-pac").value = "";
       el("ag-data").value = iso(d);
@@ -401,8 +408,18 @@
     }
 
     var op = editId ? window.NutriConsultas.update(editId, c) : window.NutriConsultas.create(c);
-    op.then(function (saved) { finish(saved.data, btn); })
+    op.then(function (saved) {
+      // Espelha no Google Calendar (best-effort — não trava se falhar/estiver desconectado).
+      syncGoogle(saved.id).then(function () { finish(saved.data, btn); });
+    })
       .catch(function (err) { btn.disabled = false; alert("Não foi possível salvar a consulta.\n" + (err && err.message ? err.message : "")); });
+  }
+
+  /* Sincroniza a consulta com o Google Calendar. Nunca rejeita: a consulta
+     já está salva no banco; a sincronização é um extra. */
+  function syncGoogle(id, action) {
+    if (!window.NutriGoogle || !id) return Promise.resolve();
+    return window.NutriGoogle.sync(id, action).catch(function () { return null; });
   }
 
   function onDelete() {
@@ -410,8 +427,12 @@
     if (!confirm("Excluir esta consulta? Esta ação não pode ser desfeita.")) return;
     var del = el("ag-del"); del.disabled = true;
     if (!window.NutriConsultas) { EVENTS = EVENTS.filter(function (x) { return x.id !== editId; }); finish(el("ag-data").value, del); return; }
-    window.NutriConsultas.remove(editId).then(function () { finish(el("ag-data").value, del); })
-      .catch(function (err) { del.disabled = false; alert("Não foi possível excluir.\n" + (err && err.message ? err.message : "")); });
+    var removeId = editId;
+    // Apaga o evento no Google ANTES de remover a linha (a função lê a consulta).
+    syncGoogle(removeId, "delete").then(function () {
+      window.NutriConsultas.remove(removeId).then(function () { finish(el("ag-data").value, del); })
+        .catch(function (err) { del.disabled = false; alert("Não foi possível excluir.\n" + (err && err.message ? err.message : "")); });
+    });
   }
 
   function finish(dataStr, btn) {

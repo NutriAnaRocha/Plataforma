@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  var COLS = "id,paciente_id,paciente_nome,data,inicio,fim,tipo,modo,status,observacoes";
+  var COLS = "id,paciente_id,paciente_nome,data,inicio,fim,tipo,modo,status,observacoes,google_event_id,meet_url";
 
   function client() { return window.NutriDBReady; }
   function hhmm(t) { return t ? String(t).slice(0, 5) : t; }   // 'HH:MM:SS' -> 'HH:MM'
@@ -23,7 +23,9 @@
       tipo: r.tipo || "",
       modo: r.modo || "Presencial",
       status: r.status || "proxima",
-      observacoes: r.observacoes || ""
+      observacoes: r.observacoes || "",
+      googleEventId: r.google_event_id || null,
+      meetUrl: r.meet_url || null
     };
   }
 

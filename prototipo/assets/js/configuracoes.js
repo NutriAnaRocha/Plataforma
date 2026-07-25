@@ -183,6 +183,55 @@
       '<div class="cfg-integr-list">' + cards + '</div>';
   }
 
+  /* ---------- Google Agenda + Meet (conexão OAuth real) ----------
+     Os cards "google" e "meet" refletem a MESMA conexão. Ao conectar o
+     Google, a agenda passa a criar eventos e as consultas Online ganham Meet. */
+  function aplicaStatusGoogle(st) {
+    var conectado = !!(st && st.conectado);
+    var conta = (st && st.email) || "";
+    (data.integracoes || []).forEach(function (i) {
+      if (i.id === "google" || i.id === "meet") { i.conectado = conectado; i.conta = conta; }
+    });
+    renderIntegr();
+  }
+
+  function refreshGoogle() {
+    if (!window.NutriGoogle) return;
+    window.NutriGoogle.status().then(aplicaStatusGoogle).catch(function () {});
+  }
+
+  function toggleGoogle(item, btn) {
+    if (!window.NutriGoogle) { toast("Conexão Google indisponível offline.", true); return; }
+    var estaConectado = item && item.conectado;
+    if (estaConectado) {
+      if (!confirm("Desconectar o Google? A agenda para de sincronizar e novas consultas Online não terão link do Meet.")) return;
+      busy(btn, true, "Desconectando…");
+      window.NutriGoogle.disconnect().then(function () {
+        aplicaStatusGoogle(null);
+        toast("Google desconectado.");
+      }).catch(function () { busy(btn, false); toast("Não foi possível desconectar.", true); });
+    } else {
+      busy(btn, true, "Abrindo o Google…");
+      // returnTo volta pra esta aba de Integrações após o consentimento.
+      var returnTo = location.origin + location.pathname + "?tab=integr";
+      window.NutriGoogle.connect(returnTo).catch(function (err) {
+        busy(btn, false);
+        toast("Não foi possível iniciar a conexão." + (err && err.message ? " (" + err.message + ")" : ""), true);
+      });
+    }
+  }
+
+  /* Lê ?google=ok|erro que o callback devolve e mostra o resultado. */
+  function tratarRetornoGoogle() {
+    var qs = new URLSearchParams(location.search);
+    var g = qs.get("google");
+    if (!g) return;
+    if (g === "ok") toast("Google conectado! Sua agenda já sincroniza.");
+    else toast("Falha ao conectar o Google" + (qs.get("msg") ? ": " + qs.get("msg") : "") + ".", true);
+    // Limpa os parâmetros da URL (mantém a aba).
+    history.replaceState(null, "", location.pathname + "?tab=integr");
+  }
+
   /* ---------- Coleta de valores ---------- */
   function val(id) { var e = el(id); return e ? e.value : ""; }
   function especialidadesAtivas() {
@@ -357,6 +406,9 @@
         var artc = integrBtn.closest(".cfg-integr");
         var id = artc.getAttribute("data-integr");
         var item = (data.integracoes || []).filter(function (x) { return x.id === id; })[0];
+        // Google Agenda e Meet compartilham a MESMA conexão OAuth do Google.
+        if (id === "google" || id === "meet") { toggleGoogle(item, integrBtn); return; }
+        // Demais cards ainda são cosméticos (conectores externos pendentes).
         if (item) { item.conectado = !item.conectado; renderIntegr(); toast(item.conectado ? item.nome + " conectado" : item.nome + " desconectado"); }
         return;
       }
@@ -378,6 +430,16 @@
     renderPerfil(); renderConta(); renderNotif(); renderIntegr();
   }
 
+  /* Abre uma aba pelo nome (usado ao voltar do consentimento Google). */
+  function abrirTab(tab) {
+    var b = document.querySelector('.cfg-tab[data-tab="' + tab + '"]');
+    if (!b) return;
+    document.querySelectorAll(".cfg-tab").forEach(function (x) { x.classList.toggle("is-active", x === b); });
+    document.querySelectorAll(".cfg-panel").forEach(function (p) {
+      p.classList.toggle("is-active", p.getAttribute("data-panel") === tab);
+    });
+  }
+
   function init() {
     renderAll();      // pinta a casca (campos vazios) enquanto carrega
     wire();
@@ -389,6 +451,12 @@
         renderPerfil(); renderNotif(); renderConta();
       }).catch(function () { /* offline/file:// — mantém a casca vazia */ });
     }
+    // Reabre a aba certa se voltamos do Google, mostra o resultado e
+    // sincroniza o status real da conexão Google.
+    var qs = new URLSearchParams(location.search);
+    if (qs.get("tab")) abrirTab(qs.get("tab"));
+    tratarRetornoGoogle();
+    refreshGoogle();
   }
 
   document.addEventListener("DOMContentLoaded", init);
