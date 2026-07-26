@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assinatura · NutriLab</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .asdoc { min-height: 100vh; background: var(--cinza-claro); font-family: var(--font-ui); color: var(--texto); }
+    .astop { background: var(--vinho); color: #fff; padding: var(--sp-4) var(--sp-5); }
+    .astop__in { max-width: 760px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
+    .aslogo { display: inline-flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+    .aslogo img { width: 30px; height: 30px; object-fit: contain; }
+    .aslogo__w { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; }
+    .aslink { color: rgba(255,255,255,.85); text-decoration: none; font-size: var(--fs-sm); font-weight: 600; }
+    .aslink:hover { color: #fff; text-decoration: underline; }
+    .aswrap { max-width: 760px; margin: 0 auto; padding: var(--sp-6) var(--sp-5) var(--sp-8); }
+
+    .asbanner { border-radius: var(--radius-card); padding: 22px 24px; margin-bottom: var(--sp-6); box-shadow: var(--shadow-sm); }
+    .asbanner h1 { font-family: var(--font-display); font-size: clamp(1.5rem, 4vw, 2.1rem); margin: 0 0 6px; line-height: 1.15; }
+    .asbanner p { margin: 0; font-size: var(--fs-body); }
+    .asbanner--trial { background: var(--rosa-suave); border: 1px solid var(--rosa); color: var(--vinho-escuro); }
+    .asbanner--bloqueado { background: #fbe4e8; border: 1px solid #f0a8b6; color: #8a1a30; }
+    .asbanner--ok { background: #e6f4ec; border: 1px solid #a8d9bd; color: #14623c; }
+    .asdias { font-weight: 700; }
+
+    .ascard { background: #fff; border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); box-shadow: var(--shadow-md); overflow: hidden; }
+    .ascard__head { background: linear-gradient(135deg, var(--vinho), var(--vinho-claro)); color: #fff; padding: 24px; }
+    .ascard__eyebrow { text-transform: uppercase; letter-spacing: .16em; font-size: var(--fs-caption); font-weight: 700; opacity: .85; margin: 0 0 8px; }
+    .ascard__nome { font-family: var(--font-display); font-size: 1.6rem; margin: 0 0 10px; }
+    .ascard__preco { font-size: 2.2rem; font-weight: 700; }
+    .ascard__preco small { font-size: 1rem; font-weight: 500; opacity: .85; }
+    .ascard__body { padding: 24px; }
+    .asfeat { list-style: none; margin: 0 0 22px; padding: 0; display: grid; gap: 10px; }
+    .asfeat li { position: relative; padding-left: 28px; font-size: var(--fs-body); }
+    .asfeat li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--vinho); font-weight: 800; }
+    .asfoot-note { font-size: var(--fs-caption); color: var(--texto-sutil); margin-top: 16px; text-align: center; }
+    .asfoot-note a { color: var(--vinho); }
+    .as-fill { background: #fdeaf5; border-bottom: 1px dashed var(--vinho-claro); padding: 0 4px; color: var(--vinho-escuro); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="asdoc">
+    <header class="astop">
+      <div class="astop__in">
+        <a class="aslogo" href="dashboard.html">
+          <img src="assets/img/logo-mark.png" alt="" />
+          <span class="aslogo__w">NutriLab</span>
+        </a>
+        <a class="aslink" href="#" data-logout>Sair</a>
+      </div>
+    </header>
+
+    <main class="aswrap">
+      <div class="asbanner" id="banner" style="display:none">
+        <h1 id="banner-title">—</h1>
+        <p id="banner-sub"></p>
+      </div>
+
+      <div class="ascard">
+        <div class="ascard__head">
+          <p class="ascard__eyebrow">Plano</p>
+          <div class="ascard__nome">NutriLab Profissional</div>
+          <div class="ascard__preco">R$ <span class="as-fill">[valor]</span><small>/mês</small></div>
+        </div>
+        <div class="ascard__body">
+          <ul class="asfeat">
+            <li>Pacientes e prontuário eletrônico completo</li>
+            <li>Planos alimentares, prescrições e orientações com a sua identidade</li>
+            <li>Agenda com Google Meet e portal do paciente (app instalável)</li>
+            <li>Antropometria, cálculos clínicos e evolução com fotos</li>
+            <li>Inteligência Clínica: protocolos, receitas e formulações</li>
+            <li>Atualizações e suporte incluídos</li>
+          </ul>
+          <a class="btn btn--primary btn--block btn--lg" id="btn-assinar"
+             href="#" target="_blank" rel="noopener">Assinar agora</a>
+          <p class="asfoot-note">
+            Pagamento seguro processado por <span class="as-fill">[provedor]</span>.
+            Ao assinar, você concorda com os <a href="termos.html">Termos de Uso</a>.
+            Já pagou e o acesso não liberou? <span class="as-fill">[e-mail de suporte]</span>.
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/auth-guard.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      // Link de checkout da assinatura (a definir com o provedor de pagamento
+      // recorrente). Enquanto não houver, o botão avisa em vez de levar a lugar nenhum.
+      var LINK_ASSINATURA = ""; // ex.: "https://checkout.provedor.com/assinatura-nutrilab"
+      var btn = document.getElementById("btn-assinar");
+      if (btn) {
+        if (LINK_ASSINATURA) { btn.href = LINK_ASSINATURA; }
+        else {
+          btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            alert("O link de assinatura ainda será configurado com o provedor de pagamento.");
+          });
+        }
+      }
+
+      function fmtData(ts) {
+        try { return new Date(ts).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }); }
+        catch (e) { return ""; }
+      }
+
+      function render(b) {
+        var banner = document.getElementById("banner");
+        var title = document.getElementById("banner-title");
+        var sub = document.getElementById("banner-sub");
+        if (!banner) return;
+        banner.style.display = "";
+        if (b.motivo === "trial") {
+          banner.className = "asbanner asbanner--trial";
+          title.innerHTML = 'Você está no período de teste — <span class="asdias">' +
+            b.diasRestantes + (b.diasRestantes === 1 ? " dia" : " dias") + " restante" + (b.diasRestantes === 1 ? "" : "s") + "</span>";
+          sub.textContent = "Seu acesso completo vai até " + fmtData(b.ate) + ". Assine para continuar sem interrupção.";
+        } else if (b.motivo === "trial_expirado") {
+          banner.className = "asbanner asbanner--bloqueado";
+          title.textContent = "Seu período de teste terminou";
+          sub.textContent = "Assine o plano abaixo para voltar a acessar a plataforma.";
+        } else if (b.motivo === "vencida") {
+          banner.className = "asbanner asbanner--bloqueado";
+          title.textContent = "Sua assinatura venceu";
+          sub.textContent = "Renove o pagamento para reativar o seu acesso.";
+        } else if (b.motivo === "cancelada") {
+          banner.className = "asbanner asbanner--bloqueado";
+          title.textContent = "Sua assinatura está cancelada";
+          sub.textContent = "Você pode reativar assinando o plano abaixo.";
+        } else if (b.motivo === "ativa" || b.motivo === "admin") {
+          banner.className = "asbanner asbanner--ok";
+          title.textContent = "Sua assinatura está ativa";
+          sub.textContent = b.ate ? ("Válida até " + fmtData(b.ate) + ".") : "Acesso liberado.";
+        } else {
+          banner.style.display = "none";
+        }
+      }
+
+      if (window.NutriBilling) render(window.NutriBilling);
+      window.addEventListener("nutri-billing-ready", function (e) { render(e.detail); });
+    })();
+  </script>
+</body>
+</html>

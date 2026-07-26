@@ -108,6 +108,13 @@ Deno.serve(async (req) => {
   // (idempotente; o trigger normalmente já grava certo).
   await admin.from("profiles").update({ tipo: "nutri", nome }).eq("id", newUserId);
 
+  // Convite = acesso cortesia. Sem isto a conta nasceria em 'trial' (default
+  // da migração 0038) e seria trancada em 14 dias. Ativa por 12 meses via RPC
+  // (as colunas de billing são somente-leitura fora das funções SECURITY DEFINER).
+  await admin.rpc("ativar_assinatura", {
+    p_email: email, p_meses: 12, p_provider: "convite", p_ref: "admin:" + callerId,
+  });
+
   // 5) Registra o convite (auditoria). Falha aqui não desfaz a conta —
   //    o login já é válido; o registro é secundário.
   await admin.from("nutri_convites").insert({
