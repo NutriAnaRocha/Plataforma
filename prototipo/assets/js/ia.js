@@ -1,5 +1,9 @@
 /* ============================================================
-   IA ASSISTENTE (tela cheia) — Nútri AI conversacional (mock)
+   IA ASSISTENTE (tela cheia) — Nútri AI conversacional (REAL)
+   Conversa via edge function "assistente-ia" (OpenAI gpt-4o-mini, chave
+   só no secret do Supabase). Contexto = paciente selecionado (dados reais
+   da plataforma, lidos com o JWT da nutri → RLS). A IA é copiloto: a nutri
+   revisa antes de usar. Sem chave/rede, cai num aviso claro (não inventa).
    ============================================================ */
 (function () {
   "use strict";
@@ -9,20 +13,37 @@
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
 
-  /* Detecta a intenção do texto e devolve a resposta (demo) */
-  var INTENCOES = [
-    [/exame|laborat|hemograma|vitamina|homa|colesterol|triglic/i, "exame"],
-    [/card[áa]pio|dieta|plano alimentar|refei[çc][ãa]o|substitui/i, "cardapio"],
-    [/evolu|resum|progress|prontu[áa]rio/i, "evolucao"],
-    [/tmb|get|vet|calcul|energ|cal[óo]ric|kcal|gasto/i, "calculo"],
-    [/orienta|conduta|d[úu]vida|insulina|sop/i, "orientacao"],
-    [/ades[ãa]o|baixa ades|abandon|sumi/i, "adesao"]
-  ];
-  function responder(texto) {
-    for (var i = 0; i < INTENCOES.length; i++) {
-      if (INTENCOES[i][0].test(texto)) return D.respostas[INTENCOES[i][1]];
+  /* ---------- Markdown-lite → HTML (negrito, itálico, títulos, listas) ---------- */
+  function mdInline(s) {
+    s = esc(s);
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    return s;
+  }
+  function mdToHtml(txt) {
+    var lines = String(txt || "").replace(/\r/g, "").split("\n");
+    var html = "", listType = null;
+    function closeList() { if (listType) { html += "</" + listType + ">"; listType = null; } }
+    for (var i = 0; i < lines.length; i++) {
+      var ln = lines[i];
+      var t = ln.trim();
+      if (!t) { closeList(); continue; }
+      var h = t.match(/^(#{1,4})\s+(.*)$/);
+      if (h) { closeList(); html += "<h4>" + mdInline(h[2]) + "</h4>"; continue; }
+      if (/^[-*•]\s+/.test(t)) {
+        if (listType !== "ul") { closeList(); html += "<ul>"; listType = "ul"; }
+        html += "<li>" + mdInline(t.replace(/^[-*•]\s+/, "")) + "</li>"; continue;
+      }
+      if (/^\d+[.)]\s+/.test(t)) {
+        if (listType !== "ol") { closeList(); html += "<ol>"; listType = "ol"; }
+        html += "<li>" + mdInline(t.replace(/^\d+[.)]\s+/, "")) + "</li>"; continue;
+      }
+      closeList();
+      html += "<p>" + mdInline(t) + "</p>";
     }
-    return D.respostas.padrao;
+    closeList();
+    return html;
   }
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -31,7 +52,14 @@
     var empty = el("ia-empty");
     var input = el("ia-text");
     var send = el("ia-send");
+    var sel = el("ia-paciente");
     var iniciado = false;
+    var enviando = false;
+
+    /* histórico da conversa atual (o que vai para o modelo) */
+    var messages = [];
+    /* conversas desta sessão (lateral) */
+    var conversas = [];
 
     /* ---------- Estado inicial (saudação + capacidades) ---------- */
     el("ia-greeting").innerHTML = D.saudacao || "Nútri AI";
@@ -49,25 +77,37 @@
       return '<button class="ia-chip" type="button">' + esc(s) + '</button>';
     }).join("");
 
-    /* histórico (lateral) */
-    var hist = el("ia-recent");
-    if (hist) {
-      hist.innerHTML = (D.conversas || []).map(function (c, i) {
-        return '<button class="rec" type="button' + (i === 0 ? '" data-active="1' : '') + '">' +
+    /* ---------- Seletor de paciente: dados REAIS ---------- */
+    if (sel) {
+      sel.innerHTML = '<option value="">Sem paciente (geral)</option>';
+      if (window.NutriPacientes && window.NutriPacientes.list) {
+        window.NutriPacientes.list().then(function (lista) {
+          (lista || []).forEach(function (p) {
+            var o = document.createElement("option");
+            o.value = p.id;
+            o.textContent = p.nome;
+            sel.appendChild(o);
+          });
+        }).catch(function () { /* segue com "geral" */ });
+      }
+    }
+
+    /* ---------- Conversas recentes (sessão) ---------- */
+    function renderRecentes() {
+      var hist = el("ia-recent");
+      if (!hist) return;
+      if (!conversas.length) {
+        hist.innerHTML = '<p class="ia-aside__vazio">Suas conversas desta sessão aparecem aqui.</p>';
+        return;
+      }
+      hist.innerHTML = conversas.map(function (c, i) {
+        return '<button class="rec" type="button"' + (i === 0 ? ' data-active="1"' : '') + '>' +
           '<span class="rec__t">' + esc(c.titulo) + '</span>' +
           '<span class="rec__p">' + esc(c.preview) + '</span>' +
-          '<span class="rec__w">' + esc(c.quando) + '</span>' +
         '</button>';
       }).join("");
     }
-
-    /* seletor de paciente (contexto) */
-    var sel = el("ia-paciente");
-    if (sel) {
-      sel.innerHTML = (D.pacientes || []).map(function (p) {
-        return '<option' + (p === D.pacienteAtivo ? " selected" : "") + ">" + esc(p) + "</option>";
-      }).join("");
-    }
+    renderRecentes();
 
     /* ---------- Mensagens ---------- */
     function addMsg(html, who) {
@@ -79,18 +119,55 @@
       return m;
     }
 
-    function sendMsg(texto) {
+    async function sendMsg(texto) {
       texto = (texto || "").trim();
-      if (!texto) return;
-      if (!iniciado) { empty.hidden = true; chat.classList.add("is-chatting"); iniciado = true; }
+      if (!texto || enviando) return;
+      if (!iniciado) {
+        empty.hidden = true;
+        chat.classList.add("is-chatting");
+        iniciado = true;
+        conversas.unshift({ titulo: texto.slice(0, 42), preview: "" });
+        renderRecentes();
+      }
+      enviando = true;
+      send.disabled = true;
       addMsg(esc(texto), "me");
+      messages.push({ role: "user", content: texto });
       input.value = "";
       autoGrow();
+
       var typing = addMsg('<span class="msg--typing"><span></span><span></span><span></span></span>', "ai");
-      setTimeout(function () {
-        typing.innerHTML = responder(texto);
+
+      try {
+        var db = await window.NutriDBReady;
+        var res = await db.functions.invoke("assistente-ia", {
+          body: { messages: messages, paciente_id: (sel && sel.value) || "" }
+        });
+        if (res.error) throw res.error;
+        var d = res.data || {};
+        if (d.error) throw new Error(d.error);
+        var resposta = String(d.resposta || "").trim();
+        if (!resposta) throw new Error("Resposta vazia.");
+
+        typing.innerHTML = mdToHtml(resposta) +
+          '<p class="ia-fonte">' + (d.com_contexto ? "Baseado nos dados do paciente · " : "") +
+          "revise antes de usar com o paciente.</p>";
+        messages.push({ role: "assistant", content: resposta });
+        if (conversas[0]) conversas[0].preview = resposta.replace(/[#*`]/g, "").slice(0, 60);
+        renderRecentes();
+      } catch (e) {
+        var msg = (e && e.message) ? e.message : "IA indisponível.";
+        typing.classList.add("msg--erro");
+        typing.innerHTML = '<p><strong>Não consegui responder agora.</strong> ' + esc(msg) + '</p>' +
+          '<p class="ia-fonte">Tente de novo em instantes. Se persistir, verifique a conexão.</p>';
+        // remove a última pergunta do histórico p/ não poluir o próximo turno
+        messages.pop();
+      } finally {
         typing.scrollIntoView({ block: "nearest" });
-      }, 1100);
+        enviando = false;
+        send.disabled = false;
+        input.focus();
+      }
     }
 
     /* ---------- Eventos ---------- */
@@ -121,6 +198,7 @@
       empty.hidden = false;
       chat.classList.remove("is-chatting");
       iniciado = false;
+      messages = [];
       input.focus();
     });
 

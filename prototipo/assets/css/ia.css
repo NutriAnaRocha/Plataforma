@@ -107,8 +107,25 @@
 }
 .ia-thread .msg--ai p { margin: var(--sp-2) 0 0; }
 .ia-thread .msg--ai p:first-child { margin-top: 0; }
-.ia-thread .msg--ai ul { margin: var(--sp-2) 0 0; padding-left: 18px; }
+.ia-thread .msg--ai ul,
+.ia-thread .msg--ai ol { margin: var(--sp-2) 0 0; padding-left: 18px; }
 .ia-thread .msg--ai li { margin: 4px 0; line-height: 1.45; }
+.ia-thread .msg--ai code {
+  background: var(--rosa-suave, rgba(0,0,0,.05));
+  padding: 1px 5px; border-radius: 5px; font-size: .92em;
+}
+.ia-thread .msg--erro {
+  background: #fff4f4;
+  border: 1px solid #f3c9c9;
+}
+.ia-thread .msg--erro strong { color: #b3261e; }
+.ia-aside__vazio {
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+  line-height: 1.5;
+  margin: 0;
+  padding: 2px;
+}
 .ia-thread .msg--ai .ia-fonte {
   margin-top: var(--sp-3);
   font-size: var(--fs-caption);
