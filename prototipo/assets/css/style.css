@@ -428,7 +428,9 @@ a { color: inherit; }
 .auth-form__back { background: none; border: none; color: var(--sobre-vinho-70); cursor: pointer; font-size: var(--fs-sm); padding: 0; text-align: left; }
 .auth-form__back:hover { color: var(--branco); }
 
-.brand-foot { margin-top: var(--sp-6); font-size: var(--fs-caption); color: rgba(255,255,255,0.45); position: relative; z-index: 1; }
+.brand-foot { margin-top: var(--sp-6); font-size: var(--fs-caption); color: rgba(255,255,255,0.45); position: relative; z-index: 1; line-height: 1.9; }
+.brand-foot a { color: rgba(255,255,255,0.72); text-decoration: underline; }
+.brand-foot a:hover { color: #fff; }
 
 /* ----- Painel do feed (direita, claro) ----- */
 .feed-panel {
