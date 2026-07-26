@@ -130,16 +130,25 @@
         toggle("2fa", false) +
       '</div>';
 
+    var dados =
+      '<div class="cfg-toggle-row">' +
+        '<div class="cfg-toggle-txt"><strong>Exportar meus dados</strong>' +
+          '<span>Baixe um arquivo (JSON) com tudo o que você controla na plataforma — ' +
+          'perfil, pacientes, consultas, financeiro e adesão. Direito de portabilidade (LGPD).</span></div>' +
+        '<button class="btn btn--outline" type="button" data-action="exportar-dados">Exportar (JSON)</button>' +
+      '</div>';
+
     var perigo =
       '<div class="cfg-danger">' +
-        '<div><strong>Excluir minha conta</strong><p class="cfg-hint">Remove permanentemente seus dados. Esta ação não pode ser desfeita.</p></div>' +
-        '<button class="btn cfg-btn-danger" type="button" data-save="Em breve: exclusão de conta (LGPD)">Excluir conta</button>' +
+        '<div><strong>Excluir minha conta</strong><p class="cfg-hint">Remove permanentemente sua conta e TODOS os dados: perfil, pacientes, prontuários, consultas, financeiro e os acessos de portal dos seus pacientes. Esta ação não pode ser desfeita.</p></div>' +
+        '<button class="btn cfg-btn-danger" type="button" data-action="excluir-conta">Excluir conta</button>' +
       '</div>';
 
     el("panel-conta").innerHTML =
       card("Acesso", "E-mail de login da conta. Trocar o e-mail exige confirmação no novo endereço.", acesso) +
       card("Senha", "Recomendamos trocar a cada 6 meses.", senha) +
       card("Segurança", "", duplo) +
+      card("Meus dados (LGPD)", "Portabilidade e controle sobre os seus dados.", dados) +
       card("Zona de perigo", "", perigo);
   }
 
@@ -447,8 +456,44 @@
     }).catch(function () { /* não é admin ou offline: nada muda */ });
   }
 
+  /* ---------- LGPD: exportar dados / excluir conta ---------- */
+  function exportarDados(btn) {
+    if (!window.NutriLGPD) { toast("Exportação indisponível.", true); return; }
+    busy(btn, true, "Preparando…");
+    window.NutriLGPD.exportar().then(function (r) {
+      var n = 0; Object.keys(r.totais || {}).forEach(function (k) { n += r.totais[k]; });
+      toast("Arquivo gerado (" + n + " registros). Verifique seus downloads.");
+    }).catch(function (e) {
+      toast("Não foi possível exportar. " + (e && e.message ? e.message : ""), true);
+    }).then(function () { busy(btn, false); });
+  }
+
+  function excluirConta(btn) {
+    if (!window.NutriLGPD) { toast("Exclusão indisponível.", true); return; }
+    var aviso = "ATENÇÃO: isto apaga DEFINITIVAMENTE sua conta e todos os dados " +
+      "(pacientes, prontuários, consultas, financeiro e acessos de portal). " +
+      "Não há como desfazer.\n\nRecomendamos exportar seus dados antes.\n\n" +
+      "Para confirmar, digite EXCLUIR abaixo:";
+    var resp = window.prompt(aviso, "");
+    if (resp == null) return;               // cancelou
+    if (resp.trim().toUpperCase() !== "EXCLUIR") { toast("Confirmação incorreta. Nada foi apagado."); return; }
+    busy(btn, true, "Excluindo…");
+    window.NutriLGPD.excluirConta().then(function () {
+      alert("Sua conta e seus dados foram removidos. Você será desconectada.");
+      return window.NutriDBReady.then(function (c) { return c.auth.signOut(); });
+    }).then(function () {
+      location.href = "index.html";
+    }).catch(function (e) {
+      busy(btn, false);
+      var m = (e && e.message) || "";
+      toast(m === "confirmacao_invalida" ? "Confirmação inválida." :
+        "Não foi possível excluir a conta agora. " + m, true);
+    });
+  }
+
   var ACTIONS = { "save-perfil": savePerfil, "save-email": saveEmail, "save-senha": saveSenha,
-    "save-notif": saveNotif, "invite-nutri": inviteNutri };
+    "save-notif": saveNotif, "invite-nutri": inviteNutri,
+    "exportar-dados": exportarDados, "excluir-conta": excluirConta };
 
   /* ---------- Foto de perfil ---------- */
   // Lê o arquivo, redimensiona para no máx. 320px e devolve um JPEG data URL leve.
