@@ -340,10 +340,27 @@
         }).join("") + '</div>'
       : '<p class="cfg-hint">Nenhuma nutricionista convidada ainda.</p>';
 
+    var ativar =
+      '<div class="cfg-form">' +
+        field("E-mail da nutricionista", "act-email", "", { type: "email", ph: "email@dela.com" }) +
+        '<label class="field field--light"><span class="field__label">Meses a liberar</span>' +
+          '<select class="field__input" id="act-meses">' +
+            '<option value="1">1 mês</option><option value="3">3 meses</option>' +
+            '<option value="6">6 meses</option><option value="12">12 meses</option></select></label>' +
+      '</div>' +
+      '<div class="cfg-actions">' +
+        '<button class="btn btn--primary" type="button" data-action="ativar-assinatura">Ativar / renovar assinatura</button>' +
+      '</div>' +
+      '<div id="act-result"></div>' +
+      '<p class="cfg-hint">Use quando alguém pagar pelo link do InfinitePay e a liberação automática ainda não estiver ligada. A conta precisa já existir (convide antes, se for o caso).</p>';
+
     el("panel-admin").innerHTML =
       card("Convidar nutricionista",
         "Crie o acesso de outra nutri. Ela recebe e-mail + senha e entra pela tela de login. A carteira dela começa vazia, mas a Inteligência Clínica já vem completa.",
         form) +
+      card("Ativar assinatura manualmente",
+        "Libera o acesso pago de uma nutri por um período, a partir do e-mail dela.",
+        ativar) +
       card("Nutricionistas convidadas", "", lista);
   }
 
@@ -398,6 +415,40 @@
         : m === "email_invalido" ? "E-mail inválido."
         : "Não foi possível criar o acesso. " + m;
       toast(amigavel, true);
+    }).then(function () { busy(btn, false); });
+  }
+
+  function ativarAssinatura(btn) {
+    if (!window.NutriDBReady) { toast("Banco indisponível.", true); return; }
+    var email = (val("act-email") || "").trim().toLowerCase();
+    var meses = parseInt(val("act-meses"), 10) || 1;
+    if (!/.+@.+\..+/.test(email)) { toast("E-mail inválido.", true); return; }
+    busy(btn, true, "Ativando…");
+    window.NutriDBReady.then(function (c) {
+      return c.functions.invoke("ativar-assinatura-admin", { body: { email: email, meses: meses } });
+    }).then(function (res) {
+      if (res.error) {
+        if (res.error.context && res.error.context.json) {
+          return res.error.context.json().then(function (b) { throw new Error(b && b.error || "falha"); });
+        }
+        throw new Error("falha");
+      }
+      var d = res.data || {};
+      if (d.error) throw new Error(d.error);
+      var box = el("act-result");
+      var ate = d.expira_em ? new Date(d.expira_em).toLocaleDateString("pt-BR") : "";
+      if (box) box.innerHTML = '<div class="cfg-cred"><p class="cfg-cred__title">✅ Assinatura ativa para ' +
+        esc(email) + (ate ? ' até <strong>' + esc(ate) + '</strong>' : '') + '.</p></div>';
+      var e = el("act-email"); if (e) e.value = "";
+      toast("Assinatura liberada!");
+    }).catch(function (e) {
+      var m = (e && e.message) || "";
+      var amig = m === "conta_nao_encontrada" ? "Não achei uma conta com esse e-mail. Convide a nutri primeiro."
+        : m === "conta_e_paciente" ? "Esse e-mail é de um paciente, não de uma nutri."
+        : m === "nao_autorizado" ? "Só a administradora pode fazer isso."
+        : m === "email_invalido" ? "E-mail inválido."
+        : "Não foi possível ativar. " + m;
+      toast(amig, true);
     }).then(function () { busy(btn, false); });
   }
 
@@ -493,7 +544,8 @@
 
   var ACTIONS = { "save-perfil": savePerfil, "save-email": saveEmail, "save-senha": saveSenha,
     "save-notif": saveNotif, "invite-nutri": inviteNutri,
-    "exportar-dados": exportarDados, "excluir-conta": excluirConta };
+    "exportar-dados": exportarDados, "excluir-conta": excluirConta,
+    "ativar-assinatura": ativarAssinatura };
 
   /* ---------- Foto de perfil ---------- */
   // Lê o arquivo, redimensiona para no máx. 320px e devolve um JPEG data URL leve.
