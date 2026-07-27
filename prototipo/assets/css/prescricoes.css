@@ -50,10 +50,10 @@
   background:var(--branco); border:1px solid var(--cinza-borda); border-radius:var(--radius-card);
   box-shadow:var(--shadow-sm); padding:var(--sp-5); position:sticky; top:var(--sp-4);
 }
-.rx-dhead{ display:flex; align-items:center; gap:var(--sp-3); margin-bottom:var(--sp-4); }
+.rx-dhead{ display:flex; align-items:center; gap:var(--sp-3); margin-bottom:var(--sp-4); flex-wrap:wrap; }
 .rx-dhead__tit{ font-family:var(--font-display); font-weight:900; font-size:1.25rem; color:var(--texto); }
 .rx-dhead__sub{ color:var(--texto-sutil); font-size:var(--fs-sm); margin-top:2px; }
-.rx-dhead__actions{ margin-left:auto; display:flex; gap:8px; }
+.rx-dhead__actions{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap; }
 
 .rx-macros{ display:grid; grid-template-columns:repeat(4,1fr); gap:var(--sp-3); margin-bottom:var(--sp-4); }
 .macro{
@@ -106,6 +106,9 @@
 }
 @media (max-width:560px){
   .rx-kpis{ grid-template-columns:1fr 1fr; }
+  /* no celular as ações do plano ocupam a linha inteira (senão empurram a largura) */
+  .rx-dhead__actions{ margin-left:0; width:100%; }
+  .rx-dhead__actions .btn{ flex:1 1 auto; justify-content:center; }
   .rx-macros{ grid-template-columns:repeat(2,1fr); }
   .rx-modelos__grid{ grid-template-columns:1fr; }
 }

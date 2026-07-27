@@ -40,6 +40,7 @@
       P.pacientes = rows;
       state.load = "ready";
       renderFilters(); renderList();
+      abrirPelaURL();
     }).catch(function () {
       state.load = "error";
       renderList();
@@ -140,6 +141,18 @@
     var inp = el("search-pac");
     if (!inp) return;
     inp.addEventListener("input", function () { state.busca = inp.value; renderList(); });
+  }
+
+  /* ---------- Abertura por URL ----------
+     pacientes.html?id=<uuid>&sec=plano → abre a ficha já na seção pedida
+     (usado pelo botão "Editar" da tela de Prescrições, por exemplo). */
+  function abrirPelaURL() {
+    var q = new URLSearchParams(location.search);
+    var id = q.get("id"); if (!id) return;
+    if (!P.pacientes.some(function (p) { return p.id === id; })) return;
+    var sec = q.get("sec");
+    if (sec && SECOES.some(function (s) { return s.id === sec; })) state.section = sec;
+    openProfile(id);
   }
 
   /* ---------- Perfil ---------- */

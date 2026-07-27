@@ -670,8 +670,11 @@
      ============================================================ */
   document.addEventListener("DOMContentLoaded", function () {
     var id = new URLSearchParams(location.search).get("id");
-    var boot = function () { renderHeader(); renderRail(); show(MODULES[0].id); initAI(); initMobileNav(); };
-    if (!id || !(window.NutriPacientes && window.NutriPacientes.get)) { REAL = false; boot(); return; }
+    // #modulo na URL abre direto naquele módulo (ex.: prontuario.html?id=…#plano).
+    var alvo = String(location.hash || "").replace("#", "");
+    if (!MODULES.some(function (m) { return m.id === alvo; })) alvo = MODULES[0].id;
+    var boot = function () { renderHeader(); renderRail(); show(alvo); initAI(); initMobileNav(); };
+    if (!id || !(window.NutriPacientes && window.NutriPacientes.get)) { semPaciente(); return; }
     // Enquanto carrega, mostra um placeholder mínimo no cabeçalho.
     el("pc-head").innerHTML = '<div class="empty-state">Carregando prontuário…</div>';
     window.NutriPacientes.get(id).then(function (pac) {
@@ -680,10 +683,32 @@
       buildFromPatient(pac);
       boot();
     }).catch(function () {
-      // Sem acesso / não encontrado → não vaza dados de outro paciente: cai na demo.
-      REAL = false; boot();
+      // Sem acesso / não encontrado → nunca cair em dados de demonstração.
+      semPaciente("Prontuário não encontrado ou sem acesso.");
     });
   });
+
+  // Sem ?id (ou paciente inacessível): estado vazio real, sem paciente fictício.
+  function semPaciente(msg) {
+    REAL = false;
+    el("pc-head").innerHTML =
+      '<div class="empty-state">' +
+        '<p style="font-size:1.05rem;color:var(--texto);margin-bottom:6px">' +
+          esc(msg || "Nenhum paciente selecionado") + "</p>" +
+        "<p>Escolha um paciente na lista para abrir o prontuário dele.</p>" +
+        '<div class="empty-state__actions">' +
+          '<a class="btn btn--primary" href="pacientes.html">Ver meus pacientes</a>' +
+        "</div>" +
+      "</div>";
+    var rail = el("modrail"), pane = el("modulo");
+    if (rail) rail.innerHTML = "";
+    if (pane) pane.innerHTML = "";
+    var pront = document.querySelector(".pront");
+    if (pront) pront.style.display = "none";
+    var fab = el("ai-fab");
+    if (fab) fab.style.display = "none";
+    initMobileNav();
+  }
 
   // Mapeia o paciente real (tabela pacientes + jsonb prontuario) para o shape D/P.
   function buildFromPatient(pac) {
@@ -856,6 +881,12 @@
     function open() { panel.classList.add("is-open"); fab.classList.add("is-hidden"); setTimeout(function () { input && input.focus(); }, 200); }
     function hide() { panel.classList.remove("is-open"); fab.classList.remove("is-hidden"); }
     fab.addEventListener("click", open); close.addEventListener("click", hide);
+    // Saudação com o nome do paciente aberto (o HTML trazia "Marina" fixo).
+    var hello = thread && thread.querySelector(".msg--ai");
+    if (hello && P.nome) {
+      hello.innerHTML = "Estou com o prontuário de <strong>" + esc(P.nome.split(" ")[0]) + "</strong> aberto. " +
+        "Posso interpretar exames, sugerir condutas, resumir a evolução e ajudar no plano alimentar. Por onde começamos?";
+    }
     if (suggest) {
       suggest.innerHTML = (D.aiSugestoes || []).map(function (s) { return '<button class="ai-suggest__chip" type="button">' + esc(s) + "</button>"; }).join("");
       suggest.querySelectorAll(".ai-suggest__chip").forEach(function (c) { c.addEventListener("click", function () { sendMsg(c.textContent); }); });

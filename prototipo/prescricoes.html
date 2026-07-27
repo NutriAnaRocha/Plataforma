@@ -27,7 +27,7 @@
       <nav class="menu" aria-label="Menu principal">
         <a href="dashboard.html"><span class="ico">📊</span> Dashboard</a>
         <a href="pacientes.html"><span class="ico">👥</span> Pacientes</a>
-        <a href="agenda.html"><span class="ico">📅</span> Agenda <span class="badge">7</span></a>
+        <a href="agenda.html"><span class="ico">📅</span> Agenda</a>
         <a href="prontuario.html"><span class="ico">📋</span> Prontuários</a>
         <a href="prescricoes.html" class="is-active"><span class="ico">🥗</span> Prescrições</a>
         <a href="exames.html"><span class="ico">🧪</span> Exames</a>
@@ -64,7 +64,8 @@
           <h1>Prescrições</h1>
           <p>Planos alimentares e modelos reutilizáveis</p>
         </div>
-        <button class="btn btn--primary" style="margin-left:auto">+ Nova prescrição</button>
+        <a class="btn btn--primary" href="pacientes.html" style="margin-left:auto"
+           title="Os planos são montados no prontuário do paciente">+ Nova prescrição</a>
         <span class="avatar" id="user-avatar">AL</span>
       </header>
 
@@ -95,10 +96,12 @@
   </div>
 
   <!-- Scripts -->
-  <script src="assets/js/prescricoes-data.js"></script>
   <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/pacientes-db.js"></script>
   <script src="assets/js/perfil-db.js"></script>
   <script src="assets/js/doc-template.js"></script>
+  <!-- catálogo de modelos do montador de planos (window.PlanoAlimentar.MODELOS) -->
+  <script src="assets/js/plano-alimentar.js"></script>
   <script src="assets/js/prescricoes.js"></script>
   <script src="assets/js/auth-guard.js"></script>
   <script src="assets/js/sidebar-user.js"></script>
