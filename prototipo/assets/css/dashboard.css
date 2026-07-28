@@ -257,6 +257,18 @@
 .todo__txt { font-size: var(--fs-sm); font-weight: 600; color: var(--cinza-escuro); line-height: 1.35; }
 .todo__prazo { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
 .todo__prazo.is-urgente { color: #C0392B; }
+/* "✓ resolvido" das pendências do programa (reavaliação lida / convite de
+   renovação enviado). Fica no canto e só ganha cor no hover, para não
+   competir com o texto da pendência. */
+.todo__done {
+  margin-left: auto; flex: none; align-self: center;
+  width: 30px; height: 30px; padding: 0; cursor: pointer;
+  font-size: var(--fs-sm); line-height: 1; color: var(--texto-sutil);
+  background: transparent; border: 1px solid var(--cinza-borda); border-radius: 8px;
+  transition: all var(--t-fast);
+}
+.todo__done:hover { color: #fff; background: var(--vinho); border-color: var(--vinho); }
+.todo__done:disabled { opacity: .4; cursor: default; }
 
 /* =====================================================
    NÚTRI AI — botão flutuante + painel (estilo ChatGPT)

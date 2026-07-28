@@ -12,6 +12,7 @@
   var pacientes = null;   // array real (preenchido no load)
   var consultasHoje = null;
   var perfil = null;
+  var assinaturas = null; // programa "Meu Plano" (reavaliações e renovações)
 
   function pad(n) { return (n < 10 ? "0" : "") + n; }
   function isoHoje() { var d = new Date(); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
@@ -51,6 +52,19 @@
       renderPendenciasReal();
       renderAniversariantes();
     }).catch(function () { /* mantém mock */ });
+
+    // Assinaturas do programa "Meu Plano" — de onde saem as pendências de
+    // reavaliação e de renovação. A RLS da 0043 já entrega só a carteira
+    // desta nutri; quem não vende o programa recebe lista vazia e nada
+    // muda no dashboard.
+    window.NutriDBReady.then(function (c) {
+      return c.from("programa_assinaturas")
+        .select("id,paciente_id,plano,status,fim,proxima_reavaliacao," +
+                "reavaliacoes_feitas,ultima_reavaliacao_em,reavaliacao_vista_em,renovacao_convidada_em");
+    }).then(function (res) {
+      assinaturas = (res && res.data) || [];
+      if (pacientes) renderPendenciasReal();
+    }).catch(function () { assinaturas = []; });
 
     // Consultas de hoje (agenda real).
     if (window.NutriConsultas) {
@@ -267,7 +281,11 @@
   function anamnesePortal(p) {
     var qs = (p && p.questionarios) || [];
     for (var i = 0; i < qs.length; i++) {
-      if (qs[i] && qs[i].origem === "portal") return qs[i];
+      // O modeloId importa: desde a 0045 o portal grava DOIS tipos de
+      // instância (anamnese de entrada e reavaliação de ciclo). Sem esse
+      // filtro, uma reavaliação apareceria aqui como "montar o plano",
+      // duplicando a pendência que já vem de filaPrograma().
+      if (qs[i] && qs[i].origem === "portal" && qs[i].modeloId === "anamnese-programa") return qs[i];
     }
     return null;
   }
@@ -307,9 +325,103 @@
     }).sort(function (a, b) { return b.dias - a.dias; });
   }
 
+  /* ---------- Programa "Meu Plano": reavaliações e renovações ----------
+     Três pendências, todas derivadas da assinatura (migração 0045):
+
+       • "Reavaliação de X chegou"  — a paciente respondeu e ainda não foi
+         lida. Mesmo relógio de 2 dias úteis do plano inicial, porque é a
+         mesma promessa: ela reporta, a nutri devolve o plano revisado.
+       • "Convidar X para renovar"  — vigência acabando. Convite, nunca
+         cobrança: o pagamento é único por período (0043).
+       • "Reavaliação de X está aberta" — a bola está com a PACIENTE. Fica
+         por último porque não é trabalho da nutri, é lembrete.
+
+     As duas primeiras somem quando a nutri carimba o evento
+     (programa_marcar_evento); a terceira some sozinha quando a paciente
+     responde. */
+  function nomeDoPaciente(id) {
+    var achado = (pacientes || []).filter(function (p) { return p.id === id; })[0];
+    return achado ? achado.nome : "paciente";
+  }
+  function diasCorridosAte(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    if (!m) return null;
+    var h = new Date(); h.setHours(0, 0, 0, 0);
+    return Math.round((Date.UTC(+m[1], +m[2] - 1, +m[3]) -
+                       Date.UTC(h.getFullYear(), h.getMonth(), h.getDate())) / 86400000);
+  }
+  function vigente(a) {
+    return a.status === "ativa" && a.fim && a.fim >= isoHoje();
+  }
+
+  function filaPrograma() {
+    var hoje = isoHoje();
+    var chegaram = [], renovar = [], abertas = [];
+
+    (assinaturas || []).forEach(function (a) {
+      var nome = nomeDoPaciente(a.paciente_id);
+
+      // 1) Reavaliação respondida e não lida.
+      if (a.ultima_reavaliacao_em && !a.reavaliacao_vista_em) {
+        var dias = diasUteisDesde(String(a.ultima_reavaliacao_em).slice(0, 10));
+        chegaram.push({
+          id: a.paciente_id, assinaturaId: a.id, evento: "reavaliacao_vista", ordem: dias,
+          texto: "Reavaliação de " + nome + " chegou",
+          prazo: dias >= 2 ? "⚠ prazo estourado (" + dias + " dias úteis)"
+               : dias === 1 ? "revisar o plano até amanhã"
+               : "recebida hoje · 2 dias úteis",
+          urgente: dias >= 2
+        });
+      }
+
+      if (!vigente(a)) return;
+
+      // 2) Vigência acabando (ou acabada hoje) e convite ainda não feito.
+      var faltam = diasCorridosAte(a.fim);
+      if (faltam != null && faltam <= 15 && !a.renovacao_convidada_em) {
+        renovar.push({
+          id: a.paciente_id, assinaturaId: a.id, evento: "renovacao_convidada", ordem: -faltam,
+          texto: "Convidar " + nome + " para renovar",
+          prazo: faltam <= 0 ? "o acompanhamento termina hoje"
+               : faltam === 1 ? "termina amanhã"
+               : "termina em " + faltam + " dias (" + fmtDataBR(a.fim) + ")",
+          urgente: faltam <= 3
+        });
+      }
+
+      // 3) Ciclo aberto esperando a paciente responder.
+      if (a.proxima_reavaliacao && a.proxima_reavaliacao <= hoje) {
+        var parada = -(diasCorridosAte(a.proxima_reavaliacao) || 0);
+        abertas.push({
+          id: a.paciente_id, ordem: parada,
+          texto: "Reavaliação de " + nome + " está aberta",
+          prazo: parada <= 0 ? "abriu hoje · aguardando ela responder"
+               : "aberta há " + parada + " dia" + (parada > 1 ? "s" : "") + " · aguardando ela",
+          urgente: parada >= 7
+        });
+      }
+    });
+
+    var porOrdem = function (x, y) { return y.ordem - x.ordem; };
+    return {
+      chegaram: chegaram.sort(porOrdem),
+      renovar: renovar.sort(porOrdem),
+      abertas: abertas.sort(porOrdem)
+    };
+  }
+
+  function fmtDataBR(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    return m ? m[3] + "/" + m[2] : String(iso || "");
+  }
+
   function renderPendenciasReal() {
     var wrap = el("pendencias"); if (!wrap) return;
-    var itens = filaAnamneses().slice(0, 5);
+    var prog = filaPrograma();
+    var itens = filaAnamneses().slice(0, 5)
+      .concat(prog.chegaram.slice(0, 4))
+      .concat(prog.renovar.slice(0, 3))
+      .concat(prog.abertas.slice(0, 3));
     pacientes.filter(function (p) { return p.status === "atencao"; }).slice(0, 4).forEach(function (p) {
       itens.push({ texto: "Revisar plano de " + p.nome, urgente: (p.adesao || 0) < 40, id: p.id });
     });
@@ -321,17 +433,56 @@
       return;
     }
     wrap.innerHTML = itens.map(function (t) {
-      // Anamnese esperando plano abre direto na seção onde ela é lida.
+      // Anamnese/reavaliação esperando plano abrem direto na seção onde
+      // o questionário é lido; o resto cai no prontuário.
       var href = t.prazo
         ? "pacientes.html?id=" + encodeURIComponent(t.id) + "&sec=anamnese"
         : "prontuario.html?id=" + encodeURIComponent(t.id);
+      // Itens do programa que a nutri resolve fora do sistema (ler a
+      // reavaliação, mandar o convite) ganham um "✓ resolvido" que grava
+      // o carimbo — senão eles nunca sairiam da fila.
+      var feito = t.evento
+        ? '<button class="todo__done" type="button" title="Marcar como resolvido"' +
+          ' data-ass="' + esc(t.assinaturaId) + '" data-evento="' + esc(t.evento) + '">✓</button>'
+        : "";
       return '<a class="todo__item" href="' + href + '" style="text-decoration:none;color:inherit">' +
         '<span class="todo__check"></span><div>' +
         '<div class="todo__txt">' + esc(t.texto) + '</div>' +
         '<div class="todo__prazo' + (t.urgente ? " is-urgente" : "") + '">' +
           esc(t.prazo || (t.urgente ? "⚠ prioridade" : "quando puder")) + '</div>' +
-      '</div></a>';
+      '</div>' + feito + '</a>';
     }).join("");
+    bindPrograma(wrap);
+  }
+
+  // "✓ resolvido" das pendências do programa. Escreve pela RPC
+  // programa_marcar_evento (a nutri não tem UPDATE na tabela — vigência é
+  // dado de cobrança e só o webhook escreve).
+  function bindPrograma(wrap) {
+    wrap.querySelectorAll(".todo__done").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var id = btn.getAttribute("data-ass");
+        var evento = btn.getAttribute("data-evento");
+        btn.disabled = true;
+        window.NutriDBReady.then(function (c) {
+          return c.rpc("programa_marcar_evento", { p_assinatura_id: id, p_evento: evento });
+        }).then(function (res) {
+          if (res && res.error) throw res.error;
+          // Atualiza em memória para a fila não ressuscitar até o próximo load.
+          (assinaturas || []).forEach(function (a) {
+            if (a.id !== id) return;
+            if (evento === "reavaliacao_vista") a.reavaliacao_vista_em = new Date().toISOString();
+            else a.renovacao_convidada_em = new Date().toISOString();
+          });
+          renderPendenciasReal();
+        }).catch(function () {
+          btn.disabled = false;
+          alert("Não consegui marcar agora. Confira a conexão e tente de novo.");
+        });
+      });
+    });
   }
   function bindTodos(wrap) {
     wrap.querySelectorAll(".todo__item").forEach(function (item) {

@@ -48,6 +48,12 @@ const ENTRAR_URL =
 
 // order_nsu (fixo no link de checkout) -> plano do programa.
 // 'ebooks' entram como bônus incluso; '*' libera a biblioteca inteira.
+//
+// reavaliacao_dias serve só de ponto de partida: na hora do pagamento a
+// compra é a única data que existe. Quando a anamnese chega, a migração
+// 0046 reancora proxima_reavaliacao em anamnese + 45 — que é quando o
+// acompanhamento de fato começa. Mudar o número aqui sem mudar lá deixa
+// os dois relógios em desacordo.
 const PLANOS: Record<string, {
   plano: "trimestral" | "semestral" | "anual";
   meses: number;

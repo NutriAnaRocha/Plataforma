@@ -163,8 +163,51 @@ textarea.anm-input { resize: vertical; min-height: 76px; line-height: var(--lh-n
 .anm-prazo strong { color: var(--vinho); }
 .anm-prazo span { color: var(--texto-sutil); }
 
+/* ---------- Reavaliação (mesmo formulário, outro ciclo) ---------- */
+.rev-selo {
+  margin: 0 0 var(--sp-1);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--vinho);
+}
+
+/* ---------- Convite de renovação ----------
+   Aparece no topo de "Meu plano" nos últimos dias da vigência. Tom de
+   aviso de contrato, não de vitrine: sem contagem regressiva, sem
+   promessa, sem "últimas vagas". */
+.renov {
+  border-left: 3px solid var(--rosa);
+  background: var(--rosa-suave);
+}
+.renov--fim { border-left-color: var(--vinho); }
+
+.renov__txt {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--texto);
+}
+.renov__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+/* São <a> por irem para fora do portal (WhatsApp e site), mas têm de
+   parecer botão — sem o sublinhado que o reset dá a todo link. */
+.renov__acoes .btn { text-decoration: none; }
+.renov__nota {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+}
+
 @media (max-width: 480px) {
   .anm-nav { flex-direction: column-reverse; }
   .anm-nav .btn { width: 100%; }
   .anm-nav > span:empty { display: none; }
+  .renov__acoes { flex-direction: column; }
+  .renov__acoes .btn { width: 100%; }
 }

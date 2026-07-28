@@ -13,7 +13,13 @@
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
 
-  var ctx = { mode: "real", paciente: null, user: null, marcas: {} };
+  var ctx = { mode: "real", paciente: null, user: null, marcas: {}, assinatura: null };
+
+  // WhatsApp da Ana — canal do convite de renovação. O programa é
+  // pagamento único por período: renovar é uma decisão nova da paciente,
+  // conversada, nunca uma cobrança que dispara sozinha (ver 0043).
+  var WA_NUTRI = "5521994094557";
+  var SITE_PROGRAMA = "https://nutrianarocha.github.io/site/meu-plano.html";
 
   window.NutriDBReady.then(function (c) {
     return c.auth.getSession().then(function (r) {
@@ -40,6 +46,7 @@
     return window.NutriPacientes.getAdesao(paciente.id)
       .then(function (marcas) { ctx.marcas = marcas || {}; })
       .catch(function () { ctx.marcas = {}; })
+      .then(function () { return carregarAssinatura(paciente); })
       .then(function () { boot(); });
   }).catch(function () {
     el("portal-loading").textContent = "Não foi possível carregar. Verifique a conexão e recarregue.";
@@ -49,6 +56,24 @@
     el("portal-loading").innerHTML = "Ainda não há um acompanhamento vinculado a esta conta. " +
       "Fale com sua nutricionista. <br><br><button class='btn btn--outline' data-logout type='button'>Sair</button>";
     wireLogout();
+  }
+
+  /* Assinatura do programa "Meu Plano" — é dela que saem o relógio da
+     reavaliação e a data de fim da vigência. Uma consulta só; a RLS da
+     0043 já recorta (a paciente enxerga a própria, a nutri as da
+     carteira dela, e o filtro por paciente_id serve aos dois modos).
+     Quem não está no programa simplesmente não tem linha: tudo o que
+     depende disso fica invisível, sem erro. */
+  function carregarAssinatura(p) {
+    return window.NutriDBReady.then(function (c) {
+      return c.from("programa_assinaturas")
+        .select("id,status,plano,inicio,fim,proxima_reavaliacao,reavaliacoes_feitas,ultima_reavaliacao_em")
+        .eq("paciente_id", p.id)
+        .order("fim", { ascending: false })
+        .limit(1);
+    }).then(function (res) {
+      ctx.assinatura = (res && res.data && res.data[0]) || null;
+    }).catch(function () { ctx.assinatura = null; });
   }
 
   function boot() {
@@ -65,6 +90,8 @@
 
     el("pane-anamnese").innerHTML =
       (window.AnamneseView && temAnamnese(p)) ? window.AnamneseView.portalHTML(p) : "";
+    el("pane-reavaliacao").innerHTML =
+      temReavaliacao(p) ? window.ReavaliacaoView.portalHTML() : "";
     el("pane-plano").innerHTML = renderPlano(p);
     el("pane-treino").innerHTML = window.TreinoView ? window.TreinoView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-metas").innerHTML = window.MetasView ? window.MetasView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
@@ -88,6 +115,13 @@
         readonly: ctx.mode === "preview",
         // Depois de enviar, some o destaque de pendência do cabeçalho —
         // a bola passa a estar com a nutri.
+        onSalvo: function () { el("portal-sub").textContent = subTexto(p, false); }
+      });
+    }
+
+    if (temReavaliacao(p)) {
+      window.ReavaliacaoView.wire(p, ctx.assinatura, {
+        readonly: ctx.mode === "preview",
         onSalvo: function () { el("portal-sub").textContent = subTexto(p, false); }
       });
     }
@@ -116,10 +150,80 @@
     if (anamnesePendente(p)) return true;
     return anamneseRespondida(p) && !planosLiberados(p).length;
   }
+  /* A reavaliação é o outro lado do que foi vendido: o programa é
+     acompanhamento, não entrega única. A aba aparece quando o ciclo abre
+     (proxima_reavaliacao já chegou) e fica alguns dias depois do envio,
+     só para a paciente ver que chegou. Fora disso, some. */
+  function temReavaliacao(p) {
+    // Nunca antes da anamnese: não se reavalia um acompanhamento que
+    // ainda não começou. Se a paciente demorou mais de 45 dias para
+    // responder a anamnese, o ciclo até abre no banco, mas o portal
+    // continua cobrando a única coisa que faz sentido.
+    if (anamnesePendente(p)) return false;
+    return !!(window.ReavaliacaoView && noPrograma(p) &&
+              window.ReavaliacaoView.mostrar(p, ctx.assinatura));
+  }
+  function reavaliacaoAberta() {
+    return !!(window.ReavaliacaoView && window.ReavaliacaoView.aberta(ctx.assinatura));
+  }
+
   function subTexto(p, pendente) {
     if (pendente) return "Comece pela anamnese — é com ela que eu monto o seu plano.";
+    if (reavaliacaoAberta()) return "Chegou a hora de reavaliar — me conte como foram estas semanas.";
     return (p.objetivo ? "Objetivo: " + p.objetivo + " · " : "") +
       "Próxima consulta: " + (p.proxConsulta || "a agendar");
+  }
+
+  /* ---------- Renovação ----------
+     Vigência acabando: convite, não cobrança. O pagamento é único por
+     período (0043) exatamente para não repetir a cobrança-surpresa que
+     enche o Reclame Aqui dos concorrentes — então quem decide renovar é
+     ela, e o caminho é conversar com a Ana.
+     Sem promessa, sem prazo de resultado, sem escassez artificial: só a
+     data real do contrato dela. */
+  var AVISO_RENOVACAO_DIAS = 15;
+  function isoHoje() {
+    var d = new Date(), p2 = function (n) { return (n < 10 ? "0" : "") + n; };
+    return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate());
+  }
+  function diasAte(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    if (!m) return null;
+    var h = /^(\d{4})-(\d{2})-(\d{2})/.exec(isoHoje());
+    return Math.round((Date.UTC(+m[1], +m[2] - 1, +m[3]) -
+                       Date.UTC(+h[1], +h[2] - 1, +h[3])) / 86400000);
+  }
+  function dataBR(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    return m ? m[3] + "/" + m[2] + "/" + m[1] : "";
+  }
+  function renovacaoHTML() {
+    var a = ctx.assinatura;
+    if (!a || !a.fim) return "";
+    if (a.status === "cancelada" || a.status === "reembolsada") return "";
+    var dias = diasAte(a.fim);
+    if (dias == null || dias > AVISO_RENOVACAO_DIAS) return "";
+
+    var venceu = dias < 0;
+    var titulo = venceu ? "Seu acompanhamento chegou ao fim" : "Seu acompanhamento está perto do fim";
+    var corpo = venceu
+      ? "O período que você contratou foi até " + dataBR(a.fim) + ". Se quiser continuar comigo, " +
+        "a gente abre um novo ciclo — com reavaliação e plano revisado."
+      : "O período que você contratou vai até " + dataBR(a.fim) +
+        (dias === 0 ? " (é hoje)." : dias === 1 ? " (falta 1 dia)." : " (faltam " + dias + " dias).") +
+        " Se quiser seguir, é só me avisar que eu preparo a continuação.";
+    var wa = "https://wa.me/" + WA_NUTRI + "?text=" +
+      encodeURIComponent("Olá, Ana! Quero conversar sobre continuar o meu acompanhamento 🌸");
+
+    return '<div class="pcard renov' + (venceu ? " renov--fim" : "") + '">' +
+      '<h2 class="pcard__title">' + esc(titulo) + '</h2>' +
+      '<p class="renov__txt">' + esc(corpo) + '</p>' +
+      '<div class="renov__acoes">' +
+        '<a class="btn btn--primary" href="' + wa + '" target="_blank" rel="noopener">Falar com a Ana</a>' +
+        '<a class="btn btn--outline" href="' + SITE_PROGRAMA + '" target="_blank" rel="noopener">Ver os planos</a>' +
+      '</div>' +
+      '<p class="renov__nota">Nada é cobrado automaticamente: o pagamento aqui é único por período.</p>' +
+    '</div>';
   }
 
   // Mostra só as seções liberadas para este paciente (pacientes.portal_features).
@@ -138,6 +242,7 @@
       if (id === "treino") on = temTreino;
       else if (id === "metas") on = temMetas;
       else if (id === "anamnese") on = temAnamnese(p);
+      else if (id === "reavaliacao") on = temReavaliacao(p);
       else on = feats.indexOf(id) >= 0;
       t.hidden = !on;
       if (on) visiveis.push(id);
@@ -152,6 +257,8 @@
     }
     // Anamnese pendente ganha a tela: é o único passo que depende dela.
     if (visiveis.indexOf("anamnese") >= 0 && anamnesePendente(p)) { switchTab("anamnese"); return; }
+    // Ciclo aberto: a reavaliação é a próxima ação dela, então abre nela.
+    if (visiveis.indexOf("reavaliacao") >= 0 && reavaliacaoAberta()) { switchTab("reavaliacao"); return; }
     // Se a aba ativa foi ocultada, ativa a primeira liberada.
     var ativo = tabsWrap.querySelector(".ptab.is-active");
     if (!ativo || ativo.hidden) switchTab(visiveis[0]);
@@ -187,9 +294,12 @@
   }
 
   function renderPlano(p) {
+    // O convite de renovação vem antes do plano porque é o único aviso do
+    // portal com data para vencer — mas só aparece nos últimos 15 dias.
+    var renov = renovacaoHTML();
     var planos = planosLiberados(p);
     if (!planos.length) {
-      return '<div class="pcard"><div class="empty-state">Seu plano alimentar ainda não foi publicado. ' +
+      return renov + '<div class="pcard"><div class="empty-state">Seu plano alimentar ainda não foi publicado. ' +
         'Assim que sua nutricionista liberar, ele aparece aqui.</div></div>';
     }
     var readonly = ctx.mode === "preview";
@@ -231,7 +341,7 @@
     }).join("");
     // Lista de compras (uma só, do 1º plano liberado) + dicas de marmita.
     var compras = window.ListaCompras ? window.ListaCompras.htmlPortal(planos[0], ctx.marcas, readonly) : "";
-    return corpo + compras;
+    return renov + corpo + compras;
   }
 
   // Marcação do plano sincronizada no banco (tabela plano_adesao, gravada pelo
