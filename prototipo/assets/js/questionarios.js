@@ -257,7 +257,11 @@
     function fecha() { ov.remove(); }
     ov.addEventListener("click", function (e) {
       if (e.target === ov || e.target.closest(".qmodal__x")) fecha();
-      if (e.target.closest("[data-quest-detpdf]") && m) pdfPreenchido(m, item.respostas || []);
+      // A anamnese que a paciente preenche no portal não tem modelo aqui
+      // (as perguntas vivem em anamnese-paciente.js), mas o PDF só precisa
+      // do nome — sem o fallback, o botão não fazia nada para ela.
+      if (e.target.closest("[data-quest-detpdf]"))
+        pdfPreenchido(m || { nome: item.titulo || "Anamnese" }, item.respostas || []);
     });
   }
 

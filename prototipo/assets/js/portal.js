@@ -61,9 +61,10 @@
     el("portal-hi").textContent = "Olá, " + primeiro;
     el("portal-avatar").textContent = p.ini || "?";
     el("portal-name").textContent = p.nome || "—";
-    el("portal-sub").textContent = (p.objetivo ? "Objetivo: " + p.objetivo + " · " : "") +
-      "Próxima consulta: " + (p.proxConsulta || "a agendar");
+    el("portal-sub").textContent = subTexto(p, anamnesePendente(p));
 
+    el("pane-anamnese").innerHTML =
+      (window.AnamneseView && temAnamnese(p)) ? window.AnamneseView.portalHTML(p) : "";
     el("pane-plano").innerHTML = renderPlano(p);
     el("pane-treino").innerHTML = window.TreinoView ? window.TreinoView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-metas").innerHTML = window.MetasView ? window.MetasView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
@@ -80,6 +81,45 @@
     drawWeightChart(p);
     initChat();
     wireLogout();
+
+    if (window.AnamneseView && temAnamnese(p)) {
+      window.AnamneseView.wire(p, {
+        user: ctx.user,
+        readonly: ctx.mode === "preview",
+        // Depois de enviar, some o destaque de pendência do cabeçalho —
+        // a bola passa a estar com a nutri.
+        onSalvo: function () { el("portal-sub").textContent = subTexto(p, false); }
+      });
+    }
+  }
+
+  /* A anamnese do programa é a porta de entrada de quem comprou o
+     "Meu Plano": enquanto ela não for enviada, não existe avaliação — e
+     sem avaliação não existe plano. Por isso ela vira a aba ativa.
+
+     Só vale para quem está no programa (a tag entra na ficha junto com a
+     compra, no programa-webhook). Sem esse recorte, todo paciente antigo
+     abriria o portal sendo cobrado a responder um questionário de 10
+     etapas que não tem nada a ver com o atendimento dele. */
+  function noPrograma(p) {
+    return (p.tags || []).indexOf("programa") >= 0;
+  }
+  function anamnesePendente(p) {
+    return !!(window.AnamneseView && window.AnamneseView.pendente(p)) && noPrograma(p);
+  }
+  // Já respondida, a aba fica mostrando o prazo de entrega até o plano
+  // sair; aí some, porque cumpriu o papel.
+  function anamneseRespondida(p) {
+    return !!(window.AnamneseView && !window.AnamneseView.pendente(p));
+  }
+  function temAnamnese(p) {
+    if (anamnesePendente(p)) return true;
+    return anamneseRespondida(p) && !planosLiberados(p).length;
+  }
+  function subTexto(p, pendente) {
+    if (pendente) return "Comece pela anamnese — é com ela que eu monto o seu plano.";
+    return (p.objetivo ? "Objetivo: " + p.objetivo + " · " : "") +
+      "Próxima consulta: " + (p.proxConsulta || "a agendar");
   }
 
   // Mostra só as seções liberadas para este paciente (pacientes.portal_features).
@@ -97,6 +137,7 @@
       var on;
       if (id === "treino") on = temTreino;
       else if (id === "metas") on = temMetas;
+      else if (id === "anamnese") on = temAnamnese(p);
       else on = feats.indexOf(id) >= 0;
       t.hidden = !on;
       if (on) visiveis.push(id);
@@ -109,6 +150,8 @@
       pp.innerHTML = '<div class="pcard"><div class="empty-state">Seu acesso ainda não tem seções liberadas. Fale com sua nutricionista.</div></div>';
       return;
     }
+    // Anamnese pendente ganha a tela: é o único passo que depende dela.
+    if (visiveis.indexOf("anamnese") >= 0 && anamnesePendente(p)) { switchTab("anamnese"); return; }
     // Se a aba ativa foi ocultada, ativa a primeira liberada.
     var ativo = tabsWrap.querySelector(".ptab.is-active");
     if (!ativo || ativo.hidden) switchTab(visiveis[0]);

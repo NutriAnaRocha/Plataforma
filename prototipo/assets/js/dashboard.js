@@ -259,9 +259,57 @@
     }).join("");
     bindTodos(wrap);
   }
+  /* Anamneses do programa esperando plano — a fila com relógio correndo.
+     A promessa vendida no site é entregar em até 2 dias ÚTEIS contados da
+     anamnese completa, então isso vem antes de qualquer outra pendência.
+     A data sai da própria instância do questionário (origem 'portal'),
+     gravada pela RPC salvar_anamnese_paciente — sem consulta extra. */
+  function anamnesePortal(p) {
+    var qs = (p && p.questionarios) || [];
+    for (var i = 0; i < qs.length; i++) {
+      if (qs[i] && qs[i].origem === "portal") return qs[i];
+    }
+    return null;
+  }
+  function temPlanoPublicado(p) {
+    var pl = (p && p.plano) || {};
+    if (Array.isArray(pl.planos)) return pl.planos.some(function (x) { return x && x.publicado; });
+    return (pl.refeicoes || []).length > 0;
+  }
+  // Dias úteis decorridos entre a data ISO e hoje (não conta sábado e domingo).
+  function diasUteisDesde(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    if (!m) return 0;
+    var d = new Date(+m[1], +m[2] - 1, +m[3]);
+    var hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    var n = 0;
+    while (d < hoje) {
+      d.setDate(d.getDate() + 1);
+      var dw = d.getDay();
+      if (dw !== 0 && dw !== 6) n++;
+    }
+    return n;
+  }
+  function filaAnamneses() {
+    return (pacientes || []).filter(function (p) {
+      return !!anamnesePortal(p) && !temPlanoPublicado(p);
+    }).map(function (p) {
+      var a = anamnesePortal(p);
+      var dias = diasUteisDesde(a.data);
+      return {
+        id: p.id, nome: p.nome, dias: dias,
+        texto: "Montar o plano de " + p.nome,
+        prazo: dias >= 2 ? "⚠ prazo estourado (" + dias + " dias úteis)"
+             : dias === 1 ? "entregar até amanhã"
+             : "recebida hoje · 2 dias úteis",
+        urgente: dias >= 2
+      };
+    }).sort(function (a, b) { return b.dias - a.dias; });
+  }
+
   function renderPendenciasReal() {
     var wrap = el("pendencias"); if (!wrap) return;
-    var itens = [];
+    var itens = filaAnamneses().slice(0, 5);
     pacientes.filter(function (p) { return p.status === "atencao"; }).slice(0, 4).forEach(function (p) {
       itens.push({ texto: "Revisar plano de " + p.nome, urgente: (p.adesao || 0) < 40, id: p.id });
     });
@@ -273,10 +321,15 @@
       return;
     }
     wrap.innerHTML = itens.map(function (t) {
-      return '<a class="todo__item" href="prontuario.html?id=' + encodeURIComponent(t.id) + '" style="text-decoration:none;color:inherit">' +
+      // Anamnese esperando plano abre direto na seção onde ela é lida.
+      var href = t.prazo
+        ? "pacientes.html?id=" + encodeURIComponent(t.id) + "&sec=anamnese"
+        : "prontuario.html?id=" + encodeURIComponent(t.id);
+      return '<a class="todo__item" href="' + href + '" style="text-decoration:none;color:inherit">' +
         '<span class="todo__check"></span><div>' +
         '<div class="todo__txt">' + esc(t.texto) + '</div>' +
-        '<div class="todo__prazo' + (t.urgente ? " is-urgente" : "") + '">' + (t.urgente ? "⚠ prioridade" : "quando puder") + '</div>' +
+        '<div class="todo__prazo' + (t.urgente ? " is-urgente" : "") + '">' +
+          esc(t.prazo || (t.urgente ? "⚠ prioridade" : "quando puder")) + '</div>' +
       '</div></a>';
     }).join("");
   }

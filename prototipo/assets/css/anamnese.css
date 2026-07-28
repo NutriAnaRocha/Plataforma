@@ -1,0 +1,170 @@
+/* ============================================================
+   ANAMNESE DO PROGRAMA — formulário que a paciente preenche no portal.
+   Mobile-first: a maioria vai responder isso no celular, sentada no
+   sofá, em várias sessões. Campo largo, toque generoso, uma etapa por
+   vez para não assustar com o tamanho do questionário.
+   ============================================================ */
+
+.anm { max-width: 640px; }
+
+/* ---------- Progresso ---------- */
+.anm-prog {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+.anm-prog__bar {
+  flex: 1;
+  height: 6px;
+  border-radius: var(--radius-chip);
+  background: var(--rosa-suave);
+  overflow: hidden;
+}
+.anm-prog__bar span {
+  display: block;
+  height: 100%;
+  background: var(--vinho);
+  border-radius: var(--radius-chip);
+  transition: width var(--t-med);
+}
+.anm-prog__txt {
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+  white-space: nowrap;
+}
+
+.anm-passo-dica {
+  margin: -4px 0 var(--sp-4);
+  font-size: var(--fs-sm);
+  color: var(--texto-sutil);
+  line-height: var(--lh-normal);
+}
+
+/* ---------- Campos ---------- */
+.anm-campos { display: grid; gap: var(--sp-5); }
+
+.anm-campo { display: grid; gap: var(--sp-2); }
+
+.anm-label {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--texto);
+  line-height: 1.35;
+}
+.anm-req { color: var(--vinho); }
+
+.anm-dica {
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+  line-height: 1.45;
+  margin-top: -4px;
+}
+
+.anm-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-ui);
+  font-size: 16px; /* 16px evita o zoom automático do iOS ao focar */
+  color: var(--texto);
+  background: var(--branco);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+.anm-input:focus {
+  outline: none;
+  border-color: var(--vinho);
+  box-shadow: var(--ring-foco);
+}
+textarea.anm-input { resize: vertical; min-height: 76px; line-height: var(--lh-normal); }
+
+.anm-num { display: flex; align-items: center; gap: var(--sp-2); }
+.anm-num .anm-input { max-width: 140px; }
+.anm-unid { font-size: var(--fs-sm); color: var(--texto-sutil); }
+
+/* ---------- Opções (radio / checkbox) ---------- */
+.anm-opts { display: grid; gap: var(--sp-2); }
+
+.anm-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  background: var(--branco);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input);
+  cursor: pointer;
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+.anm-opt:hover { border-color: var(--rosa); }
+.anm-opt input { margin-top: 2px; accent-color: var(--vinho); flex: none; width: 18px; height: 18px; }
+.anm-opt:has(input:checked) { border-color: var(--vinho); background: var(--rosa-suave); }
+
+/* ---------- Erro ---------- */
+.anm-erro { font-size: var(--fs-caption); color: var(--vinho); }
+.anm-campo.is-erro .anm-input,
+.anm-campo.is-erro .anm-opts { border-color: var(--vinho); }
+.anm-campo.is-erro .anm-opts {
+  border: 1px solid var(--vinho);
+  border-radius: var(--radius-input);
+  padding: var(--sp-2);
+}
+
+/* ---------- Navegação ---------- */
+.anm-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-5);
+}
+.anm-nav .btn { min-width: 130px; }
+
+.anm-salvo {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+  text-align: center;
+}
+
+/* ---------- TCLE ---------- */
+.anm-tcle {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-4);
+  background: var(--cinza-claro);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+}
+.anm-tcle p { margin: 0 0 var(--sp-3); }
+.anm-tcle p:last-child { margin-bottom: 0; }
+.anm-tcle strong { color: var(--vinho); }
+
+.anm-aceite { background: var(--rosa-suave); border-color: var(--rosa); }
+
+/* ---------- Confirmação de envio ---------- */
+.anm-prazo {
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-4);
+  margin: var(--sp-4) 0;
+  background: var(--rosa-suave);
+  border-left: 3px solid var(--vinho);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+}
+.anm-prazo strong { color: var(--vinho); }
+.anm-prazo span { color: var(--texto-sutil); }
+
+@media (max-width: 480px) {
+  .anm-nav { flex-direction: column-reverse; }
+  .anm-nav .btn { width: 100%; }
+  .anm-nav > span:empty { display: none; }
+}

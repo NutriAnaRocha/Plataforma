@@ -8,6 +8,10 @@
   min-height: 100vh; display: flex; align-items: center; justify-content: center;
   text-align: center; padding: var(--sp-6); color: var(--texto-sutil); font-size: var(--fs-body);
 }
+/* O portal.js esconde este bloco com o atributo [hidden] quando termina de
+   carregar — mas o display:flex acima vence o hidden, e o "Carregando…"
+   ficava pendurado no rodapé de todas as telas. */
+.portal-loading[hidden] { display: none; }
 
 /* Faixa de preview (modo "Ver como paciente") */
 .preview-bar {
