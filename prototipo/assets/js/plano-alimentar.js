@@ -58,7 +58,9 @@
      Itens referenciam o alimento por busca (`q`), resolvidos no banco na
      hora de aplicar — assim o modelo não depende de ids fixos.
      Cada modelo tem `variacoes` por meta calórica (1200/1500/1800/2000);
-     as porções não são só escaladas — a composição é ajustada por nível. */
+     as porções não são só escaladas — a composição é ajustada por nível.
+     Um modelo pode restringir as metas oferecidas com `kcals` (ex.: o de
+     canetas GLP-1, que só faz sentido em 1500 e 1800). */
   var KCALS = [1200, 1500, 1800, 2000];
 
   var MODELOS = [
@@ -646,6 +648,83 @@
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
         ]
       }
+    },
+    {
+      /* Análogos de GLP-1 (semaglutida, liraglutida, tirzepatida). O esvaziamento
+         gástrico lento traz saciedade precoce, náusea e refluxo — daí refeições
+         pequenas, sem fritura e com gordura moderada e diluída no dia. O risco
+         real do tratamento é perder massa magra junto com o peso, então a
+         proteína é alta (~30% do VET, ≥25 g nas refeições principais) e
+         reforçada com itens de pouco volume (leite em pó desnatado, ricota,
+         ovo). Fibra ~30 g/dia pela constipação típica. Só 1500 e 1800 kcal:
+         abaixo disso não fecha a proteína, acima não costuma ser tolerado. */
+      id: "caneta", ico: "💉", nome: "Canetas emagrecedoras (GLP-1)",
+      objetivo: "Preservação de massa magra e controle de sintomas em uso de análogo de GLP-1",
+      desc: "5 refeições pequenas, proteína alta, sem fritura e com fibra reforçada.",
+      kcals: [1500, 1800],
+      variacoes: {
+        1500: [
+          { nome: "Café da manhã", hora: "07:30", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 1 },
+            { q: "mamao, formosa", medida: "colher de sopa", qtd: 3 } ] },
+          { nome: "Lanche da manhã", hora: "10:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 },
+            { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "queijo, ricota", medida: "fatia", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 2 },
+            { q: "morango", medida: "unidade", qtd: 6 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "merluza, file, assado", medida: "porcao", qtd: 1 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 4 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de cha", qtd: 1 } ] }
+        ],
+        1800: [
+          { nome: "Café da manhã", hora: "07:30", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 1 },
+            { q: "mamao, formosa", medida: "colher de sopa", qtd: 3 } ] },
+          { nome: "Lanche da manhã", hora: "10:00", itens: [
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 2 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço", hora: "12:30", itens: [
+            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
+            { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
+            { q: "brocolis, cozido", medida: "pires", qtd: 1 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde", hora: "16:00", itens: [
+            { q: "queijo, ricota", medida: "fatia", qtd: 2 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 1 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 },
+            { q: "morango", medida: "unidade", qtd: 6 } ] },
+          { nome: "Jantar", hora: "19:30", itens: [
+            { q: "merluza, file, assado", medida: "porcao", qtd: 1 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 5 },
+            { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
+        ]
+      }
     }
   ];
   var MODELO_BY_ID = {};
@@ -653,8 +732,16 @@
 
   // Constrói a fonte de expansão para um modelo numa meta calórica.
   function fonteModelo(m, kcal) {
-    var refs = (m.variacoes && m.variacoes[kcal]) || (m.variacoes && m.variacoes[1500]) || [];
-    return { nome: m.nome, objetivo: m.objetivo, metaKcal: kcal, refeicoes: refs };
+    var v = m.variacoes || {};
+    // Se o modelo não tem essa meta (ex.: só 1500/1800), cai na mais próxima que existe.
+    if (!v[kcal]) {
+      var disp = Object.keys(v).map(Number).sort(function (a, b) { return a - b; });
+      if (!disp.length) return { nome: m.nome, objetivo: m.objetivo, metaKcal: kcal, refeicoes: [] };
+      kcal = disp.reduce(function (a, b) {
+        return Math.abs(b - kcal) < Math.abs(a - kcal) ? b : a;
+      });
+    }
+    return { nome: m.nome, objetivo: m.objetivo, metaKcal: kcal, refeicoes: v[kcal] };
   }
 
   /* ---------- Cálculo ---------- */
@@ -831,7 +918,7 @@
   /* ---------- Tela de escolha ---------- */
   function escolhaHTML() {
     var modelos = MODELOS.map(function (m) {
-      var chips = KCALS.map(function (k) {
+      var chips = (m.kcals || KCALS).map(function (k) {
         return '<button class="pl-modelo__kcal" type="button" data-modelo="' + m.id + '" data-kcal="' + k + '">' +
           k + '</button>';
       }).join("");
