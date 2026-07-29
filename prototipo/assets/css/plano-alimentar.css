@@ -55,9 +55,21 @@
 .pl-meal__hora { width: 90px; font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda); border-radius: var(--radius-input); padding: 4px 6px; }
 .pl-meal__kc { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); white-space: nowrap; }
 
+/* Chave "soma / não soma" — refeição alternativa (ex.: Lanche da tarde 2) */
+.pl-altbtn {
+  border: 1px solid var(--cinza-borda); background: var(--branco); color: var(--texto-sutil);
+  border-radius: 999px; padding: 3px 10px; font: inherit; font-size: var(--fs-caption);
+  font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.pl-altbtn:hover { border-color: var(--vinho); color: var(--vinho); }
+.pl-altbtn.is-on { background: var(--rosa-suave); border-color: var(--vinho); color: var(--vinho); }
+.pl-meal--alt { border-style: dashed; background: color-mix(in srgb, var(--rosa-suave) 35%, var(--branco)); }
+.pl-addmeals { display: flex; flex-wrap: wrap; gap: 8px; }
+
 /* Item */
 .pl-items { display: flex; flex-direction: column; gap: 6px; }
-.pl-item { display: grid; grid-template-columns: 1fr 66px minmax(120px, 150px) 62px 74px 28px; gap: 6px; align-items: center; }
+.pl-itemwrap { display: flex; flex-direction: column; }
+.pl-item { display: grid; grid-template-columns: 1fr 66px minmax(120px, 150px) 62px 74px 28px 28px; gap: 6px; align-items: center; }
 .pl-item input, .pl-item select {
   font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda);
   border-radius: var(--radius-input); padding: 6px 8px; background: var(--branco); min-width: 0; width: 100%;
@@ -71,6 +83,62 @@
 .pl-additem { margin-top: 8px; border: 1px dashed var(--cinza-borda); background: none; color: var(--vinho); border-radius: var(--radius-input); padding: 6px 10px; font: inherit; font-size: var(--fs-caption); font-weight: 700; cursor: pointer; }
 .pl-additem:hover { background: var(--rosa-suave); }
 .pl-addmeal { margin-top: 4px; }
+.pl-addmeal--alt { border-style: dashed; }
+
+/* ---------- Autocomplete de alimentos ----------
+   Lista própria: filtra ignorando acento, cabe na tela e ROLA — o
+   <datalist> nativo não fazia nada disso de forma confiável. */
+.pl-foodwrap { position: relative; min-width: 0; }
+.pl-ac {
+  position: absolute; z-index: 40; top: calc(100% + 3px); left: 0; right: 0;
+  max-height: 260px; overflow-y: auto; overscroll-behavior: contain;
+  background: var(--branco); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-card); box-shadow: 0 10px 26px rgba(0, 0, 0, .14);
+  padding: 4px;
+}
+.pl-ac[hidden] { display: none; }
+.pl-ac__op {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  width: 100%; text-align: left; border: none; background: none; cursor: pointer;
+  font: inherit; font-size: var(--fs-sm); color: var(--texto);
+  padding: 6px 8px; border-radius: var(--radius-input);
+}
+.pl-ac__op:hover, .pl-ac__op.is-hl { background: var(--rosa-suave); color: var(--vinho); }
+.pl-ac__nome { flex: 1; min-width: 0; }
+.pl-ac__kc { font-size: var(--fs-caption); color: var(--texto-sutil); white-space: nowrap; }
+.pl-ac__vazio { padding: 10px; font-size: var(--fs-caption); color: var(--texto-sutil); text-align: center; }
+
+/* ---------- Substitutos do item ---------- */
+.pl-swap {
+  border: 1px solid var(--cinza-borda); background: var(--branco); color: var(--texto-sutil);
+  border-radius: var(--radius-input); cursor: pointer; font: inherit; font-size: var(--fs-caption);
+  line-height: 1; padding: 5px 2px; position: relative;
+}
+.pl-swap:hover { border-color: var(--vinho); color: var(--vinho); }
+.pl-swap.is-on { border-color: var(--vinho); background: var(--rosa-suave); color: var(--vinho); }
+.pl-swap__n:not(:empty) { font-weight: 800; margin-left: 1px; font-size: 10px; }
+.pl-subs { margin: 4px 0 8px 16px; padding: 8px 10px; border-left: 2px solid var(--rosa-suave); background: color-mix(in srgb, var(--rosa-suave) 30%, transparent); border-radius: 0 var(--radius-input) var(--radius-input) 0; }
+.pl-subs[hidden] { display: none; }
+.pl-subs__lbl { font-size: var(--fs-caption); font-weight: 700; color: var(--vinho); margin-bottom: 5px; }
+.pl-subs__rows { display: flex; flex-direction: column; gap: 5px; }
+.pl-sub { display: grid; grid-template-columns: 16px 1fr 60px minmax(110px, 140px) 100px 24px; gap: 6px; align-items: center; }
+.pl-sub input, .pl-sub select {
+  font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input); padding: 5px 7px; background: var(--branco); min-width: 0; width: 100%;
+}
+.pl-sub input:focus, .pl-sub select:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+.pl-sub__ico { color: var(--vinho); font-size: var(--fs-caption); }
+.pl-sub .pl-item__kc { font-weight: 400; color: var(--texto-sutil); }
+.pl-additem--sub { margin-top: 6px; padding: 4px 8px; }
+
+/* Substitutos e opção alternativa no resumo do plano salvo */
+.pl-res__subs { font-size: var(--fs-caption); color: var(--texto-sutil); padding: 0 0 3px 12px; }
+.pl-res__subs-lbl { color: var(--vinho); font-weight: 700; }
+.pl-res__meal--alt { border-style: dashed; }
+.pl-alt-badge {
+  display: inline-block; vertical-align: middle; background: var(--rosa-suave); color: var(--vinho);
+  border-radius: 999px; padding: 1px 8px; font-size: var(--fs-caption); font-weight: 700;
+}
 
 /* Barra de totais */
 .pl-tot, .pl-totbar .pl-tot {
@@ -152,13 +220,33 @@
 
 @media (max-width: 640px) {
   .pl-meta { grid-template-columns: 1fr 1fr; }
-  .pl-item { grid-template-columns: 1fr 56px 1fr; grid-template-areas: "food food food" "qt med med" "g kc x"; }
-  .pl-item__food { grid-area: food; }
+  .pl-item {
+    grid-template-columns: 1fr 56px 28px 28px;
+    grid-template-areas: "food food food food" "qt med med med" "g kc swap x";
+  }
+  .pl-foodwrap { grid-area: food; }
   .pl-item__qt { grid-area: qt; }
   .pl-item__med { grid-area: med; }
   .pl-item__g { grid-area: g; text-align: left; }
   .pl-item__kc { grid-area: kc; }
-  .pl-x { grid-area: x; }
+  .pl-swap { grid-area: swap; }
+  .pl-item > .pl-x { grid-area: x; }
+  .pl-subs { margin-left: 8px; }
+  .pl-sub {
+    grid-template-columns: 16px 56px 1fr 24px;
+    grid-template-areas: "ico food food food" "ico qt med med" "ico kc kc x";
+    row-gap: 4px;
+  }
+  .pl-sub__ico { grid-area: ico; align-self: start; margin-top: 8px; }
+  .pl-sub .pl-foodwrap { grid-area: food; }
+  .pl-sub [data-sub-qt] { grid-area: qt; }
+  .pl-sub [data-sub-med] { grid-area: med; }
+  .pl-sub [data-sub-kc] { grid-area: kc; text-align: left; }
+  .pl-sub .pl-x { grid-area: x; }
+  /* Cabeçalho da refeição: nome ocupa a linha toda; hora, chave e kcal embaixo */
+  .pl-meal__head { flex-wrap: wrap; }
+  .pl-meal__nome { flex: 1 1 100%; }
+  .pl-altbtn { order: 5; }
 }
 
 /* ---------- Rascunho gerado da anamnese ----------

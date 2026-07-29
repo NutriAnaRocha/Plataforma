@@ -66,7 +66,7 @@
           (o.categoria ? " · " : "") + "prescrita em " + fmtData(o.data) + "</div>" +
       "</div><div class=\"op-card__acts\">" +
         '<button class="btn btn--ghost" data-rx-pdf="' + esc(o.id) + '" type="button">📄 PDF</button>' +
-        '<button class="btn btn--ghost" data-rx-rm="' + esc(o.id) + '" type="button">Remover</button>' +
+        '<button class="btn btn--ghost rx-del" data-rx-rm="' + esc(o.id) + '" type="button" title="Excluir esta prescrição">🗑️ Excluir</button>' +
       "</div></div>" +
       (o.indicacao ? '<p class="op-card__resumo">' + esc(o.indicacao) + "</p>" : "") +
       formulasHTML(o) +
@@ -88,7 +88,8 @@
           return '<div class="iitem"><span class="iitem__ico">💊</span>' +
             '<div class="iitem__info"><div class="iitem__title">' + esc(o.titulo) + "</div>" +
             '<div class="iitem__date">' + fmtData(o.data) + "</div></div>" +
-            '<button class="btn btn--ghost" data-rx-pdf="' + esc(o.id) + '" type="button">PDF</button></div>';
+            '<button class="btn btn--ghost" data-rx-pdf="' + esc(o.id) + '" type="button">PDF</button>' +
+            '<button class="btn btn--ghost rx-del" data-rx-rm="' + esc(o.id) + '" type="button" title="Excluir esta prescrição" aria-label="Excluir prescrição">🗑️</button></div>';
         }).join("") + "</div>"
       : '<div class="empty-state">Ainda não há histórico.</div>';
     return secWrap("Prescrições do paciente", toolbar + '<div class="op-list">' + atuais + "</div>") +
@@ -106,7 +107,9 @@
     }).catch(function (e) { if (_ctx.toast) _ctx.toast("Não consegui registrar. " + (e && e.message || ""), true); });
   }
   function remover(id) {
-    if (!confirm("Remover esta prescrição do paciente?")) return;
+    var o = (_p.prescricoes || []).find(function (x) { return x.id === id; });
+    var nome = o && o.titulo ? '"' + o.titulo + '"' : "esta prescrição";
+    if (!confirm("Excluir " + nome + " do paciente? Esta ação não pode ser desfeita.")) return;
     var lista = (_p.prescricoes || []).filter(function (o) { return o.id !== id; });
     salvar(lista).then(function (saved) {
       if (_ctx.onSaved) _ctx.onSaved(saved);

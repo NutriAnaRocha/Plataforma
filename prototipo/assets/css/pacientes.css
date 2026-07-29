@@ -141,6 +141,9 @@
 .iitem__info { flex: 1; min-width: 0; }
 .iitem__title { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); line-height: 1.25; }
 .iitem__date { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+/* Excluir (prescrição, registro): só fica vermelho no hover, para não
+   competir com as ações normais do cartão. */
+.rx-del:hover { color: #b3261e; }
 .istatus { font-size: var(--fs-caption); font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
 .is-Ativo, .is-Anexado { background: #E6F6EE; color: #1B8A5A; }
 .is-Pendente, .is-Solicitado { background: #FCEFD9; color: #B26A00; }

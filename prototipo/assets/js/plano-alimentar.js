@@ -37,18 +37,71 @@
   AL.forEach(function (a) { AL_BY_ID[a.id] = a; AL_BY_NOME[a.nome.toLowerCase()] = a; });
 
   function limpa(s) { return normaliza(s).replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim(); }
-  // Acha o melhor alimento cujo nome contém todos os termos da busca (menor nome vence).
-  function acharAlimento(q) {
-    var termos = limpa(q).split(" ").filter(Boolean);
-    if (!termos.length) return null;
-    var best = null;
-    for (var i = 0; i < AL.length; i++) {
-      var n = limpa(AL[i].nome);
-      var ok = termos.every(function (t) { return n.indexOf(t) >= 0; });
-      if (ok && (!best || AL[i].nome.length < best.nome.length)) best = AL[i];
-    }
-    return best;
+
+  // Índice de nomes já normalizados — a busca roda a cada tecla digitada.
+  var AL_NORM = AL.map(function (a) { return limpa(a.nome); });
+
+  /* Palavras de ligação: a TACO escreve "Pão, trigo, forma, integral", mas a
+     nutri digita "pão de forma". Sem ignorar o "de" nada casava — e sem
+     alimento resolvido o item ficava com a medida "grama" apenas (era a
+     causa de "não tem unidade nos pães" e do 0 kcal). */
+  var STOP = { de: 1, da: 1, do: 1, das: 1, dos: 1, e: 1, em: 1, no: 1, na: 1, com: 1, a: 1, o: 1, ao: 1 };
+  function termosDe(q) {
+    var brutos = limpa(q).split(" ").filter(Boolean);
+    var uteis = brutos.filter(function (t) { return !STOP[t]; });
+    return uteis.length ? uteis : brutos;
   }
+  // Pontua um nome já normalizado contra os termos. -1 = não serve.
+  // Começo do nome > começo de palavra > meio da palavra; nome curto desempata.
+  function pontua(n, ts) {
+    var s = 0;
+    for (var i = 0; i < ts.length; i++) {
+      var p = n.indexOf(ts[i]);
+      if (p < 0) return -1;
+      if (p === 0) s += 100;
+      else if (n.charAt(p - 1) === " ") s += 60;
+      else s += 20;
+    }
+    return s - n.length * 0.15;
+  }
+  /* Alimentos do dia a dia sobem na lista. A fonte não é um palpite: são os
+     itens que os próprios MODELOS deste arquivo usam (arroz integral cozido,
+     feijão carioca cozido, frango grelhado…). Sem isso, "feijão" trazia
+     "Feijão, jalo, cru" primeiro só por ter o nome mais curto. */
+  var COMUNS = null, _montandoComuns = false;
+  function comuns() {
+    if (COMUNS || _montandoComuns) return COMUNS || {};
+    _montandoComuns = true;
+    COMUNS = {};
+    try {
+      MODELOS.forEach(function (m) {
+        Object.keys(m.variacoes || {}).forEach(function (k) {
+          (m.variacoes[k] || []).forEach(function (rf) {
+            (rf.itens || []).forEach(function (it) {
+              var a = it.q ? acharAlimento(it.q) : null;
+              if (a) COMUNS[a.id] = 1;
+            });
+          });
+        });
+      });
+    } catch (e) { /* modelo malformado não pode quebrar a busca */ }
+    _montandoComuns = false;
+    return COMUNS;
+  }
+  // Lista de alimentos que casam com a busca, do mais provável ao menos.
+  function buscar(q, limite) {
+    var ts = termosDe(q);
+    if (!ts.length) return AL.slice(0, limite || 60);
+    var pop = comuns();
+    var hits = [];
+    for (var i = 0; i < AL.length; i++) {
+      var s = pontua(AL_NORM[i], ts);
+      if (s >= 0) hits.push({ a: AL[i], s: s + (pop[AL[i].id] ? 30 : 0) });
+    }
+    hits.sort(function (x, y) { return y.s - x.s; });
+    return hits.slice(0, limite || 60).map(function (h) { return h.a; });
+  }
+  function acharAlimento(q) { return buscar(q, 1)[0] || null; }
   function alimentoDoValor(valor) {
     if (!valor) return null;
     return AL_BY_NOME[valor.toLowerCase()] || acharAlimento(valor);
@@ -356,30 +409,30 @@
         1200: [
           { nome: "Café da manhã", hora: "08:00", itens: [
             { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
-            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "polvilho, doce", medida: "colher de sopa", qtd: 2 },
             { q: "mamao, formosa", medida: "fatia", qtd: 1 } ] },
           { nome: "Lanche", hora: "10:30", itens: [
-            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+            { q: "morango", medida: "unidade", qtd: 8 } ] },
           { nome: "Almoço", hora: "12:30", itens: [
             { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
             { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
             { q: "cenoura, cozida", medida: "colher de sopa", qtd: 3 },
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
           { nome: "Lanche da tarde", hora: "16:00", itens: [
-            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 } ] },
+            { q: "queijo, mozarela", medida: "fatia", qtd: 2 } ] },
           { nome: "Jantar", hora: "19:30", itens: [
-            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "merluza, file, assado", medida: "porcao", qtd: 1 },
             { q: "batata, inglesa, cozida", medida: "unidade", qtd: 2 },
             { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 } ] }
         ],
         1500: [
           { nome: "Café da manhã", hora: "08:00", itens: [
             { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
-            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "polvilho, doce", medida: "colher de sopa", qtd: 2 },
             { q: "mamao, formosa", medida: "fatia", qtd: 1 },
             { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
           { nome: "Lanche", hora: "10:30", itens: [
-            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "morango", medida: "unidade", qtd: 8 },
             { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
           { nome: "Almoço", hora: "12:30", itens: [
             { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
@@ -387,21 +440,21 @@
             { q: "cenoura, cozida", medida: "colher de sopa", qtd: 3 },
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
           { nome: "Lanche da tarde", hora: "16:00", itens: [
-            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "queijo, mozarela", medida: "fatia", qtd: 2 },
             { q: "mamao, formosa", medida: "fatia", qtd: 1 } ] },
           { nome: "Jantar", hora: "19:30", itens: [
-            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "merluza, file, assado", medida: "porcao", qtd: 1 },
             { q: "batata, inglesa, cozida", medida: "unidade", qtd: 2 },
             { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 } ] }
         ],
         1800: [
           { nome: "Café da manhã", hora: "08:00", itens: [
             { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
-            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 },
+            { q: "polvilho, doce", medida: "colher de sopa", qtd: 2 },
             { q: "mamao, formosa", medida: "fatia", qtd: 1 },
             { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
           { nome: "Lanche", hora: "10:30", itens: [
-            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "morango", medida: "unidade", qtd: 8 },
             { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
           { nome: "Almoço", hora: "12:30", itens: [
             { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 6 },
@@ -409,11 +462,11 @@
             { q: "cenoura, cozida", medida: "colher de sopa", qtd: 3 },
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
           { nome: "Lanche da tarde", hora: "16:00", itens: [
-            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "queijo, mozarela", medida: "fatia", qtd: 2 },
             { q: "mamao, formosa", medida: "fatia", qtd: 1 },
-            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+            { q: "morango", medida: "unidade", qtd: 8 } ] },
           { nome: "Jantar", hora: "19:30", itens: [
-            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "merluza, file, assado", medida: "porcao", qtd: 1 },
             { q: "batata, inglesa, cozida", medida: "unidade", qtd: 2 },
             { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
@@ -421,11 +474,11 @@
         2000: [
           { nome: "Café da manhã", hora: "08:00", itens: [
             { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
-            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 3 },
+            { q: "polvilho, doce", medida: "colher de sopa", qtd: 3 },
             { q: "mamao, formosa", medida: "fatia", qtd: 1 },
             { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
           { nome: "Lanche", hora: "10:30", itens: [
-            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "morango", medida: "unidade", qtd: 8 },
             { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
           { nome: "Almoço", hora: "12:30", itens: [
             { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 6 },
@@ -433,11 +486,11 @@
             { q: "cenoura, cozida", medida: "colher de sopa", qtd: 3 },
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
           { nome: "Lanche da tarde", hora: "16:00", itens: [
-            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "queijo, mozarela", medida: "fatia", qtd: 2 },
             { q: "mamao, formosa", medida: "fatia", qtd: 1 },
-            { q: "banana, prata", medida: "unidade", qtd: 1 } ] },
+            { q: "morango", medida: "unidade", qtd: 8 } ] },
           { nome: "Jantar", hora: "19:30", itens: [
-            { q: "pescada, file, frito", medida: "porcao", qtd: 1 },
+            { q: "merluza, file, assado", medida: "porcao", qtd: 1 },
             { q: "batata, inglesa, cozida", medida: "unidade", qtd: 2 },
             { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
@@ -784,9 +837,13 @@
       lip: al ? r1(al.lip * f) : 0
     };
   }
+  // Refeição alternativa ("Lanche da tarde 2"): existe no plano como opção,
+  // mas não entra na soma do dia — senão o total contaria a refeição duas vezes.
+  function ehAlternativa(rf) { return !!(rf && rf.alternativa); }
   function totaisDe(plano) {
     var t = { kcal: 0, cho: 0, ptn: 0, lip: 0 };
     (plano.refeicoes || []).forEach(function (r) {
+      if (ehAlternativa(r)) return;
       (r.itens || []).forEach(function (it) {
         var c = calcItem(it);
         t.kcal += c.kcal; t.cho += c.cho; t.ptn += c.ptn; t.lip += c.lip;
@@ -813,10 +870,24 @@
       rascunho: fonte.rascunho || null,
       refeicoes: (fonte.refeicoes || []).map(function (r) {
         return {
-          nome: r.nome, hora: r.hora || "",
+          nome: r.nome, hora: r.hora || "", alternativa: !!r.alternativa,
           itens: (r.itens || []).map(function (it) {
             var al = it.alimentoId != null ? AL_BY_ID[it.alimentoId] : (it.q ? acharAlimento(it.q) : alimentoDoValor(it.alimento));
-            return { alimentoId: al ? al.id : null, alimento: al ? al.nome : (it.alimento || it.q || ""), medida: it.medida || "grama", qtd: it.qtd != null ? it.qtd : 1 };
+            return {
+              alimentoId: al ? al.id : null,
+              alimento: al ? al.nome : (it.alimento || it.q || ""),
+              medida: it.medida || "grama",
+              qtd: it.qtd != null ? it.qtd : 1,
+              subs: (it.subs || []).map(function (s) {
+                var sa = s.alimentoId != null ? AL_BY_ID[s.alimentoId] : (s.q ? acharAlimento(s.q) : alimentoDoValor(s.alimento));
+                return {
+                  alimentoId: sa ? sa.id : null,
+                  alimento: sa ? sa.nome : (s.alimento || s.q || ""),
+                  medida: s.medida || "grama",
+                  qtd: s.qtd != null ? s.qtd : 1
+                };
+              })
+            };
           })
         };
       })
@@ -887,7 +958,7 @@
     var lib = libDe(p);
     // escolhaHTML precisa da paciente NO ARGUMENTO: render() roda antes de
     // wire(), então o _p do módulo ainda é o da ficha anterior (ou nada).
-    return '<div id="plano-root">' + (lib.length ? painelHTML(p) : escolhaHTML(p)) + '</div>' + datalistHTML();
+    return '<div id="plano-root">' + (lib.length ? painelHTML(p) : escolhaHTML(p)) + '</div>';
   }
 
   // Lista de planos + detalhe do plano em foco.
@@ -938,12 +1009,6 @@
       '</section>';
   }
 
-  function datalistHTML() {
-    // datalist único e reutilizável por todos os inputs de alimento
-    var ops = AL.map(function (a) { return '<option value="' + esc(a.nome) + '"></option>'; }).join("");
-    return '<datalist id="pl-alimentos">' + ops + '</datalist>';
-  }
-
   /* ---------- Tela de escolha ---------- */
   function escolhaHTML(p) {
     p = p || _p;
@@ -973,9 +1038,12 @@
           '<span class="pl-inicio__sub">Cálculo, modelo e horários dela — para você revisar e assinar</span>' +
         '</button>'
       : '';
+    var meta = (_ctx && _ctx.metaKcal)
+      ? '<p class="pl-hint">🧮 Meta de <strong>' + esc(_ctx.metaKcal) + ' kcal</strong> vinda da calculadora — ' +
+        'ela já entra preenchida no plano que você abrir.</p>' : '';
     return '' +
       '<section class="fsec">' +
-        '<div class="fsec__head"><h2 class="fsec__title">Novo plano alimentar</h2>' + voltar + '</div>' +
+        '<div class="fsec__head"><h2 class="fsec__title">Novo plano alimentar</h2>' + voltar + '</div>' + meta +
         '<div class="pl-escolha">' +
           daAnamnese +
           '<button class="pl-inicio pl-inicio--zero" type="button" data-do-zero>' +
@@ -1000,11 +1068,13 @@
         var c = calcItem(it);
         return '<div class="pl-res__item"><span>' + esc(it.alimento || "—") + '</span>' +
           '<span class="pl-res__qt">' + esc(qtdLabel(it, c)) + '</span>' +
-          '<span class="pl-res__kc">' + c.kcal + ' kcal</span></div>';
+          '<span class="pl-res__kc">' + c.kcal + ' kcal</span></div>' + subsResumoHTML(it);
       }).join("");
       var sub = (rf.itens || []).reduce(function (a, it) { return a + calcItem(it).kcal; }, 0);
-      return '<div class="pl-res__meal"><div class="pl-res__head">' +
-        '<span class="pl-res__nome">' + esc(rf.nome || "Refeição") + '</span>' +
+      var alt = ehAlternativa(rf);
+      return '<div class="pl-res__meal' + (alt ? ' pl-res__meal--alt' : '') + '"><div class="pl-res__head">' +
+        '<span class="pl-res__nome">' + esc(rf.nome || "Refeição") +
+          (alt ? ' <span class="pl-alt-badge">opção · não soma</span>' : '') + '</span>' +
         '<span class="pl-res__hora">' + esc(rf.hora || "") + '</span>' +
         '<span class="pl-res__mealkc">' + r0(sub) + ' kcal</span></div>' + itens + '</div>';
     }).join("");
@@ -1026,6 +1096,18 @@
   function qtdLabel(it, c) {
     if (it.medida === "grama") return c.gramas + " g";
     return num(it.qtd) + " " + it.medida + " (" + c.gramas + " g)";
+  }
+  // "Frango — ou: Ovo (2 unidades) · Merluza (120 g)". Substituto é opção de
+  // troca equivalente; nunca entra na conta do dia.
+  function subsTexto(it) {
+    return (it.subs || []).filter(function (s) { return s && s.alimento; }).map(function (s) {
+      return s.alimento + " (" + qtdLabel(s, calcItem(s)) + ")";
+    });
+  }
+  function subsResumoHTML(it) {
+    var t = subsTexto(it);
+    if (!t.length) return "";
+    return '<div class="pl-res__subs"><span class="pl-res__subs-lbl">ou</span> ' + esc(t.join(" · ")) + '</div>';
   }
   function totaisBarHTML(t, pc, meta) {
     var alvo = meta ? '<span class="pl-tot__alvo">de ' + meta + ' kcal (' + r0(t.kcal / meta * 100) + '%)</span>' : '';
@@ -1054,7 +1136,12 @@
           '<label class="pl-field"><span>Meta kcal</span><input type="number" data-pl-meta value="' + esc(plano.metaKcal || "") + '" placeholder="opcional" /></label>' +
         '</div>' +
         '<div id="pl-meals">' + meals + '</div>' +
-        '<button class="btn btn--outline btn--sm pl-addmeal" type="button" data-add-meal>＋ Adicionar refeição</button>' +
+        '<div class="pl-addmeals">' +
+          '<button class="btn btn--outline btn--sm pl-addmeal" type="button" data-add-meal>＋ Adicionar refeição</button>' +
+          '<button class="btn btn--outline btn--sm pl-addmeal pl-addmeal--alt" type="button" data-add-alt>↔ Adicionar opção alternativa</button>' +
+        '</div>' +
+        '<p class="pl-hint">Opção alternativa é uma segunda versão de uma refeição (ex.: <em>Lanche da tarde 2</em>). ' +
+          'Ela aparece para o paciente como escolha, mas <strong>não é somada</strong> no total do dia.</p>' +
       '</section>' +
       '<div class="pl-totbar" id="pl-totbar">' + '</div>' +
       '<div class="pl-actions">' +
@@ -1065,10 +1152,12 @@
 
   function mealHTML(rf, mi) {
     var itens = (rf.itens || []).map(function (it, ii) { return itemHTML(it, mi, ii); }).join("");
-    return '<div class="pl-meal" data-meal="' + mi + '">' +
+    var alt = ehAlternativa(rf);
+    return '<div class="pl-meal' + (alt ? ' pl-meal--alt' : '') + '" data-meal="' + mi + '" data-alt="' + (alt ? "1" : "0") + '">' +
       '<div class="pl-meal__head">' +
         '<input class="pl-meal__nome" type="text" data-meal-nome value="' + esc(rf.nome || "") + '" placeholder="Refeição" />' +
         '<input class="pl-meal__hora" type="time" data-meal-hora value="' + esc(rf.hora || "") + '" />' +
+        altBtnHTML(alt) +
         '<span class="pl-meal__kc" data-meal-kc>0 kcal</span>' +
         '<button class="pl-x" type="button" data-rm-meal aria-label="Remover refeição">🗑️</button>' +
       '</div>' +
@@ -1076,20 +1165,72 @@
       '<button class="pl-additem" type="button" data-add-item>＋ alimento</button>' +
     '</div>';
   }
+  // Chave "soma / não soma" da refeição — é o que permite ter "Lanche da tarde 2"
+  // sem inflar o total do dia.
+  function altBtnHTML(alt) {
+    return '<button class="pl-altbtn' + (alt ? " is-on" : "") + '" type="button" data-alt-meal ' +
+      'aria-pressed="' + (alt ? "true" : "false") + '" ' +
+      'title="' + (alt ? "Opção alternativa: não entra no total do dia. Clique para voltar a somar." :
+                         "Esta refeição soma no total do dia. Clique para transformar em opção alternativa.") + '">' +
+      (alt ? "↔ opção · não soma" : "∑ soma no total") + '</button>';
+  }
+
+  function medOptsHTML(medidas, sel) {
+    return medidas.map(function (m) {
+      return '<option value="' + esc(m.nome) + '" data-g="' + m.g + '"' + (m.nome === sel ? " selected" : "") + '>' + esc(m.nome) + '</option>';
+    }).join("");
+  }
+  // Campo de alimento com autocomplete próprio (o <datalist> nativo não
+  // filtrava por acento nem deixava rolar a lista — era a queixa da busca).
+  function foodInputHTML(valor, attr, ph) {
+    return '<div class="pl-foodwrap">' +
+      '<input class="pl-item__food pl-food" type="text" ' + attr + ' autocomplete="off" spellcheck="false" ' +
+        'role="combobox" aria-expanded="false" aria-autocomplete="list" ' +
+        'value="' + esc(valor || "") + '" placeholder="' + esc(ph) + '" />' +
+      '<div class="pl-ac" data-ac hidden></div>' +
+    '</div>';
+  }
 
   function itemHTML(it, mi, ii) {
     var al = it.alimentoId != null ? AL_BY_ID[it.alimentoId] : alimentoDoValor(it.alimento);
     var medidas = al ? al.medidas : [{ nome: "grama", g: 1 }];
-    var opts = medidas.map(function (m) {
-      return '<option value="' + esc(m.nome) + '" data-g="' + m.g + '"' + (m.nome === it.medida ? " selected" : "") + '>' + esc(m.nome) + '</option>';
-    }).join("");
-    return '<div class="pl-item" data-item>' +
-      '<input class="pl-item__food" type="text" list="pl-alimentos" data-food value="' + esc(it.alimento || "") + '" placeholder="buscar alimento…" />' +
-      '<input class="pl-item__qt" type="number" step="0.5" min="0" data-qt value="' + esc(it.qtd != null ? it.qtd : 1) + '" />' +
-      '<select class="pl-item__med" data-med>' + opts + '</select>' +
-      '<span class="pl-item__g" data-gramas>—</span>' +
-      '<span class="pl-item__kc" data-kc>—</span>' +
-      '<button class="pl-x" type="button" data-rm-item aria-label="Remover">✕</button>' +
+    var subs = (it.subs || []).filter(function (s) { return s && s.alimento; });
+    return '<div class="pl-itemwrap" data-item>' +
+      '<div class="pl-item">' +
+        foodInputHTML(it.alimento, "data-food", "buscar alimento…") +
+        '<input class="pl-item__qt" type="number" step="0.5" min="0" data-qt value="' + esc(it.qtd != null ? it.qtd : 1) + '" />' +
+        '<select class="pl-item__med" data-med>' + medOptsHTML(medidas, it.medida) + '</select>' +
+        '<span class="pl-item__g" data-gramas>—</span>' +
+        '<span class="pl-item__kc" data-kc>—</span>' +
+        '<button class="pl-swap' + (subs.length ? " is-on" : "") + '" type="button" data-toggle-subs ' +
+          'aria-label="Opções de substituição" title="Alimentos que substituem este">⇄' +
+          '<span class="pl-swap__n" data-subs-n>' + (subs.length || "") + '</span></button>' +
+        '<button class="pl-x" type="button" data-rm-item aria-label="Remover">✕</button>' +
+      '</div>' +
+      subsBoxHTML(subs) +
+    '</div>';
+  }
+
+  // Painel de substitutos do item — fica recolhido até a nutri abrir (⇄).
+  function subsBoxHTML(subs) {
+    var linhas = (subs || []).map(subRowHTML).join("");
+    return '<div class="pl-subs" data-subs' + (subs && subs.length ? "" : " hidden") + '>' +
+      '<div class="pl-subs__lbl">Pode substituir por:</div>' +
+      '<div class="pl-subs__rows" data-sub-rows>' + linhas + '</div>' +
+      '<button class="pl-additem pl-additem--sub" type="button" data-add-sub>＋ substituto</button>' +
+    '</div>';
+  }
+  function subRowHTML(s) {
+    s = s || { alimento: "", medida: "grama", qtd: 1 };
+    var al = s.alimentoId != null ? AL_BY_ID[s.alimentoId] : alimentoDoValor(s.alimento);
+    var medidas = al ? al.medidas : [{ nome: "grama", g: 1 }];
+    return '<div class="pl-sub" data-sub>' +
+      '<span class="pl-sub__ico" aria-hidden="true">⇄</span>' +
+      foodInputHTML(s.alimento, "data-sub-food", "alimento substituto…") +
+      '<input class="pl-item__qt" type="number" step="0.5" min="0" data-sub-qt value="' + esc(s.qtd != null ? s.qtd : 1) + '" />' +
+      '<select class="pl-item__med" data-sub-med>' + medOptsHTML(medidas, s.medida) + '</select>' +
+      '<span class="pl-item__kc" data-sub-kc>—</span>' +
+      '<button class="pl-x" type="button" data-rm-sub aria-label="Remover substituto">✕</button>' +
     '</div>';
   }
 
@@ -1100,8 +1241,11 @@
     _p = p; _ctx = ctx || {}; _viewId = null;
     var r = root(); if (!r) return;
     // Estado inicial: se já tem plano(s) salvo(s), mostramos o painel; senão a escolha.
+    // A escolha é re-renderizada aqui (e não só fiada) porque render() roda
+    // antes de wire() — sem isso o aviso da meta vinda da calculadora só
+    // apareceria na segunda visita à seção.
     if (libDe(p).length) bindPainel();
-    else bindEscolha();
+    else { r.innerHTML = escolhaHTML(p); bindEscolha(); }
   }
 
   function bindEscolha() {
@@ -1187,6 +1331,9 @@
   }
 
   function abrirEditor(plano) {
+    // VET vindo da calculadora (seção Cálculos energéticos) entra como meta
+    // do plano quando ele ainda não tem uma.
+    if (!plano.metaKcal && _ctx && _ctx.metaKcal) plano.metaKcal = _ctx.metaKcal;
     _draft = plano;
     var r = root(); if (!r) return;
     r.innerHTML = editorHTML(plano);
@@ -1202,33 +1349,116 @@
     });
     // recalcula ao vivo
     r.addEventListener("input", function (e) {
-      if (e.target.matches("[data-food]")) atualizarMedidas(e.target);
+      if (e.target.matches(".pl-food")) { abrirAC(e.target); atualizarMedidas(e.target); }
       recalc();
     });
     r.addEventListener("change", function (e) { recalc(); });
+    // autocomplete: abre ao focar, navega pelo teclado, fecha ao sair
+    r.addEventListener("focusin", function (e) { if (e.target.matches(".pl-food")) abrirAC(e.target); });
+    r.addEventListener("keydown", onACKey);
+    document.addEventListener("click", fecharACForaSeNecessario, true);
     // delegação de cliques (add/remove)
     r.addEventListener("click", function (e) {
       var t = e.target;
+      var op = t.closest("[data-ac-op]");
+      if (op) { escolherAC(op); return; }
       if (t.closest("[data-add-item]")) { addItem(t.closest("[data-meal]")); }
       else if (t.closest("[data-rm-item]")) { t.closest("[data-item]").remove(); recalc(); }
-      else if (t.closest("[data-add-meal]")) { addMeal(); }
+      else if (t.closest("[data-toggle-subs]")) { alternarSubs(t.closest("[data-item]")); }
+      else if (t.closest("[data-add-sub]")) { addSub(t.closest("[data-item]")); }
+      else if (t.closest("[data-rm-sub]")) { var itw = t.closest("[data-item]"); t.closest("[data-sub]").remove(); contarSubs(itw); recalc(); }
+      else if (t.closest("[data-alt-meal]")) { alternarAlt(t.closest("[data-meal]")); }
+      else if (t.closest("[data-add-meal]")) { addMeal(false); }
+      else if (t.closest("[data-add-alt]")) { addMeal(true); }
       else if (t.closest("[data-rm-meal]")) { t.closest("[data-meal]").remove(); recalc(); }
       else if (t.closest("[data-pl-salvar]")) { salvar(); }
       else if (t.closest("[data-pl-pdf-edit]")) { gerarPDF(coletar()); }
     });
   }
 
+  /* ---------- Autocomplete de alimentos ----------
+     Lista própria (o <datalist> do navegador ignorava acento, não rolava e
+     mostrava sugestões que não tinham nada a ver com o que foi digitado). */
+  function acDe(input) { return input.parentNode.querySelector("[data-ac]"); }
+  function abrirAC(input) {
+    var box = acDe(input); if (!box) return;
+    var lista = buscar(input.value, 60);
+    if (!lista.length) {
+      box.innerHTML = '<div class="pl-ac__vazio">Nenhum alimento encontrado</div>';
+    } else {
+      box.innerHTML = lista.map(function (a, i) {
+        return '<button class="pl-ac__op' + (i === 0 ? " is-hl" : "") + '" type="button" data-ac-op="' + a.id + '" tabindex="-1">' +
+          '<span class="pl-ac__nome">' + esc(a.nome) + '</span>' +
+          '<span class="pl-ac__kc">' + r0(a.kcal) + ' kcal/100 g</span></button>';
+      }).join("");
+    }
+    box.hidden = false;
+    box.scrollTop = 0;
+    input.setAttribute("aria-expanded", "true");
+  }
+  function fecharAC(box) {
+    if (!box || box.hidden) return;
+    box.hidden = true;
+    var inp = box.parentNode.querySelector(".pl-food");
+    if (inp) inp.setAttribute("aria-expanded", "false");
+  }
+  function fecharACForaSeNecessario(e) {
+    var r = root(); if (!r) return;
+    r.querySelectorAll("[data-ac]:not([hidden])").forEach(function (box) {
+      if (!box.parentNode.contains(e.target)) fecharAC(box);
+    });
+  }
+  function escolherAC(op) {
+    var box = op.closest("[data-ac]");
+    var input = box.parentNode.querySelector(".pl-food");
+    var al = AL_BY_ID[parseInt(op.getAttribute("data-ac-op"), 10)];
+    if (al) input.value = al.nome;
+    fecharAC(box);
+    atualizarMedidas(input);
+    // Escolha explícita já vem na medida caseira (1 fatia, 1 unidade…) em vez
+    // de "1 grama" — que é o que a nutri quase nunca quer digitar.
+    var ehSub = input.hasAttribute("data-sub-food");
+    var sel = input.closest(ehSub ? "[data-sub]" : ".pl-item").querySelector(ehSub ? "[data-sub-med]" : "[data-med]");
+    if (sel && sel.value === "grama" && sel.options.length > 1) sel.selectedIndex = 1;
+    recalc();
+    input.focus();
+  }
+  function onACKey(e) {
+    var input = e.target.closest ? e.target.closest(".pl-food") : null;
+    if (!input) return;
+    var box = acDe(input); if (!box) return;
+    if (e.key === "Escape") { fecharAC(box); return; }
+    if (box.hidden) {
+      if (e.key === "ArrowDown") { abrirAC(input); e.preventDefault(); }
+      return;
+    }
+    var ops = box.querySelectorAll("[data-ac-op]");
+    if (!ops.length) return;
+    var i = -1;
+    for (var k = 0; k < ops.length; k++) { if (ops[k].classList.contains("is-hl")) { i = k; break; } }
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      if (i >= 0) ops[i].classList.remove("is-hl");
+      i = e.key === "ArrowDown" ? (i + 1) % ops.length : (i <= 0 ? ops.length - 1 : i - 1);
+      ops[i].classList.add("is-hl");
+      ops[i].scrollIntoView({ block: "nearest" });
+    } else if (e.key === "Enter" || e.key === "Tab") {
+      if (i >= 0) { if (e.key === "Enter") e.preventDefault(); escolherAC(ops[i]); }
+      else fecharAC(box);
+    }
+  }
+
   // Quando o alimento muda, reconstrói o select de medidas com as medidas dele.
+  // Vale para o item principal e para as linhas de substituto.
   function atualizarMedidas(foodInput) {
-    var row = foodInput.closest("[data-item]");
-    var sel = row.querySelector("[data-med]");
+    var ehSub = foodInput.hasAttribute("data-sub-food");
+    var row = foodInput.closest(ehSub ? "[data-sub]" : ".pl-item");
+    var sel = row.querySelector(ehSub ? "[data-sub-med]" : "[data-med]");
+    if (!sel) return;
     var al = alimentoDoValor(foodInput.value);
     var medidas = al ? al.medidas : [{ nome: "grama", g: 1 }];
     var atual = sel.value;
-    sel.innerHTML = medidas.map(function (m) {
-      var selAttr = (m.nome === atual) ? " selected" : "";
-      return '<option value="' + esc(m.nome) + '" data-g="' + m.g + '"' + selAttr + '>' + esc(m.nome) + '</option>';
-    }).join("");
+    sel.innerHTML = medOptsHTML(medidas, atual);
     // se a medida atual não existe mais, escolhe a primeira medida caseira (ou grama)
     if (!medidas.some(function (m) { return m.nome === atual; })) {
       sel.selectedIndex = medidas.length > 1 ? 1 : 0;
@@ -1242,12 +1472,72 @@
     box.appendChild(tmp.firstChild);
     recalc();
   }
-  function addMeal() {
+  // Nova refeição. `alt` = já nasce como opção alternativa, com o nome
+  // sugerido a partir da última refeição normal ("Lanche da tarde 2").
+  function addMeal(alt) {
     var box = document.getElementById("pl-meals");
     var mi = box.querySelectorAll("[data-meal]").length;
+    var nome = "Nova refeição", hora = "";
+    if (alt) {
+      var normais = [].slice.call(box.querySelectorAll('[data-meal][data-alt="0"]'));
+      var ref = normais[normais.length - 1];
+      if (ref) {
+        var base = (ref.querySelector("[data-meal-nome]") || {}).value || "Refeição";
+        hora = (ref.querySelector("[data-meal-hora]") || {}).value || "";
+        nome = /\d$/.test(base.trim()) ? base.trim() + " (outra opção)" : base.trim() + " 2";
+      } else { nome = "Opção alternativa"; }
+    }
     var tmp = document.createElement("div");
-    tmp.innerHTML = mealHTML({ nome: "Nova refeição", hora: "", itens: [{ alimentoId: null, alimento: "", medida: "grama", qtd: 1 }] }, mi);
+    tmp.innerHTML = mealHTML({ nome: nome, hora: hora, alternativa: !!alt, itens: [{ alimentoId: null, alimento: "", medida: "grama", qtd: 1 }] }, mi);
     box.appendChild(tmp.firstChild);
+    recalc();
+    var novo = box.lastChild;
+    if (novo && novo.scrollIntoView) novo.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  /* ---------- Substitutos e refeição alternativa ---------- */
+  function alternarSubs(itemEl) {
+    var box = itemEl.querySelector("[data-subs]");
+    if (!box) return;
+    box.hidden = !box.hidden;
+    if (!box.hidden && !box.querySelector("[data-sub]")) addSub(itemEl);
+    else contarSubs(itemEl);
+  }
+  function addSub(itemEl) {
+    var box = itemEl.querySelector("[data-subs]");
+    var rows = itemEl.querySelector("[data-sub-rows]");
+    if (!box || !rows) return;
+    box.hidden = false;
+    var tmp = document.createElement("div");
+    tmp.innerHTML = subRowHTML(null);
+    rows.appendChild(tmp.firstChild);
+    contarSubs(itemEl);
+    var inp = rows.lastChild.querySelector(".pl-food");
+    if (inp) inp.focus();
+  }
+  // Mantém o contador no botão ⇄ em dia (só conta substituto preenchido).
+  function contarSubs(itemEl) {
+    if (!itemEl) return;
+    var n = 0;
+    itemEl.querySelectorAll("[data-sub]").forEach(function (s) {
+      if (((s.querySelector("[data-sub-food]") || {}).value || "").trim()) n++;
+    });
+    var btn = itemEl.querySelector("[data-toggle-subs]");
+    var lbl = itemEl.querySelector("[data-subs-n]");
+    if (lbl) lbl.textContent = n || "";
+    if (btn) btn.classList.toggle("is-on", n > 0);
+  }
+  function alternarAlt(mealEl) {
+    if (!mealEl) return;
+    var alt = mealEl.getAttribute("data-alt") !== "1";
+    mealEl.setAttribute("data-alt", alt ? "1" : "0");
+    mealEl.classList.toggle("pl-meal--alt", alt);
+    var btn = mealEl.querySelector("[data-alt-meal]");
+    if (btn) {
+      var tmp = document.createElement("div");
+      tmp.innerHTML = altBtnHTML(alt);
+      btn.replaceWith(tmp.firstChild);
+    }
     recalc();
   }
 
@@ -1267,6 +1557,7 @@
       var rf = {
         nome: (m.querySelector("[data-meal-nome]") || {}).value || "Refeição",
         hora: (m.querySelector("[data-meal-hora]") || {}).value || "",
+        alternativa: m.getAttribute("data-alt") === "1",
         itens: []
       };
       m.querySelectorAll("[data-item]").forEach(function (it) {
@@ -1277,7 +1568,20 @@
         var medida = sel ? sel.value : "grama";
         var qtd = num((it.querySelector("[data-qt]") || {}).value);
         var c = calcItem({ alimentoId: al ? al.id : null, alimento: al ? al.nome : food, medida: medida, qtd: qtd });
-        rf.itens.push({ alimentoId: al ? al.id : null, alimento: al ? al.nome : food, medida: c.medida, qtd: qtd, gramas: c.gramas, kcal: c.kcal, cho: c.cho, ptn: c.ptn, lip: c.lip });
+        var item = { alimentoId: al ? al.id : null, alimento: al ? al.nome : food, medida: c.medida, qtd: qtd, gramas: c.gramas, kcal: c.kcal, cho: c.cho, ptn: c.ptn, lip: c.lip };
+        // Substitutos: gravados junto do item, nunca somados ao dia.
+        var subs = [];
+        it.querySelectorAll("[data-sub]").forEach(function (s) {
+          var sf = (s.querySelector("[data-sub-food]") || {}).value || "";
+          if (!sf.trim()) return;
+          var sal = alimentoDoValor(sf);
+          var smed = (s.querySelector("[data-sub-med]") || {}).value || "grama";
+          var sq = num((s.querySelector("[data-sub-qt]") || {}).value);
+          var sc = calcItem({ alimentoId: sal ? sal.id : null, alimento: sal ? sal.nome : sf, medida: smed, qtd: sq });
+          subs.push({ alimentoId: sal ? sal.id : null, alimento: sal ? sal.nome : sf, medida: sc.medida, qtd: sq, gramas: sc.gramas, kcal: sc.kcal });
+        });
+        if (subs.length) item.subs = subs;
+        rf.itens.push(item);
       });
       plano.refeicoes.push(rf);
     });
@@ -1291,6 +1595,7 @@
     var tot = { kcal: 0, cho: 0, ptn: 0, lip: 0 };
     r.querySelectorAll("[data-meal]").forEach(function (m) {
       var mealK = 0;
+      var alt = m.getAttribute("data-alt") === "1";
       m.querySelectorAll("[data-item]").forEach(function (it) {
         var food = (it.querySelector("[data-food]") || {}).value || "";
         var sel = it.querySelector("[data-med]");
@@ -1301,10 +1606,22 @@
         var gEl = it.querySelector("[data-gramas]"), kEl = it.querySelector("[data-kc]");
         if (gEl) gEl.textContent = food.trim() ? c.gramas + " g" : "—";
         if (kEl) kEl.textContent = food.trim() ? c.kcal + " kcal" : "—";
-        mealK += c.kcal; tot.kcal += c.kcal; tot.cho += c.cho; tot.ptn += c.ptn; tot.lip += c.lip;
+        // substitutos: mostram gramas/kcal só para a nutri conferir a troca
+        it.querySelectorAll("[data-sub]").forEach(function (s) {
+          var sf = ((s.querySelector("[data-sub-food]") || {}).value || "").trim();
+          var smed = (s.querySelector("[data-sub-med]") || {}).value || "grama";
+          var sq = num((s.querySelector("[data-sub-qt]") || {}).value);
+          var sal = alimentoDoValor(sf);
+          var sc = calcItem({ alimentoId: sal ? sal.id : null, alimento: sf, medida: smed, qtd: sq });
+          var skEl = s.querySelector("[data-sub-kc]");
+          if (skEl) skEl.textContent = sf ? sc.gramas + " g · " + sc.kcal + " kcal" : "—";
+        });
+        contarSubs(it);
+        mealK += c.kcal;
+        if (!alt) { tot.kcal += c.kcal; tot.cho += c.cho; tot.ptn += c.ptn; tot.lip += c.lip; }
       });
       var mk = m.querySelector("[data-meal-kc]");
-      if (mk) mk.textContent = r0(mealK) + " kcal";
+      if (mk) mk.textContent = r0(mealK) + " kcal" + (alt ? " · não soma" : "");
     });
     tot = { kcal: r0(tot.kcal), cho: r1(tot.cho), ptn: r1(tot.ptn), lip: r1(tot.lip) };
     var meta = num((r.querySelector("[data-pl-meta]") || {}).value);
@@ -1395,19 +1712,30 @@
       '<div class="doc-macro"><div class="doc-macro__v">' + pc.lip + '%</div><div class="doc-macro__l">Gordura</div></div>' +
       '<div class="doc-macro"><div class="doc-macro__v">' + t.kcal + '</div><div class="doc-macro__l">kcal/dia</div></div>' +
     '</div>';
+    var temAlt = (plano.refeicoes || []).some(ehAlternativa);
+    var temSub = (plano.refeicoes || []).some(function (rf) {
+      return (rf.itens || []).some(function (it) { return subsTexto(it).length; });
+    });
     var refs = (plano.refeicoes || []).map(function (rf) {
       var sub = 0;
       var itens = (rf.itens || []).map(function (it) {
         var c = calcItem(it); sub += c.kcal;
-        return '<div class="doc-meal__item"><span>' + esc(it.alimento) + '</span>' +
+        var st = subsTexto(it);
+        return '<div class="doc-meal__item"><span>' + esc(it.alimento) +
+            (st.length ? '<span class="doc-meal__sub"> ou ' + esc(st.join(" · ")) + '</span>' : '') + '</span>' +
           '<span class="doc-meal__qt">' + esc(qtdLabel(it, c)) + ' · ' + c.kcal + ' kcal</span></div>';
       }).join("");
+      var alt = ehAlternativa(rf);
       return '<div class="doc-meal"><div class="doc-meal__head">' +
-        '<span class="doc-meal__nome">' + esc(rf.nome || "Refeição") + '</span>' +
+        '<span class="doc-meal__nome">' + esc(rf.nome || "Refeição") +
+          (alt ? ' <em>(opção alternativa)</em>' : '') + '</span>' +
         '<span class="doc-meal__hora">' + esc(rf.hora || "") + '</span>' +
         '<span class="doc-meal__kcal">' + r0(sub) + ' kcal</span></div>' + itens + '</div>';
     }).join("");
-    var body = (plano.objetivo ? '<h2>Objetivo: ' + esc(plano.objetivo) + '</h2>' : '') + macros + refs +
+    var legenda = "";
+    if (temSub) legenda += '<div class="doc-note">⇄ Onde há “ou”, você pode <strong>trocar</strong> o alimento pela opção indicada, na quantidade descrita.</div>';
+    if (temAlt) legenda += '<div class="doc-note">↔ As refeições marcadas como <strong>opção alternativa</strong> substituem a refeição do mesmo horário — escolha uma das duas, não as duas. Por isso elas não entram no total de kcal do dia.</div>';
+    var body = (plano.objetivo ? '<h2>Objetivo: ' + esc(plano.objetivo) + '</h2>' : '') + macros + refs + legenda +
       '<div class="doc-note">💡 Beba bastante água ao longo do dia. As medidas caseiras são aproximadas — siga as porções orientadas.</div>' +
       (window.ListaCompras ? window.ListaCompras.pdfHTML(plano) : "");
     window.NutriDoc.imprimir(perfil(), {

@@ -18,6 +18,7 @@
 
   var state = { filtro: "Todos", busca: "", tab: "resumo", current: null, load: "loading" };
   var perfilNutri = {}; // identidade da nutri (para PDFs de exames); carregada abaixo
+  var metaKcalPendente = null; // VET levado da calculadora para o construtor de plano
   if (window.NutriPerfil) {
     window.NutriPerfil.get().then(function (pf) { if (pf) perfilNutri = pf; }).catch(function () {});
   }
@@ -186,6 +187,7 @@
     { id: "anamnese",     ico: "📝", tit: "Anamnese",               sub: ["Anamnese inicial", "Anamneses de retorno", "Histórico completo"] },
     { id: "exames",       ico: "🧪", tit: "Exames",                 sub: ["Upload de exames", "Visualização", "Histórico"] },
     { id: "antropometria",ico: "📏", tit: "Antropometria",          sub: ["Peso, altura, IMC", "Circunferências", "Dobras", "Evolução gráfica"] },
+    { id: "calculos",     ico: "🧮", tit: "Cálculos energéticos",   sub: ["TMB por 6 fórmulas", "GET e VET", "Macronutrientes", "Meta para o plano"] },
     { id: "plano",        ico: "🥗", tit: "Planejamento Alimentar", sub: ["Plano atual", "Planos anteriores", "Lista de compras"] },
     // { id: "treino",    ico: "🏋️", tit: "Treino em casa",         sub: ["Blocos e exercícios", "Vídeos", "Liberar ao paciente"] }, // PROJETO FUTURO — oculto por ora (código preservado em treino-paciente.js)
     { id: "metas",        ico: "🎯", tit: "Metas",                  sub: ["Checklist do paciente", "Metas ativas", "Evolução"] },
@@ -388,6 +390,7 @@
       case "anamnese":      html = secAnamnese(p); break;
       case "exames":        html = secExames(p); break;
       case "antropometria": html = secAntropometria(p); break;
+      case "calculos":      html = secCalculos(p); break;
       case "plano":         html = secPlano(p); break;
       case "treino":        html = secTreino(p); break;
       case "metas":         html = secMetas(p); break;
@@ -434,10 +437,35 @@
         }
       });
     }
+    if (sec === "calculos" && window.CalcTMB) {
+      window.CalcTMB.wire({
+        toast: pacToast,
+        save: function (calc) {
+          if (!(window.NutriPacientes && window.NutriPacientes.saveCalculos)) {
+            return Promise.reject(new Error("salvamento indisponível"));
+          }
+          return window.NutriPacientes.saveCalculos(p.id, calc).then(function (saved) {
+            for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
+            state.current = saved;
+            return true;
+          });
+        },
+        // Leva o VET direto para o construtor do plano: a meta calórica
+        // já entra preenchida em vez de a Ana ter de anotar o número.
+        usarNoPlano: function (calc) {
+          if (calc.vet == null) { pacToast("Preencha os dados para calcular o VET.", true); return; }
+          metaKcalPendente = calc.vet;
+          irParaSecao(state.current || p, "plano");
+          pacToast("VET de " + calc.vet + " kcal levado para o plano.");
+        }
+      });
+    }
     if (sec === "plano" && window.PlanoAlimentar) {
+      var metaVinda = metaKcalPendente; metaKcalPendente = null; // só vale na ida
       window.PlanoAlimentar.wire(p, {
         toast: pacToast,
         perfil: perfilNutri,
+        metaKcal: metaVinda,
         onSaved: function (saved) {
           for (var i = 0; i < P.pacientes.length; i++) { if (P.pacientes[i].id === saved.id) P.pacientes[i] = saved; }
           state.current = saved;
@@ -541,6 +569,48 @@
       fmetric("Altura", (p.altura ? p.altura.toFixed(2) + " m" : "—")) +
       fmetric("IMC", (p.imc != null ? p.imc + "" : "—"), (p.imc != null ? imcClasse(p.imc) : "")) + '</div>');
   }
+  /* ---------- Cálculos energéticos (TMB · GET · VET) ----------
+     A mesma calculadora do prontuário, agora dentro da ficha: é aqui que
+     a nutri decide a meta calórica ANTES de montar o plano, e o botão
+     "usar no plano" leva o VET direto para o construtor de refeições. */
+  function calcBaseDe(p) {
+    var an = p.antropometria || {};
+    var altura = an.altura != null ? an.altura : p.altura;   // metros no cadastro
+    var alturaCm = altura == null ? "" : (altura > 3 ? Math.round(altura) : Math.round(altura * 100));
+    return {
+      sexo: p.sexo || an.sexo || "F",
+      idade: p.idade || "",
+      peso: (an.peso != null ? an.peso : (p.pesoAtual != null ? p.pesoAtual : "")),
+      altura: alturaCm,
+      massaMagra: an.massaMagra != null ? an.massaMagra : ((an.raioX && an.raioX.massaMagraKg) || ""),
+      objetivoId: objetivoParaCalc(p.objetivo)
+    };
+  }
+  function objetivoParaCalc(txt) {
+    var t = String(txt || "").toLowerCase();
+    if (/emagre|perder|défic|defic/.test(t)) return "emagrecer_mod";
+    if (/hipertrof|massa|muscul/.test(t)) return "hipertrofia";
+    if (/ganho de peso|ganhar/.test(t)) return "ganhar";
+    if (/acamad|repleç|recuper/.test(t)) return "recuperacao";
+    return "manter";
+  }
+  function secCalculos(p) {
+    if (!window.CalcTMB) return secWrap("Cálculos energéticos", emBreve("A calculadora não carregou nesta tela."));
+    var base = calcBaseDe(p);
+    var faltando = [];
+    if (!base.peso) faltando.push("peso");
+    if (!base.altura) faltando.push("altura");
+    if (!base.idade) faltando.push("idade");
+    var aviso = faltando.length
+      ? '<p class="pl-hint">⚠️ Faltam <strong>' + esc(faltando.join(", ")) + '</strong> no cadastro/antropometria — ' +
+        'preencha aqui embaixo para calcular, ou atualize a ficha para vir sempre preenchido.</p>'
+      : '<p class="pl-hint">Dados puxados do cadastro e da última antropometria. Ajuste à vontade — o cálculo é ao vivo.</p>';
+    var salvo = (p.calculos && p.calculos.atualizadoEm)
+      ? '<p class="pl-hint">Último cálculo salvo em <strong>' + esc(p.calculos.atualizadoEm) + '</strong>.</p>' : '';
+    return '<section class="fsec"><h2 class="fsec__title">Cálculos energéticos — TMB · GET · VET</h2>' +
+      aviso + salvo + window.CalcTMB.render(base, p.calculos || null) + '</section>';
+  }
+
   function fmetric(lbl, val, hint) {
     return '<div class="fmetric"><div class="fmetric__lbl">' + lbl + '</div>' +
       '<div class="fmetric__val">' + val + '</div>' +

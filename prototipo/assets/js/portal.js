@@ -292,6 +292,13 @@
     else if (it.qtd != null) q = it.qtd + "";
     return nome + (q ? " — " + q : "");
   }
+  // Substitutos que a nutri autorizou para o item ("ou: ovo, merluza…").
+  function itemSubs(it) {
+    if (!it || typeof it !== "object") return "";
+    var s = (it.subs || []).filter(function (x) { return x && (x.alimento || x.nome); })
+      .map(function (x) { return itemTexto(x); });
+    return s.length ? s.join(" · ") : "";
+  }
 
   function renderPlano(p) {
     // O convite de renovação vem antes do plano porque é o único aviso do
@@ -325,16 +332,24 @@
       var body = refs.map(function (r, ri) {
         var itens = (r.itens || []).map(function (it, ii) {
           var texto = itemTexto(it);
-          if (!interativo) return '<li class="meal-item"><span>' + esc(texto) + '</span></li>';
+          var subs = itemSubs(it);
+          var troca = subs ? '<span class="meal-item__subs"><b>ou</b> ' + esc(subs) + '</span>' : '';
+          if (!interativo) return '<li class="meal-item"><span>' + esc(texto) + '</span>' + troca + '</li>';
           var key = ri + ":" + ii;
           var done = checkGet(key);
           return '<li class="meal-item"><label><input type="checkbox" data-check="' + esc(key) + '"' +
             (done ? " checked" : "") + (readonly ? " disabled" : "") + '> ' +
-            '<span>' + esc(texto) + '</span></label></li>';
+            '<span>' + esc(texto) + '</span></label>' + troca + '</li>';
         }).join("");
         var hora = horaRefeicao(r);
-        return '<div class="pcard meal"><div class="meal__head"><span class="meal__nome">' + esc(r.nome) + '</span>' +
+        // Refeição alternativa: opção no lugar da refeição do mesmo horário,
+        // por isso não soma no total nem conta na adesão.
+        var alt = !!r.alternativa;
+        return '<div class="pcard meal' + (alt ? ' meal--alt' : '') + '"><div class="meal__head">' +
+          '<span class="meal__nome">' + esc(r.nome) + '</span>' +
+          (alt ? '<span class="meal__badge">outra opção</span>' : '') +
           (hora ? '<span class="meal__hora">' + esc(hora) + '</span>' : '') + '</div>' +
+          (alt ? '<p class="meal__hint">Você pode fazer esta refeição <strong>no lugar</strong> da do mesmo horário — escolha uma das duas.</p>' : '') +
           '<ul class="meal__list">' + itens + '</ul></div>';
       }).join("");
       return (multi ? '<div class="plano-sep">' + esc(plano.titulo || "Plano alimentar") + '</div>' : '') + head + body;
@@ -362,6 +377,7 @@
     var refs = (p.plano && p.plano.refeicoes) || [];
     var total = 0, feitos = 0;
     refs.forEach(function (r, ri) {
+      if (r && r.alternativa) return; // opção alternativa não pesa na adesão
       (r.itens || []).forEach(function (_it, ii) { total++; if (ctx.marcas[ri + ":" + ii] === true) feitos++; });
     });
     return total ? Math.round(feitos * 100 / total) : 0;
