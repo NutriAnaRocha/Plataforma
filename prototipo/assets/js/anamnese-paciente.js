@@ -24,7 +24,19 @@
   var MODELO_ID = "anamnese-programa";
   var TITULO = "Anamnese do programa";
   var TCLE_TIPO = "telenutricao";
-  var TCLE_VERSAO = "2026-07-27";
+  // Bump em 29/07: o texto saiu da devolutiva em vídeo para as orientações
+  // escritas. A versão existe justamente para provar QUAL texto foi aceito, e
+  // pendente() consulta por tipo (não por versão) — então quem já aceitou não
+  // é obrigado a reaceitar.
+  var TCLE_VERSAO = "2026-07-29";
+  // Pedido expresso para começar a elaborar o plano. Fica separado do TCLE de
+  // propósito: é o que a cláusula 8 dos termos promete registrar "com data e
+  // hora", e é ele que sustenta o caráter personalíssimo do documento diante do
+  // art. 49 do CDC. Aceite genérico e enterrado no meio do termo não serve —
+  // a jurisprudência só afasta o arrependimento quando o aviso é prévio,
+  // claro e destacado.
+  var PLANO_TIPO = "plano-personalizado";
+  var PLANO_VERSAO = "2026-07-29";
   var RASCUNHO_KEY = "nutri:anamnese:rascunho";
 
   function esc(s) {
@@ -282,6 +294,7 @@
       '<h2 class="pcard__title">' + esc(p.titulo) + '</h2>' +
       (p.dica ? '<p class="anm-passo-dica">' + esc(p.dica) + '</p>' : "") +
       '<div class="anm-campos">' + p.campos.map(campoHTML).join("") + '</div>' +
+      (ultimo ? consentPlanoHTML() : "") +
       '<div class="anm-nav">' +
         (_passo > 0 ? '<button type="button" class="btn btn--outline" data-anm-voltar>‹ Voltar</button>' : '<span></span>') +
         '<button type="button" class="btn btn--primary" data-anm-avancar>' +
@@ -289,6 +302,26 @@
       '</div>' +
       '<p class="anm-salvo">Suas respostas ficam salvas neste aparelho — dá para parar e voltar depois.</p>' +
     '</div>';
+  }
+
+  /* Último passo: pedido expresso para eu começar o plano.
+     Desmarcada por padrão e obrigatória — se ela não marcar, não envia. */
+  function consentPlanoHTML() {
+    return '<div class="anm-tcle anm-tcle--curto">' +
+      '<p><strong>Antes de enviar.</strong> A partir daqui eu começo a montar o seu plano ' +
+        'alimentar, feito só para você a partir do que você respondeu aqui.</p>' +
+      '<p><strong>Você pode cancelar quando quiser</strong>, do primeiro ao último dia, sem multa ' +
+        'e sem prazo mínimo. Se desistir <strong>antes</strong> de eu entregar o plano, devolvo o ' +
+        'valor integral. <strong>Depois</strong> de entregue, o plano fica com você e eu devolvo a ' +
+        'parte proporcional aos ciclos de 30 dias que você ainda não usou.</p>' +
+      '<p>Como o plano é um documento personalizado e fácil de copiar, uma vez entregue ele não ' +
+        'tem como ser devolvido — por isso eu só começo com o seu pedido expresso abaixo.</p>' +
+      '</div>' +
+      '<label class="anm-opt anm-aceite" for="anm-consent-plano">' +
+        '<input type="checkbox" id="anm-consent-plano"> ' +
+        '<span>Li e entendi. Peço que a Ana comece a elaborar o meu plano alimentar agora.</span>' +
+      '</label>' +
+      '<p class="anm-erro" data-consent-erro hidden>Você precisa confirmar o pedido para enviar.</p>';
   }
 
   function tcleHTML() {
@@ -302,7 +335,7 @@
           'conforme a Resolução CFN nº 760/2023.</p>' +
         '<p><strong>Como funciona.</strong> A avaliação é feita a partir das informações que você preenche ' +
           'nesta anamnese. Com base nelas, a nutricionista elabora o seu plano alimentar individualizado e ' +
-          'grava uma devolutiva em vídeo explicando as escolhas dela. Ao longo do programa há reavaliações ' +
+          'escreve as orientações dela explicando cada escolha. Ao longo do programa há reavaliações ' +
           'periódicas e um canal de mensagens para dúvidas.</p>' +
         '<p><strong>Limitações — leia com atenção.</strong> Por ser a distância, não há exame físico nem ' +
           'aferição de medidas por profissional: as medidas são informadas por você e podem conter erro. ' +
@@ -337,7 +370,7 @@
         'Agora é comigo: vou analisar tudo com calma e montar o seu plano.</p>' +
       '<div class="anm-prazo">' +
         '<strong>Prazo de entrega: até 2 dias úteis.</strong>' +
-        '<span>Você recebe um aviso quando o plano estiver liberado aqui no portal, junto com a devolutiva em vídeo.</span>' +
+        '<span>Você recebe um aviso quando o plano estiver liberado aqui no portal, junto com as minhas orientações escritas.</span>' +
       '</div>' +
       '<p class="anm-salvo">Lembrou de alguma coisa importante depois de enviar? Me escreva na aba Mensagens.</p>' +
     '</div>';
@@ -465,11 +498,32 @@
   function enviar(btn) {
     var respostas = montarRespostas();
     if (!respostas.length) return;
+
+    // Sem o pedido expresso não sai nada. O registro vai ANTES da anamnese de
+    // propósito: se ele falhar, nada foi enviado e nenhum plano é montado —
+    // o contrário deixaria um pedido de plano sem consentimento gravado.
+    var host0 = document.getElementById("anm-root");
+    var chk = document.getElementById("anm-consent-plano");
+    var errC = host0 && host0.querySelector("[data-consent-erro]");
+    if (!chk || !chk.checked) {
+      if (errC) errC.hidden = false;
+      if (chk) chk.focus();
+      return;
+    }
+    if (errC) errC.hidden = true;
+
     btn.disabled = true;
     var txt = btn.textContent;
     btn.textContent = "Enviando…";
 
     window.NutriDBReady.then(function (c) {
+      return c.from("consentimentos").insert({
+        user_id: _user && _user.id, tipo: PLANO_TIPO, versao: PLANO_VERSAO
+      }).then(function (res) {
+        if (res && res.error) throw res.error;
+        return c;
+      });
+    }).then(function (c) {
       return c.rpc("salvar_anamnese_paciente", {
         p_respostas: respostas,
         p_medidas: montarMedidas(),
@@ -553,6 +607,8 @@
   window.AnamneseView = {
     MODELO_ID: MODELO_ID,
     TCLE_VERSAO: TCLE_VERSAO,
+    PLANO_TIPO: PLANO_TIPO,
+    PLANO_VERSAO: PLANO_VERSAO,
     pendente: pendente,
     portalHTML: portalHTML,
     wire: wire

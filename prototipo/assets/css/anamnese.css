@@ -142,6 +142,10 @@ textarea.anm-input { resize: vertical; min-height: 76px; line-height: var(--lh-n
   font-size: var(--fs-sm);
   line-height: var(--lh-normal);
 }
+/* Bloco curto (o pedido do plano): sem rolagem. O aviso só afasta o
+   arrependimento se for prévio e DESTACADO — escondê-lo atrás de um scroll
+   derrubaria justamente o que ele existe para provar. */
+.anm-tcle--curto { max-height: none; overflow: visible; }
 .anm-tcle p { margin: 0 0 var(--sp-3); }
 .anm-tcle p:last-child { margin-bottom: 0; }
 .anm-tcle strong { color: var(--vinho); }
