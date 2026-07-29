@@ -7,6 +7,21 @@
 
 .calc-card { border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); background: var(--branco); padding: var(--sp-4); box-shadow: var(--shadow-sm); }
 .calc-card__t { font-weight: 800; color: var(--vinho); font-size: var(--fs-sm); margin-bottom: var(--sp-3); letter-spacing: .01em; }
+.calc-card__t { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+
+/* Link discreto no título do card (ex.: importar de antropometria) */
+.calc-link {
+  font: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer;
+  background: none; border: none; padding: 0; margin-left: auto;
+  color: var(--vinho); text-decoration: underline; text-underline-offset: 2px;
+}
+.calc-link:hover { color: var(--vinho-escuro); }
+
+.calc-field select:disabled {
+  background: var(--cinza-claro); color: var(--texto-sutil); cursor: not-allowed;
+}
+.calc-field optgroup { font-weight: 800; color: var(--vinho); }
+.calc-field optgroup option { font-weight: 400; color: var(--texto); }
 
 .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--sp-3); }
 .calc-field { display: flex; flex-direction: column; gap: 4px; }
@@ -70,6 +85,19 @@
   background: #fff6e6; border: 1px solid #f0d49b; border-radius: var(--radius-sm); padding: 7px 9px;
 }
 .calc-mem small { color: var(--texto-sutil); }
+
+/* Painel de referências */
+.calc-refs > summary {
+  cursor: pointer; margin-bottom: 0; list-style: none;
+}
+.calc-refs > summary::-webkit-details-marker { display: none; }
+.calc-refs > summary::after { content: " ▾"; color: var(--texto-sutil); }
+.calc-refs[open] > summary { margin-bottom: var(--sp-3); }
+.calc-refs[open] > summary::after { content: " ▴"; }
+.calc-refs__lista { display: flex; flex-direction: column; gap: var(--sp-3); }
+.calc-ref { display: flex; flex-direction: column; gap: 2px; font-size: 12px; line-height: 1.5; }
+.calc-ref strong { color: var(--cinza-escuro); }
+.calc-ref span { color: var(--texto-sutil); }
 
 /* Comparativo */
 .calc-comp { display: flex; flex-direction: column; }
