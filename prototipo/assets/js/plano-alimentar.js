@@ -651,6 +651,8 @@
     },
     {
       /* Análogos de GLP-1 (semaglutida, liraglutida, tirzepatida).
+         Conduta completa (sintomas, exames, quando encaminhar) na Inteligência
+         Clínica: protocolo `analogos-glp1`, migration 0048.
          Alvos conferidos contra três documentos de 2025:
          - Sievenpiper JL et al. Nutritional and lifestyle supportive care
            recommendations for management of obesity with GLP-1-based therapies:
