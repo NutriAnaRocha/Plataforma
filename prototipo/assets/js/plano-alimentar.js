@@ -650,14 +650,33 @@
       }
     },
     {
-      /* Análogos de GLP-1 (semaglutida, liraglutida, tirzepatida). O esvaziamento
-         gástrico lento traz saciedade precoce, náusea e refluxo — daí refeições
-         pequenas, sem fritura e com gordura moderada e diluída no dia. O risco
-         real do tratamento é perder massa magra junto com o peso, então a
-         proteína é alta (~30% do VET, ≥25 g nas refeições principais) e
-         reforçada com itens de pouco volume (leite em pó desnatado, ricota,
-         ovo). Fibra ~30 g/dia pela constipação típica. Só 1500 e 1800 kcal:
-         abaixo disso não fecha a proteína, acima não costuma ser tolerado. */
+      /* Análogos de GLP-1 (semaglutida, liraglutida, tirzepatida).
+         Alvos conferidos contra três documentos de 2025:
+         - Sievenpiper JL et al. Nutritional and lifestyle supportive care
+           recommendations for management of obesity with GLP-1-based therapies:
+           expert consensus (Delphi). Obes Pillars 2025;17:100228.
+         - Mozaffarian D et al. Nutritional priorities to support GLP-1 therapy
+           for obesity: joint Advisory ACLM/ASN/OMA/TOS. Obesity 2025;33(8):1475-503.
+         - Spreckley E, Ruggiero A, Brown A. Bridging the nutrition guidance gap
+           for GLP-1 RA assisted weight loss. Int J Obes 2025. doi 10.1038/s41366-025-01952-w
+
+         Proteína: o risco do tratamento é perder massa magra junto com o peso.
+         Consenso = 1,2-1,5 g/kg de peso ATUAL/dia (Advisory aceita até 1,6),
+         DISTRIBUÍDA entre as refeições — por isso nenhuma refeição aqui fica
+         abaixo de ~20 g, inclusive os lanches, reforçados com itens de pouco
+         volume (leite em pó desnatado, ricota, ovo). Os totais (128 g em 1500 e
+         140 g em 1800) equivalem a 1,2-1,6 g/kg para 80-100 kg, faixa típica de
+         quem usa a caneta; em paciente mais leve, reduzir as porções proteicas.
+         Refeições: 4-6 pequenas ao dia (consenso), aqui 5 — o esvaziamento
+         gástrico lento traz saciedade precoce, náusea e refluxo.
+         Gordura: consenso limita a 25-60 g/dia em 1200-1500 kcal e 35-70 g em
+         1500-1800 kcal; este modelo fica em 44 g e 58 g, sem fritura e com o
+         azeite dividido entre almoço e jantar (gordura concentrada piora náusea).
+         Fibra: ≥25 g/dia (mulheres) e ≥30 g (homens) pela constipação típica;
+         aqui 26 g e 31 g. Na fase de titulação da dose, o Advisory sugere segurar
+         temporariamente fibra e gordura enquanto a náusea estiver ativa.
+         Só 1500 e 1800 kcal: abaixo não fecha a proteína distribuída, e o consenso
+         põe o piso de energia em 1000-1200 kcal; acima não costuma ser tolerado. */
       id: "caneta", ico: "💉", nome: "Canetas emagrecedoras (GLP-1)",
       objetivo: "Preservação de massa magra e controle de sintomas em uso de análogo de GLP-1",
       desc: "5 refeições pequenas, proteína alta, sem fritura e com fibra reforçada.",
@@ -667,16 +686,16 @@
           { nome: "Café da manhã", hora: "07:30", itens: [
             { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
             { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
-            { q: "queijo, minas, frescal", medida: "fatia", qtd: 1 },
-            { q: "mamao, formosa", medida: "colher de sopa", qtd: 3 } ] },
+            { q: "queijo, ricota", medida: "fatia", qtd: 2 },
+            { q: "mamao, formosa", medida: "colher de sopa", qtd: 2 } ] },
           { nome: "Lanche da manhã", hora: "10:00", itens: [
             { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
-            { q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 1 },
+            { q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 2 },
             { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 },
             { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 } ] },
           { nome: "Almoço", hora: "12:30", itens: [
-            { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
-            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "frango, peito, sem pele, grelhado", medida: "colher de sopa", qtd: 4 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 3 },
             { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
             { q: "brocolis, cozido", medida: "pires", qtd: 1 },
             { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
@@ -684,11 +703,12 @@
           { nome: "Lanche da tarde", hora: "16:00", itens: [
             { q: "queijo, ricota", medida: "fatia", qtd: 2 },
             { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
-            { q: "castanha, de caju", medida: "colher de sopa", qtd: 2 },
+            { q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 2 },
+            { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 },
             { q: "morango", medida: "unidade", qtd: 6 } ] },
           { nome: "Jantar", hora: "19:30", itens: [
             { q: "merluza, file, assado", medida: "porcao", qtd: 1 },
-            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 4 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 3 },
             { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
             { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
             { q: "azeite, de oliva", medida: "colher de cha", qtd: 1 } ] }
@@ -706,7 +726,7 @@
             { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 } ] },
           { nome: "Almoço", hora: "12:30", itens: [
             { q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 },
-            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
             { q: "feijao, carioca, cozido", medida: "concha", qtd: 1 },
             { q: "brocolis, cozido", medida: "pires", qtd: 1 },
             { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
@@ -715,11 +735,12 @@
             { q: "queijo, ricota", medida: "fatia", qtd: 2 },
             { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 },
             { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 1 },
+            { q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 1 },
             { q: "castanha, de caju", medida: "colher de sopa", qtd: 1 },
             { q: "morango", medida: "unidade", qtd: 6 } ] },
           { nome: "Jantar", hora: "19:30", itens: [
             { q: "merluza, file, assado", medida: "porcao", qtd: 1 },
-            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 5 },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 4 },
             { q: "abobrinha, italiana, cozida", medida: "colher de sopa", qtd: 3 },
             { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] }
