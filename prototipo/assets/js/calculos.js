@@ -148,8 +148,12 @@
   }
 
   /* ---------- Cálculo ---------- */
-  function calcular() {
-    var i = _inp;
+  // inp opcional: sem ele calcula o que está na tela. Com ele, calcula
+  // qualquer entrada sem tocar na UI — é assim que o rascunho de plano
+  // (rascunho-plano.js) usa as mesmas fórmulas que a Ana vê aqui, em vez
+  // de manter uma segunda cópia que envelhece sozinha.
+  function calcular(inp) {
+    var i = inp || _inp;
     var base = { sexo: i.sexo, idade: num(i.idade), peso: num(i.peso), altura: num(i.altura), massaMagra: num(i.massaMagra) };
     var f = FORMULA_BY_ID[i.formula] || FORMULAS[0];
     var tmb = tmbDe(f, base);
@@ -296,5 +300,8 @@
     else if (_ctx.toast) _ctx.toast("VET de " + (calc.vet || "—") + " kcal — leve para o plano ao montar as refeições.");
   }
 
-  window.CalcTMB = { render: render, wire: wire, FORMULAS: FORMULAS };
+  window.CalcTMB = {
+    render: render, wire: wire, calcular: calcular,
+    FORMULAS: FORMULAS, ATIVIDADE: ATIVIDADE, OBJETIVOS: OBJETIVOS
+  };
 })();

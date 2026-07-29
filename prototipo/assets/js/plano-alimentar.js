@@ -784,6 +784,10 @@
       titulo: fonte.titulo || (fonte.nome ? "Plano — " + fonte.nome : "Plano alimentar"),
       objetivo: fonte.objetivo || "",
       metaKcal: fonte.metaKcal || "",
+      // Memória do rascunho gerado da anamnese: viaja com o plano para o
+      // editor mostrar as decisões e para o salvamento saber que este
+      // plano ainda não pode ir para a paciente.
+      rascunho: fonte.rascunho || null,
       refeicoes: (fonte.refeicoes || []).map(function (r) {
         return {
           nome: r.nome, hora: r.hora || "",
@@ -858,7 +862,9 @@
 
   function render(p) {
     var lib = libDe(p);
-    return '<div id="plano-root">' + (lib.length ? painelHTML(p) : escolhaHTML()) + '</div>' + datalistHTML();
+    // escolhaHTML precisa da paciente NO ARGUMENTO: render() roda antes de
+    // wire(), então o _p do módulo ainda é o da ficha anterior (ou nada).
+    return '<div id="plano-root">' + (lib.length ? painelHTML(p) : escolhaHTML(p)) + '</div>' + datalistHTML();
   }
 
   // Lista de planos + detalhe do plano em foco.
@@ -916,7 +922,8 @@
   }
 
   /* ---------- Tela de escolha ---------- */
-  function escolhaHTML() {
+  function escolhaHTML(p) {
+    p = p || _p;
     var modelos = MODELOS.map(function (m) {
       var chips = (m.kcals || KCALS).map(function (k) {
         return '<button class="pl-modelo__kcal" type="button" data-modelo="' + m.id + '" data-kcal="' + k + '">' +
@@ -931,12 +938,23 @@
         '</div>' +
       '</div>';
     }).join("");
-    var voltar = libDe(_p).length
+    var voltar = libDe(p).length
       ? '<button class="btn btn--ghost btn--sm" type="button" data-pl-voltar-lista>← Voltar aos planos</button>' : '';
+    // Só aparece para quem respondeu a anamnese do programa — é dela que
+    // o rascunho sai. Sem anamnese não há o que ler.
+    var temAnamnese = !!(window.RascunhoPlano && window.RascunhoPlano.anamneseDe(p));
+    var daAnamnese = temAnamnese
+      ? '<button class="pl-inicio pl-inicio--rascunho" type="button" data-pl-rascunho>' +
+          '<span class="pl-inicio__ico">📋</span>' +
+          '<span class="pl-inicio__tit">Gerar rascunho da anamnese</span>' +
+          '<span class="pl-inicio__sub">Cálculo, modelo e horários dela — para você revisar e assinar</span>' +
+        '</button>'
+      : '';
     return '' +
       '<section class="fsec">' +
         '<div class="fsec__head"><h2 class="fsec__title">Novo plano alimentar</h2>' + voltar + '</div>' +
         '<div class="pl-escolha">' +
+          daAnamnese +
           '<button class="pl-inicio pl-inicio--zero" type="button" data-do-zero>' +
             '<span class="pl-inicio__ico">✍️</span>' +
             '<span class="pl-inicio__tit">Começar do zero</span>' +
@@ -1006,6 +1024,7 @@
           '<h2 class="fsec__title">Montar plano</h2>' +
           '<button class="btn btn--ghost btn--sm" type="button" data-pl-voltar>← Voltar</button>' +
         '</div>' +
+        rascunhoHTML(plano.rascunho) +
         '<div class="pl-meta">' +
           '<label class="pl-field pl-field--wide"><span>Título</span><input type="text" data-pl-titulo value="' + esc(plano.titulo || "") + '" placeholder="Plano alimentar" /></label>' +
           '<label class="pl-field pl-field--wide"><span>Objetivo</span><input type="text" data-pl-objetivo value="' + esc(plano.objetivo || "") + '" placeholder="Ex.: emagrecimento" /></label>' +
@@ -1068,6 +1087,8 @@
     if (vl) vl.addEventListener("click", function () { mostrarPainel(); });
     var zero = r.querySelector("[data-do-zero]");
     if (zero) zero.addEventListener("click", function () { abrirEditor(planoVazio()); });
+    var rasc = r.querySelector("[data-pl-rascunho]");
+    if (rasc) rasc.addEventListener("click", function () { gerarRascunho(); });
     r.querySelectorAll("[data-modelo]").forEach(function (b) {
       b.addEventListener("click", function () {
         var m = MODELO_BY_ID[b.getAttribute("data-modelo")];
@@ -1108,6 +1129,38 @@
     r.querySelectorAll("[data-del-plano]").forEach(function (b) {
       b.addEventListener("click", function () { excluirPlano(b.getAttribute("data-del-plano")); });
     });
+  }
+
+  /* Rascunho da anamnese: quem faz a leitura e a conta é rascunho-plano.js.
+     Aqui só se abre o resultado no editor — ou se diz por que não dá.
+     Quando o módulo se recusa (gestação, transtorno alimentar), a recusa
+     vira o aviso: é informação clínica, não erro de sistema. */
+  function gerarRascunho() {
+    if (!window.RascunhoPlano) { toast("Módulo do rascunho não carregou.", true); return; }
+    var res = window.RascunhoPlano.gerar(_p);
+    if (res.erro) { toast(res.erro, true); return; }
+    abrirEditor(expandir(res.plano));
+    toast("Rascunho gerado — revise antes de liberar.");
+  }
+
+  function rascunhoHTML(rasc) {
+    if (!rasc) return "";
+    var avisos = (rasc.avisos || []).map(function (a) {
+      return '<li class="pl-rasc__aviso">' + esc(a) + '</li>';
+    }).join("");
+    var itens = (rasc.memoria || []).map(function (m) {
+      return '<div class="pl-rasc__item"><b>' + esc(m.titulo) + '</b><p>' + esc(m.texto) + '</p></div>';
+    }).join("");
+    return '' +
+      '<div class="pl-rasc">' +
+        '<div class="pl-rasc__topo">' +
+          '<span class="pl-rasc__selo">Rascunho</span>' +
+          '<p class="pl-rasc__intro">Gerado da anamnese dela. <strong>Nada disto vai para a paciente ' +
+            'antes de você liberar.</strong> Confira, ajuste e assine — a prescrição é sua.</p>' +
+        '</div>' +
+        (avisos ? '<ul class="pl-rasc__avisos">' + avisos + '</ul>' : '') +
+        '<details class="pl-rasc__memoria"><summary>Como cheguei aqui</summary>' + itens + '</details>' +
+      '</div>';
   }
 
   function abrirEditor(plano) {
@@ -1184,6 +1237,7 @@
       objetivo: (r.querySelector("[data-pl-objetivo]") || {}).value || "",
       metaKcal: num((r.querySelector("[data-pl-meta]") || {}).value) || "",
       atualizadoEm: hojeBR(),
+      rascunho: (_draft && _draft.rascunho) || null,
       refeicoes: []
     };
     r.querySelectorAll("[data-meal]").forEach(function (m) {
@@ -1276,7 +1330,10 @@
     var lib = libDe(_p).slice();
     var idx = plano.id ? lib.map(function (x) { return x.id; }).indexOf(plano.id) : -1;
     var novo = idx < 0;
-    if (novo) { plano.id = plano.id || novoId(); plano.publicado = true; lib.push(plano); }
+    // Plano novo já nasce liberado — a nutri montou, a nutri assina. A
+    // exceção é o rascunho gerado da anamnese: esse nasce OCULTO, porque
+    // ninguém o revisou ainda (Art. 34 — o sistema não prescreve).
+    if (novo) { plano.id = plano.id || novoId(); plano.publicado = !plano.rascunho; lib.push(plano); }
     else { plano.publicado = !!lib[idx].publicado; lib[idx] = plano; } // edição preserva liberado/oculto
     var btn = root().querySelector("[data-pl-salvar]");
     if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; }

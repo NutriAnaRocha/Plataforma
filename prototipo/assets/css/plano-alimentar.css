@@ -160,3 +160,36 @@
   .pl-item__kc { grid-area: kc; }
   .pl-x { grid-area: x; }
 }
+
+/* ---------- Rascunho gerado da anamnese ----------
+   O cartão de gerar e o painel de memória de cálculo que abre junto com
+   o editor. O tom é de aviso, não de sucesso: o rascunho é ponto de
+   partida da nutricionista, não entrega pronta. */
+.pl-inicio--rascunho { border-color: var(--vinho); background: var(--rosa-suave); }
+
+.pl-rasc {
+  border: 1px solid var(--vinho);
+  border-radius: var(--radius-card);
+  background: var(--rosa-suave);
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-4);
+  display: flex; flex-direction: column; gap: var(--sp-3);
+}
+.pl-rasc__topo { display: flex; align-items: flex-start; gap: var(--sp-3); flex-wrap: wrap; }
+.pl-rasc__selo {
+  flex: none;
+  font-size: var(--fs-xs); font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--branco); background: var(--vinho);
+  padding: 4px 10px; border-radius: 999px;
+}
+.pl-rasc__intro { margin: 0; flex: 1 1 260px; font-size: var(--fs-sm); color: var(--texto); }
+.pl-rasc__avisos { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 6px; }
+.pl-rasc__aviso { font-size: var(--fs-sm); color: var(--texto); }
+.pl-rasc__memoria > summary {
+  cursor: pointer; font-size: var(--fs-sm); font-weight: 700; color: var(--vinho);
+}
+.pl-rasc__memoria[open] > summary { margin-bottom: var(--sp-3); }
+.pl-rasc__item { margin-bottom: var(--sp-3); }
+.pl-rasc__item:last-child { margin-bottom: 0; }
+.pl-rasc__item b { display: block; font-size: var(--fs-sm); color: var(--vinho); }
+.pl-rasc__item p { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--texto-sutil); }
