@@ -74,7 +74,32 @@
 .qdet__lbl { font-size: var(--fs-sm); font-weight: 700; color: var(--cinza-escuro); }
 .qdet__val { font-size: var(--fs-sm); color: var(--texto); line-height: 1.5; margin-top: 2px; }
 
+/* ============================================================
+   Consentimentos registrados (consentimentos.js) — lista só de leitura
+   no fim da seção Anamnese. Sem hover nem cursor de clique: nada aqui
+   abre, e aceite não se edita.
+   ============================================================ */
+.cst-list { display: flex; flex-direction: column; gap: 8px; }
+.cst-item {
+  display: flex; align-items: center; gap: 10px;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  padding: 10px 12px; background: var(--branco);
+}
+.cst-item.is-falta { border-style: dashed; background: var(--rosa-suave); }
+.cst-item__ico { font-size: 1.2rem; line-height: 1; flex: none; }
+.cst-item__body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.cst-item__tit { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-sm); }
+.cst-item__nota { font-size: var(--fs-caption); color: var(--texto-sutil); line-height: 1.4; }
+.cst-item__meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: none; }
+.cst-item__data { font-size: var(--fs-sm); font-weight: 700; color: var(--vinho); white-space: nowrap; }
+.cst-item__ver { font-size: var(--fs-caption); color: var(--texto-sutil); white-space: nowrap; }
+
 @media (max-width: 560px) {
   .qgrid { grid-template-columns: 1fr; }
   .qform { grid-template-columns: 1fr; }
+  /* No celular a data desce para baixo do título, em vez de espremer as
+     duas colunas: "29/07/2026 às 14:32" não pode quebrar no meio. */
+  .cst-item { align-items: flex-start; flex-wrap: wrap; }
+  .cst-item__body { flex-basis: calc(100% - 30px); }
+  .cst-item__meta { align-items: flex-start; margin-top: 4px; }
 }

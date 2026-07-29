@@ -426,6 +426,7 @@
         }
       });
     }
+    if (sec === "anamnese" && window.ConsentimentosView) window.ConsentimentosView.wire(p);
     if (sec === "anamnese" && window.Questionarios) {
       window.Questionarios.wire(p, {
         toast: pacToast,
@@ -550,9 +551,13 @@
     var quest = window.Questionarios
       ? window.Questionarios.render(p)
       : secWrap("Questionários & anamnese de retorno", emBreve("Aqui ficará o histórico de anamneses de retorno, com data e comparação entre elas."));
+    // Os consentimentos entram depois do histórico porque são a prova do que
+    // aconteceu ali: o TCLE e o pedido do plano são dados no mesmo fluxo da
+    // anamnese do portal. A seção se esconde sozinha quando não há o que mostrar.
+    var consent = window.ConsentimentosView ? window.ConsentimentosView.render(p) : "";
     return campoEditavel("Anamnese inicial", "anamnese", p.anamnese, "Nenhuma anamnese inicial registrada. Clique em “Adicionar” para escrever.") +
       campoEditavel("Restrições & alergias", "restricoes", p.restricoes, "Sem restrições/alergias registradas.") +
-      quest;
+      quest + consent;
   }
 
   function secExames(p) {
