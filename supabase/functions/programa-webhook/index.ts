@@ -66,15 +66,15 @@ const PLANOS: Record<string, {
   ebooks: string[];
 }> = {
   "meuplano-trimestral": {
-    plano: "trimestral", meses: 3, valor_cents: 29700,
+    plano: "trimestral", meses: 3, valor_cents: 22900,
     reavaliacao_dias: REAVALIACAO_DIAS, ebooks: ["guia-rotulos"],
   },
   "meuplano-semestral": {
-    plano: "semestral", meses: 6, valor_cents: 49700,
+    plano: "semestral", meses: 6, valor_cents: 32000,
     reavaliacao_dias: REAVALIACAO_DIAS, ebooks: ["guia-rotulos", "guia-canetas"],
   },
   "meuplano-anual": {
-    plano: "anual", meses: 12, valor_cents: 79700,
+    plano: "anual", meses: 12, valor_cents: 45000,
     reavaliacao_dias: REAVALIACAO_DIAS, ebooks: ["*"],
   },
 };
