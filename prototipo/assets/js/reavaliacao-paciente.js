@@ -6,8 +6,9 @@
    sem ela, o produto viraria "plano entregue uma vez", que é a venda de
    plano pronto que o Art. 34 da Res. CFN 856/2026 não admite.
 
-   Abre a cada 45 dias: quem decide é a coluna proxima_reavaliacao da
-   assinatura (migração 0045), e a RPC salvar_reavaliacao_paciente só
+   Abre a cada 30 dias: quem decide é a coluna proxima_reavaliacao da
+   assinatura (o intervalo vem de programa_ciclo_dias(), migração 0047),
+   e a RPC salvar_reavaliacao_paciente só
    aceita o envio quando essa data já chegou. O portão está no banco,
    não aqui — isto é só a cara dele.
 
@@ -56,7 +57,7 @@
 
   /* ---------- O questionário ----------
      Curto de propósito: quem já respondeu 10 etapas na entrada não vai
-     responder outras 10 a cada 45 dias — e a reavaliação precisa ser
+     responder outras 10 a cada 30 dias — e a reavaliação precisa ser
      respondida, não abandonada. Quatro perguntas grandes: o que rolou,
      como o corpo está, quanto mede hoje, o que mudar. */
   var PASSOS = [

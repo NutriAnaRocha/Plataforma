@@ -46,14 +46,18 @@ const ENTRAR_URL =
   Deno.env.get("ENTRAR_URL") ||
   "https://nutrianarocha.github.io/site/entrar.html";
 
+// Ciclo de reavaliação, em dias. Ponto de partida apenas: na hora do
+// pagamento a compra é a única data que existe. Quando a anamnese chega,
+// salvar_anamnese_paciente reancora proxima_reavaliacao em anamnese +
+// ciclo — que é quando o acompanhamento de fato começa.
+//
+// A verdade do ciclo mora no banco, em programa_ciclo_dias() (migração
+// 0047). Este número é o espelho dela e é o ÚNICO fora do banco: mudar
+// lá sem mudar aqui deixa a âncora provisória em desacordo por um ciclo.
+const REAVALIACAO_DIAS = 30;
+
 // order_nsu (fixo no link de checkout) -> plano do programa.
 // 'ebooks' entram como bônus incluso; '*' libera a biblioteca inteira.
-//
-// reavaliacao_dias serve só de ponto de partida: na hora do pagamento a
-// compra é a única data que existe. Quando a anamnese chega, a migração
-// 0046 reancora proxima_reavaliacao em anamnese + 45 — que é quando o
-// acompanhamento de fato começa. Mudar o número aqui sem mudar lá deixa
-// os dois relógios em desacordo.
 const PLANOS: Record<string, {
   plano: "trimestral" | "semestral" | "anual";
   meses: number;
@@ -63,15 +67,15 @@ const PLANOS: Record<string, {
 }> = {
   "meuplano-trimestral": {
     plano: "trimestral", meses: 3, valor_cents: 29700,
-    reavaliacao_dias: 45, ebooks: ["guia-rotulos"],
+    reavaliacao_dias: REAVALIACAO_DIAS, ebooks: ["guia-rotulos"],
   },
   "meuplano-semestral": {
     plano: "semestral", meses: 6, valor_cents: 49700,
-    reavaliacao_dias: 45, ebooks: ["guia-rotulos", "guia-canetas"],
+    reavaliacao_dias: REAVALIACAO_DIAS, ebooks: ["guia-rotulos", "guia-canetas"],
   },
   "meuplano-anual": {
     plano: "anual", meses: 12, valor_cents: 79700,
-    reavaliacao_dias: 45, ebooks: ["*"],
+    reavaliacao_dias: REAVALIACAO_DIAS, ebooks: ["*"],
   },
 };
 

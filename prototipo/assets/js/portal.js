@@ -156,7 +156,7 @@
      só para a paciente ver que chegou. Fora disso, some. */
   function temReavaliacao(p) {
     // Nunca antes da anamnese: não se reavalia um acompanhamento que
-    // ainda não começou. Se a paciente demorou mais de 45 dias para
+    // ainda não começou. Se a paciente demorou mais de 30 dias para
     // responder a anamnese, o ciclo até abre no banco, mas o portal
     // continua cobrando a única coisa que faz sentido.
     if (anamnesePendente(p)) return false;
