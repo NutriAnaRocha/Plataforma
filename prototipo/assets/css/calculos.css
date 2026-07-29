@@ -45,6 +45,32 @@
 .calc-macro--lip .calc-bar span { background: #2e7d6b; }
 .calc-macro__foot { font-size: 11.5px; color: var(--texto-sutil); margin-top: 4px; }
 
+/* Meta de peso programada */
+.calc-tag {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--texto-sutil); background: var(--cinza-claro); border-radius: 999px;
+  padding: 2px 7px; margin-left: 6px; vertical-align: middle;
+}
+.calc-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+.calc-chip {
+  font: inherit; font-size: 11.5px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--cinza-borda); border-radius: 999px; padding: 3px 9px;
+  background: var(--branco); color: var(--cinza-escuro);
+}
+.calc-chip:hover { border-color: var(--vinho); color: var(--vinho); background: var(--rosa-suave); }
+.calc-card--meta { border-color: var(--vinho); }
+.calc-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--sp-3); }
+.calc-meta__row { display: flex; flex-direction: column; gap: 2px; }
+.calc-meta__lbl { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); }
+.calc-meta__val { font-size: 1.15rem; font-weight: 800; color: var(--vinho); line-height: 1.25; }
+.calc-meta__val small { display: block; font-size: 11.5px; font-weight: 500; color: var(--texto-sutil); }
+.calc-alerts { margin-top: var(--sp-3); display: flex; flex-direction: column; gap: 6px; }
+.calc-alert {
+  margin: 0; font-size: 12px; line-height: 1.5; color: #8a4b00;
+  background: #fff6e6; border: 1px solid #f0d49b; border-radius: var(--radius-sm); padding: 7px 9px;
+}
+.calc-mem small { color: var(--texto-sutil); }
+
 /* Comparativo */
 .calc-comp { display: flex; flex-direction: column; }
 .calc-comp__row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm); border-top: 1px dashed var(--cinza-borda); font-size: var(--fs-sm); }

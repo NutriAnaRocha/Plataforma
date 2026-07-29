@@ -15,6 +15,8 @@
   function num(v) { if (v == null || v === "") return 0; var n = parseFloat(String(v).replace(",", ".")); return isNaN(n) ? 0 : n; }
   function r0(n) { return Math.round(n); }
   function r1(n) { return Math.round(n * 10) / 10; }
+  function dec(n) { return String(r1(n)).replace(".", ","); }        // 12.9 → "12,9"
+  function mil(n) { return String(r0(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "."); }  // 46200 → "46.200"
   function hojeBR() { var d = new Date(); return ("0" + d.getDate()).slice(-2) + "/" + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + d.getFullYear(); }
 
   /* ---------- Fórmulas de TMB ----------
@@ -79,6 +81,41 @@
   ];
   var OBJ_BY_ID = {}; OBJETIVOS.forEach(function (o) { OBJ_BY_ID[o.id] = o; });
 
+  /* ---------- Meta de peso programada ----------
+     1 kg de tecido adiposo ≈ 7700 kcal (Wishnofsky, 1958). Com o peso
+     desejado e o prazo em dias, o ajuste diário sai direto: o total de
+     kcal a poupar (ou somar) dividido pelo número de dias. Quando a meta
+     está preenchida ela SUBSTITUI o ajuste percentual do objetivo — o
+     objetivo continua valendo só para sugerir os macros. */
+  var KCAL_POR_KG = 7700;
+  var VET_MINIMO = { F: 1200, M: 1500 };   // piso de segurança usual p/ dieta ambulatorial
+
+  function metaDe(i, base, get, tmb) {
+    var pesoMeta = num(i.pesoMeta), dias = Math.round(num(i.prazoDias));
+    if (!pesoMeta || !dias || dias < 1 || !base.peso || get == null) return null;
+    var delta = pesoMeta - base.peso;                    // + ganhar, − perder
+    if (!delta) return null;                             // peso desejado = atual → sem meta
+    var semanas = dias / 7;
+    var kcalDia = delta * KCAL_POR_KG / dias;
+    var kgSem = delta / semanas;
+    var pctSem = Math.abs(kgSem) / base.peso * 100;
+    var vet = get + kcalDia;
+    var alertas = [];
+    if (Math.abs(kgSem) > 1) alertas.push("Ritmo de " + dec(Math.abs(kgSem)) + " kg/semana — acima do recomendado (0,5 a 1 kg/semana). Amplie o prazo.");
+    else if (pctSem > 1) alertas.push("Variação de " + dec(pctSem) + "% do peso por semana — acima de 1%/semana. Considere um prazo maior.");
+    if (vet <= 0) alertas.push("A meta é matematicamente impossível: exigiria gastar mais do que o paciente consome (VET negativo).");
+    else if (tmb != null && vet < tmb) alertas.push("O VET (" + mil(vet) + " kcal) fica abaixo da TMB (" + mil(tmb) + " kcal).");
+    var piso = VET_MINIMO[base.sexo] || 1200;
+    if (vet > 0 && vet < piso) alertas.push("O VET fica abaixo do piso de " + mil(piso) + " kcal/dia — dieta desse nível exige acompanhamento próximo.");
+    var alvo = new Date(); alvo.setDate(alvo.getDate() + dias);
+    return {
+      pesoMeta: pesoMeta, dias: dias, semanas: semanas, delta: delta,
+      kcalTotal: delta * KCAL_POR_KG, kcalDia: kcalDia, kgSem: kgSem, pctSem: pctSem,
+      pctGet: kcalDia / get * 100, vet: vet, alertas: alertas,
+      dataAlvo: ("0" + alvo.getDate()).slice(-2) + "/" + ("0" + (alvo.getMonth() + 1)).slice(-2) + "/" + alvo.getFullYear()
+    };
+  }
+
   /* ============================================================ */
   var _inp = null, _ctx = null;
 
@@ -98,7 +135,10 @@
       fatorInjuria: s.fatorInjuria != null ? s.fatorInjuria : 1.0,
       objetivo: s.objetivo || (base.objetivoId) || "manter",
       ptnGkg: s.ptnGkg != null ? s.ptnGkg : null,
-      lipPct: s.lipPct != null ? s.lipPct : null
+      lipPct: s.lipPct != null ? s.lipPct : null,
+      // Meta de peso: peso desejado + prazo. Vazio = usa só o % do objetivo.
+      pesoMeta: s.pesoMeta != null ? s.pesoMeta : (base.pesoMeta || ""),
+      prazoDias: s.prazoDias != null ? s.prazoDias : ""
     };
     return '<div id="calc-root" class="calc">' + formHTML() + '<div id="calc-out">' + resultadosHTML() + '</div></div>';
   }
@@ -137,7 +177,20 @@
           field("Proteína (g/kg)", inputNum("ptnGkg", i.ptnGkg == null ? "" : i.ptnGkg), "vazio = sugestão do objetivo") +
           field("Gordura (% do VET)", inputNum("lipPct", i.lipPct == null ? "" : i.lipPct), "vazio = sugestão do objetivo") +
         '</div>' +
+      '</div>' +
+      '<div class="calc-card">' +
+        '<div class="calc-card__t">4 · Programar meta de peso <span class="calc-tag">opcional</span></div>' +
+        '<div class="calc-grid">' +
+          field("Peso desejado (kg)", inputNum("pesoMeta", i.pesoMeta), "onde o paciente quer chegar") +
+          field("Prazo (dias)", inputNum("prazoDias", i.prazoDias) + prazoChips(), "em quanto tempo") +
+        '</div>' +
+        '<p class="calc-hint">Com os dois campos preenchidos, o ajuste calórico sai da meta (7700 kcal por kg) e <strong>substitui</strong> o percentual do objetivo. Deixe em branco para usar só o objetivo.</p>' +
       '</div>';
+  }
+  function prazoChips() {
+    return '<div class="calc-chips">' + [30, 60, 90, 180].map(function (d) {
+      return '<button type="button" class="calc-chip" data-prazo="' + d + '">' + d + " dias</button>";
+    }).join("") + '</div>';
   }
   function field(lbl, ctrl, hint) {
     return '<label class="calc-field"><span class="calc-field__lbl">' + esc(lbl) + '</span>' + ctrl +
@@ -161,7 +214,10 @@
     var fa = num(i.fatorAtividade) || 1, fi = num(i.fatorInjuria) || 1;
     var get = tmb != null ? tmb * fa * fi : null;
     var obj = OBJ_BY_ID[i.objetivo] || OBJ_BY_ID.manter;
-    var vet = get != null ? get * (1 + obj.ajuste) : null;
+    // A meta de peso, quando programada, manda no VET; o objetivo segue
+    // valendo para sugerir os macros.
+    var meta = metaDe(i, base, get, tmb);
+    var vet = meta ? meta.vet : (get != null ? get * (1 + obj.ajuste) : null);
 
     // Macros
     var ptnGkg = i.ptnGkg != null && i.ptnGkg !== "" ? num(i.ptnGkg) : obj.ptn;
@@ -180,7 +236,7 @@
         cho: { g: r0(choG), kcal: r0(choKcal), pct: r0(choKcal / vet * 100), gkg: r1(choG / (base.peso || 1)) }
       };
     }
-    return { base: base, formula: f, tmb: tmb, todas: todas, fa: fa, fi: fi, get: get, obj: obj, vet: vet, macros: macros, ptnGkg: ptnGkg, lipPct: lipPct };
+    return { base: base, formula: f, tmb: tmb, todas: todas, fa: fa, fi: fi, get: get, obj: obj, meta: meta, vet: vet, macros: macros, ptnGkg: ptnGkg, lipPct: lipPct };
   }
 
   function resultadosHTML() {
@@ -189,24 +245,44 @@
       var falta = R.formula.precisaMM ? "Informe a massa magra para usar esta fórmula." : "Preencha peso, altura e idade para calcular.";
       return '<div class="calc-card"><div class="empty-state">' + esc(falta) + '</div></div>';
     }
-    var i = _inp;
     var sinal = R.obj.ajuste === 0 ? "" : (R.obj.ajuste > 0 ? "+" : "−") + Math.abs(R.obj.ajuste * 100) + "%";
+    var subVet = R.meta
+      ? kcalSinal(R.meta.kcalDia) + " kcal/dia · meta de " + kgSinal(R.meta.delta) + " kg em " + R.meta.dias + " dias"
+      : R.obj.nome + (sinal ? " · " + sinal : "");
     var big = '<div class="calc-results">' +
       resTile("TMB", r0(R.tmb), "kcal/dia", "metabolismo basal") +
       resTile("GET", r0(R.get), "kcal/dia", "× ativ. " + R.fa + (R.fi !== 1 ? " × injúria " + R.fi : "")) +
-      resTile("VET", r0(R.vet), "kcal/dia", R.obj.nome + (sinal ? " · " + sinal : ""), true) +
+      resTile("VET", r0(R.vet), "kcal/dia", subVet, true) +
     '</div>';
+
+    var meta = "";
+    if (R.meta) {
+      var M = R.meta;
+      var ganho = M.delta > 0;
+      meta = '<div class="calc-card calc-card--meta"><div class="calc-card__t">🎯 Meta de peso programada</div>' +
+        '<div class="calc-meta">' +
+          metaRow("Diferença", kgSinal(M.delta) + " kg", dec(R.base.peso) + " kg → " + dec(M.pesoMeta) + " kg") +
+          metaRow("Prazo", M.dias + " dias", "≈ " + dec(M.semanas) + " semanas · até " + M.dataAlvo) +
+          metaRow("Ritmo", kgSinal(M.kgSem) + " kg/semana", dec(M.pctSem) + "% do peso corporal por semana") +
+          metaRow((ganho ? "Superávit" : "Déficit") + " energético", kcalSinal(M.kcalDia) + " kcal/dia",
+            r0(Math.abs(M.pctGet)) + "% do GET · " + mil(Math.abs(M.kcalTotal)) + " kcal no total") +
+        '</div>' +
+        (M.alertas.length
+          ? '<div class="calc-alerts">' + M.alertas.map(function (a) { return '<p class="calc-alert">⚠️ ' + esc(a) + '</p>'; }).join("") + '</div>'
+          : '<p class="calc-hint">Ritmo dentro da faixa recomendada (até 1 kg ou 1% do peso por semana).</p>') +
+      '</div>';
+    }
 
     var macros = "";
     if (R.macros) {
       var m = R.macros;
       macros = '<div class="calc-card"><div class="calc-card__t">Distribuição de macronutrientes</div>' +
         '<div class="calc-macros">' +
-          macroBar("Proteínas", m.ptn.g, m.ptn.kcal, m.ptn.pct, m.ptn.gkg + " g/kg", "cho") +
-          macroBar("Carboidratos", m.cho.g, m.cho.kcal, m.cho.pct, m.cho.gkg + " g/kg", "carb") +
+          macroBar("Proteínas", m.ptn.g, m.ptn.kcal, m.ptn.pct, dec(m.ptn.gkg) + " g/kg", "cho") +
+          macroBar("Carboidratos", m.cho.g, m.cho.kcal, m.cho.pct, dec(m.cho.gkg) + " g/kg", "carb") +
           macroBar("Gorduras", m.lip.g, m.lip.kcal, m.lip.pct, "", "lip") +
         '</div>' +
-        '<p class="calc-hint">Proteína ' + m.ptn.gkg + ' g/kg · gordura ' + m.lip.pct + '% do VET · carboidrato preenche o restante. Ajuste nos campos acima.</p>' +
+        '<p class="calc-hint">Proteína ' + dec(m.ptn.gkg) + ' g/kg · gordura ' + m.lip.pct + '% do VET · carboidrato preenche o restante. Ajuste nos campos acima.</p>' +
       '</div>';
     }
 
@@ -226,7 +302,15 @@
       '<button class="btn btn--primary" type="button" data-calc-salvar>💾 Salvar cálculo</button>' +
     '</div>';
 
-    return big + macros + comp + memoria + acoes;
+    return big + meta + macros + comp + memoria + acoes;
+  }
+
+  // −0,5 / +0,5 com vírgula decimal, como a Ana escreve.
+  function kgSinal(v) { return (v > 0 ? "+" : "−") + String(r1(Math.abs(v))).replace(".", ","); }
+  function kcalSinal(v) { return (v > 0 ? "+" : "−") + r0(Math.abs(v)); }
+  function metaRow(lbl, val, sub) {
+    return '<div class="calc-meta__row"><span class="calc-meta__lbl">' + esc(lbl) + '</span>' +
+      '<span class="calc-meta__val">' + esc(val) + '<small>' + esc(sub) + '</small></span></div>';
   }
 
   function resTile(t, v, u, sub, destaque) {
@@ -247,7 +331,15 @@
       ", " + b.idade + " anos, " + r1(b.peso) + " kg, " + r1(b.altura) + " cm" + (b.massaMagra ? ", massa magra " + r1(b.massaMagra) + " kg" : ""));
     out.push("TMB = <strong>" + r0(R.tmb) + "</strong> kcal");
     out.push("GET = TMB × fator atividade (" + R.fa + ")" + (R.fi !== 1 ? " × fator injúria (" + R.fi + ")" : "") + " = <strong>" + r0(R.get) + "</strong> kcal");
-    out.push("VET = GET " + (R.obj.ajuste === 0 ? "(sem ajuste)" : (R.obj.ajuste > 0 ? "+ " : "− ") + Math.abs(R.obj.ajuste * 100) + "% [" + R.obj.nome + "]") + " = <strong>" + r0(R.vet) + "</strong> kcal");
+    if (R.meta) {
+      var M = R.meta;
+      out.push("Meta: " + kgSinal(M.delta) + " kg em " + M.dias + " dias → " + kgSinal(M.delta) + " × " + mil(KCAL_POR_KG) + " = " +
+        (M.kcalTotal > 0 ? "+" : "−") + mil(Math.abs(M.kcalTotal)) + " kcal ÷ " + M.dias + " dias = <strong>" + kcalSinal(M.kcalDia) + "</strong> kcal/dia");
+      out.push("VET = GET " + (M.kcalDia > 0 ? "+ " : "− ") + r0(Math.abs(M.kcalDia)) + " kcal (meta de peso) = <strong>" + r0(R.vet) + "</strong> kcal");
+      out.push("<small>Macros pelo objetivo “" + esc(R.obj.nome) + "”; o percentual dele não entra no VET porque a meta manda.</small>");
+    } else {
+      out.push("VET = GET " + (R.obj.ajuste === 0 ? "(sem ajuste)" : (R.obj.ajuste > 0 ? "+ " : "− ") + Math.abs(R.obj.ajuste * 100) + "% [" + R.obj.nome + "]") + " = <strong>" + r0(R.vet) + "</strong> kcal");
+    }
     return out;
   }
 
@@ -258,6 +350,8 @@
     r.addEventListener("input", onChange);
     r.addEventListener("change", onChange);
     r.addEventListener("click", function (e) {
+      var chip = e.target.closest("[data-prazo]");
+      if (chip) { setPrazo(chip.getAttribute("data-prazo")); return; }
       if (e.target.closest("[data-calc-salvar]")) salvar(e.target.closest("[data-calc-salvar]"));
       else if (e.target.closest("[data-calc-plano]")) usarNoPlano();
     });
@@ -265,7 +359,22 @@
   function onChange(e) {
     var t = e.target;
     if (!t.matches("[data-c]")) return;
-    _inp[t.getAttribute("data-c")] = t.value;
+    var k = t.getAttribute("data-c");
+    // "input" e "change" disparam pelo MESMO valor (o change vem no blur).
+    // Repintar de novo aí destrói o botão que a nutri está clicando e o
+    // clique se perde no meio do caminho — então só repinta se mudou.
+    if (String(_inp[k]) === String(t.value)) return;
+    _inp[k] = t.value;
+    repintar();
+  }
+  // Os chips escrevem no input de prazo (o campo continua editável à mão).
+  function setPrazo(dias) {
+    _inp.prazoDias = dias;
+    var el = document.querySelector('#calc-root [data-c="prazoDias"]');
+    if (el) el.value = dias;
+    repintar();
+  }
+  function repintar() {
     var out = document.getElementById("calc-out");
     if (out) out.innerHTML = resultadosHTML();
   }
@@ -278,6 +387,12 @@
       formula: _inp.formula, formulaNome: R.formula.nome,
       fatorAtividade: R.fa, fatorInjuria: R.fi, objetivo: _inp.objetivo, objetivoNome: R.obj.nome,
       ptnGkg: R.ptnGkg, lipPct: R.lipPct,
+      pesoMeta: num(_inp.pesoMeta) || null, prazoDias: Math.round(num(_inp.prazoDias)) || null,
+      meta: R.meta ? {
+        pesoMeta: R.meta.pesoMeta, prazoDias: R.meta.dias, deltaKg: r1(R.meta.delta),
+        kgSemana: r1(R.meta.kgSem), kcalDia: r0(R.meta.kcalDia), dataAlvo: R.meta.dataAlvo,
+        alertas: R.meta.alertas
+      } : null,
       tmb: R.tmb != null ? r0(R.tmb) : null, get: R.get != null ? r0(R.get) : null, vet: R.vet != null ? r0(R.vet) : null,
       macros: R.macros, atualizadoEm: hojeBR()
     };
@@ -296,6 +411,11 @@
   }
   function usarNoPlano() {
     var calc = coletar();
+    // VET negativo/zero é meta impossível — não deixa vazar para o plano.
+    if (calc.vet == null || calc.vet <= 0) {
+      if (_ctx.toast) _ctx.toast("O VET calculado não é válido. Revise a meta de peso ou o prazo.", true);
+      return;
+    }
     if (_ctx.usarNoPlano) _ctx.usarNoPlano(calc);
     else if (_ctx.toast) _ctx.toast("VET de " + (calc.vet || "—") + " kcal — leve para o plano ao montar as refeições.");
   }
