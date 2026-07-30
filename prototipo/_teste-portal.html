@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harness — portal da paciente do programa</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/portal.css" />
+  <link rel="stylesheet" href="assets/css/antropometria.css" />
+  <link rel="stylesheet" href="assets/css/lista-compras.css" />
+  <link rel="stylesheet" href="assets/css/treino.css" />
+  <link rel="stylesheet" href="assets/css/metas.css" />
+  <link rel="stylesheet" href="assets/css/anamnese.css" />
+  <style>
+    /* estática de propósito: fixa/sticky tapa o conteúdo no print de página inteira */
+    .harness-bar{display:flex;gap:6px;flex-wrap:wrap;
+      align-items:center;padding:8px 12px;background:#2b2b2b;color:#fff;font:600 12px Montserrat,sans-serif}
+    .harness-bar a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);
+      border-radius:99px;padding:4px 10px}
+    .harness-bar a.on{background:#fff;color:#2b2b2b}
+    .harness-bar span{opacity:.7;margin-right:6px}
+  </style>
+</head>
+<body class="portal-body">
+
+<!-- ============================================================
+     HARNESS DO PORTAL — mostra o que a PACIENTE vê depois de comprar
+     o "Meu Plano", em cada estado da jornada, com dados falsos e
+     100% offline (nenhuma chamada ao Supabase).
+
+     Espelha portal-paciente.html: mesmo HTML, mesmos scripts. O que
+     muda é que supabase-client.js e pacientes-db.js são substituídos
+     pelos dublês abaixo. Se o portal mudar, copiar o <div class="portal">
+     de lá para cá.
+
+     Uso: _teste-portal.html?e=1-tcle | 2-form | 3-enviada | 4-plano |
+                               5-reavaliacao | 6-renovacao
+     ============================================================ -->
+<div class="harness-bar" id="hbar"></div>
+
+  <div class="preview-bar" id="preview-bar" hidden>
+    👁 Você está vendo o portal <strong>como o paciente veria</strong>.
+    <a href="pacientes.html" class="preview-bar__back">‹ Voltar ao painel</a>
+  </div>
+
+  <div class="portal" id="portal" hidden>
+
+    <header class="portal-head">
+      <div class="portal-head__brand">
+        <span class="portal-head__mark"><img src="assets/img/logo-mark.png" alt="" /></span>
+        <span data-brand>NutriLab</span>
+      </div>
+      <div class="portal-head__right">
+        <span class="portal-head__hi" id="portal-hi">Olá</span>
+        <button class="icon-btn" id="portal-logout" type="button" title="Sair" aria-label="Sair" data-logout>↩</button>
+      </div>
+    </header>
+
+    <section class="portal-hero">
+      <span class="portal-hero__avatar" id="portal-avatar">?</span>
+      <div>
+        <h1 class="portal-hero__name" id="portal-name">—</h1>
+        <p class="portal-hero__sub" id="portal-sub">Acompanhe seu plano, sua evolução e fale com sua nutricionista.</p>
+      </div>
+    </section>
+
+    <nav class="portal-tabs" id="portal-tabs" aria-label="Seções">
+      <button class="ptab" data-t="anamnese" type="button">📝 Anamnese</button>
+      <button class="ptab" data-t="reavaliacao" type="button">🔄 Reavaliação</button>
+      <button class="ptab is-active" data-t="plano" type="button">🥗 Meu plano</button>
+      <button class="ptab" data-t="treino" type="button">🏋️ Treino</button>
+      <button class="ptab" data-t="metas" type="button">🎯 Metas</button>
+      <button class="ptab" data-t="evolucao" type="button">📈 Evolução</button>
+      <button class="ptab" data-t="consultas" type="button">📅 Consultas</button>
+      <button class="ptab" data-t="chat" type="button">💬 Mensagens</button>
+    </nav>
+
+    <main class="portal-main" id="portal-main">
+      <div class="portal-pane" data-pane="anamnese" id="pane-anamnese"></div>
+      <div class="portal-pane" data-pane="reavaliacao" id="pane-reavaliacao"></div>
+      <div class="portal-pane is-active" data-pane="plano" id="pane-plano"></div>
+      <div class="portal-pane" data-pane="treino" id="pane-treino"></div>
+      <div class="portal-pane" data-pane="metas" id="pane-metas"></div>
+      <div class="portal-pane" data-pane="evolucao" id="pane-evolucao"></div>
+      <div class="portal-pane" data-pane="consultas" id="pane-consultas"></div>
+      <div class="portal-pane" data-pane="chat" id="pane-chat"></div>
+    </main>
+  </div>
+
+  <div class="portal-loading" id="portal-loading">Carregando seu acompanhamento…</div>
+
+<script>
+/* ---------- Dublês: Supabase + NutriPacientes ---------- */
+(function () {
+  "use strict";
+
+  var ESTADOS = ["1-tcle", "2-form", "3-enviada", "4-plano", "5-reavaliacao", "6-renovacao"];
+  var LABEL = {
+    "1-tcle": "1. Entrou pela 1ª vez (TCLE)",
+    "2-form": "2. Anamnese (formulário)",
+    "3-enviada": "3. Anamnese enviada",
+    "4-plano": "4. Plano liberado",
+    "5-reavaliacao": "5. Reavaliação aberta",
+    "6-renovacao": "6. Fim do período"
+  };
+  var e = new URLSearchParams(location.search).get("e");
+  if (ESTADOS.indexOf(e) < 0) e = "1-tcle";
+
+  document.getElementById("hbar").innerHTML = "<span>Estado da paciente:</span>" +
+    ESTADOS.map(function (x) {
+      return '<a href="?e=' + x + '"' + (x === e ? ' class="on"' : "") + ">" + LABEL[x] + "</a>";
+    }).join("");
+
+  function dias(n) {
+    var d = new Date(); d.setDate(d.getDate() + n);
+    return d.toISOString().slice(0, 10);
+  }
+
+  /* ---- Assinatura do programa (trimestral, comprado hoje) ---- */
+  var assinatura = {
+    id: "a1", status: "ativa", plano: "trimestral",
+    inicio: dias(0), fim: dias(90),
+    proxima_reavaliacao: dias(30), reavaliacoes_feitas: 0, ultima_reavaliacao_em: null
+  };
+  if (e === "5-reavaliacao") { assinatura.inicio = dias(-32); assinatura.fim = dias(58); assinatura.proxima_reavaliacao = dias(-2); }
+  if (e === "6-renovacao") { assinatura.inicio = dias(-82); assinatura.fim = dias(8); assinatura.proxima_reavaliacao = dias(22); assinatura.reavaliacoes_feitas = 2; }
+
+  /* ---- Plano alimentar liberado pela nutri ----
+     Formato real do editor (plano-alimentar.js:919): o plano ATIVO é
+     espelhado no topo (plano.refeicoes) e o acervo fica em plano.planos[].
+     A adesão lê o espelho do topo — se o fixture só tivesse .planos, a
+     barra marcaria 0% sem isso ser um bug. */
+  var REFEICOES = [
+        { nome: "Café da manhã", hora: "07h00", itens: [
+          { alimento: "Ovos mexidos", qtd: 2, medida: "unidade", subs: [{ alimento: "Omelete de claras", qtd: 3, medida: "unidade" }] },
+          { alimento: "Pão integral", qtd: 1, medida: "fatia" },
+          { alimento: "Mamão papaia", gramas: 120 },
+          { alimento: "Café sem açúcar", qtd: 1, medida: "xícara" }
+        ] },
+        { nome: "Lanche da manhã", hora: "10h00", itens: [
+          { alimento: "Iogurte natural", gramas: 170 },
+          { alimento: "Castanha-do-pará", qtd: 2, medida: "unidade" }
+        ] },
+        { nome: "Almoço", hora: "12h30", itens: [
+          { alimento: "Arroz integral", gramas: 100 },
+          { alimento: "Feijão", medida: "concha", qtd: 1 },
+          { alimento: "Frango grelhado", gramas: 120, subs: [{ alimento: "Merluza assada", gramas: 140 }, { alimento: "Ovo cozido", qtd: 2, medida: "unidade" }] },
+          { alimento: "Salada de folhas com azeite", medida: "prato", qtd: 1 }
+        ] },
+        { nome: "Lanche da tarde", hora: "16h00", itens: [
+          { alimento: "Fruta da estação", qtd: 1, medida: "unidade" },
+          { alimento: "Pasta de amendoim integral", medida: "colher de sopa", qtd: 1 }
+        ] },
+        { nome: "Jantar", hora: "20h00", itens: [
+          { alimento: "Sopa de legumes com frango desfiado", medida: "prato", qtd: 1 },
+          { alimento: "Torrada integral", qtd: 2, medida: "unidade" }
+        ] },
+        { nome: "Jantar (opção rápida)", hora: "20h00", alternativa: true, itens: [
+          { alimento: "Omelete com queijo e tomate", qtd: 2, medida: "ovo" },
+          { alimento: "Salada de folhas", medida: "prato", qtd: 1 }
+        ] }
+  ];
+
+  var PLANO_PUB = {
+    titulo: "Plano alimentar — ciclo 1", atualizadoEm: "28/07/2026",
+    ativoId: "pl1", refeicoes: REFEICOES,
+    planos: [{
+      id: "pl1", titulo: "Plano alimentar — ciclo 1", publicado: true,
+      atualizadoEm: "28/07/2026", refeicoes: REFEICOES
+    }]
+  };
+
+  var temPlano = ["4-plano", "5-reavaliacao", "6-renovacao"].indexOf(e) >= 0;
+  var anamneseEnviada = ["3-enviada", "4-plano", "5-reavaliacao", "6-renovacao"].indexOf(e) >= 0;
+
+  var paciente = {
+    id: "p1", userId: "u1",
+    nome: "Marina Duarte Alves", ini: "MA",
+    objetivo: "Programa Meu Plano", status: "ativo",
+    tags: ["programa", "trimestral"],
+    contato: { email: "marina@exemplo.com", tel: "" },
+    antropometria: { fotos: [] },
+    pesoAtual: temPlano ? 71.4 : null, pesoInicial: temPlano ? 74.2 : null,
+    meta: temPlano ? 66 : null, altura: 1.64, imc: temPlano ? 26.5 : null,
+    proxConsulta: "—",
+    evolucao: temPlano
+      ? { labels: ["abr", "mai", "jun", "jul"], peso: [74.2, 73.1, 72.3, 71.4] }
+      : { labels: [], peso: [] },
+    consultas: temPlano
+      ? [{ data: "28/07/2026", tipo: "Entrega do plano", nota: "Plano e orientações liberados no portal." }]
+      : [],
+    questionarios: anamneseEnviada
+      ? [{ id: "q1", origem: "portal", modeloId: "anamnese-programa", titulo: "Anamnese do programa", data: dias(-1), respostas: [] }]
+      : [],
+    plano: temPlano ? PLANO_PUB : { titulo: null, refeicoes: [] },
+    treino: null, metas: null, calculos: null,
+    portalFeatures: ["plano", "evolucao", "consultas", "chat"],
+    orientacoes: [], prescricoes: [], exames: [], prontuario: null
+  };
+  if (e === "5-reavaliacao") {
+    paciente.questionarios.push({ id: "q2", origem: "portal", modeloId: "reavaliacao-programa", titulo: "Reavaliação 1", data: dias(-31), respostas: [] });
+  }
+
+  var TABELAS = {
+    profiles: { tipo: "paciente", nome: paciente.nome },
+    programa_assinaturas: [assinatura],
+    // TCLE de telenutrição: só o estado 1 ainda não aceitou.
+    consentimentos: e === "1-tcle" ? [] : [{ id: "c1" }]
+  };
+
+  // Query builder mínimo: encadeia tudo e resolve { data }.
+  function qb(dados) {
+    var api = {
+      select: function () { return api; },
+      eq: function () { return api; },
+      neq: function () { return api; },
+      order: function () { return api; },
+      limit: function () { return api; },
+      insert: function () { return Promise.resolve({ data: null, error: null }); },
+      update: function () { return api; },
+      upsert: function () { return api; },
+      maybeSingle: function () {
+        return Promise.resolve({ data: Array.isArray(dados) ? (dados[0] || null) : dados, error: null });
+      },
+      single: function () { return api.maybeSingle(); },
+      then: function (ok, bad) {
+        return Promise.resolve({ data: Array.isArray(dados) ? dados : (dados ? [dados] : []), error: null }).then(ok, bad);
+      }
+    };
+    return api;
+  }
+
+  window.NutriDBReady = Promise.resolve({
+    auth: {
+      getSession: function () { return Promise.resolve({ data: { session: { user: { id: "u1", email: paciente.contato.email } } } }); },
+      signOut: function () { alert("(harness) sairia da conta"); return Promise.resolve({}); }
+    },
+    from: function (t) { return qb(TABELAS[t] === undefined ? [] : TABELAS[t]); },
+    rpc: function () { return Promise.resolve({ data: null, error: null }); }
+  });
+
+  var mensagens = temPlano
+    ? [
+        { id: "m1", autor: "nutri", corpo: "Oi, Marina! Seu plano está liberado aqui na aba Meu plano, com as minhas orientações. Qualquer dúvida me chama por aqui 🌸", created_at: new Date(Date.now() - 3600e3 * 20).toISOString() },
+        { id: "m2", autor: "paciente", corpo: "Recebi, Ana! Comecei hoje 😊", created_at: new Date(Date.now() - 3600e3 * 3).toISOString() }
+      ]
+    : [];
+
+  var adesao = temPlano ? { "0:0": true, "0:1": true, "1:0": true, "2:0": true, "2:2": true } : {};
+
+  window.NutriPacientes = {
+    list: function () { return Promise.resolve([paciente]); },
+    get: function () { return Promise.resolve(paciente); },
+    update: function (id, patch) { return Promise.resolve(patch); },
+    getAdesao: function () { return Promise.resolve(adesao); },
+    setAdesao: function (id, m) { adesao = m; return Promise.resolve(m); },
+    listMensagens: function () { return Promise.resolve(mensagens); },
+    sendMensagem: function (id, autor, corpo) {
+      mensagens.push({ id: "m" + (mensagens.length + 1), autor: autor, corpo: corpo, created_at: new Date().toISOString() });
+      return Promise.resolve();
+    },
+    assinarFotosEvolucao: function () { return Promise.resolve({}); }
+  };
+
+  // O rascunho local da anamnese/reavaliação atrapalharia a comparação
+  // entre estados — o harness sempre começa limpo.
+  try {
+    localStorage.removeItem("nutri:anamnese:rascunho");
+    localStorage.removeItem("nutri:reavaliacao:rascunho");
+  } catch (err) {}
+})();
+</script>
+
+<script src="assets/js/alimentos-data.js"></script>
+<script src="assets/js/lista-compras.js"></script>
+<script src="assets/js/anamnese-paciente.js"></script>
+<script src="assets/js/reavaliacao-paciente.js"></script>
+<script src="assets/js/portal.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

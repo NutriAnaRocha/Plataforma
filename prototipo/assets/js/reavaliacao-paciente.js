@@ -119,7 +119,7 @@
         { id: "ajustar", label: "O que você gostaria que eu mudasse no plano?", tipo: "area", req: true },
         { id: "rotina_mudou", label: "Mudou alguma coisa na sua rotina?", tipo: "area",
           dica: "Trabalho, horários, viagem, quem cozinha, treino — tudo que muda o que cabe no seu dia." },
-        { id: "duvidas", label: "Alguma dúvida para eu responder na devolutiva?", tipo: "area" }
+        { id: "duvidas", label: "Alguma dúvida para eu responder nas orientações?", tipo: "area" }
       ]
     }
   ];
@@ -242,7 +242,7 @@
       '<p class="anm-passo-dica">Passaram-se algumas semanas desde o último ajuste. ' +
         'São quatro etapas curtas: como foi este período, como você está se sentindo, ' +
         'suas medidas de hoje e o que você quer mudar. Com isso eu reviso o seu plano ' +
-        'e gravo uma nova devolutiva em vídeo.</p>' +
+        'e escrevo as orientações do novo ciclo.</p>' +
       '<div class="anm-prazo">' +
         '<strong>Leva cerca de 5 minutos.</strong>' +
         '<span>Responda com calma — dá para parar no meio e voltar depois.</span>' +
@@ -263,7 +263,7 @@
       '<div class="anm-prazo">' +
         '<strong>Prazo de entrega: até 2 dias úteis.</strong>' +
         '<span>Você recebe um aviso aqui no portal quando o plano revisado estiver liberado, ' +
-          'junto com a devolutiva em vídeo.</span>' +
+          'junto com as minhas orientações escritas.</span>' +
       '</div>' +
       '<p class="anm-salvo">Lembrou de alguma coisa depois de enviar? Me escreva na aba Mensagens.</p>' +
     '</div>';
