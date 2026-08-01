@@ -79,6 +79,24 @@
 .pl-mbtn--del:hover { border-color: #9b1c2e; color: #9b1c2e; background: #fdecee; }
 .pl-addmeals { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* Foto do prato: miniatura larga no editor, com as ações por cima no canto.
+   Fica entre o cabeçalho e a lista de alimentos — é o que a paciente vê. */
+.pl-foto { position: relative; margin: 0 0 8px; border-radius: var(--radius-card); overflow: hidden; background: var(--rosa-suave); }
+.pl-foto[hidden] { display: none; }
+.pl-foto__img { display: block; width: 100%; height: 150px; object-fit: cover; }
+.pl-foto__acoes { position: absolute; top: 6px; right: 6px; display: flex; gap: 4px; }
+.pl-foto__acoes .pl-mbtn { background: rgba(255, 255, 255, .92); box-shadow: 0 1px 4px rgba(0, 0, 0, .18); }
+.pl-foto.is-enviando { opacity: .55; }
+.pl-foto.is-enviando::after {
+  content: "enviando…"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-caption); font-weight: 700; color: var(--vinho);
+}
+@media (max-width: 480px) { .pl-foto__img { height: 130px; } }
+
+/* Foto no resumo do plano salvo (visão da nutri) */
+.pl-res__foto { margin: 6px 0 8px; border-radius: var(--radius-card); overflow: hidden; background: var(--rosa-suave); }
+.pl-res__foto img { display: block; width: 100%; height: 140px; object-fit: cover; }
+
 /* Item */
 .pl-items { display: flex; flex-direction: column; gap: 6px; }
 .pl-itemwrap { display: flex; flex-direction: column; }

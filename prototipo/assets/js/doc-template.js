@@ -148,6 +148,9 @@
       '.doc-meal__nome{font-weight:700;color:var(--doc-primaria);font-size:13px;}' +
       '.doc-meal__hora{font-size:11px;color:#888;font-weight:600;}' +
       '.doc-meal__kcal{font-size:11px;color:#666;font-weight:700;}' +
+      /* foto do prato montado — referência visual da porção */
+      '.doc-meal__foto{margin:0 0 6px;border-radius:8px;overflow:hidden;}' +
+      '.doc-meal__foto img{display:block;width:100%;height:120px;object-fit:cover;}' +
       '.doc-meal__item{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:2px 0;border-top:1px dashed #eee;}' +
       '.doc-meal__item:first-of-type{border-top:none;}' +
       '.doc-meal__qt{color:#888;}' +

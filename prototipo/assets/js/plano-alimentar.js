@@ -871,6 +871,9 @@
       refeicoes: (fonte.refeicoes || []).map(function (r) {
         return {
           nome: r.nome, hora: r.hora || "", alternativa: !!r.alternativa,
+          // Caminho da foto do prato no bucket 'refeicoes' (só o path; a URL
+          // assinada é buscada na hora de exibir).
+          foto: r.foto || null,
           itens: (r.itens || []).map(function (it) {
             var al = it.alimentoId != null ? AL_BY_ID[it.alimentoId] : (it.q ? acharAlimento(it.q) : alimentoDoValor(it.alimento));
             return {
@@ -1072,11 +1075,15 @@
       }).join("");
       var sub = (rf.itens || []).reduce(function (a, it) { return a + calcItem(it).kcal; }, 0);
       var alt = ehAlternativa(rf);
-      return '<div class="pl-res__meal' + (alt ? ' pl-res__meal--alt' : '') + '"><div class="pl-res__head">' +
+      var foto = rf.foto
+        ? '<div class="pl-res__foto"><img data-foto-img alt="Foto de ' + esc(rf.nome || "refeição") + '" /></div>'
+        : '';
+      return '<div class="pl-res__meal' + (alt ? ' pl-res__meal--alt' : '') + '"' +
+          (rf.foto ? ' data-foto="' + esc(rf.foto) + '"' : '') + '><div class="pl-res__head">' +
         '<span class="pl-res__nome">' + esc(rf.nome || "Refeição") +
           (alt ? ' <span class="pl-alt-badge">opção · não soma</span>' : '') + '</span>' +
         '<span class="pl-res__hora">' + esc(rf.hora || "") + '</span>' +
-        '<span class="pl-res__mealkc">' + r0(sub) + ' kcal</span></div>' + itens + '</div>';
+        '<span class="pl-res__mealkc">' + r0(sub) + ' kcal</span></div>' + foto + itens + '</div>';
     }).join("");
     return '' +
       '<section class="fsec">' +
@@ -1155,7 +1162,8 @@
   function mealHTML(rf, mi) {
     var itens = (rf.itens || []).map(function (it, ii) { return itemHTML(it, mi, ii); }).join("");
     var alt = ehAlternativa(rf);
-    return '<div class="pl-meal' + (alt ? ' pl-meal--alt' : '') + '" data-meal="' + mi + '" data-alt="' + (alt ? "1" : "0") + '">' +
+    return '<div class="pl-meal' + (alt ? ' pl-meal--alt' : '') + '" data-meal="' + mi + '" data-alt="' + (alt ? "1" : "0") + '"' +
+        (rf.foto ? ' data-foto="' + esc(rf.foto) + '"' : '') + '>' +
       '<div class="pl-meal__head">' +
         '<input class="pl-meal__nome" type="text" data-meal-nome value="' + esc(rf.nome || "") + '" placeholder="Refeição" />' +
         '<input class="pl-meal__hora" type="time" data-meal-hora value="' + esc(rf.hora || "") + '" />' +
@@ -1163,8 +1171,21 @@
         '<span class="pl-meal__kc" data-meal-kc>0 kcal</span>' +
         mealAcoesHTML() +
       '</div>' +
+      fotoBoxHTML(rf.foto) +
       '<div class="pl-items">' + itens + '</div>' +
       '<button class="pl-additem" type="button" data-add-item>＋ alimento</button>' +
+    '</div>';
+  }
+  /* Foto do prato montado: a paciente entende a porção olhando, não lendo
+     "120 g". Fica escondida enquanto não houver foto — o botão 📷 do
+     cabeçalho é quem abre o seletor de arquivo. */
+  function fotoBoxHTML(path) {
+    return '<div class="pl-foto" data-foto-box' + (path ? "" : " hidden") + '>' +
+      '<img class="pl-foto__img" data-foto-img alt="Foto da refeição" />' +
+      '<div class="pl-foto__acoes">' +
+        '<button class="pl-mbtn" type="button" data-foto-trocar>Trocar</button>' +
+        '<button class="pl-mbtn pl-mbtn--del" type="button" data-foto-rm>Remover foto</button>' +
+      '</div>' +
     '</div>';
   }
   /* Ações da refeição. Duplicar é o que a nutri mais usa: "Jantar — Opção 2"
@@ -1173,6 +1194,7 @@
      ícone passava despercebido. */
   function mealAcoesHTML() {
     return '<div class="pl-meal__acoes">' +
+      '<button class="pl-mbtn" type="button" data-foto-add title="Foto do prato montado (a paciente vê no portal)" aria-label="Foto da refeição">📷</button>' +
       '<button class="pl-mbtn" type="button" data-dup-meal title="Duplicar como outra opção desta refeição" aria-label="Duplicar refeição">⧉</button>' +
       '<button class="pl-mbtn" type="button" data-up-meal title="Mover para cima" aria-label="Mover refeição para cima">↑</button>' +
       '<button class="pl-mbtn" type="button" data-down-meal title="Mover para baixo" aria-label="Mover refeição para baixo">↓</button>' +
@@ -1252,13 +1274,20 @@
      WIRE
      ============================================================ */
   function wire(p, ctx) {
-    _p = p; _ctx = ctx || {}; _viewId = null;
+    // Salvar re-renderiza a ficha inteira (onSaved -> renderProfile), o que
+    // chama render()+wire() de novo. Zerar o foco aqui jogava a nutri de volta
+    // para outro plano logo depois de ela salvar o que estava editando —
+    // então o foco só se perde quando a ficha muda de paciente.
+    if (!_p || _p.id !== p.id) _viewId = null;
+    _p = p; _ctx = ctx || {};
     var r = root(); if (!r) return;
     // Estado inicial: se já tem plano(s) salvo(s), mostramos o painel; senão a escolha.
     // A escolha é re-renderizada aqui (e não só fiada) porque render() roda
     // antes de wire() — sem isso o aviso da meta vinda da calculadora só
     // apareceria na segunda visita à seção.
-    if (libDe(p).length) bindPainel();
+    // render() monta o HTML do painel, mas quem busca as URLs assinadas das
+    // fotos é o wire — render é síncrono e a assinatura é uma ida ao servidor.
+    if (libDe(p).length) { bindPainel(); hidratarFotos(r); }
     else { r.innerHTML = escolhaHTML(p); bindEscolha(); }
   }
 
@@ -1288,6 +1317,7 @@
     var r = root(); if (!r) return;
     r.innerHTML = painelHTML(_p);
     bindPainel();
+    hidratarFotos(r);
   }
 
   function bindPainel() {
@@ -1353,6 +1383,7 @@
     r.innerHTML = editorHTML(plano);
     bindEditor();
     recalc();
+    hidratarFotos(r);
   }
 
   function bindEditor() {
@@ -1398,6 +1429,8 @@
       else if (t.closest("[data-up-meal]")) { moverMeal(t.closest("[data-meal]"), -1); }
       else if (t.closest("[data-down-meal]")) { moverMeal(t.closest("[data-meal]"), 1); }
       else if (t.closest("[data-rm-meal]")) { removerMeal(t.closest("[data-meal]")); }
+      else if (t.closest("[data-foto-add]") || t.closest("[data-foto-trocar]")) { pedirFoto(t.closest("[data-meal]")); }
+      else if (t.closest("[data-foto-rm]")) { removerFoto(t.closest("[data-meal]")); }
       else if (t.closest("[data-pl-salvar]")) { salvar(); }
       else if (t.closest("[data-pl-pdf-edit]")) { gerarPDF(coletar()); }
     });
@@ -1563,6 +1596,9 @@
     var base = baseDoNome(rf.nome);
     rf.nome = base + " — Opção " + proximaOpcao(base);
     rf.alternativa = true; // não soma: é uma OU a outra
+    // A cópia não herda a foto: é outro prato, e duas refeições apontando
+    // para o mesmo arquivo fariam a remoção de uma apagar a foto da outra.
+    rf.foto = null;
     var tmp = document.createElement("div");
     tmp.innerHTML = mealHTML(rf, 0);
     var novo = tmp.firstChild;
@@ -1592,6 +1628,145 @@
       if (prox) box.insertBefore(prox, mealEl);
     }
     if (mealEl.scrollIntoView) mealEl.scrollIntoView({ block: "nearest" });
+  }
+
+  /* ---------- Foto do prato ----------
+     O arquivo vai para o bucket privado 'refeicoes' na hora em que a nutri
+     escolhe (o plano só guarda o caminho). A URL assinada expira, então
+     nunca é gravada: `_fotoUrls` é cache de sessão para exibir.
+     Trocar ou remover a foto NÃO apaga o arquivo na hora — o caminho antigo
+     entra em `_fotoLixo` e só é apagado depois que o plano salva. Assim, sair
+     do editor sem salvar não destrói a foto que ainda está no plano gravado. */
+  var _fotoUrls = {};   // { path: signedUrl }
+  var _fotoLixo = [];   // paths substituídos/removidos nesta edição
+  var _fotoInput = null;
+  var _fotoAlvo = null; // refeição que está esperando o arquivo
+
+  function fotoInput() {
+    if (_fotoInput) return _fotoInput;
+    var i = document.createElement("input");
+    i.type = "file"; i.accept = "image/png,image/jpeg,image/webp"; i.hidden = true;
+    i.addEventListener("change", function () {
+      var file = i.files && i.files[0];
+      i.value = "";
+      if (file && _fotoAlvo) enviarFoto(_fotoAlvo, file);
+      _fotoAlvo = null;
+    });
+    document.body.appendChild(i);
+    _fotoInput = i;
+    return i;
+  }
+  function pedirFoto(mealEl) {
+    if (!mealEl) return;
+    if (!_p || !_p.id) { toast("Salve a ficha da paciente antes de anexar fotos.", true); return; }
+    if (!window.NutriPacientes || !window.NutriPacientes.uploadFotoRefeicao) {
+      toast("Envio de fotos indisponível.", true); return;
+    }
+    _fotoAlvo = mealEl;
+    fotoInput().click();
+  }
+  function enviarFoto(mealEl, file) {
+    if (!/^image\/(png|jpe?g|webp)$/i.test(file.type)) { toast("Use uma imagem JPG, PNG ou WEBP.", true); return; }
+    if (file.size > 12 * 1024 * 1024) { toast("A imagem passa de 12 MB. Escolha uma menor.", true); return; }
+    var box = mealEl.querySelector("[data-foto-box]");
+    var img = mealEl.querySelector("[data-foto-img]");
+    if (box) { box.hidden = false; box.classList.add("is-enviando"); }
+    var fotoId = "r" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    redimensionarFotoBlob(file, 900, 0.85).then(function (blob) {
+      try { if (img) img.src = URL.createObjectURL(blob); } catch (e) {}
+      return window.NutriPacientes.uploadFotoRefeicao(_p.id, fotoId, blob);
+    }).then(function (path) {
+      var antigo = mealEl.getAttribute("data-foto");
+      if (antigo && antigo !== path) _fotoLixo.push(antigo);
+      mealEl.setAttribute("data-foto", path);
+      if (img && img.src) _fotoUrls[path] = img.src; // preview local vale até recarregar
+      if (box) box.classList.remove("is-enviando");
+      toast("Foto anexada 📸 — salve o plano para valer.");
+    }).catch(function (e) {
+      if (box) { box.classList.remove("is-enviando"); if (!mealEl.getAttribute("data-foto")) box.hidden = true; }
+      toast("Não foi possível enviar a foto. " + (e && e.message ? e.message : ""), true);
+    });
+  }
+  function removerFoto(mealEl) {
+    if (!mealEl) return;
+    var path = mealEl.getAttribute("data-foto");
+    if (path) _fotoLixo.push(path);
+    mealEl.removeAttribute("data-foto");
+    var box = mealEl.querySelector("[data-foto-box]");
+    var img = mealEl.querySelector("[data-foto-img]");
+    if (img) img.removeAttribute("src");
+    if (box) box.hidden = true;
+  }
+  /* Busca as URLs assinadas dos caminhos que aparecem em `escopo` e preenche
+     as <img>. Uma chamada só para todas as fotos da tela. */
+  function hidratarFotos(escopo) {
+    if (!escopo) return;
+    var alvos = [];
+    escopo.querySelectorAll("[data-foto]").forEach(function (el) {
+      var img = el.querySelector("[data-foto-img]");
+      var path = el.getAttribute("data-foto");
+      if (!img || !path) return;
+      var box = el.querySelector("[data-foto-box]");
+      if (box) box.hidden = false;
+      if (_fotoUrls[path]) { img.src = _fotoUrls[path]; return; }
+      alvos.push({ img: img, path: path });
+    });
+    if (!alvos.length || !window.NutriPacientes || !window.NutriPacientes.assinarFotosRefeicao) return;
+    var paths = alvos.map(function (a) { return a.path; });
+    window.NutriPacientes.assinarFotosRefeicao(paths).then(function (mapa) {
+      alvos.forEach(function (a) {
+        if (!mapa[a.path]) return;
+        _fotoUrls[a.path] = mapa[a.path];
+        a.img.src = mapa[a.path];
+      });
+    }).catch(function () { /* sem foto é degradação aceitável */ });
+  }
+  // Apaga do bucket as fotos trocadas/removidas — só depois que o plano salvou
+  // sem elas, senão um erro de gravação deixaria o plano apontando para o vazio.
+  function limparFotosLixo() {
+    if (!_fotoLixo.length || !window.NutriPacientes || !window.NutriPacientes.removerFotoRefeicao) { _fotoLixo = []; return; }
+    var emUso = {};
+    libDe(_p).forEach(function (pl) {
+      (pl.refeicoes || []).forEach(function (rf) { if (rf && rf.foto) emUso[rf.foto] = true; });
+    });
+    _fotoLixo.forEach(function (path) {
+      if (emUso[path]) return; // outro plano ainda usa este arquivo
+      window.NutriPacientes.removerFotoRefeicao(path).catch(function () {});
+      delete _fotoUrls[path];
+    });
+    _fotoLixo = [];
+  }
+  /* Redimensiona para no máx. `max` px no lado maior e devolve um Blob JPEG
+     (mesma receita das fotos de evolução em antropometria.js — o módulo do
+     plano é autossuficiente de propósito). */
+  function redimensionarFotoBlob(file, max, q) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onerror = function () { reject(new Error("read")); };
+      reader.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error("img")); };
+        img.onload = function () {
+          var w = img.naturalWidth, h = img.naturalHeight;
+          var s = Math.min(1, max / Math.max(w, h));
+          var cw = Math.round(w * s), ch = Math.round(h * s);
+          var cv = document.createElement("canvas"); cv.width = cw; cv.height = ch;
+          cv.getContext("2d").drawImage(img, 0, 0, cw, ch);
+          if (cv.toBlob) {
+            cv.toBlob(function (b) { b ? resolve(b) : reject(new Error("blob")); }, "image/jpeg", q || 0.85);
+          } else {
+            try {
+              var d = cv.toDataURL("image/jpeg", q || 0.85), bin = atob(d.split(",")[1]);
+              var arr = new Uint8Array(bin.length);
+              for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+              resolve(new Blob([arr], { type: "image/jpeg" }));
+            } catch (e) { reject(e); }
+          }
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
   /* ---------- Substitutos e refeição alternativa ---------- */
@@ -1646,6 +1821,7 @@
       nome: (m.querySelector("[data-meal-nome]") || {}).value || "Refeição",
       hora: (m.querySelector("[data-meal-hora]") || {}).value || "",
       alternativa: m.getAttribute("data-alt") === "1",
+      foto: m.getAttribute("data-foto") || null,
       itens: []
     };
     m.querySelectorAll("[data-item]").forEach(function (it) {
@@ -1752,6 +1928,7 @@
     window.NutriPacientes.update(_p.id, patch).then(function (saved) {
       _p = saved;
       _viewId = (viewId && libDe(_p).some(byId(viewId))) ? viewId : null;
+      limparFotosLixo(); // o plano já está gravado sem elas
       var r = root();
       if (r) {
         if (libDe(_p).length) { mostrarPainel(); }
@@ -1802,6 +1979,9 @@
     var msg = 'Excluir o plano "' + (alvo.titulo || "Plano alimentar") + '"? Esta ação não pode ser desfeita.';
     if (!window.confirm(msg)) return;
     var restante = lib.filter(function (x) { return x.id !== id; });
+    // As fotos do plano excluído viram lixo (limparFotosLixo ainda confere se
+    // outro plano não aponta para o mesmo arquivo antes de apagar).
+    (alvo.refeicoes || []).forEach(function (rf) { if (rf && rf.foto) _fotoLixo.push(rf.foto); });
     if (_viewId === id) _viewId = null;
     persistir(restante, null, "Plano excluído");
   }
@@ -1830,11 +2010,16 @@
           '<span class="doc-meal__qt">' + esc(qtdLabel(it, c)) + ' · ' + c.kcal + ' kcal</span></div>';
       }).join("");
       var alt = ehAlternativa(rf);
+      // A foto só entra no PDF se a URL assinada já estiver em cache (a tela
+      // que abriu o plano a buscou). Sem cache, o PDF sai só com o texto —
+      // imprimir não pode esperar por rede.
+      var url = rf.foto ? _fotoUrls[rf.foto] : null;
+      var foto = url ? '<div class="doc-meal__foto"><img src="' + esc(url) + '" alt="" /></div>' : '';
       return '<div class="doc-meal"><div class="doc-meal__head">' +
         '<span class="doc-meal__nome">' + esc(rf.nome || "Refeição") +
           (alt ? ' <em>(opção alternativa)</em>' : '') + '</span>' +
         '<span class="doc-meal__hora">' + esc(rf.hora || "") + '</span>' +
-        '<span class="doc-meal__kcal">' + r0(sub) + ' kcal</span></div>' + itens + '</div>';
+        '<span class="doc-meal__kcal">' + r0(sub) + ' kcal</span></div>' + foto + itens + '</div>';
     }).join("");
     var legenda = "";
     if (temSub) legenda += '<div class="doc-note">⇄ Onde há “ou”, você pode <strong>trocar</strong> o alimento pela opção indicada, na quantidade descrita.</div>';

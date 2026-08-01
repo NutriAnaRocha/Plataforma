@@ -199,6 +199,41 @@
       });
     },
 
+    // ---- Fotos da refeição do plano (bucket privado 'refeicoes') ----
+    // Mesma convenção de caminho e mesmas regras das fotos de evolução
+    // ('<pacienteId>/<fotoId>.jpg'): a nutri dona gere, a paciente dona lê.
+    // Ver migração 0049.
+    uploadFotoRefeicao: function (pacienteId, fotoId, blob) {
+      var path = pacienteId + "/" + fotoId + ".jpg";
+      return client().then(function (c) {
+        return c.storage.from("refeicoes").upload(path, blob, { contentType: "image/jpeg", upsert: true });
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return path;
+      });
+    },
+    removerFotoRefeicao: function (path) {
+      if (!path) return Promise.resolve(true);
+      return client().then(function (c) {
+        return c.storage.from("refeicoes").remove([path]);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return true;
+      });
+    },
+    assinarFotosRefeicao: function (paths, expiresIn) {
+      var lista = (paths || []).filter(Boolean);
+      if (!lista.length) return Promise.resolve({});
+      return client().then(function (c) {
+        return c.storage.from("refeicoes").createSignedUrls(lista, expiresIn || 7200);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        var mapa = {};
+        (res.data || []).forEach(function (r) { if (r && r.signedUrl && !r.error) mapa[r.path] = r.signedUrl; });
+        return mapa;
+      });
+    },
+
     // Popular a conta com os pacientes de exemplo (window.PAC_DATA). Um clique, idempotência
     // fica por conta do chamador (só oferece quando a lista está vazia).
     seedExamples: function () {
