@@ -97,6 +97,7 @@
     el("pane-metas").innerHTML = window.MetasView ? window.MetasView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-evolucao").innerHTML = renderEvolucao(p);
     hidratarFotosPortal(p);
+    hidratarFotosRefeicao();
     el("pane-consultas").innerHTML = renderConsultas(p);
 
     // Abas
@@ -255,19 +256,39 @@
       pp.innerHTML = '<div class="pcard"><div class="empty-state">Seu acesso ainda não tem seções liberadas. Fale com sua nutricionista.</div></div>';
       return;
     }
+    // Bolinha de novidade na aba do plano — o mesmo aviso da faixa, para
+    // quem chegou por outra aba (ou voltou pelo chat) não passar batido.
+    var tabPlano = tabsWrap.querySelector('.ptab[data-t="plano"]');
+    if (tabPlano) tabPlano.classList.toggle("ptab--novo", planoNovidade(p));
+
     // Anamnese pendente ganha a tela: é o único passo que depende dela.
     if (visiveis.indexOf("anamnese") >= 0 && anamnesePendente(p)) { switchTab("anamnese"); return; }
     // Ciclo aberto: a reavaliação é a próxima ação dela, então abre nela.
     if (visiveis.indexOf("reavaliacao") >= 0 && reavaliacaoAberta()) { switchTab("reavaliacao"); return; }
-    // Se a aba ativa foi ocultada, ativa a primeira liberada.
+    /* Anamnese enviada e plano ainda não liberado: a aba Meu plano existe e
+       nasce ativa no HTML, então ela caía num "ainda não foi publicado" que
+       parece tela vazia. A Anamnese responde a pergunta real desse momento
+       ("e agora?") com o prazo de entrega — por isso ganha a tela. */
+    if (visiveis.indexOf("anamnese") >= 0 && !planosLiberados(p).length) { switchTab("anamnese"); return; }
+    /* Nenhum destaque a dar: confirma a aba ativa passando por switchTab em
+       vez de deixar o is-active do HTML de pé. Parece redundante, mas é o
+       que faz o "abriu o plano = viu o aviso" valer também para o caso mais
+       comum de todos — plano liberado, ela cai direto nele. */
     var ativo = tabsWrap.querySelector(".ptab.is-active");
-    if (!ativo || ativo.hidden) switchTab(visiveis[0]);
+    switchTab(!ativo || ativo.hidden ? visiveis[0] : ativo.getAttribute("data-t"));
   }
 
   function switchTab(id) {
     var root = el("portal");
     root.querySelectorAll(".ptab").forEach(function (t) { t.classList.toggle("is-active", t.getAttribute("data-t") === id); });
     root.querySelectorAll(".portal-pane").forEach(function (pn) { pn.classList.toggle("is-active", pn.getAttribute("data-pane") === id); });
+    /* Abriu o plano = viu o aviso. A faixa continua na tela desta visita
+       (ela acabou de chegar nela); some da próxima vez. */
+    if (id === "plano" && ctx.paciente) {
+      marcarPlanoVisto(ctx.paciente);
+      var tp = root.querySelector('.ptab[data-t="plano"]');
+      if (tp) tp.classList.remove("ptab--novo");
+    }
     if (id === "evolucao") drawWeightChart(ctx.paciente);
     if (id === "chat") { var box = el("chat-scroll"); if (box) box.scrollTop = box.scrollHeight; }
   }
@@ -280,6 +301,45 @@
     if ((pl.refeicoes || []).length) return [pl];
     return [];
   }
+  /* ---------- "Seu plano está pronto" ----------
+     A anamnese e a reavaliação prometem à paciente que ela "recebe um
+     aviso aqui no portal" quando o plano for liberado. Sem isto o plano
+     só aparecia, calado, e a promessa ficava por cumprir.
+
+     O que conta como novidade: mudou o conjunto de planos liberados
+     (id + data de atualização). Assim vale tanto para o 1º plano quanto
+     para um plano revisado depois da reavaliação.
+
+     O "já vi" mora no localStorage do aparelho dela, não no banco: é
+     preferência de leitura, não dado clínico — não vale uma coluna, uma
+     migration e uma escrita a cada visita. Em outro aparelho ela vê o
+     aviso de novo, o que é aceitável (e até útil). */
+  var LS_PLANO_VISTO = "nutri:plano-visto:";
+  function planoAssinatura(p) {
+    return planosLiberados(p).map(function (x) {
+      return (x.id || x.titulo || "plano") + "@" + (x.atualizadoEm || "");
+    }).join("|");
+  }
+  function planoNovidade(p) {
+    var atual = planoAssinatura(p);
+    if (!atual) return false;
+    try { return localStorage.getItem(LS_PLANO_VISTO + p.id) !== atual; }
+    catch (e) { return false; } // sem localStorage, melhor calar do que avisar sempre
+  }
+  // A nutri em preview não "consome" o aviso da paciente: ela está olhando
+  // a tela dela, não lendo o próprio plano.
+  function marcarPlanoVisto(p) {
+    if (ctx.mode === "preview") return;
+    try { localStorage.setItem(LS_PLANO_VISTO + p.id, planoAssinatura(p)); } catch (e) {}
+  }
+  function planoNovoHTML() {
+    return '<div class="pcard plano-novo" id="plano-novo">' +
+      '<h2 class="pcard__title">Seu plano está pronto 🌸</h2>' +
+      '<p class="plano-novo__txt">Ele está logo abaixo, com as minhas orientações. ' +
+      'Leia com calma — qualquer dúvida, é só me chamar por aqui nas Mensagens.</p>' +
+    '</div>';
+  }
+
   function horaRefeicao(r) { return r.hora || r.horario || ""; }
   // Item pode ser string (formato antigo) ou objeto do construtor {alimento, medida, qtd, gramas}.
   function itemTexto(it) {
@@ -309,6 +369,9 @@
       return renov + '<div class="pcard"><div class="empty-state">Seu plano alimentar ainda não foi publicado. ' +
         'Assim que sua nutricionista liberar, ele aparece aqui.</div></div>';
     }
+    // O aviso de plano novo vem depois da renovação: quem está no fim da
+    // vigência precisa ver as duas coisas, e a data é a que tem prazo.
+    var novo = planoNovidade(p) ? planoNovoHTML() : "";
     var readonly = ctx.mode === "preview";
     var multi = planos.length > 1;
     var corpo = planos.map(function (plano, pi) {
@@ -345,18 +408,25 @@
         // Refeição alternativa: opção no lugar da refeição do mesmo horário,
         // por isso não soma no total nem conta na adesão.
         var alt = !!r.alternativa;
+        // Foto do prato montado pela nutri: mostra a porção melhor do que "120 g".
+        // Só o caminho vem no plano; a URL assinada chega em hidratarFotosRefeicao.
+        var foto = r.foto
+          ? '<div class="meal__foto" data-refeicao-foto="' + esc(r.foto) + '">' +
+              '<img alt="Foto de ' + esc(r.nome || "refeição") + '" loading="lazy" /></div>'
+          : '';
         return '<div class="pcard meal' + (alt ? ' meal--alt' : '') + '"><div class="meal__head">' +
           '<span class="meal__nome">' + esc(r.nome) + '</span>' +
           (alt ? '<span class="meal__badge">outra opção</span>' : '') +
           (hora ? '<span class="meal__hora">' + esc(hora) + '</span>' : '') + '</div>' +
           (alt ? '<p class="meal__hint">Você pode fazer esta refeição <strong>no lugar</strong> da do mesmo horário — escolha uma das duas.</p>' : '') +
+          foto +
           '<ul class="meal__list">' + itens + '</ul></div>';
       }).join("");
       return (multi ? '<div class="plano-sep">' + esc(plano.titulo || "Plano alimentar") + '</div>' : '') + head + body;
     }).join("");
     // Lista de compras (uma só, do 1º plano liberado) + dicas de marmita.
     var compras = window.ListaCompras ? window.ListaCompras.htmlPortal(planos[0], ctx.marcas, readonly) : "";
-    return renov + corpo + compras;
+    return renov + novo + corpo + compras;
   }
 
   // Marcação do plano sincronizada no banco (tabela plano_adesao, gravada pelo
@@ -449,6 +519,29 @@
       });
     }).catch(function () {});
   }
+  /* Fotos das refeições do plano (bucket 'refeicoes'). Uma chamada só para
+     todos os caminhos da tela; falha em assinar deixa o card sem foto, que é
+     degradação aceitável — o texto da refeição continua lá. */
+  function hidratarFotosRefeicao() {
+    if (!window.NutriPacientes || !window.NutriPacientes.assinarFotosRefeicao) return;
+    var boxes = [].slice.call(document.querySelectorAll("[data-refeicao-foto]"));
+    if (!boxes.length) return;
+    var paths = [];
+    boxes.forEach(function (b) {
+      var p = b.getAttribute("data-refeicao-foto");
+      if (p && paths.indexOf(p) < 0) paths.push(p);
+    });
+    window.NutriPacientes.assinarFotosRefeicao(paths).then(function (mapa) {
+      boxes.forEach(function (b) {
+        var u = mapa[b.getAttribute("data-refeicao-foto")];
+        var img = b.querySelector("img");
+        if (u && img) img.src = u; else b.remove();
+      });
+    }).catch(function () {
+      boxes.forEach(function (b) { b.remove(); });
+    });
+  }
+
   // Lightbox das fotos no portal (delegação global).
   document.addEventListener("click", function (e) {
     var btn = e.target.closest && e.target.closest("[data-pfoto]");

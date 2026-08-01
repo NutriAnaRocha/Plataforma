@@ -268,9 +268,12 @@
 
   // O rascunho local da anamnese/reavaliação atrapalharia a comparação
   // entre estados — o harness sempre começa limpo.
+  // O "já vi o plano" também: senão o aviso de plano liberado só apareceria
+  // na primeiríssima visita ao estado 4 e nunca mais.
   try {
     localStorage.removeItem("nutri:anamnese:rascunho");
     localStorage.removeItem("nutri:reavaliacao:rascunho");
+    localStorage.removeItem("nutri:plano-visto:" + paciente.id);
   } catch (err) {}
 })();
 </script>

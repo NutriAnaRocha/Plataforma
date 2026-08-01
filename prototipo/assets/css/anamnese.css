@@ -208,6 +208,23 @@ textarea.anm-input { resize: vertical; min-height: 76px; line-height: var(--lh-n
   color: var(--texto-sutil);
 }
 
+/* ---------- Aviso de plano liberado ----------
+   Cumpre a promessa feita na anamnese e na reavaliação ("você recebe um
+   aviso aqui no portal"). Mesma família visual do convite de renovação —
+   faixa com borda à esquerda —, mas em vinho, porque aqui é boa notícia
+   e não assunto de contrato. */
+.plano-novo {
+  border-left: 3px solid var(--vinho);
+  background: var(--rosa-suave);
+}
+.plano-novo .pcard__title { color: var(--vinho); }
+.plano-novo__txt {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--texto);
+}
+
 @media (max-width: 480px) {
   .anm-nav { flex-direction: column-reverse; }
   .anm-nav .btn { width: 100%; }
