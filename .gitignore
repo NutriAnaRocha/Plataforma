@@ -12,3 +12,9 @@ Thumbs.db
 # Cache do Python (scripts de migração)
 __pycache__/
 *.pyc
+
+# Base de produtos do app "No mercado" — 1,4 MB de dado baixado da Open
+# Food Facts. É reproduzível com mercado/importar_off.py e vive no
+# Postgres depois de carregado; no git só engordaria o repositório.
+mercado/produtos.jsonl
+mercado/*.log
