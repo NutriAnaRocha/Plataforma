@@ -234,6 +234,77 @@
       });
     },
 
+    /* ---- Diário do prato (bucket 'pratos' + pratos_registrados) ----
+       Aqui quem envia é a PACIENTE, ao contrário de 'refeicoes'. A linha
+       com kcal/macros não é gravada daqui: quem grava é a edge function
+       'analisar-prato', com service_role — se o cliente pudesse dar
+       insert, a paciente digitaria os próprios números e a nutri leria
+       como estimativa da IA. Ver migração 0050. */
+    uploadPrato: function (pacienteId, id, blob) {
+      var path = pacienteId + "/" + id + ".jpg";
+      return client().then(function (c) {
+        return c.storage.from("pratos").upload(path, blob, { contentType: "image/jpeg", upsert: false });
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return path;
+      });
+    },
+
+    analisarPrato: function (fotoPath, refeicao, observacao) {
+      return client().then(function (c) {
+        return c.functions.invoke("analisar-prato", {
+          body: { foto_path: fotoPath, refeicao: refeicao || "", observacao: observacao || "" }
+        });
+      }).then(function (res) {
+        if (res.error) {
+          // functions.invoke embrulha erro HTTP; o motivo real está no corpo.
+          if (res.error.context && res.error.context.json) {
+            return res.error.context.json().then(function (b) {
+              throw new Error((b && (b.detail || b.error)) || "falha");
+            });
+          }
+          throw new Error("falha");
+        }
+        return res.data || {};
+      });
+    },
+
+    listPratos: function (pacienteId, limite) {
+      return client().then(function (c) {
+        return c.from("pratos_registrados").select("*")
+          .eq("paciente_id", pacienteId)
+          .order("criado_em", { ascending: false })
+          .limit(limite || 30);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return res.data || [];
+      });
+    },
+
+    // Apaga a linha E a foto. A foto primeiro seria pior: se a linha
+    // falhasse, sobraria um registro apontando para imagem inexistente.
+    removerPrato: function (id, fotoPath) {
+      return client().then(function (c) {
+        return c.from("pratos_registrados").delete().eq("id", id).then(function (res) {
+          if (res.error) throw res.error;
+          return fotoPath ? c.storage.from("pratos").remove([fotoPath]) : null;
+        });
+      }).then(function () { return true; });
+    },
+
+    assinarFotosPrato: function (paths, expiresIn) {
+      var lista = (paths || []).filter(Boolean);
+      if (!lista.length) return Promise.resolve({});
+      return client().then(function (c) {
+        return c.storage.from("pratos").createSignedUrls(lista, expiresIn || 7200);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        var mapa = {};
+        (res.data || []).forEach(function (r) { if (r && r.signedUrl && !r.error) mapa[r.path] = r.signedUrl; });
+        return mapa;
+      });
+    },
+
     // Popular a conta com os pacientes de exemplo (window.PAC_DATA). Um clique, idempotência
     // fica por conta do chamador (só oferece quando a lista está vazia).
     seedExamples: function () {

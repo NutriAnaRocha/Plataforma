@@ -93,6 +93,7 @@
     el("pane-reavaliacao").innerHTML =
       temReavaliacao(p) ? window.ReavaliacaoView.portalHTML() : "";
     el("pane-plano").innerHTML = renderPlano(p);
+    el("pane-prato").innerHTML = (window.PratoView && temPrato(p)) ? window.PratoView.portalHTML() : "";
     el("pane-treino").innerHTML = window.TreinoView ? window.TreinoView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-metas").innerHTML = window.MetasView ? window.MetasView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-evolucao").innerHTML = renderEvolucao(p);
@@ -109,6 +110,10 @@
     drawWeightChart(p);
     initChat();
     wireLogout();
+
+    if (window.PratoView && temPrato(p)) {
+      window.PratoView.wire(p, { readonly: ctx.mode === "preview" });
+    }
 
     if (window.AnamneseView && temAnamnese(p)) {
       window.AnamneseView.wire(p, {
@@ -164,6 +169,16 @@
     return !!(window.ReavaliacaoView && noPrograma(p) &&
               window.ReavaliacaoView.mostrar(p, ctx.assinatura));
   }
+  /* O diário do prato acompanha o lado alimentar do portal: quem tem a
+     seção "Meu plano" liberada tem também onde registrar o que comeu.
+     Não é feature própria em portal_features porque não é venda separada
+     — e criar uma exigiria migrar a lista de todo paciente já existente
+     só para ligar algo que deveria vir junto. */
+  function temPrato(p) {
+    var feats = Array.isArray(p.portalFeatures) ? p.portalFeatures : ["plano", "evolucao", "consultas", "chat"];
+    return feats.indexOf("plano") >= 0;
+  }
+
   function reavaliacaoAberta() {
     return !!(window.ReavaliacaoView && window.ReavaliacaoView.aberta(ctx.assinatura));
   }
@@ -241,6 +256,7 @@
       var id = t.getAttribute("data-t");
       var on;
       if (id === "treino") on = temTreino;
+      else if (id === "prato") on = temPrato(p);
       else if (id === "metas") on = temMetas;
       else if (id === "anamnese") on = temAnamnese(p);
       else if (id === "reavaliacao") on = temReavaliacao(p);

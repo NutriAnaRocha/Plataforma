@@ -293,3 +293,41 @@
 .chat__form { display: flex; gap: var(--sp-3); padding: var(--sp-4); border-top: 1px solid var(--cinza-borda); }
 .chat__form input { flex: 1; padding: 11px 14px; font: inherit; border: 1px solid var(--cinza-borda); border-radius: var(--radius-input); outline: none; }
 .chat__form input:focus { border-color: var(--vinho); box-shadow: var(--ring-foco); }
+
+/* ---------- Diário do prato (visão da nutri) ----------
+   Lista densa e escaneável: a nutri lê vários dias de uma vez antes da
+   consulta, então cada prato ocupa uma linha, não um cartão grande. */
+.pn-dia { margin-top: var(--sp-5); }
+.pn-dia__head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-3);
+  padding-bottom: 6px; margin-bottom: var(--sp-3); border-bottom: 1px solid var(--cinza-borda);
+  font-weight: 800; color: var(--vinho); font-size: var(--fs-sm);
+}
+.pn-dia__resumo { font-weight: 600; color: var(--texto-sutil); }
+
+.pn-card { display: flex; gap: var(--sp-3); align-items: flex-start; padding: var(--sp-3) 0; }
+.pn-card + .pn-card { border-top: 1px solid var(--cinza-claro); }
+.pn-card__foto { flex: none; width: 78px; height: 78px; border-radius: var(--radius-input); overflow: hidden; background: var(--cinza-claro); }
+.pn-card__foto img { display: block; width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+.pn-card__corpo { flex: 1; min-width: 0; }
+.pn-card__head { display: flex; align-items: baseline; gap: var(--sp-3); flex-wrap: wrap; }
+.pn-hora, .pn-conf { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.pn-conf { background: var(--cinza-claro); border-radius: 999px; padding: 2px 9px; }
+
+.pn-nums { margin: 4px 0 0; display: flex; gap: var(--sp-3); flex-wrap: wrap; font-size: var(--fs-sm); }
+.pn-nums b { color: var(--vinho); }
+.pn-nums span { color: var(--texto-sutil); }
+.pn-itens { margin: 4px 0 0; font-size: var(--fs-sm); color: var(--texto); line-height: 1.45; }
+.pn-obs { margin: 4px 0 0; font-size: var(--fs-sm); color: var(--texto-sutil); font-style: italic; }
+.pn-alertas { margin: 6px 0 0; padding-left: 18px; font-size: var(--fs-sm); color: var(--texto); line-height: 1.45; }
+.pn-alertas li::marker { color: var(--vinho); }
+
+.pn-del {
+  flex: none; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--cinza-borda);
+  background: #fff; color: var(--texto-sutil); font-size: 1rem; line-height: 1; cursor: pointer;
+}
+.pn-del:hover { border-color: var(--vinho); color: var(--vinho); }
+
+@media (max-width: 560px) {
+  .pn-card__foto { width: 60px; height: 60px; }
+}

@@ -190,6 +190,7 @@
     { id: "calculos",     ico: "🧮", tit: "Cálculos energéticos",   sub: ["TMB por 6 fórmulas", "GET e VET", "Macronutrientes", "Meta para o plano"] },
     { id: "plano",        ico: "🥗", tit: "Planejamento Alimentar", sub: ["Plano atual", "Planos anteriores", "Lista de compras"] },
     // { id: "treino",    ico: "🏋️", tit: "Treino em casa",         sub: ["Blocos e exercícios", "Vídeos", "Liberar ao paciente"] }, // PROJETO FUTURO — oculto por ora (código preservado em treino-paciente.js)
+    { id: "prato",        ico: "📷", tit: "Diário do prato",        sub: ["Fotos da paciente", "Estimativa da IA", "Resumo por dia"] },
     { id: "metas",        ico: "🎯", tit: "Metas",                  sub: ["Checklist do paciente", "Metas ativas", "Evolução"] },
     { id: "prescricoes",  ico: "💊", tit: "Prescrições",            sub: ["Suplementação", "Fitoterapia", "Manipulados"] },
     { id: "orientacoes",  ico: "📄", tit: "Orientações",            sub: ["Atuais", "Histórico"] },
@@ -392,6 +393,8 @@
       case "antropometria": html = secAntropometria(p); break;
       case "calculos":      html = secCalculos(p); break;
       case "plano":         html = secPlano(p); break;
+      case "prato":         html = window.PratoNutri ? window.PratoNutri.render(p)
+                                   : secWrap("Diário do prato", emBreve("Fotos dos pratos registrados pela paciente.")); break;
       case "treino":        html = secTreino(p); break;
       case "metas":         html = secMetas(p); break;
       case "prescricoes":   html = secPrescricoes(p); break;
@@ -415,6 +418,7 @@
         }
       });
     }
+    if (sec === "prato" && window.PratoNutri) window.PratoNutri.wire(p, { toast: pacToast });
     if (sec === "exames" && window.Exames) {
       window.Exames.wire(p, {
         toast: pacToast,

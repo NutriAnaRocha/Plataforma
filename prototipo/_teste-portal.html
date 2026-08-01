@@ -72,6 +72,7 @@
       <button class="ptab" data-t="anamnese" type="button">📝 Anamnese</button>
       <button class="ptab" data-t="reavaliacao" type="button">🔄 Reavaliação</button>
       <button class="ptab is-active" data-t="plano" type="button">🥗 Meu plano</button>
+      <button class="ptab" data-t="prato" type="button">📷 Meu prato</button>
       <button class="ptab" data-t="treino" type="button">🏋️ Treino</button>
       <button class="ptab" data-t="metas" type="button">🎯 Metas</button>
       <button class="ptab" data-t="evolucao" type="button">📈 Evolução</button>
@@ -83,6 +84,7 @@
       <div class="portal-pane" data-pane="anamnese" id="pane-anamnese"></div>
       <div class="portal-pane" data-pane="reavaliacao" id="pane-reavaliacao"></div>
       <div class="portal-pane is-active" data-pane="plano" id="pane-plano"></div>
+      <div class="portal-pane" data-pane="prato" id="pane-prato"></div>
       <div class="portal-pane" data-pane="treino" id="pane-treino"></div>
       <div class="portal-pane" data-pane="metas" id="pane-metas"></div>
       <div class="portal-pane" data-pane="evolucao" id="pane-evolucao"></div>
@@ -98,14 +100,15 @@
 (function () {
   "use strict";
 
-  var ESTADOS = ["1-tcle", "2-form", "3-enviada", "4-plano", "5-reavaliacao", "6-renovacao"];
+  var ESTADOS = ["1-tcle", "2-form", "3-enviada", "4-plano", "5-reavaliacao", "6-renovacao", "7-prato"];
   var LABEL = {
     "1-tcle": "1. Entrou pela 1ª vez (TCLE)",
     "2-form": "2. Anamnese (formulário)",
     "3-enviada": "3. Anamnese enviada",
     "4-plano": "4. Plano liberado",
     "5-reavaliacao": "5. Reavaliação aberta",
-    "6-renovacao": "6. Fim do período"
+    "6-renovacao": "6. Fim do período",
+    "7-prato": "7. Diário do prato"
   };
   var e = new URLSearchParams(location.search).get("e");
   if (ESTADOS.indexOf(e) < 0) e = "1-tcle";
@@ -174,8 +177,8 @@
     }]
   };
 
-  var temPlano = ["4-plano", "5-reavaliacao", "6-renovacao"].indexOf(e) >= 0;
-  var anamneseEnviada = ["3-enviada", "4-plano", "5-reavaliacao", "6-renovacao"].indexOf(e) >= 0;
+  var temPlano = ["4-plano", "5-reavaliacao", "6-renovacao", "7-prato"].indexOf(e) >= 0;
+  var anamneseEnviada = ["3-enviada", "4-plano", "5-reavaliacao", "6-renovacao", "7-prato"].indexOf(e) >= 0;
 
   var paciente = {
     id: "p1", userId: "u1",
@@ -252,6 +255,53 @@
 
   var adesao = temPlano ? { "0:0": true, "0:1": true, "1:0": true, "2:0": true, "2:2": true } : {};
 
+  /* ---- Diário do prato ----
+     Registros falsos no formato exato que a edge function grava. Só o
+     estado 7 tem histórico: nos outros a tela aparece vazia, que é o que
+     a paciente vê antes do primeiro registro (e também precisa ser visto).
+     As fotos não existem no bucket: assinarFotosPrato devolve {} e o
+     prato-paciente.js remove a miniatura — comportamento real de foto
+     que não carrega. */
+  var agora = new Date();
+  function hAtras(h) { return new Date(agora.getTime() - h * 3600e3).toISOString(); }
+  var PRATOS = e === "7-prato" ? [
+    {
+      id: "pr1", paciente_id: "p1", foto_path: "p1/pr1.jpg", refeicao: "Almoço",
+      observacao: "comi na casa da minha mãe", kcal: 660, ptn_g: 40, cho_g: 80, lip_g: 20,
+      itens: [
+        { nome: "feijão preto", porcao: "1 concha", kcal: 130 },
+        { nome: "carne de porco", porcao: "100 g", kcal: 290 },
+        { nome: "arroz branco", porcao: "4 colheres de sopa", kcal: 160 }
+      ],
+      alertas: ["porção de carboidrato acima do combinado", "ausência de salada — meio prato de folhas já equilibra"],
+      pontos_bons: ["feijão presente, boa fonte de proteína e fibra", "porção de proteína adequada"],
+      confianca: "media", modelo: "gpt-4o-mini", criado_em: hAtras(3)
+    },
+    {
+      id: "pr2", paciente_id: "p1", foto_path: "p1/pr2.jpg", refeicao: "Café da manhã",
+      observacao: null, kcal: 310, ptn_g: 18, cho_g: 34, lip_g: 11,
+      itens: [
+        { nome: "ovos mexidos", porcao: "2 unidades", kcal: 150 },
+        { nome: "pão integral", porcao: "1 fatia", kcal: 80 },
+        { nome: "mamão", porcao: "1 fatia média", kcal: 60 }
+      ],
+      alertas: [],
+      pontos_bons: ["exatamente o que combinamos no plano", "boa proteína logo no começo do dia"],
+      confianca: "alta", modelo: "gpt-4o-mini", criado_em: hAtras(9)
+    },
+    {
+      id: "pr3", paciente_id: "p1", foto_path: "p1/pr3.jpg", refeicao: "Jantar",
+      observacao: "estava sem tempo", kcal: 480, ptn_g: 12, cho_g: 70, lip_g: 16,
+      itens: [
+        { nome: "macarrão ao molho de tomate", porcao: "1 prato raso", kcal: 420 },
+        { nome: "refrigerante", porcao: "1 copo", kcal: 60 }
+      ],
+      alertas: ["falta proteína — um ovo ou um filé pequeno já resolve", "refrigerante: água ou chá sem açúcar no lugar"],
+      pontos_bons: ["molho de tomate caseiro é uma boa escolha"],
+      confianca: "media", modelo: "gpt-4o-mini", criado_em: hAtras(28)
+    }
+  ] : [];
+
   window.NutriPacientes = {
     list: function () { return Promise.resolve([paciente]); },
     get: function () { return Promise.resolve(paciente); },
@@ -263,7 +313,40 @@
       mensagens.push({ id: "m" + (mensagens.length + 1), autor: autor, corpo: corpo, created_at: new Date().toISOString() });
       return Promise.resolve();
     },
-    assinarFotosEvolucao: function () { return Promise.resolve({}); }
+    assinarFotosEvolucao: function () { return Promise.resolve({}); },
+
+    // Diário do prato — offline, sem bucket e sem chamar a IA.
+    listPratos: function () { return Promise.resolve(PRATOS.slice()); },
+    assinarFotosPrato: function () { return Promise.resolve({}); },
+    uploadPrato: function (pid, id) { return Promise.resolve(pid + "/" + id + ".jpg"); },
+    removerPrato: function (id) {
+      PRATOS = PRATOS.filter(function (x) { return x.id !== id; });
+      return Promise.resolve(true);
+    },
+    analisarPrato: function (path, refeicao, obs) {
+      // Resposta fabricada no formato da edge function, para dar para ver
+      // a tela de resultado sem gastar chamada de IA nem foto real.
+      var novo = {
+        id: "pr" + (PRATOS.length + 1), paciente_id: "p1", foto_path: path,
+        refeicao: refeicao, observacao: obs || null,
+        kcal: 545, ptn_g: 32, cho_g: 61, lip_g: 18,
+        itens: [
+          { nome: "arroz integral", porcao: "4 colheres de sopa", kcal: 160 },
+          { nome: "frango grelhado", porcao: "1 filé médio", kcal: 200 },
+          { nome: "salada de folhas com azeite", porcao: "1 prato", kcal: 85 },
+          { nome: "feijão", porcao: "1 concha", kcal: 100 }
+        ],
+        alertas: ["porção de arroz um pouco acima do combinado — 3 colheres já bastam"],
+        pontos_bons: ["proteína e salada no prato, do jeito que combinamos", "feijão presente"],
+        confianca: "alta", modelo: "gpt-4o-mini (harness)", criado_em: new Date().toISOString()
+      };
+      PRATOS.unshift(novo);
+      return Promise.resolve({
+        ok: true, prato: novo,
+        descricao: "prato com arroz, feijão, frango grelhado e salada",
+        comentario: "Prato bem montado. Só maneirar um pouco no arroz da próxima vez."
+      });
+    }
   };
 
   // O rascunho local da anamnese/reavaliação atrapalharia a comparação
@@ -282,6 +365,7 @@
 <script src="assets/js/lista-compras.js"></script>
 <script src="assets/js/anamnese-paciente.js"></script>
 <script src="assets/js/reavaliacao-paciente.js"></script>
+<script src="assets/js/prato-paciente.js"></script>
 <script src="assets/js/portal.js"></script>
 <script src="assets/js/app.js"></script>
 </body>

@@ -116,6 +116,90 @@
 .meal__foto img { display: block; width: 100%; height: 190px; object-fit: cover; }
 @media (max-width: 480px) { .meal__foto img { height: 160px; } }
 
+/* ============================================================
+   DIÁRIO DO PRATO
+   A paciente fotografa o prato e recebe uma estimativa. O visual
+   evita o vocabulário de "app de dieta": nada de vermelho, nada de
+   barra estourando, nada de nota. O número aparece grande porque é
+   a resposta que ela veio buscar, mas sempre com o "~" e a nota de
+   estimativa ao lado.
+   ============================================================ */
+.prato-intro__txt { margin: 0 0 var(--sp-3); font-size: var(--fs-body); line-height: var(--lh-normal); color: var(--texto); }
+.prato-nota {
+  margin: var(--sp-3) 0 0; padding: var(--sp-3);
+  background: var(--rosa-suave); border-radius: var(--radius-md, 12px);
+  font-size: var(--fs-sm); line-height: var(--lh-normal); color: var(--texto-sutil);
+}
+.prato-cta { width: 100%; margin-top: var(--sp-4); }
+.prato-cta:disabled { opacity: .6; cursor: default; }
+
+/* Passo 2: foto escolhida + qual refeição é */
+.prato-comp__foto { border-radius: var(--radius-md, 12px); overflow: hidden; background: var(--rosa-suave); margin-bottom: var(--sp-4); }
+.prato-comp__foto img { display: block; width: 100%; max-height: 320px; object-fit: cover; }
+.prato-comp__lab { display: block; margin: var(--sp-4) 0 var(--sp-2); font-size: var(--fs-sm); font-weight: 700; color: var(--cinza-escuro); }
+.prato-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.prato-chip {
+  background: var(--branco); border: 1px solid var(--cinza-borda); border-radius: var(--radius-chip);
+  padding: 8px 14px; font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--texto); cursor: pointer;
+}
+.prato-chip:hover { border-color: var(--vinho); }
+.prato-chip.is-on { background: var(--vinho); border-color: var(--vinho); color: #fff; }
+.prato-comp__acoes { display: flex; gap: var(--sp-3); margin-top: var(--sp-4); }
+.prato-comp__acoes .btn { flex: 1; }
+
+/* Resultado */
+.prato-result__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
+.prato-result__head .pcard__title { margin: 0; }
+.prato-result__desc { margin: var(--sp-3) 0 0; font-size: var(--fs-body); color: var(--texto); line-height: var(--lh-normal); }
+.prato-result__fim { margin: var(--sp-4) 0 0; font-size: var(--fs-body); color: var(--texto); line-height: var(--lh-normal); }
+
+/* Grau de confiança: informa sem alarmar — cinza, nunca vermelho. */
+.prato-conf { flex: none; border-radius: 999px; padding: 3px 12px; font-size: var(--fs-caption); font-weight: 700; background: var(--rosa-suave); color: var(--vinho); }
+.prato-conf--media, .prato-conf--baixa { background: #f0eeee; color: #6f6a6a; }
+
+.prato-kcal { display: flex; align-items: baseline; gap: 8px; margin: var(--sp-4) 0 var(--sp-3); }
+.prato-kcal__n { font-size: 2.4rem; font-weight: 800; color: var(--vinho); line-height: 1; }
+.prato-kcal__u { font-size: var(--fs-sm); color: var(--texto-sutil); font-weight: 600; }
+
+.prato-macros { display: flex; gap: var(--sp-3); flex-wrap: wrap; }
+.prato-macro { flex: 1 1 90px; background: var(--rosa-suave); border-radius: var(--radius-md, 12px); padding: var(--sp-3); text-align: center; }
+.prato-macro__v { display: block; font-size: 1.15rem; font-weight: 800; color: var(--cinza-escuro); }
+.prato-macro__k { display: block; font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+
+.prato-sec { margin: var(--sp-4) 0 var(--sp-2); font-size: var(--fs-sm); font-weight: 800; color: var(--cinza-escuro); }
+.prato-sec--bom { color: #2e7d5b; }
+.prato-sec--ajuste { color: var(--vinho); }
+.prato-itens, .prato-bons, .prato-alertas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.prato-itens li { display: flex; justify-content: space-between; gap: var(--sp-3); font-size: var(--fs-sm); color: var(--texto); }
+.prato-itens em { flex: none; font-style: normal; color: var(--texto-sutil); font-weight: 600; }
+.prato-bons li, .prato-alertas li { font-size: var(--fs-sm); line-height: var(--lh-normal); color: var(--texto); padding-left: 18px; position: relative; }
+.prato-bons li::before { content: "✓"; position: absolute; left: 0; color: #2e7d5b; font-weight: 800; }
+.prato-alertas li::before { content: "•"; position: absolute; left: 4px; color: var(--vinho); font-weight: 800; }
+
+.prato-erro p { margin: 0 0 var(--sp-4); font-size: var(--fs-body); color: var(--texto); line-height: var(--lh-normal); }
+.prato-hoje__txt { margin: 0 0 var(--sp-3); font-size: var(--fs-body); color: var(--texto); }
+
+/* Histórico */
+.prato-hist-lista { display: flex; flex-direction: column; gap: var(--sp-3); }
+.prato-hist { display: flex; align-items: center; gap: var(--sp-3); }
+.prato-hist__foto { flex: none; width: 62px; height: 62px; border-radius: var(--radius-md, 12px); overflow: hidden; background: var(--rosa-suave); }
+.prato-hist__foto img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.prato-hist__txt { flex: 1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; min-width: 0; }
+.prato-hist__ref { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-sm); }
+.prato-hist__data { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.prato-hist__kcal { font-size: var(--fs-sm); font-weight: 700; color: var(--vinho); }
+.prato-hist__flag, .prato-hist__ok { flex-basis: 100%; font-size: var(--fs-caption); color: var(--texto-sutil); }
+.prato-hist__ok { color: #2e7d5b; }
+.prato-hist__del {
+  flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--cinza-borda);
+  background: var(--branco); color: var(--texto-sutil); font-size: 1.1rem; line-height: 1; cursor: pointer;
+}
+.prato-hist__del:hover { border-color: var(--vinho); color: var(--vinho); }
+
+@media (max-width: 480px) {
+  .prato-comp__acoes { flex-direction: column; }
+}
+
 /* Evolução */
 .chart { width: 100%; }
 .chart__head { display: flex; align-items: baseline; gap: var(--sp-3); margin-bottom: var(--sp-3); }
