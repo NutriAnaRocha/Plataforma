@@ -49,8 +49,10 @@
 
 /* Refeição */
 .pl-meal { border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-3); margin-bottom: var(--sp-3); background: var(--branco); }
-.pl-meal__head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.pl-meal__nome { flex: 1; font: inherit; font-weight: 700; color: var(--vinho); border: none; border-bottom: 1px dashed var(--cinza-borda); background: none; padding: 2px 0; min-width: 0; }
+/* Quebra linha quando aperta: com duplicar/ordenar/excluir no cabeçalho, o
+   nome não pode encolher a ponto de esconder o "— Opção 2". */
+.pl-meal__head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+.pl-meal__nome { flex: 1 1 210px; font: inherit; font-weight: 700; color: var(--vinho); border: none; border-bottom: 1px dashed var(--cinza-borda); background: none; padding: 2px 0; min-width: 0; }
 .pl-meal__nome:focus { outline: none; border-bottom-color: var(--vinho); }
 .pl-meal__hora { width: 90px; font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda); border-radius: var(--radius-input); padding: 4px 6px; }
 .pl-meal__kc { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); white-space: nowrap; }
@@ -64,6 +66,17 @@
 .pl-altbtn:hover { border-color: var(--vinho); color: var(--vinho); }
 .pl-altbtn.is-on { background: var(--rosa-suave); border-color: var(--vinho); color: var(--vinho); }
 .pl-meal--alt { border-style: dashed; background: color-mix(in srgb, var(--rosa-suave) 35%, var(--branco)); }
+
+/* Ações da refeição: duplicar, ordenar, excluir */
+.pl-meal__acoes { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.pl-mbtn {
+  border: 1px solid var(--cinza-borda); background: var(--branco); color: var(--cinza-escuro);
+  border-radius: var(--radius-input); padding: 4px 7px; font: inherit; font-size: var(--fs-caption);
+  font-weight: 700; line-height: 1; cursor: pointer; white-space: nowrap;
+}
+.pl-mbtn:hover { border-color: var(--vinho); color: var(--vinho); background: var(--rosa-suave); }
+.pl-mbtn--del { color: #9b1c2e; }
+.pl-mbtn--del:hover { border-color: #9b1c2e; color: #9b1c2e; background: #fdecee; }
 .pl-addmeals { display: flex; flex-wrap: wrap; gap: 8px; }
 
 /* Item */
@@ -97,6 +110,8 @@
   padding: 4px;
 }
 .pl-ac[hidden] { display: none; }
+/* Última refeição da página: a lista abre para cima em vez de cair fora da tela. */
+.pl-ac--cima { top: auto; bottom: calc(100% + 3px); }
 .pl-ac__op {
   display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
   width: 100%; text-align: left; border: none; background: none; cursor: pointer;
@@ -247,6 +262,7 @@
   .pl-meal__head { flex-wrap: wrap; }
   .pl-meal__nome { flex: 1 1 100%; }
   .pl-altbtn { order: 5; }
+  .pl-meal__acoes { order: 6; flex: 1 1 100%; justify-content: flex-end; }
 }
 
 /* ---------- Rascunho gerado da anamnese ----------

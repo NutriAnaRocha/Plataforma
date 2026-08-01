@@ -1140,8 +1140,10 @@
           '<button class="btn btn--outline btn--sm pl-addmeal" type="button" data-add-meal>＋ Adicionar refeição</button>' +
           '<button class="btn btn--outline btn--sm pl-addmeal pl-addmeal--alt" type="button" data-add-alt>↔ Adicionar opção alternativa</button>' +
         '</div>' +
-        '<p class="pl-hint">Opção alternativa é uma segunda versão de uma refeição (ex.: <em>Lanche da tarde 2</em>). ' +
-          'Ela aparece para o paciente como escolha, mas <strong>não é somada</strong> no total do dia.</p>' +
+        '<p class="pl-hint">Para dar outra opção da mesma refeição, use o <strong>⧉ duplicar</strong> no cabeçalho dela: ' +
+          'sai um <em>Jantar — Opção 2</em> com os mesmos alimentos, que você troca à vontade. ' +
+          'A cópia já entra como opção e <strong>não é somada</strong> no total do dia — o paciente come uma ou a outra. ' +
+          'As setas <strong>↑ ↓</strong> mudam a ordem das refeições.</p>' +
       '</section>' +
       '<div class="pl-totbar" id="pl-totbar">' + '</div>' +
       '<div class="pl-actions">' +
@@ -1159,10 +1161,22 @@
         '<input class="pl-meal__hora" type="time" data-meal-hora value="' + esc(rf.hora || "") + '" />' +
         altBtnHTML(alt) +
         '<span class="pl-meal__kc" data-meal-kc>0 kcal</span>' +
-        '<button class="pl-x" type="button" data-rm-meal aria-label="Remover refeição">🗑️</button>' +
+        mealAcoesHTML() +
       '</div>' +
       '<div class="pl-items">' + itens + '</div>' +
       '<button class="pl-additem" type="button" data-add-item>＋ alimento</button>' +
+    '</div>';
+  }
+  /* Ações da refeição. Duplicar é o que a nutri mais usa: "Jantar — Opção 2"
+     sai de uma cópia do jantar, não de uma refeição vazia que ela remonta
+     item por item. As setas ordenam; o excluir ganhou rótulo porque só o
+     ícone passava despercebido. */
+  function mealAcoesHTML() {
+    return '<div class="pl-meal__acoes">' +
+      '<button class="pl-mbtn" type="button" data-dup-meal title="Duplicar como outra opção desta refeição" aria-label="Duplicar refeição">⧉</button>' +
+      '<button class="pl-mbtn" type="button" data-up-meal title="Mover para cima" aria-label="Mover refeição para cima">↑</button>' +
+      '<button class="pl-mbtn" type="button" data-down-meal title="Mover para baixo" aria-label="Mover refeição para baixo">↓</button>' +
+      '<button class="pl-mbtn pl-mbtn--del" type="button" data-rm-meal title="Excluir esta refeição" aria-label="Excluir refeição">🗑️ Excluir</button>' +
     '</div>';
   }
   // Chave "soma / não soma" da refeição — é o que permite ter "Lanche da tarde 2"
@@ -1354,9 +1368,21 @@
     });
     r.addEventListener("change", function (e) { recalc(); });
     // autocomplete: abre ao focar, navega pelo teclado, fecha ao sair
-    r.addEventListener("focusin", function (e) { if (e.target.matches(".pl-food")) abrirAC(e.target); });
+    /* Ao entrar num campo que JÁ tem alimento, o texto vem selecionado: digitar
+       troca o alimento em vez de grudar no que estava lá. Sem isso, clicar em
+       "Sardinha, inteira, crua" e digitar "banana" virava
+       "Sardinha, inteira, cruabanana" — nenhum resultado, e a impressão de que
+       a busca não achava banana. */
+    r.addEventListener("focusin", function (e) {
+      if (!e.target.matches(".pl-food")) return;
+      if (_vindoDaEscolha) { _vindoDaEscolha = false; return; }
+      if (e.target.value) e.target.select();
+      abrirAC(e.target);
+    });
     r.addEventListener("keydown", onACKey);
-    document.addEventListener("click", fecharACForaSeNecessario, true);
+    // Uma vez só: o editor é reaberto várias vezes por sessão e o listener é
+    // no document (não morre junto com o innerHTML do editor).
+    if (!_acForaLigado) { document.addEventListener("click", fecharACForaSeNecessario, true); _acForaLigado = true; }
     // delegação de cliques (add/remove)
     r.addEventListener("click", function (e) {
       var t = e.target;
@@ -1368,9 +1394,10 @@
       else if (t.closest("[data-add-sub]")) { addSub(t.closest("[data-item]")); }
       else if (t.closest("[data-rm-sub]")) { var itw = t.closest("[data-item]"); t.closest("[data-sub]").remove(); contarSubs(itw); recalc(); }
       else if (t.closest("[data-alt-meal]")) { alternarAlt(t.closest("[data-meal]")); }
-      else if (t.closest("[data-add-meal]")) { addMeal(false); }
-      else if (t.closest("[data-add-alt]")) { addMeal(true); }
-      else if (t.closest("[data-rm-meal]")) { t.closest("[data-meal]").remove(); recalc(); }
+      else if (t.closest("[data-dup-meal]")) { duplicarMeal(t.closest("[data-meal]")); }
+      else if (t.closest("[data-up-meal]")) { moverMeal(t.closest("[data-meal]"), -1); }
+      else if (t.closest("[data-down-meal]")) { moverMeal(t.closest("[data-meal]"), 1); }
+      else if (t.closest("[data-rm-meal]")) { removerMeal(t.closest("[data-meal]")); }
       else if (t.closest("[data-pl-salvar]")) { salvar(); }
       else if (t.closest("[data-pl-pdf-edit]")) { gerarPDF(coletar()); }
     });
@@ -1380,6 +1407,9 @@
      Lista própria (o <datalist> do navegador ignorava acento, não rolava e
      mostrava sugestões que não tinham nada a ver com o que foi digitado). */
   function acDe(input) { return input.parentNode.querySelector("[data-ac]"); }
+  // Escolher uma opção devolve o foco ao input; sem esta trava o focusin
+  // reabriria a lista e selecionaria o nome que ela acabou de escolher.
+  var _vindoDaEscolha = false, _acForaLigado = false;
   function abrirAC(input) {
     var box = acDe(input); if (!box) return;
     var lista = buscar(input.value, 60);
@@ -1395,6 +1425,12 @@
     box.hidden = false;
     box.scrollTop = 0;
     input.setAttribute("aria-expanded", "true");
+    // Abre para cima quando não cabe abaixo — na última refeição a lista
+    // caía fora da tela e ela precisava rolar para "caçar" o alimento.
+    box.classList.remove("pl-ac--cima");
+    var r = box.getBoundingClientRect();
+    var acima = input.getBoundingClientRect().top;
+    if (r.bottom > window.innerHeight - 8 && acima > r.height + 16) box.classList.add("pl-ac--cima");
   }
   function fecharAC(box) {
     if (!box || box.hidden) return;
@@ -1409,8 +1445,13 @@
     });
   }
   function escolherAC(op) {
-    var box = op.closest("[data-ac]");
+    /* A lista é reconstruída a cada tecla digitada. Se o clique pegar uma
+       opção no exato instante da troca, esse botão já saiu do DOM e não tem
+       mais pai — daí caímos na lista que está aberta agora. */
+    var box = op.closest("[data-ac]") || (root() || document).querySelector("[data-ac]:not([hidden])");
+    if (!box) return;
     var input = box.parentNode.querySelector(".pl-food");
+    if (!input) return;
     var al = AL_BY_ID[parseInt(op.getAttribute("data-ac-op"), 10)];
     if (al) input.value = al.nome;
     fecharAC(box);
@@ -1421,7 +1462,9 @@
     var sel = input.closest(ehSub ? "[data-sub]" : ".pl-item").querySelector(ehSub ? "[data-sub-med]" : "[data-med]");
     if (sel && sel.value === "grama" && sel.options.length > 1) sel.selectedIndex = 1;
     recalc();
+    _vindoDaEscolha = true;
     input.focus();
+    _vindoDaEscolha = false;
   }
   function onACKey(e) {
     var input = e.target.closest ? e.target.closest(".pl-food") : null;
@@ -1471,6 +1514,9 @@
     tmp.innerHTML = itemHTML({ alimentoId: null, alimento: "", medida: "grama", qtd: 1 }, 0, 0);
     box.appendChild(tmp.firstChild);
     recalc();
+    // Já entra digitando: era um clique a mais toda vez que ela punha um alimento.
+    var inp = box.lastChild.querySelector(".pl-food");
+    if (inp) inp.focus();
   }
   // Nova refeição. `alt` = já nasce como opção alternativa, com o nome
   // sugerido a partir da última refeição normal ("Lanche da tarde 2").
@@ -1493,6 +1539,59 @@
     recalc();
     var novo = box.lastChild;
     if (novo && novo.scrollIntoView) novo.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  /* ---------- Duplicar e reordenar refeição ----------
+     "Jantar — Opção 2" é uma CÓPIA do jantar que a nutri ajusta, não uma
+     refeição vazia. A cópia já nasce como opção alternativa (não soma no
+     total): das duas o paciente come uma só, então somar as duas inflaria
+     o dia — que é justamente a conta que a nutri fazia na mão. */
+  function baseDoNome(nome) {
+    return String(nome || "Refeição").replace(/\s*[—-]\s*Op[çc][ãa]o\s*\d+\s*$/i, "").trim() || "Refeição";
+  }
+  function proximaOpcao(base) {
+    var box = document.getElementById("pl-meals");
+    var n = 1;
+    box.querySelectorAll("[data-meal-nome]").forEach(function (i) {
+      if (baseDoNome(i.value).toLowerCase() === base.toLowerCase()) n++;
+    });
+    return n;
+  }
+  function duplicarMeal(mealEl) {
+    if (!mealEl) return;
+    var rf = coletarMeal(mealEl);
+    var base = baseDoNome(rf.nome);
+    rf.nome = base + " — Opção " + proximaOpcao(base);
+    rf.alternativa = true; // não soma: é uma OU a outra
+    var tmp = document.createElement("div");
+    tmp.innerHTML = mealHTML(rf, 0);
+    var novo = tmp.firstChild;
+    mealEl.parentNode.insertBefore(novo, mealEl.nextSibling);
+    recalc();
+    if (novo.scrollIntoView) novo.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    toast('"' + rf.nome + '" criada — é opção, não soma no total do dia.');
+  }
+  // Excluir refeição. Só pergunta quando há alimento dentro — refeição vazia
+  // sai direto, senão confirmar vira estorvo.
+  function removerMeal(mealEl) {
+    if (!mealEl) return;
+    var rf = coletarMeal(mealEl);
+    if (rf.itens.length &&
+        !window.confirm('Excluir "' + rf.nome + '" e os ' + rf.itens.length + ' alimentos dela?')) return;
+    mealEl.remove();
+    recalc();
+  }
+  function moverMeal(mealEl, delta) {
+    if (!mealEl) return;
+    var box = mealEl.parentNode;
+    if (delta < 0) {
+      var ant = mealEl.previousElementSibling;
+      if (ant) box.insertBefore(mealEl, ant);
+    } else {
+      var prox = mealEl.nextElementSibling;
+      if (prox) box.insertBefore(prox, mealEl);
+    }
+    if (mealEl.scrollIntoView) mealEl.scrollIntoView({ block: "nearest" });
   }
 
   /* ---------- Substitutos e refeição alternativa ---------- */
@@ -1541,6 +1640,40 @@
     recalc();
   }
 
+  // Lê UMA refeição do DOM -> objeto. Usado pelo coletar() e pelo duplicar.
+  function coletarMeal(m) {
+    var rf = {
+      nome: (m.querySelector("[data-meal-nome]") || {}).value || "Refeição",
+      hora: (m.querySelector("[data-meal-hora]") || {}).value || "",
+      alternativa: m.getAttribute("data-alt") === "1",
+      itens: []
+    };
+    m.querySelectorAll("[data-item]").forEach(function (it) {
+      var food = (it.querySelector("[data-food]") || {}).value || "";
+      if (!food.trim()) return;
+      var al = alimentoDoValor(food);
+      var sel = it.querySelector("[data-med]");
+      var medida = sel ? sel.value : "grama";
+      var qtd = num((it.querySelector("[data-qt]") || {}).value);
+      var c = calcItem({ alimentoId: al ? al.id : null, alimento: al ? al.nome : food, medida: medida, qtd: qtd });
+      var item = { alimentoId: al ? al.id : null, alimento: al ? al.nome : food, medida: c.medida, qtd: qtd, gramas: c.gramas, kcal: c.kcal, cho: c.cho, ptn: c.ptn, lip: c.lip };
+      // Substitutos: gravados junto do item, nunca somados ao dia.
+      var subs = [];
+      it.querySelectorAll("[data-sub]").forEach(function (s) {
+        var sf = (s.querySelector("[data-sub-food]") || {}).value || "";
+        if (!sf.trim()) return;
+        var sal = alimentoDoValor(sf);
+        var smed = (s.querySelector("[data-sub-med]") || {}).value || "grama";
+        var sq = num((s.querySelector("[data-sub-qt]") || {}).value);
+        var sc = calcItem({ alimentoId: sal ? sal.id : null, alimento: sal ? sal.nome : sf, medida: smed, qtd: sq });
+        subs.push({ alimentoId: sal ? sal.id : null, alimento: sal ? sal.nome : sf, medida: sc.medida, qtd: sq, gramas: sc.gramas, kcal: sc.kcal });
+      });
+      if (subs.length) item.subs = subs;
+      rf.itens.push(item);
+    });
+    return rf;
+  }
+
   // Lê o editor do DOM -> objeto plano.
   function coletar() {
     var r = root();
@@ -1554,36 +1687,7 @@
       refeicoes: []
     };
     r.querySelectorAll("[data-meal]").forEach(function (m) {
-      var rf = {
-        nome: (m.querySelector("[data-meal-nome]") || {}).value || "Refeição",
-        hora: (m.querySelector("[data-meal-hora]") || {}).value || "",
-        alternativa: m.getAttribute("data-alt") === "1",
-        itens: []
-      };
-      m.querySelectorAll("[data-item]").forEach(function (it) {
-        var food = (it.querySelector("[data-food]") || {}).value || "";
-        if (!food.trim()) return;
-        var al = alimentoDoValor(food);
-        var sel = it.querySelector("[data-med]");
-        var medida = sel ? sel.value : "grama";
-        var qtd = num((it.querySelector("[data-qt]") || {}).value);
-        var c = calcItem({ alimentoId: al ? al.id : null, alimento: al ? al.nome : food, medida: medida, qtd: qtd });
-        var item = { alimentoId: al ? al.id : null, alimento: al ? al.nome : food, medida: c.medida, qtd: qtd, gramas: c.gramas, kcal: c.kcal, cho: c.cho, ptn: c.ptn, lip: c.lip };
-        // Substitutos: gravados junto do item, nunca somados ao dia.
-        var subs = [];
-        it.querySelectorAll("[data-sub]").forEach(function (s) {
-          var sf = (s.querySelector("[data-sub-food]") || {}).value || "";
-          if (!sf.trim()) return;
-          var sal = alimentoDoValor(sf);
-          var smed = (s.querySelector("[data-sub-med]") || {}).value || "grama";
-          var sq = num((s.querySelector("[data-sub-qt]") || {}).value);
-          var sc = calcItem({ alimentoId: sal ? sal.id : null, alimento: sal ? sal.nome : sf, medida: smed, qtd: sq });
-          subs.push({ alimentoId: sal ? sal.id : null, alimento: sal ? sal.nome : sf, medida: sc.medida, qtd: sq, gramas: sc.gramas, kcal: sc.kcal });
-        });
-        if (subs.length) item.subs = subs;
-        rf.itens.push(item);
-      });
-      plano.refeicoes.push(rf);
+      plano.refeicoes.push(coletarMeal(m));
     });
     plano.totais = totaisDe(plano);
     return plano;
