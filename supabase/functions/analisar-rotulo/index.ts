@@ -590,7 +590,15 @@ Deno.serve(async (req) => {
   let alternativas: Array<Record<string, unknown>> = [];
   let motivoSemAlternativa = "";
 
-  if (veredito !== "boa" && categoria) {
+  if (veredito !== "boa" && !categoria) {
+    // Categoria que o modelo não soube encaixar (devolveu "outro" ou um valor
+    // fora da lista). Sem categoria não há com o que comparar — mas o silêncio
+    // era pior: a pessoa via o veredito "evitar" e nenhuma palavra sobre
+    // alternativas, como se o app tivesse desistido dela no meio.
+    motivoSemAlternativa =
+      "Não consegui encaixar esse produto numa categoria que eu conheça, e comparar " +
+      "com marca de outra prateleira não ajudaria em nada. A leitura do rótulo acima vale.";
+  } else if (veredito !== "boa" && categoria) {
     const { data: cands } = await admin
       .from("mercado_produtos")
       .select("code,nome,marca,quantidade,nova,aditivos,kcal,ptn,cho,acucar,fibra,lip,sat,sodio,ingredientes")
