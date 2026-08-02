@@ -116,6 +116,49 @@ const CATEGORIAS: Record<string, string> = {
   "salts": "Sais",
 };
 
+// A COMIDA DE VERDADE, PELA TACO.
+//
+// Pedido da Ana: a TACO passa a ser a base das respostas. Ela não tem marca
+// nem código de barras — é tabela de alimento in natura e preparações —, então
+// não substitui a Open Food Facts na indicação de marca. O que ela faz, e a
+// OFF não pode fazer, é dar um PONTO DE COMPARAÇÃO de fonte oficial: quanto
+// tem de açúcar, sódio e saturada o alimento de verdade daquela prateleira.
+//
+// Só existe entrada aqui onde a comparação é honesta. Bala e chocolate não
+// têm "equivalente in natura", e inventar um viraria sermão — categoria sem
+// referência simplesmente não mostra a comparação.
+//
+// Os ids são os números da própria TACO, conferidos contra o PDF oficial
+// (ver mercado/extrai_taco.py e a migração 0052).
+const REFERENCIA_TACO: Record<string, number> = {
+  "sodas": 209,                  // Laranja, baía, suco
+  "fruit-juices": 208,           // Laranja, baía, crua (a fruta inteira)
+  "energy-drinks": 209,          // Laranja, baía, suco
+  "breakfast-cereals": 7,        // Aveia, flocos, crua
+  "granolas": 7,                 // Aveia, flocos, crua
+  "oats": 7,                     // Aveia, flocos, crua
+  "cereal-bars": 182,            // Banana, prata, crua
+  "protein-bars": 557,           // Amendoim, grão, cru
+  "snacks": 61,                  // Pipoca, com óleo de soja, sem sal
+  "crisps": 61,                  // Pipoca, com óleo de soja, sem sal
+  "yogurts": 448,                // Iogurte, natural
+  "peanut-butters": 557,         // Amendoim, grão, cru
+  "canned-tuna": 278,            // Atum, fresco, cru
+  "sausages": 321,               // Sardinha, inteira, crua
+  "hams": 488,                   // Ovo, de galinha, inteiro, cozido
+  "instant-noodles": 40,         // Macarrão, trigo, cru
+  "pastas": 40,                  // Macarrão, trigo, cru
+  "breads": 52,                  // Pão, trigo, forma, integral
+  "rices": 1,                    // Arroz, integral, cozido
+  "beans": 561,                  // Feijão, carioca, cozido
+  "cheeses": 461,                // Queijo, minas, frescal
+  "milks": 458,                  // Leite, de vaca, integral
+  "eggs": 488,                   // Ovo, de galinha, inteiro, cozido
+  "olive-oils": 260,             // Azeite, de oliva, extra virgem
+  "honeys": 507,                 // Mel, de abelha
+  "biscuits": 53,                // Pão, trigo, francês
+};
+
 // Glossário da casa. Está aqui, e não solto na cabeça do modelo, porque
 // estas são as perguntas que a Ana responde toda semana e a resposta
 // precisa sair igual e correta todas as vezes — inclusive a da farinha
@@ -307,6 +350,39 @@ function penalidade(p: Record<string, number | null>): number {
   );
 }
 
+/** A Open Food Facts é COLABORATIVA: quem cadastra é usuário comum digitando
+ *  o rótulo em casa. Isso deixa dois rastros que envenenam o ranking acima.
+ *
+ *  1. VALOR IMPOSSÍVEL (erro de digitação). Auditoria de 01/08/2026 na base:
+ *     31 produtos com mais de 10 g de sódio por 100 g, 13 acima de 900 kcal,
+ *     4 com mais de 100 g de açúcar em 100 g de produto.
+ *
+ *  2. DADO FALTANDO VIRANDO NOTA BOA — o pior dos dois, porque é silencioso.
+ *     penalidade() lê ausência como zero: sem gordura saturada declarada o
+ *     produto pontua como se tivesse zero, e sem grupo NOVA pontua como se
+ *     não fosse ultraprocessado (3 pontos, o mesmo peso de 15 g de açúcar).
+ *     Medido: 56 dos 127 primeiros colocados chegaram lá por falta de dado,
+ *     e não por serem melhores.
+ *
+ *  Por isso só entra na disputa quem tem a tabela COMPLETA e PLAUSÍVEL. Custo
+ *  medido dessa exigência: uma única categoria (sopas) perde a sugestão por
+ *  ficar com menos de 3 marcas. É barato perto de indicar, com o CRN da Ana
+ *  na tela, um produto que só parecia melhor porque ninguém preencheu. */
+function dadoConfiavel(c: Record<string, unknown>): boolean {
+  const num = (k: string) => (typeof c[k] === "number" ? (c[k] as number) : null);
+  const acucar = num("acucar"), sat = num("sat"), sodio = num("sodio");
+  const kcal = num("kcal"), lip = num("lip"), ptn = num("ptn");
+
+  // completo: sem esses quatro não há comparação honesta
+  if (acucar === null || sat === null || sodio === null || num("nova") === null) return false;
+
+  // plausível: nada disso cabe em 100 g de comida
+  if (acucar > 100 || sat > 100 || (kcal !== null && kcal > 900) || sodio > 10) return false;
+  if (acucar + (lip ?? 0) + (ptn ?? 0) > 105) return false;
+
+  return true;
+}
+
 /** Nomes que a Open Food Facts guarda mas que não servem para indicar
  *  compra: fardo, caixa com 12, "leve mais pague menos". A pessoa está
  *  procurando UM produto na prateleira. */
@@ -484,6 +560,30 @@ Deno.serve(async (req) => {
   const p100 = (out.por_100g || {}) as Record<string, unknown>;
   const dietLight = txt(out.diet_light, 20) || "nenhum";
 
+  // ---------- 4b) A comida de verdade, pela TACO ----------
+  // Fonte oficial brasileira (NEPA/Unicamp) contra o produto de pacote, na
+  // única base que permite comparar: 100 g. Sai da tabela, não do modelo —
+  // pelo mesmo motivo de diet/light ser texto fixo.
+  let referencia: Record<string, unknown> | null = null;
+  const idRef = REFERENCIA_TACO[catTag];
+  if (idRef) {
+    const { data: ref } = await admin
+      .from("taco_alimentos")
+      .select("nome,kcal,ptn,cho,lip,fibra,sodio_mg,sat_g")
+      .eq("id", idRef)
+      .maybeSingle();
+    if (ref) {
+      referencia = {
+        nome: ref.nome,
+        por_100g: {
+          kcal: ref.kcal, ptn_g: ref.ptn, cho_g: ref.cho, lip_g: ref.lip,
+          fibra_g: ref.fibra, sat_g: ref.sat_g, sodio_mg: ref.sodio_mg,
+        },
+        fonte: "TACO 4ª ed. — NEPA/Unicamp",
+      };
+    }
+  }
+
   // ---------- 5) Alternativas (só quando o produto não é boa escolha) ----------
   // Produto bom não ganha lista de concorrentes: a pessoa veio decidir uma
   // compra, e empurrar marca para quem já escolheu bem seria propaganda.
@@ -510,6 +610,7 @@ Deno.serve(async (req) => {
 
     const ranqueados = (cands || [])
       .filter((c) => nomeUsavel(String(c.nome || "")) && String(c.marca || "").trim())
+      .filter((c) => dadoConfiavel(c as unknown as Record<string, unknown>))
       .map((c) => ({ ...c, pen: penalidade(c as unknown as Record<string, number | null>) }))
       // Só entra quem é MELHOR que o produto da mão dela. Quando não deu
       // para converter a tabela para 100 g, minhaPenalidade fica frouxa e
@@ -609,6 +710,9 @@ Deno.serve(async (req) => {
       declarada: out.tabela || {},
       por_100g: p100,
       diet_light: dietLight,
+      // Vai dentro do jsonb, e não numa coluna nova, para o histórico já
+      // gravado continuar abrindo sem migração de schema.
+      referencia,
     },
     destaques: listaDeTextos(out.destaques, 3),
     alertas: listaDeTextos(out.alertas, 4),

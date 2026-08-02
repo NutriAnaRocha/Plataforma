@@ -42,6 +42,57 @@ vezes — antes de perguntar ao modelo e depois da resposta dele.
 
 ---
 
+## De onde vem cada afirmação do app
+
+Três camadas, com confiabilidade bem diferente. Vale ter isso claro porque é o
+CRN da Ana que assina a tela.
+
+| Camada | Fonte | Confiança |
+|---|---|---|
+| Regras e definições (diet, light, farinha enriquecida, limites "ALTO EM") | Legislação, escrita à mão no servidor | Alta — verificável, não passa pelo modelo |
+| Números do produto | O modelo lendo a foto do rótulo | **Média — é o elo fraco, sem conferência** |
+| Referência de alimento de verdade | TACO 4ª ed. (NEPA/Unicamp) | Alta — publicação oficial |
+| Marcas alternativas | Open Food Facts (colaborativa) | Média — filtrada, ver abaixo |
+
+**A TACO entrou como régua, não como substituta da OFF.** A Ana pediu a TACO
+como base das respostas; ela não tem marca nem código de barras (é tabela de
+alimento in natura e preparações), então não pode indicar produto de prateleira.
+O que ela faz é dar o ponto de comparação oficial: quanto tem de sódio, saturada
+e caloria o alimento de verdade equivalente. O mapa categoria → alimento está em
+`REFERENCIA_TACO`, no topo de `analisar-rotulo/index.ts` — **são 26 escolhas de
+nutricionista e a Ana deve revisá-las.**
+
+Procedência: `mercado/extrai_taco.py` extrai sódio (Tabela 1) e gordura saturada
+(Tabela 2) do PDF oficial hospedado pelo CFN, e **só grava depois de provar que o
+número do alimento na TACO é o mesmo id da base da plataforma** (579 descrições
+conferidas, 0 divergentes). Carregado pela migração `0052_taco_alimentos.sql`.
+A TACO não tem campo de açúcar — traz carboidrato total —, então a comparação de
+açúcar não aparece.
+
+> Ao conferir a extração foi encontrado um erro antigo na base de alimentos da
+> plataforma: o id 468 estava com o nome "Maria mole" e os macros de
+> "Queijo, requeijão, cremoso". Corrigido em `alimentos-data.js`; afetava também
+> o editor de plano alimentar.
+
+## Por que a Open Food Facts precisa de filtro
+
+A OFF é **colaborativa**: quem cadastra é usuário comum digitando o rótulo em
+casa. Auditoria de 01/08/2026 nos 2.397 produtos da base:
+
+- **Valores impossíveis**: 31 com sódio acima de 10 g/100 g, 13 acima de
+  900 kcal/100 g, 4 com mais de 100 g de açúcar em 100 g de produto.
+- **Dado faltando virando nota boa** — o pior, porque é silencioso. A função
+  `penalidade()` lê ausência como zero: sem saturada declarada o produto pontua
+  como se tivesse zero, e sem grupo NOVA pontua como se não fosse
+  ultraprocessado (3 pontos, o mesmo peso de 15 g de açúcar). **56 dos 127
+  primeiros colocados chegaram lá por falta de dado, não por serem melhores.**
+
+Por isso `dadoConfiavel()` só deixa disputar quem tem tabela completa
+(açúcar, saturada, sódio e NOVA) e plausível. Custo medido: **uma** categoria
+(sopas) perde a sugestão por ficar com menos de 3 marcas; as outras 40 seguem.
+
+---
+
 ## Por que espelhar a Open Food Facts em vez de consultar ao vivo
 
 A API de **busca** da OFF limita a ~10 requisições por minuto e devolve `503`
@@ -82,9 +133,9 @@ não comercial. Ficam no topo de `analisar-rotulo/index.ts`:
 
 | Quem | Leituras por dia |
 |---|---|
-| Visitante (sem entrar) | 5 |
-| Paciente da Ana ou a própria nutri | 40 |
-| O app inteiro | 600 |
+| Visitante (sem entrar) | 3 |
+| Paciente da Ana ou a própria nutri | 15 |
+| O app inteiro | 150 |
 
 Quem tem acesso liberado é decidido pela função `mercado_acesso_liberado`, no
 banco: tem ficha de paciente, ou é nutri. É o ponto único a mexer quando isso
