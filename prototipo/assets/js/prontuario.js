@@ -682,6 +682,7 @@
       REAL = true; PID = id;
       buildFromPatient(pac);
       boot();
+      loadPrograma(id);   // faixa do "Meu Plano", se esta paciente tiver assinatura
     }).catch(function () {
       // Sem acesso / não encontrado → nunca cair em dados de demonstração.
       semPaciente("Prontuário não encontrado ou sem acesso.");
@@ -779,6 +780,106 @@
     return head(mod.label, "Ainda sem registros para este paciente.", ea ? abtn(ea.label, "btn--primary", ea.act) : "") +
       card(null, null, '<div class="empty-state">Nenhum registro em <strong>' + esc(mod.label) + "</strong> ainda." +
         (ea ? '<br><span style="font-size:.8rem">Clique em <strong>' + esc(ea.label) + "</strong> para adicionar o primeiro.</span>" : "") + "</div>");
+  }
+
+  /* ============================================================
+     PROGRAMA "MEU PLANO" — vigência do acompanhamento contratado
+
+     O dashboard já avisa quando uma vigência está acabando, mas quem abre
+     o prontuário não via nada: nem qual plano a paciente comprou, nem até
+     quando ele vale. No trimestral dá para lembrar de cabeça; no anual,
+     não. A faixa abaixo só aparece para quem tem assinatura — a ficha de
+     quem não veio pelo programa continua exatamente como era.
+     ============================================================ */
+  var PROGRAMA_LABEL = {
+    trimestral: "Trimestral · 3 meses",
+    semestral:  "Semestral · 6 meses",
+    anual:      "Anual · 12 meses"
+  };
+
+  // Dias até uma data ISO, medidos no fuso de São Paulo (o mesmo relógio
+  // que as RPCs do programa usam — ver migração 0047).
+  function diasAte(iso) {
+    if (!iso) return null;
+    var p = String(iso).slice(0, 10).split("-");
+    if (p.length !== 3) return null;
+    var alvo = Date.UTC(+p[0], +p[1] - 1, +p[2]);
+    var agora = new Date(Date.now() - 3 * 3600 * 1000); // UTC-3
+    var hoje = Date.UTC(agora.getUTCFullYear(), agora.getUTCMonth(), agora.getUTCDate());
+    return Math.round((alvo - hoje) / 86400000);
+  }
+
+  function loadPrograma(pacienteId) {
+    if (!pacienteId || !window.NutriDBReady) return;
+    window.NutriDBReady.then(function (c) {
+      return c.from("programa_assinaturas")
+        .select("plano,status,inicio,fim,proxima_reavaliacao,reavaliacoes_feitas," +
+                "anamnese_recebida_em,plano_entregue_em")
+        .eq("paciente_id", pacienteId)
+        .order("fim", { ascending: false })
+        .limit(1);
+    }).then(function (res) {
+      var a = res && res.data && res.data[0];
+      if (a) renderPrograma(a);
+    }).catch(function () { /* sem programa (ou offline): a ficha segue igual */ });
+  }
+
+  function renderPrograma(a) {
+    var host = el("pc-head");
+    if (!host) return;
+
+    var faltam = diasAte(a.fim);
+    var ativa = a.status === "ativa" && faltam != null && faltam >= 0;
+    var acabando = ativa && faltam <= 15;
+
+    var hintFim = !ativa
+      ? (a.status === "ativa" ? "vigência encerrada" : a.status)
+      : faltam === 0 ? "termina hoje"
+      : faltam + (faltam === 1 ? " dia restante" : " dias restantes");
+
+    var reavDias = diasAte(a.proxima_reavaliacao);
+    var hintReav = a.proxima_reavaliacao == null
+      ? (ativa ? "não cabe mais na vigência" : "")
+      : reavDias <= 0 ? "aberta para a paciente"
+      : "em " + reavDias + (reavDias === 1 ? " dia" : " dias");
+
+    // SLA: a promessa é entregar o plano em até 2 dias úteis contados da
+    // anamnese completa, não da compra (migração 0043).
+    var aviso = "";
+    if (a.anamnese_recebida_em && !a.plano_entregue_em) {
+      aviso = "📋 Anamnese recebida e <strong>plano ainda não entregue</strong> — o prazo combinado é de 2 dias úteis a partir dela.";
+    } else if (acabando) {
+      aviso = "⏳ A vigência termina em " + faltam + (faltam === 1 ? " dia" : " dias") +
+              ". Convide para renovar antes que o acompanhamento pare.";
+    } else if (!ativa) {
+      aviso = "Esta assinatura está <strong>" + esc(a.status === "ativa" ? "vencida" : a.status) +
+              "</strong>. O portal da paciente não abre mais reavaliação.";
+    }
+
+    function pq(lbl, val, hint, alerta) {
+      return '<div class="qsum__item"><div class="qsum__lbl">' + esc(lbl) + '</div>' +
+        '<div class="qsum__val">' + val + "</div>" +
+        (hint ? '<div class="qsum__hint' + (alerta ? " up" : "") + '">' + esc(hint) + "</div>" : "") +
+        "</div>";
+    }
+
+    var html =
+      '<div class="qsum" id="pc-programa" style="margin-top:var(--sp-3)">' +
+        pq("Meu Plano", "<span style='font-size:1rem'>" +
+             esc(PROGRAMA_LABEL[a.plano] || cap(a.plano)) + "</span>",
+           ativa ? "acompanhamento ativo" : "sem acompanhamento ativo", !ativa) +
+        pq("Vigência", "<span style='font-size:.95rem'>" +
+             esc(fmtData(a.inicio)) + " a " + esc(fmtData(a.fim)) + "</span>",
+           hintFim, acabando || !ativa) +
+        pq("Próxima reavaliação", "<span style='font-size:1rem'>" +
+             esc(a.proxima_reavaliacao ? fmtData(a.proxima_reavaliacao) : "—") + "</span>",
+           hintReav, reavDias != null && reavDias <= 0) +
+        pq("Reavaliações feitas", (a.reavaliacoes_feitas || 0), "ciclo de 30 dias") +
+      "</div>" +
+      (aviso ? '<div class="info-block" style="margin-top:var(--sp-3)">' +
+                 '<p class="info-block__text">' + aviso + "</p></div>" : "");
+
+    host.insertAdjacentHTML("beforeend", html);
   }
 
   function renderHeader() {
