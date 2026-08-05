@@ -61,6 +61,7 @@ function json(body: unknown, status = 200) {
 const LIMITE_VISITANTE = 3;    // por dispositivo, por dia
 const LIMITE_LIBERADO = 15;    // paciente da Ana ou a própria nutri
 const LIMITE_GLOBAL = 150;     // teto do app inteiro por dia
+const LIMITE_CODIGO_DIA = 25;  // por pacote comprado, por dia (anti-vazamento)
 
 // Categorias que existem no espelho da Open Food Facts. O modelo é
 // OBRIGADO a escolher uma delas (ou "outro"): categoria livre não casaria
@@ -403,7 +404,11 @@ Deno.serve(async (req) => {
   if (!OPENAI_KEY) return json({ error: "IA não configurada (falta OPENAI_API_KEY)." }, 500);
 
   // ---------- 1) Corpo ----------
-  let body: { fotos?: Array<string | { url?: string; tipo?: string }>; dispositivo?: string };
+  let body: {
+    fotos?: Array<string | { url?: string; tipo?: string }>;
+    dispositivo?: string;
+    codigo?: string;   // pacote de leituras comprado (opcional)
+  };
   try {
     body = await req.json();
   } catch {
@@ -450,6 +455,35 @@ Deno.serve(async (req) => {
     }
   }
 
+  // ---------- 2b) Pacote de leituras comprado ----------
+  // Quem comprou não é "visitante com limite": ela pagou por leitura.
+  // O código vem do localStorage do app (ou digitado por ela em outro
+  // aparelho) e é conferido aqui — o cliente só diz qual é, nunca quanto
+  // vale. O crédito só é DEBITADO lá embaixo, depois da leitura dar certo.
+  const codigo = txt(body.codigo, 16).toUpperCase();
+  let pagante = false;
+  let saldoAntes = 0;
+  if (/^[A-Z0-9-]{6,16}$/.test(codigo)) {
+    const { data: s } = await admin.rpc("mercado_saldo", { p_codigo: codigo });
+    if (s && s.ok === true && Number(s.restam) > 0) {
+      pagante = true;
+      saldoAntes = Number(s.restam);
+    } else if (s && s.ok === true) {
+      return json({
+        error: "creditos_esgotados",
+        detail: "Suas leituras compradas acabaram. Você pode comprar outro pacote " +
+                "ou continuar usando o app de graça amanhã. 🌸",
+        codigo_valido: true,
+      }, 402);
+    } else {
+      return json({
+        error: "codigo_invalido",
+        detail: "Não encontrei esse código. Confira as letras — ou use o app " +
+                "no limite gratuito enquanto isso. 🌸",
+      }, 404);
+    }
+  }
+
   // ---------- 3) Freios de custo ----------
   const desde = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
 
@@ -457,11 +491,32 @@ Deno.serve(async (req) => {
     .from("mercado_analises")
     .select("id", { count: "exact", head: true })
     .gte("criado_em", desde);
-  if ((usoGlobal || 0) >= LIMITE_GLOBAL) {
+  // O teto global existe para proteger a fatura da Ana num app GRÁTIS.
+  // Quem pagou não pode esbarrar nele: ela não tem culpa de o app ter
+  // feito sucesso hoje, e "volte amanhã" para quem comprou é calote.
+  if (!pagante && (usoGlobal || 0) >= LIMITE_GLOBAL) {
     return json({
       error: "limite_global",
       detail: "O app bateu o limite de análises de hoje. Tente de novo amanhã. 🌸",
     }, 429);
+  }
+
+  // Mas o pagante também não é ilimitado no DIA: um código que vazou num
+  // grupo grande poderia queimar o pacote inteiro (e a fatura junto) em
+  // minutos. 25 leituras por dia é muito mais do que uma compra real pede.
+  if (pagante) {
+    const { count: usoDoCodigo } = await admin
+      .from("mercado_analises")
+      .select("id", { count: "exact", head: true })
+      .eq("codigo_credito", codigo)
+      .gte("criado_em", desde);
+    if ((usoDoCodigo || 0) >= LIMITE_CODIGO_DIA) {
+      return json({
+        error: "limite_codigo_dia",
+        detail: `Esse código já leu ${LIMITE_CODIGO_DIA} rótulos hoje. Seus créditos ` +
+                "continuam guardados — amanhã ele volta a funcionar. 🌸",
+      }, 429);
+    }
   }
 
   // Conta pelo dispositivo, e também pela conta quando há uma: sem a
@@ -475,7 +530,7 @@ Deno.serve(async (req) => {
     : await filtro.eq("dispositivo", dispositivo);
 
   const meuLimite = liberado ? LIMITE_LIBERADO : LIMITE_VISITANTE;
-  if ((usoMeu || 0) >= meuLimite) {
+  if (!pagante && (usoMeu || 0) >= meuLimite) {
     return json({
       error: "limite_diario",
       liberado,
@@ -707,6 +762,7 @@ Deno.serve(async (req) => {
   const linha = {
     user_id: uid,
     dispositivo,
+    codigo_credito: pagante ? codigo : null,
     produto: txt(out.produto, 180),
     marca: txt(out.marca, 120),
     categoria: categoria || null,
@@ -753,12 +809,24 @@ Deno.serve(async (req) => {
     .single();
   if (insErr) return json({ error: "falha_ao_gravar", detail: insErr.message }, 500);
 
+  // O crédito só é debitado AGORA, com a leitura pronta e gravada. Se a
+  // OpenAI falhasse, ou a foto não fosse um rótulo, a pessoa teria pago
+  // por nada — e cobrar por erro nosso é o tipo de coisa que faz alguém
+  // desinstalar o app e contar para as amigas. O risco do outro lado
+  // (duas leituras simultâneas com um crédito só) é de UMA leitura.
+  let restamCreditos = 0;
+  if (pagante) {
+    const { data: deb } = await admin.rpc("mercado_consumir_credito", { p_codigo: codigo });
+    restamCreditos = deb && deb.ok === true ? Number(deb.restam) : Math.max(0, saldoAntes - 1);
+  }
+
   return json({
     ok: true,
     analise: gravado,
     sem_alternativa: motivoSemAlternativa,
     falta: listaDeTextos(out.falta, 3),
-    restam: Math.max(0, meuLimite - (usoMeu || 0) - 1),
+    restam: pagante ? restamCreditos : Math.max(0, meuLimite - (usoMeu || 0) - 1),
+    pagante,
     liberado,
   });
 });

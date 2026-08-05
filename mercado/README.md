@@ -135,11 +135,63 @@ não comercial. Ficam no topo de `analisar-rotulo/index.ts`:
 |---|---|
 | Visitante (sem entrar) | 3 |
 | Paciente da Ana ou a própria nutri | 15 |
-| O app inteiro | 150 |
+| Quem comprou um pacote | 25 (teto anti-vazamento, não é o saldo) |
+| O app inteiro | 150 (quem pagou não esbarra nele) |
 
 Quem tem acesso liberado é decidido pela função `mercado_acesso_liberado`, no
-banco: tem ficha de paciente, ou é nutri. É o ponto único a mexer quando isso
-virar assinatura paga.
+banco: tem ficha de paciente, ou é nutri.
+
+## Pacote de leituras (o produto pago)
+
+O app segue gratuito. Quem precisa de mais que o limite do dia compra **50
+leituras por R$ 9,90**, que **não vencem**. Não é assinatura: cobrança
+recorrente exigiria cadastro, cartão guardado, tela de cancelamento e régua de
+inadimplência — peso demais para um produto de R$ 9,90, e o público está no
+corredor do mercado, não querendo assinar nada.
+
+**A identidade é um código, não um cadastro** (`R7QK-3M9F`). O `dispositivo` do
+localStorage, que já governa o limite grátis, não serve para guardar uma
+COMPRA: some quando a pessoa limpa o navegador ou troca de celular, e aí ela
+pagou e perdeu. O código sobrevive a isso — ela anota, digita em qualquer
+aparelho, e os créditos voltam.
+
+Fluxo, ponta a ponta:
+
+1. Botão de compra → link do InfinitePay (`LINK_COMPRA` em `mercado.js`), criado
+   pela API com `redirect_url` de volta para o próprio app.
+2. Depois de pagar, a InfinitePay devolve a pessoa ao app com
+   `transaction_nsu`, `slug`, `order_nsu` e `receipt_url` na query string.
+3. `mercado.js` → `resgatarDaURL()` chama a edge function `mercado-creditos`
+   com `acao:"resgatar"`.
+4. A function pergunta ao **`payment_check` da InfinitePay** se aquele pagamento
+   existe e foi pago, confere o valor contra a tabela `PACOTES`, e só então
+   grava o pacote e devolve o código.
+
+**Nada é criado antes do `payment_check` responder `paid:true`.** Os campos vêm
+da barra de endereço, ou seja, de um navegador qualquer — sem essa conferência,
+qualquer pessoa inventaria um `transaction_nsu` e ganharia 50 leituras.
+
+Detalhes que não são acidentais:
+
+- **`transaction_nsu` é UNIQUE** na tabela: recarregar a página de retorno dez
+  vezes devolve o mesmo código, não dez pacotes.
+- **O crédito é debitado depois da leitura dar certo**, não antes. Se a OpenAI
+  falhar ou a foto não for um rótulo, a pessoa não paga pelo erro. O risco do
+  outro lado (duas leituras simultâneas com o último crédito) custa uma leitura.
+- **O débito é atômico** (`mercado_consumir_credito`): o `where creditos_usados
+  < creditos_total` dentro do próprio UPDATE é o que impede a corrida. Ler o
+  saldo e depois atualizar seria a versão com bug.
+- **`mercado_creditos` é deny-all no RLS** — só service_role toca. É dinheiro.
+- **O alfabeto do código não tem 0/O, 1/I/L nem 5/S**: são os pares que fazem
+  alguém digitar errado e achar que foi roubada.
+- **A conferência de valor aceita a MAIS, nunca a menos**: a InfinitePay repassa
+  o juros do parcelado ao comprador, então quem paga em 3x manda mais centavos
+  que o preço de tabela.
+
+Para mudar o preço ou criar outro pacote: edite `PACOTES` em
+`mercado-creditos/index.ts`, crie o link novo na API de checkout e atualize
+`LINK_COMPRA`/`PACOTE_*` em `mercado.js`. Pagamentos antigos continuam valendo
+pelo que eram na época, porque o crédito é gravado no resgate.
 
 ## Conformidade (Res. CFN 856/2026)
 
