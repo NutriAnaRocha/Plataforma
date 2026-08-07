@@ -161,6 +161,11 @@ Fluxo, ponta a ponta:
    pela API com `redirect_url` de volta para o próprio app.
 2. Depois de pagar, a InfinitePay devolve a pessoa ao app com
    `transaction_nsu`, `slug`, `order_nsu` e `receipt_url` na query string.
+   **A volta não é automática**: confirmado na primeira compra real (05/08/2026),
+   o checkout espera alguns segundos e mostra um botão de voltar para a página —
+   quem fecha a aba antes de tocar nele paga e o código nunca nasce, porque os
+   dados do pagamento só chegam nessa volta. É por isso que o passo a passo da
+   tela de compra insiste nesse ponto.
 3. `mercado.js` → `resgatarDaURL()` chama a edge function `mercado-creditos`
    com `acao:"resgatar"`.
 4. A function pergunta ao **`payment_check` da InfinitePay** se aquele pagamento
@@ -187,6 +192,41 @@ Detalhes que não são acidentais:
 - **A conferência de valor aceita a MAIS, nunca a menos**: a InfinitePay repassa
   o juros do parcelado ao comprador, então quem paga em 3x manda mais centavos
   que o preço de tabela.
+
+### Quando alguém perde o código
+
+Não existe recuperação automática, **de propósito**. Depois de perder o código, a
+única prova que a compradora tem é o comprovante do pagamento — e conferir
+comprovante é trabalho de gente. Uma tela que devolvesse o código a quem
+digitasse um e-mail entregaria as leituras de qualquer uma para qualquer uma, e
+mandar o código por e-mail não é opção enquanto o envio do projeto não sair do
+sandbox (ver `project-email-smtp-dominio`).
+
+O app previne e, quando falha, encaminha:
+
+- na tela de compra, um passo a passo diz **antes de pagar** que vai nascer um
+  código e que é ele que guarda as leituras;
+- na tela do código, o botão **Guardar meu código** abre o compartilhar do
+  celular (WhatsApp, Notas) ou copia no desktop;
+- os dois estados têm o link **"perdeu o código?"**, que abre o WhatsApp da Ana
+  (`WHATS_ANA` em `mercado.js`) com a mensagem já escrita pedindo o comprovante.
+
+Para atender, com a data e o valor do comprovante em mãos, no SQL Editor:
+
+```sql
+select codigo,
+       creditos_total - creditos_usados as restam,
+       valor_centavos,
+       to_char(criado_em at time zone 'America/Sao_Paulo','DD/MM/YYYY HH24:MI') as quando
+from mercado_creditos
+order by criado_em desc
+limit 20;
+```
+
+Poucas compras por dia: achar pela data e pelo valor é imediato. Se um dia o
+volume crescer a ponto de haver duas compras do mesmo valor no mesmo minuto,
+aí sim vale guardar um contato no resgate — é dado pessoal, então só quando
+pagar por si.
 
 Para mudar o preço ou criar outro pacote: edite `PACOTES` em
 `mercado-creditos/index.ts`, crie o link novo na API de checkout e atualize
