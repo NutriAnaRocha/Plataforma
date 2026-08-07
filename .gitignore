@@ -18,3 +18,6 @@ __pycache__/
 # Postgres depois de carregado; no git só engordaria o repositório.
 mercado/produtos.jsonl
 mercado/*.log
+
+# cache local do deploy.py (espelho do manifesto remoto)
+.deploy-manifest.local.json
