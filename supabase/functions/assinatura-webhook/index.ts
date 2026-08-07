@@ -30,7 +30,7 @@ const json = (b: unknown, s = 200) =>
 // estar na uri_allow_list do Auth.
 const LOGIN_URL =
   Deno.env.get("PLATAFORMA_LOGIN_URL") ||
-  "https://nutrianarocha.github.io/Plataforma/prototipo/index.html";
+  "https://app.nutrianaluisarocha.com/index.html";
 
 function pick(obj: any, paths: string[]): string | null {
   for (const p of paths) {

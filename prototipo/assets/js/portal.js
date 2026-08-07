@@ -19,7 +19,7 @@
   // pagamento único por período: renovar é uma decisão nova da paciente,
   // conversada, nunca uma cobrança que dispara sozinha (ver 0043).
   var WA_NUTRI = "5521994094557";
-  var SITE_PROGRAMA = "https://nutrianarocha.github.io/site/meu-plano.html";
+  var SITE_PROGRAMA = "https://nutrianaluisarocha.com/meu-plano";
 
   window.NutriDBReady.then(function (c) {
     return c.auth.getSession().then(function (r) {

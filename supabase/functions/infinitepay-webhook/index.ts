@@ -40,7 +40,7 @@ const HANDLE = Deno.env.get("INFINITEPAY_HANDLE") || "analuisarocha";
 // como criar senha. O destino precisa estar na uri_allow_list do Auth.
 const BIBLIOTECA_URL =
   Deno.env.get("BIBLIOTECA_URL") ||
-  "https://nutrianarocha.github.io/site/entrar.html";
+  "https://nutrianaluisarocha.com/entrar";
 
 // order_nsu (fixo no link de checkout) -> slug do catálogo da biblioteca.
 // Estes são os slugs CANÔNICOS, que casam com os arquivos já existentes no

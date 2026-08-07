@@ -14,7 +14,7 @@
   var ready = window.NutriDBReady || Promise.reject(new Error("supabase-client ausente"));
 
   // Para onde mandar quem comprou um e-book (não tem nada a fazer no painel).
-  var BIBLIOTECA_SITE = "https://nutrianarocha.github.io/site/biblioteca.html";
+  var BIBLIOTECA_SITE = "https://nutrianaluisarocha.com/biblioteca";
 
   function naPaginaAssinatura() {
     return /(^|\/)assinatura\.html$/.test(location.pathname);

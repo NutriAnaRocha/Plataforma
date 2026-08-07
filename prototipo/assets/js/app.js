@@ -142,7 +142,7 @@
         if (tipo === "paciente") { window.location.href = "portal-paciente.html"; return; }
         // Comprador de e-book: o lugar dele é a biblioteca do site, não o painel.
         if (tipo === "comprador") {
-          window.location.href = "https://nutrianarocha.github.io/site/biblioteca.html";
+          window.location.href = "https://nutrianaluisarocha.com/biblioteca";
           return;
         }
         // Considera "já respondeu" por QUALQUER sinal confiável: perfil no banco,

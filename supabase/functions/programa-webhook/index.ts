@@ -44,7 +44,7 @@ const HANDLE = Deno.env.get("INFINITEPAY_HANDLE") || "analuisarocha";
 // O destino precisa estar na uri_allow_list do Auth.
 const ENTRAR_URL =
   Deno.env.get("ENTRAR_URL") ||
-  "https://nutrianarocha.github.io/site/entrar.html";
+  "https://nutrianaluisarocha.com/entrar";
 
 // Ciclo de reavaliação, em dias. Ponto de partida apenas: na hora do
 // pagamento a compra é a única data que existe. Quando a anamnese chega,

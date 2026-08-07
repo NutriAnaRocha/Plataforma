@@ -17,7 +17,7 @@ const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const CLIENT_ID = Deno.env.get("GOOGLE_CLIENT_ID") || "";
 const CLIENT_SECRET = Deno.env.get("GOOGLE_CLIENT_SECRET") || "";
 const REDIRECT_URI = `${SUPABASE_URL}/functions/v1/google-oauth-callback`;
-const FALLBACK_RETURN = "https://nutrianarocha.github.io/Plataforma/prototipo/configuracoes.html";
+const FALLBACK_RETURN = "https://app.nutrianaluisarocha.com/configuracoes.html";
 
 // Redireciona o navegador de volta à plataforma, sinalizando sucesso/erro.
 function backTo(returnTo: string, status: "ok" | "erro", detail?: string) {

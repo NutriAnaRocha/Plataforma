@@ -10,7 +10,7 @@
    ============================================================ */
 "use strict";
 
-var CACHE = "nutri-portal-v1";
+var CACHE = "nutri-portal-v2";
 
 // App shell mínimo do paciente (best-effort: um 404 não quebra o install).
 var SHELL = [
