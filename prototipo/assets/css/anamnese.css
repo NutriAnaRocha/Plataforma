@@ -167,6 +167,48 @@ textarea.anm-input { resize: vertical; min-height: 76px; line-height: var(--lh-n
 .anm-prazo strong { color: var(--vinho); }
 .anm-prazo span { color: var(--texto-sutil); }
 
+/* ---------- Respostas em leitura ("Ver minhas respostas") ----------
+   Nasce fechado; só quem quer conferir paga o custo de rolar a lista. */
+.anm-resp { margin-top: var(--sp-4); }
+.anm-resp__toggle {
+  cursor: pointer;
+  padding: var(--sp-3) 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--vinho);
+  border-top: 1px solid var(--cinza-borda);
+}
+.anm-resp[open] .anm-resp__toggle { border-bottom: 1px solid var(--cinza-borda); }
+.anm-resp__secao { margin-top: var(--sp-4); }
+.anm-resp__titulo {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--vinho);
+}
+.anm-resp__lista { margin: 0; }
+/* Rótulo em cima, resposta embaixo: em 390px duas colunas espremeriam
+   perguntas longas ("Você tem alguma restrição alimentar?") a uma palavra
+   por linha. */
+.anm-resp__item {
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--cinza-borda);
+}
+.anm-resp__item:last-child { border-bottom: 0; }
+.anm-resp__label {
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+}
+.anm-resp__valor {
+  margin: 2px 0 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--texto);
+  overflow-wrap: anywhere;   /* resposta digitada sem espaço não estoura a tela */
+}
+
 /* ---------- Reavaliação (mesmo formulário, outro ciclo) ---------- */
 .rev-selo {
   margin: 0 0 var(--sp-1);

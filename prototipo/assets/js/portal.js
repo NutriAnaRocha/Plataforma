@@ -89,7 +89,9 @@
     el("portal-sub").textContent = subTexto(p, anamnesePendente(p));
 
     el("pane-anamnese").innerHTML =
-      (window.AnamneseView && temAnamnese(p)) ? window.AnamneseView.portalHTML(p) : "";
+      (window.AnamneseView && temAnamnese(p))
+        ? window.AnamneseView.portalHTML(p, { planoLiberado: !!planosLiberados(p).length })
+        : "";
     el("pane-reavaliacao").innerHTML =
       temReavaliacao(p) ? window.ReavaliacaoView.portalHTML() : "";
     el("pane-plano").innerHTML = renderPlano(p);
@@ -147,14 +149,17 @@
   function anamnesePendente(p) {
     return !!(window.AnamneseView && window.AnamneseView.pendente(p)) && noPrograma(p);
   }
-  // Já respondida, a aba fica mostrando o prazo de entrega até o plano
-  // sair; aí some, porque cumpriu o papel.
+  // Já respondida, a aba mostra o prazo de entrega até o plano sair; depois
+  // vira o arquivo das respostas dela (escolha da Ana em 05/08).
   function anamneseRespondida(p) {
     return !!(window.AnamneseView && !window.AnamneseView.pendente(p));
   }
+  /* A aba some só para quem nunca respondeu. Quem respondeu mantém acesso ao
+     que escreveu: antes ela sumia quando o plano era liberado e a paciente
+     perdia de vista a própria anamnese — sem poder editar, mas podendo ler. */
   function temAnamnese(p) {
     if (anamnesePendente(p)) return true;
-    return anamneseRespondida(p) && !planosLiberados(p).length;
+    return anamneseRespondida(p);
   }
   /* A reavaliação é o outro lado do que foi vendido: o programa é
      acompanhamento, não entrega única. A aba aparece quando o ciclo abre

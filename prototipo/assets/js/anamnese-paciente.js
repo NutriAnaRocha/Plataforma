@@ -363,7 +363,54 @@
     '</div>';
   }
 
-  function enviadaHTML(inst) {
+  /* Respostas em leitura, agrupadas pela seção do formulário.
+     Fica fechado num <details> de propósito: quem acabou de enviar quer ver o
+     prazo, não reler 10 etapas. Quem voltou meses depois abre e confere.
+     Não há como editar — a anamnese enviada é registro do atendimento, e a
+     nutri já leu o que está ali. Mudança depois disso é conversa na aba
+     Mensagens, que fica gravada junto. */
+  function respostasHTML(inst) {
+    var rs = (inst && inst.respostas) || [];
+    if (!rs.length) return "";
+    var secoes = [], porSecao = {};
+    rs.forEach(function (r) {
+      var s = r.secao || "Respostas";
+      if (!porSecao[s]) { porSecao[s] = []; secoes.push(s); }
+      porSecao[s].push(r);
+    });
+    var corpo = secoes.map(function (s) {
+      var itens = porSecao[s].map(function (r) {
+        return '<div class="anm-resp__item">' +
+          '<dt class="anm-resp__label">' + esc(r.label) + '</dt>' +
+          '<dd class="anm-resp__valor">' + esc(r.valor) + '</dd>' +
+        '</div>';
+      }).join("");
+      return '<section class="anm-resp__secao">' +
+        '<h3 class="anm-resp__titulo">' + esc(s) + '</h3>' +
+        '<dl class="anm-resp__lista">' + itens + '</dl>' +
+      '</section>';
+    }).join("");
+    return '<details class="anm-resp">' +
+      '<summary class="anm-resp__toggle">Ver minhas respostas</summary>' +
+      corpo +
+      '<p class="anm-salvo">Não dá para alterar o que já foi enviado. ' +
+        'Se algo mudou, me conte na aba Mensagens.</p>' +
+    '</details>';
+  }
+
+  /* planoLiberado: o plano já saiu, então o prazo de entrega virou passado e
+     prometer "até 2 dias úteis" a quem já recebeu soa quebrado. O cartão passa
+     a ser só o arquivo da anamnese. */
+  function enviadaHTML(inst, planoLiberado) {
+    if (planoLiberado) {
+      return '<div class="pcard anm">' +
+        '<h2 class="pcard__title">Minha anamnese</h2>' +
+        '<p class="anm-passo-dica">Estas são as respostas que você me enviou' +
+          (inst && inst.data ? " em " + esc(fmtBR(inst.data)) : "") + ', ' +
+          'e é delas que saiu o seu plano.</p>' +
+        respostasHTML(inst) +
+      '</div>';
+    }
     return '<div class="pcard anm">' +
       '<h2 class="pcard__title">Anamnese enviada ✓</h2>' +
       '<p class="anm-passo-dica">Recebi as suas respostas' + (inst && inst.data ? " em " + esc(fmtBR(inst.data)) : "") + '. ' +
@@ -372,6 +419,7 @@
         '<strong>Prazo de entrega: até 2 dias úteis.</strong>' +
         '<span>Você recebe um aviso quando o plano estiver liberado aqui no portal, junto com as minhas orientações escritas.</span>' +
       '</div>' +
+      respostasHTML(inst) +
       '<p class="anm-salvo">Lembrou de alguma coisa importante depois de enviar? Me escreva na aba Mensagens.</p>' +
     '</div>';
   }
@@ -382,9 +430,9 @@
   }
 
   /* ---------- API pública ---------- */
-  function portalHTML(p) {
+  function portalHTML(p, opts) {
     var inst = instancia(p);
-    if (inst) return enviadaHTML(inst);
+    if (inst) return enviadaHTML(inst, !!(opts && opts.planoLiberado));
     return '<div id="anm-root"><div class="pcard"><div class="empty-state">Carregando…</div></div></div>';
   }
 
@@ -534,7 +582,9 @@
       if (res && res.error) throw res.error;
       limparRascunho();
       var host = document.getElementById("anm-root");
-      if (host) host.innerHTML = enviadaHTML({ data: new Date().toISOString().slice(0, 10) });
+      if (host) host.innerHTML = enviadaHTML({
+        data: new Date().toISOString().slice(0, 10), respostas: respostas
+      });
       if (_onSalvo) _onSalvo(respostas);
     }).catch(function () {
       btn.disabled = false;
