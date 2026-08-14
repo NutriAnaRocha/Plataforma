@@ -1,0 +1,32 @@
+# ============================================================
+#  app.nutrianaluisarocha.com — política de cache
+#
+#  O problema que isto resolve: a Hostinger servia TUDO com
+#  max-age de 7 dias. Como o HTML também ficava preso, publicar
+#  uma correção não chegava em ninguém — nem na Ana — sem
+#  Ctrl+Shift+R, e o service worker do portal ainda regravava a
+#  versão velha por cima.
+#
+#  A regra agora: o HTML (e o service worker) sempre perguntam ao
+#  servidor se mudou; os assets podem ficar cacheados para sempre
+#  porque a URL deles carrega o hash do conteúdo
+#  (scripts/versionar_assets.py) — arquivo novo, URL nova.
+# ============================================================
+
+<IfModule mod_headers.c>
+  # Assets versionados: cache longo. A URL muda quando o conteúdo muda.
+  <FilesMatch "\.(js|css|png|jpe?g|svg|webp|ico|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000"
+  </FilesMatch>
+
+  # HTML e manifest: revalidar sempre (é barato, responde 304).
+  <FilesMatch "\.(html|webmanifest)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  # O service worker por último, para vencer a regra de .js acima:
+  # ele é quem decide o cache de todo o resto, não pode envelhecer.
+  <Files "sw.js">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </Files>
+</IfModule>

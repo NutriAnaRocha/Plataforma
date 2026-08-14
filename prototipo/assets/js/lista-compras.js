@@ -25,28 +25,63 @@
   }
 
   var AL = window.ALIMENTOS || [];
-  var AL_BY_ID = {}, AL_BY_NOME = {};
-  AL.forEach(function (a) { AL_BY_ID[a.id] = a; AL_BY_NOME[a.nome.toLowerCase()] = a; });
+  var AL_BY_ID = {}, AL_BY_NOME = {}, AL_BY_SLUG = {};
+  AL.forEach(function (a) {
+    AL_BY_ID[a.id] = a;
+    AL_BY_NOME[a.nome.toLowerCase()] = a;
+    // Índice por slug: o nome gravado no plano volta com espaço a mais
+    // ("Feijão vermelho , cozido") e o casamento exato falha — o item
+    // perdia o grupo e caía em "Outros" na lista de compras.
+    AL_BY_SLUG[slug(a.nome)] = a;
+  });
 
-  /* grupo TACO → corredor de mercado (ordem = ordem de exibição) */
+  /* grupo do alimento → corredor de mercado (ordem = ordem de exibição).
+     Os grupos aparecem com DUAS grafias na base (a da TACO oficial e a
+     do arquivo local — "Gorduras e óleos" vs "Óleos e gorduras"), por
+     isso as duas estão mapeadas: só uma delas fazia azeite, açúcar e
+     industrializados caírem em "Outros". */
   var CORREDORES = [
-    { key: "hortifruti", ico: "🥬", label: "Hortifrúti", grupos: ["Verduras, hortaliças e derivados", "Frutas e derivados"] },
+    { key: "verduras", ico: "🥬", label: "Verduras & legumes", grupos: ["Verduras, hortaliças e derivados"] },
+    { key: "frutas", ico: "🍎", label: "Frutas", grupos: ["Frutas e derivados"] },
     { key: "carnes", ico: "🥩", label: "Açougue & peixaria", grupos: ["Carnes e derivados", "Pescados e frutos do mar"] },
     { key: "ovos", ico: "🥚", label: "Ovos", grupos: ["Ovos e derivados"] },
     { key: "laticinios", ico: "🧀", label: "Laticínios & frios", grupos: ["Leite e derivados"] },
-    { key: "mercearia", ico: "🌾", label: "Mercearia (grãos, cereais)", grupos: ["Cereais e derivados", "Leguminosas e derivados"] },
-    { key: "oleos", ico: "🫒", label: "Óleos, azeites & temperos", grupos: ["Óleos e gorduras", "Miscelâneas", "Alimentos preparados"] },
+    { key: "mercearia", ico: "🌾", label: "Mercearia (grãos, cereais)", grupos: ["Cereais e derivados", "Leguminosas e derivados", "Outros alimentos industrializados"] },
+    { key: "oleos", ico: "🫒", label: "Óleos, azeites & temperos", grupos: ["Óleos e gorduras", "Gorduras e óleos", "Miscelâneas", "Alimentos preparados"] },
     { key: "nozes", ico: "🥜", label: "Castanhas & sementes", grupos: ["Nozes e sementes"] },
-    { key: "acucar", ico: "🍯", label: "Açúcares & doces", grupos: ["Açúcares e produtos de confeitaria", "Bebidas (alcoólicas e não alcoólicas)"] }
+    { key: "acucar", ico: "🍯", label: "Açúcares & doces", grupos: ["Açúcares e produtos de confeitaria", "Produtos açucarados", "Bebidas (alcoólicas e não alcoólicas)"] }
   ];
   var GRUPO2CORR = {};
   CORREDORES.forEach(function (c) { c.grupos.forEach(function (g) { GRUPO2CORR[g] = c.key; }); });
   var OUTROS = { key: "outros", ico: "🛒", label: "Outros" };
 
+  /* Último recurso antes de "Outros": adivinhar o corredor pelo nome.
+     Alimento escolhido da TACO do banco (migração 0052) não está no
+     arquivo local e chegava sem grupo — feijão, azeite e ovo iam parar
+     em "Outros", que no mercado não ajuda ninguém. Lista curta de
+     propósito: cobre o que aparece em plano, e o que escapar continua
+     em "Outros" em vez de ir para o corredor errado. */
+  var PISTAS = [
+    { k: "carnes", re: /\b(carne|patinho|acem|alcatra|file|frango|peito de frango|peru|peixe|salmao|tilapia|sardinha|atum|camarao|linguica|presunto)\b/ },
+    { k: "ovos", re: /\bovo(s)?\b/ },
+    { k: "laticinios", re: /\b(leite|iogurte|queijo|requeijao|ricota|coalhada|manteiga|creme de leite)\b/ },
+    { k: "mercearia", re: /\b(arroz|feijao|lentilha|grao de bico|grao-de-bico|ervilha|soja|macarrao|massa|pao|aveia|farinha|tapioca|cuscuz|quinoa|milho|granola|biscoito)\b/ },
+    { k: "oleos", re: /\b(azeite|oleo|banha|vinagre|sal|pimenta|alho|cebola em po|tempero|cafe|cha)\b/ },
+    { k: "nozes", re: /\b(castanha|noz|nozes|amendoa|amendoim|semente|chia|linhaca|gergelim|pasta de amendoim)\b/ },
+    { k: "acucar", re: /\b(acucar|mel|melado|rapadura|chocolate|doce|geleia|suco|refrigerante)\b/ },
+    { k: "frutas", re: /\b(banana|maca|mamao|laranja|abacaxi|manga|melancia|melao|uva|morango|abacate|pera|kiwi|goiaba|acerola|limao|tangerina|ameixa|coco)\b/ },
+    { k: "verduras", re: /\b(alface|rucula|couve|espinafre|brocolis|repolho|agriao|tomate|cenoura|abobrinha|abobora|berinjela|chuchu|beterraba|pepino|vagem|batata|mandioca|inhame|quiabo|pimentao|salsa|cebola|cebolinha)\b/ }
+  ];
+  function corredorPeloNome(nome) {
+    var s = slug(nome).replace(/-/g, " ");
+    for (var i = 0; i < PISTAS.length; i++) if (PISTAS[i].re.test(s)) return PISTAS[i].k;
+    return null;
+  }
+
   function alimentoDe(it) {
     if (it.alimentoId != null && AL_BY_ID[it.alimentoId]) return AL_BY_ID[it.alimentoId];
-    if (it.alimento && AL_BY_NOME[it.alimento.toLowerCase()]) return AL_BY_NOME[it.alimento.toLowerCase()];
-    return null;
+    if (!it.alimento) return null;
+    return AL_BY_NOME[it.alimento.toLowerCase()] || AL_BY_SLUG[slug(it.alimento)] || null;
   }
 
   // Soma os itens do plano por alimento; devolve corredores ordenados com itens.
@@ -58,7 +93,9 @@
         if (!nome.trim()) return;
         var al = alimentoDe(it);
         var chave = al ? ("id" + al.id) : ("n" + nome.toLowerCase());
-        if (!mapa[chave]) mapa[chave] = { nome: al ? al.nome : nome, grupo: al ? al.grupo : null, gramas: 0, medidas: {} };
+        // it.grupo cobre o alimento vindo da TACO do banco, que não está
+        // no arquivo local; sem ele sobra a pista pelo nome, lá embaixo.
+        if (!mapa[chave]) mapa[chave] = { nome: al ? al.nome : nome, grupo: (al && al.grupo) || it.grupo || null, gramas: 0, medidas: {} };
         var reg = mapa[chave];
         reg.gramas += (+it.gramas || 0);
         var med = it.medida || "grama", qtd = +it.qtd || 0;
@@ -69,7 +106,7 @@
     var buckets = {};
     Object.keys(mapa).forEach(function (k) {
       var reg = mapa[k];
-      var corr = (reg.grupo && GRUPO2CORR[reg.grupo]) || OUTROS.key;
+      var corr = (reg.grupo && GRUPO2CORR[reg.grupo]) || corredorPeloNome(reg.nome) || OUTROS.key;
       (buckets[corr] = buckets[corr] || []).push(reg);
     });
 

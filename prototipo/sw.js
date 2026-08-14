@@ -10,7 +10,16 @@
    ============================================================ */
 "use strict";
 
-var CACHE = "nutri-portal-v2";
+var CACHE = "nutri-portal-v3";
+
+/* Toda ida à rede feita AQUI ignora o cache HTTP do navegador.
+   Sem isto o stale-while-revalidate era uma armadilha: a Hostinger manda
+   os assets com max-age=604800, então a "revalidação em segundo plano"
+   era servida pelo próprio disk cache e o SW regravava o arquivo VELHO
+   por até 7 dias — publicar não mudava nada sem Ctrl+Shift+R.
+   Com no-cache o navegador revalida contra o servidor (304 quando não
+   mudou, barato) e a versão nova entra no cache no primeiro load. */
+function daRede(req) { return fetch(req, { cache: "no-cache" }); }
 
 // App shell mínimo do paciente (best-effort: um 404 não quebra o install).
 var SHELL = [
@@ -62,7 +71,7 @@ self.addEventListener("fetch", function (e) {
   // Navegações (abrir uma página): tenta rede, cai no cache offline.
   if (req.mode === "navigate") {
     e.respondWith(
-      fetch(req).then(function (res) {
+      daRede(req).then(function (res) {
         var copy = res.clone();
         caches.open(CACHE).then(function (c) { c.put(req, copy); });
         return res;
@@ -78,7 +87,7 @@ self.addEventListener("fetch", function (e) {
   // Estáticos: responde do cache já e atualiza em segundo plano.
   e.respondWith(
     caches.match(req).then(function (hit) {
-      var net = fetch(req).then(function (res) {
+      var net = daRede(req).then(function (res) {
         if (res && res.status === 200) {
           var copy = res.clone();
           caches.open(CACHE).then(function (c) { c.put(req, copy); });
