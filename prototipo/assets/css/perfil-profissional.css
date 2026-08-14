@@ -49,6 +49,10 @@
 .pp-slot__btns .btn { padding: 7px 14px; font-size: var(--fs-sm); }
 
 /* ---------- Assinatura desenhada ---------- */
+/* Assinatura desligada: área continua editável, só sai de evidência. */
+.pp-sign-area { margin-top: var(--sp-4); transition: opacity .18s ease; }
+.pp-sign-area.is-off { opacity: .5; }
+
 .pp-sign { margin-top: var(--sp-4); }
 .pp-sign__tit { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-sm); margin-bottom: var(--sp-2); }
 .pp-sign__pad {

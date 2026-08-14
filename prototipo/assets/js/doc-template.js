@@ -52,7 +52,11 @@
       instagram: perfil.instagram || "",
       site: perfil.site || "",
       logoUrl: ("logoUrl" in o) ? o.logoUrl : (perfil.logoUrl || ""),
-      assinaturaUrl: ("assinaturaUrl" in o) ? o.assinaturaUrl : (perfil.assinaturaUrl || ""),
+      // Assinatura é opcional: perfil.usarAssinatura === false → rodapé só com a
+      // linha em branco (para assinar à mão). O override do doc ainda manda.
+      assinaturaUrl: ("assinaturaUrl" in o)
+        ? o.assinaturaUrl
+        : (perfil.usarAssinatura === false ? "" : (perfil.assinaturaUrl || "")),
       carimboUrl: ("carimboUrl" in o) ? o.carimboUrl : (perfil.carimboUrl || ""),
       cores: {
         primaria: cores.primaria || CORES_PADRAO.primaria,

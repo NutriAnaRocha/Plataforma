@@ -12,7 +12,7 @@
   var perfil = {
     nome: "", email: "", crn: "", cidade: "", telefone: "", instagram: "", site: "", bio: "",
     especialidades: [], contatoProfissional: "",
-    logoUrl: "", carimboUrl: "", assinaturaUrl: "",
+    logoUrl: "", carimboUrl: "", assinaturaUrl: "", usarAssinatura: true,
     areaAtuacao: [], areaAtuacaoOutro: "",
     brandColors: (window.NutriPerfil && window.NutriPerfil.CORES_PADRAO) || { primaria: "#840B55", secundaria: "#F1B2DC", destaque: "#A82670", fundo: "#FFFFFF" }
   };
@@ -220,7 +220,18 @@
         slotHTML("carimbo", "Carimbo profissional", "Imagem do seu carimbo. Aparece no rodapé dos documentos.", perfil.carimboUrl, "PNG / JPG") +
       '</div>';
 
+    var usaSign = perfil.usarAssinatura !== false;
     var assinatura =
+      '<div class="cfg-toggle-row">' +
+        '<div class="cfg-toggle-txt"><strong>Usar minha assinatura nos documentos</strong>' +
+          '<span>' + (usaSign
+            ? "Ligado — a imagem abaixo é impressa no rodapé dos documentos."
+            : "Desligado — os documentos saem com a linha em branco para você assinar à mão. A imagem fica guardada aqui.") +
+          '</span></div>' +
+        '<button class="switch' + (usaSign ? " is-on" : "") + '" type="button" role="switch" ' +
+          'aria-checked="' + usaSign + '" data-toggle="usar-assinatura"><span class="switch__knob"></span></button>' +
+      '</div>' +
+      '<div class="pp-sign-area' + (usaSign ? "" : " is-off") + '">' +
       '<div class="pp-slots">' +
         slotHTML("assinatura", "Assinatura (imagem)", "Envie uma foto/scan da sua assinatura.", perfil.assinaturaUrl, "PNG / JPG") +
       '</div>' +
@@ -231,6 +242,7 @@
           '<button class="btn btn--ghost" type="button" id="pp-sign-clear">Limpar</button>' +
           '<button class="btn btn--primary" type="button" id="pp-sign-use">Usar esta assinatura</button>' +
         '</div>' +
+      '</div>' +
       '</div>';
 
     var paleta =
@@ -247,7 +259,7 @@
 
     el("panel-identidade").innerHTML =
       card("Marca & carimbo", "Enviados uma vez, aplicados automaticamente em tudo que você gerar.", uploads) +
-      card("Assinatura digital", "Imagem OU assinatura desenhada — vai no rodapé dos documentos.", assinatura) +
+      card("Assinatura digital (opcional)", "Imagem OU assinatura desenhada — vai no rodapé dos documentos. Se preferir assinar à mão, é só desligar.", assinatura) +
       card("Paleta de cores", "As cores da sua marca aplicadas nos detalhes gráficos dos documentos.", paleta);
 
     initSignPad();
@@ -345,6 +357,20 @@
     }).catch(function (e) {
       toast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
       busy(btn, false);
+    });
+  }
+
+  // Liga/desliga a assinatura nos documentos (a imagem continua guardada).
+  function toggleUsarAssinatura(btn) {
+    if (!db()) { toast("Banco indisponível.", true); return; }
+    var novo = !(perfil.usarAssinatura !== false);
+    btn.disabled = true;
+    db().update({ usarAssinatura: novo }).then(function (p) {
+      perfil = mergePerfil(p); renderIdentidade(); refreshPreview();
+      toast(novo ? "Assinatura ligada nos documentos" : "Documentos sairão sem assinatura");
+    }).catch(function (e) {
+      btn.disabled = false;
+      toast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
     });
   }
 
@@ -491,6 +517,8 @@
       if (up) { var inp = el("pp-file-" + up.getAttribute("data-upload")); if (inp) inp.click(); return; }
       var rm = e.target.closest("[data-remove]");
       if (rm) { removerSlot(rm.getAttribute("data-remove")); return; }
+      var sw = e.target.closest('[data-toggle="usar-assinatura"]');
+      if (sw) { toggleUsarAssinatura(sw); return; }
       if (e.target.closest("#pp-sign-clear")) { limparSign(); return; }
       if (e.target.closest("#pp-sign-use")) { usarSign(e.target.closest("#pp-sign-use")); return; }
       if (e.target.closest("#pp-palette-reset")) {

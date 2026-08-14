@@ -8,7 +8,7 @@
   "use strict";
 
   var COLS = "id,nome,email,crn,cidade,telefone,instagram,site,bio,especialidades,notif_prefs,avatar_url," +
-    "logo_url,carimbo_url,assinatura_url,area_atuacao,area_atuacao_outro,contato_profissional,brand_colors," +
+    "logo_url,carimbo_url,assinatura_url,usar_assinatura,area_atuacao,area_atuacao_outro,contato_profissional,brand_colors," +
     "whatsapp_config";
 
   // Paleta padrão (identidade Ana Luísa Rocha) — usada quando a nutri ainda
@@ -37,6 +37,8 @@
       logoUrl: r.logo_url || "",
       carimboUrl: r.carimbo_url || "",
       assinaturaUrl: r.assinatura_url || "",
+      // Assinatura é opcional: só entra no documento se este flag estiver ligado.
+      usarAssinatura: r.usar_assinatura !== false,
       areaAtuacao: Array.isArray(r.area_atuacao) ? r.area_atuacao : [],
       areaAtuacaoOutro: r.area_atuacao_outro || "",
       contatoProfissional: r.contato_profissional || "",
@@ -81,6 +83,7 @@
       if ("logoUrl" in patch) row.logo_url = patch.logoUrl || null;
       if ("carimboUrl" in patch) row.carimbo_url = patch.carimboUrl || null;
       if ("assinaturaUrl" in patch) row.assinatura_url = patch.assinaturaUrl || null;
+      if ("usarAssinatura" in patch) row.usar_assinatura = !!patch.usarAssinatura;
       if ("areaAtuacao" in patch) row.area_atuacao = patch.areaAtuacao || [];
       if ("areaAtuacaoOutro" in patch) row.area_atuacao_outro = (patch.areaAtuacaoOutro || "").trim() || null;
       if ("contatoProfissional" in patch) row.contato_profissional = (patch.contatoProfissional || "").trim() || null;
