@@ -79,7 +79,7 @@
     var lista = (p.prescricoes || []).slice().sort(function (a, b) { return (b.data || "").localeCompare(a.data || ""); });
     var toolbar = '<div class="op-bar">' +
       '<button class="btn btn--primary" id="rx-add" type="button">＋ Do banco de formulações</button>' +
-      '<button class="btn btn--ghost" id="rx-custom" type="button">✍️ Escrever do zero</button>' +
+      '<button class="btn btn--ghost" id="rx-custom" type="button">✍️ Sua formulação</button>' +
     "</div>";
     var atuais = lista.length ? lista.map(cardHTML).join("")
       : '<div class="empty-state">Nenhuma prescrição registrada. Puxe do seu banco de formulações ou escreva do zero — o PDF sai com a sua identidade.</div>';
