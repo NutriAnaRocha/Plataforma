@@ -40,41 +40,84 @@
      do arquivo local — "Gorduras e óleos" vs "Óleos e gorduras"), por
      isso as duas estão mapeadas: só uma delas fazia azeite, açúcar e
      industrializados caírem em "Outros". */
+  /* A ordem é a do trajeto dentro do mercado: hortifrúti na entrada,
+     açougue e frios no fundo, mercearia no meio, doces e bebidas por
+     último. Quem compra com a lista na mão anda uma vez só.
+
+     Os grupos da TACO são grossos demais para isto — "Carnes e
+     derivados" mistura boi e frango, "Verduras, hortaliças e derivados"
+     mistura alface e batata. Por isso o grupo é só a rede de segurança:
+     quem decide o corredor é a pista pelo nome (PISTAS, abaixo), e o
+     grupo entra apenas quando nenhuma pista reconhece o alimento. */
   var CORREDORES = [
-    { key: "verduras", ico: "🥬", label: "Verduras & legumes", grupos: ["Verduras, hortaliças e derivados"] },
+    { key: "folhas", ico: "🥬", label: "Verduras & folhas", grupos: [] },
+    { key: "legumes", ico: "🥕", label: "Legumes & hortaliças", grupos: ["Verduras, hortaliças e derivados"] },
+    { key: "tuberculos", ico: "🥔", label: "Tubérculos & raízes", grupos: [] },
     { key: "frutas", ico: "🍎", label: "Frutas", grupos: ["Frutas e derivados"] },
-    { key: "carnes", ico: "🥩", label: "Açougue & peixaria", grupos: ["Carnes e derivados", "Pescados e frutos do mar"] },
+    { key: "carnes", ico: "🥩", label: "Carnes", grupos: ["Carnes e derivados"] },
+    { key: "aves", ico: "🍗", label: "Aves", grupos: [] },
+    { key: "peixes", ico: "🐟", label: "Peixes & frutos do mar", grupos: ["Pescados e frutos do mar"] },
     { key: "ovos", ico: "🥚", label: "Ovos", grupos: ["Ovos e derivados"] },
     { key: "laticinios", ico: "🧀", label: "Laticínios & frios", grupos: ["Leite e derivados"] },
-    { key: "mercearia", ico: "🌾", label: "Mercearia (grãos, cereais)", grupos: ["Cereais e derivados", "Leguminosas e derivados", "Outros alimentos industrializados"] },
-    { key: "oleos", ico: "🫒", label: "Óleos, azeites & temperos", grupos: ["Óleos e gorduras", "Gorduras e óleos", "Miscelâneas", "Alimentos preparados"] },
+    { key: "padaria", ico: "🍞", label: "Padaria", grupos: [] },
+    { key: "cereais", ico: "🌾", label: "Grãos & cereais", grupos: ["Cereais e derivados"] },
+    { key: "leguminosas", ico: "🫘", label: "Feijões & leguminosas", grupos: ["Leguminosas e derivados"] },
     { key: "nozes", ico: "🥜", label: "Castanhas & sementes", grupos: ["Nozes e sementes"] },
-    { key: "acucar", ico: "🍯", label: "Açúcares & doces", grupos: ["Açúcares e produtos de confeitaria", "Produtos açucarados", "Bebidas (alcoólicas e não alcoólicas)"] }
+    { key: "oleos", ico: "🫒", label: "Óleos, azeites & temperos", grupos: ["Óleos e gorduras", "Gorduras e óleos", "Miscelâneas", "Alimentos preparados"] },
+    { key: "mercearia", ico: "🛒", label: "Mercearia", grupos: ["Outros alimentos industrializados"] },
+    { key: "acucar", ico: "🍯", label: "Açúcares & doces", grupos: ["Açúcares e produtos de confeitaria", "Produtos açucarados"] },
+    { key: "bebidas", ico: "🥤", label: "Bebidas", grupos: ["Bebidas (alcoólicas e não alcoólicas)"] }
   ];
   var GRUPO2CORR = {};
   CORREDORES.forEach(function (c) { c.grupos.forEach(function (g) { GRUPO2CORR[g] = c.key; }); });
   var OUTROS = { key: "outros", ico: "🛒", label: "Outros" };
 
-  /* Último recurso antes de "Outros": adivinhar o corredor pelo nome.
-     Alimento escolhido da TACO do banco (migração 0052) não está no
-     arquivo local e chegava sem grupo — feijão, azeite e ovo iam parar
-     em "Outros", que no mercado não ajuda ninguém. Lista curta de
-     propósito: cobre o que aparece em plano, e o que escapar continua
-     em "Outros" em vez de ir para o corredor errado. */
+  /* Quem decide o corredor: o nome do alimento. É a única forma de
+     separar frango de carne bovina e alface de batata — a TACO não
+     separa. A ordem importa: a primeira pista que casar vence, então as
+     mais específicas vêm antes ("leite de coco" é laticínio? não: cai em
+     óleos/mercearia antes de bater em "leite", por isso está listada
+     acima). O que nenhuma pista reconhecer cai no grupo da TACO, e só
+     depois em "Outros". */
   var PISTAS = [
-    { k: "carnes", re: /\b(carne|patinho|acem|alcatra|file|frango|peito de frango|peru|peixe|salmao|tilapia|sardinha|atum|camarao|linguica|presunto)\b/ },
+    // Exceções primeiro: nomes que enganariam uma pista mais abaixo.
+    { k: "mercearia", re: /\b(leite de coco|leite condensado|leite de amendoa|leite vegetal|bebida vegetal)\b/ },
+    { k: "laticinios", re: /\b(peito de peru|blanquet)\b/ },        // frios, não açougue
+    { k: "legumes", re: /\b(milho verde|milho em conserva)\b/ },    // não é o grão de cereais
+    { k: "folhas", re: /\bcouve\b/ },            // "couve, manteiga" não é laticínio
+    { k: "tuberculos", re: /\bbatata\b/ },       // "batata, doce" não é doce
+    { k: "oleos", re: /\b(oleo de coco|azeite|oleo|banha|vinagre|sal\b|pimenta|alho|cebola em po|colorau|oregano|louro|cominho|tempero|caldo de|molho de soja|shoyu|mostarda|ketchup|maionese)\b/ },
+
+    { k: "aves", re: /\b(frango|peito de frango|coxa|sobrecoxa|file de frango|peru|chester|codorna|ave)\b/ },
+    { k: "peixes", re: /\b(peixe|salmao|tilapia|sardinha|atum|bacalhau|merluza|pescada|camarao|lula|polvo|mexilhao|marisco|frutos do mar)\b/ },
+    { k: "carnes", re: /\b(carne|bovina|patinho|acem|alcatra|coxao|musculo|file mignon|maminha|fraldinha|costela|suina|porco|lombo|pernil|bisteca|cordeiro|carneiro|figado|moida)\b/ },
     { k: "ovos", re: /\bovo(s)?\b/ },
-    { k: "laticinios", re: /\b(leite|iogurte|queijo|requeijao|ricota|coalhada|manteiga|creme de leite)\b/ },
-    { k: "mercearia", re: /\b(arroz|feijao|lentilha|grao de bico|grao-de-bico|ervilha|soja|macarrao|massa|pao|aveia|farinha|tapioca|cuscuz|quinoa|milho|granola|biscoito)\b/ },
-    { k: "oleos", re: /\b(azeite|oleo|banha|vinagre|sal|pimenta|alho|cebola em po|tempero|cafe|cha)\b/ },
-    { k: "nozes", re: /\b(castanha|noz|nozes|amendoa|amendoim|semente|chia|linhaca|gergelim|pasta de amendoim)\b/ },
-    { k: "acucar", re: /\b(acucar|mel|melado|rapadura|chocolate|doce|geleia|suco|refrigerante)\b/ },
-    { k: "frutas", re: /\b(banana|maca|mamao|laranja|abacaxi|manga|melancia|melao|uva|morango|abacate|pera|kiwi|goiaba|acerola|limao|tangerina|ameixa|coco)\b/ },
-    { k: "verduras", re: /\b(alface|rucula|couve|espinafre|brocolis|repolho|agriao|tomate|cenoura|abobrinha|abobora|berinjela|chuchu|beterraba|pepino|vagem|batata|mandioca|inhame|quiabo|pimentao|salsa|cebola|cebolinha)\b/ }
+    { k: "laticinios", re: /\b(leite|iogurte|queijo|requeijao|ricota|cottage|coalhada|manteiga|creme de leite|nata|kefir|presunto|peito de peru|mussarela|muçarela|frios)\b/ },
+
+    { k: "padaria", re: /\b(pao|paes|baguete|bisnaguinha|torrada|croissant|bolo|tapioca|cuscuz|beiju|wrap|tortilha)\b/ },
+    { k: "leguminosas", re: /\b(feijao|lentilha|grao de bico|grao-de-bico|ervilha|soja|edamame|tremoco|fava)\b/ },
+    { k: "cereais", re: /\b(arroz|aveia|macarrao|massa|espaguete|penne|farinha|fuba|polenta|quinoa|milho|granola|biscoito|bolacha|cereal|trigo|centeio|cevada|amido|maisena|nhoque)\b/ },
+    { k: "nozes", re: /\b(castanha|noz|nozes|amendoa|amendoim|semente|sementes|chia|linhaca|gergelim|girassol|abobora torrada|pasta de amendoim|tahine|pistache|macadamia|avela)\b/ },
+
+    { k: "bebidas", re: /\b(agua|suco|refrigerante|cafe|cha\b|cerveja|vinho|isotonico|energetico|kombucha)\b/ },
+    // "doce" sozinho fora: pegava "batata, doce" e "goiabada de corte" é rara.
+    { k: "acucar", re: /\b(acucar|mel|melado|rapadura|chocolate|cacau|achocolatado|doce de leite|doce em calda|geleia|adocante|xilitol|eritritol|sorvete)\b/ },
+
+    { k: "frutas", re: /\b(banana|maca|mamao|laranja|abacaxi|manga|melancia|melao|uva|morango|abacate|pera|kiwi|goiaba|acerola|limao|tangerina|mexerica|ameixa|coco|caju|maracuja|figo|pessego|nectarina|cereja|framboesa|mirtilo|amora|romã|roma|jabuticaba|graviola|tamarindo|damasco|tamara|uva passa)\b/ },
+
+    { k: "tuberculos", re: /\b(batata|batata doce|mandioca|aipim|macaxeira|inhame|cara|mandioquinha|batata baroa|beterraba|nabo|rabanete)\b/ },
+    { k: "folhas", re: /\b(alface|rucula|couve|espinafre|agriao|acelga|escarola|chicoria|almeirao|repolho|salsa|salsinha|cebolinha|coentro|manjericao|hortela|broto|rama)\b/ },
+    { k: "legumes", re: /\b(tomate|cenoura|abobrinha|abobora|jerimum|berinjela|chuchu|pepino|vagem|quiabo|pimentao|cebola|brocolis|couve flor|couve-flor|maxixe|palmito|cogumelo|champignon|shitake|shimeji|milho verde|alho poro|aspargo|alcachofra|salsao|pimenta biquinho)\b/ }
   ];
   function corredorPeloNome(nome) {
     var s = slug(nome).replace(/-/g, " ");
-    for (var i = 0; i < PISTAS.length; i++) if (PISTAS[i].re.test(s)) return PISTAS[i].k;
+    // Ingrediente de receita é texto livre e vem no plural ("2 bananas
+    // maduras"): tenta também sem o -s final das palavras longas, senão
+    // metade da receita cai em "Outros".
+    var sing = s.replace(/(\w{4,})s\b/g, "$1");
+    for (var i = 0; i < PISTAS.length; i++) {
+      if (PISTAS[i].re.test(s) || PISTAS[i].re.test(sing)) return PISTAS[i].k;
+    }
     return null;
   }
 
@@ -121,7 +164,9 @@
     var buckets = {};
     Object.keys(mapa).forEach(function (k) {
       var reg = mapa[k];
-      var corr = (reg.grupo && GRUPO2CORR[reg.grupo]) || corredorPeloNome(reg.nome) || OUTROS.key;
+      // Nome primeiro: é o que distingue frango de carne e folha de raiz.
+      // O grupo da TACO só entra quando o nome não diz nada.
+      var corr = corredorPeloNome(reg.nome) || (reg.grupo && GRUPO2CORR[reg.grupo]) || OUTROS.key;
       (buckets[corr] = buckets[corr] || []).push(reg);
     });
 
@@ -191,8 +236,10 @@
         if (opts.check) {
           var key = "compra:" + it.slug;
           var done = opts.marcas && opts.marcas[key] === true;
-          return '<li class="lc-item lc-item--check"><label><input type="checkbox" data-check="' + esc(key) + '"' +
+          return '<li class="lc-item lc-item--check' + (done ? " is-done" : "") + '" data-lc-li="' + esc(key) + '">' +
+            '<label><input type="checkbox" data-check="' + esc(key) + '"' +
             (done ? " checked" : "") + (opts.readonly ? " disabled" : "") + '>' +
+            '<span class="lc-item__box" aria-hidden="true"></span>' +
             '<span class="lc-item__nome">' + esc(it.nome) + '</span>' +
             '<span class="lc-item__qt">' + esc(it.qtd) + '</span></label></li>';
         }
@@ -225,14 +272,38 @@
   function htmlPortal(plano, marcas, readonly, receitas) {
     var lista = gerar(plano, receitas);
     if (!lista.totalItens) return "";
+    var comprados = 0;
+    lista.corredores.forEach(function (c) {
+      c.itens.forEach(function (it) { if (marcas && marcas["compra:" + it.slug] === true) comprados++; });
+    });
     return '<div class="pcard lc-portal">' +
       '<div class="lc-portal__head"><h3>🛒 Sua lista de compras</h3>' +
-        '<span class="pcard__meta">' + lista.totalItens + ' itens</span></div>' +
-      '<p class="pcard__hint">Marque o que já tem em casa. A lista sai do seu plano alimentar' +
+        '<span class="pcard__meta" id="lc-conta">' + comprados + ' de ' + lista.totalItens + ' no carrinho</span></div>' +
+      '<div class="lc-prog"><span id="lc-prog-fill" style="width:' +
+        (lista.totalItens ? Math.round(comprados * 100 / lista.totalItens) : 0) + '%"></span></div>' +
+      '<p class="pcard__hint">Vá marcando o que colocar no carrinho — fica salvo, dá para fechar e voltar no meio do mercado. ' +
+      'A lista sai do seu plano alimentar' +
       (receitas && receitas.length ? ' e das receitas que a sua nutricionista liberou' : '') + '.</p>' +
       '<div class="lc-cols">' + corredoresHTML(lista, { check: true, marcas: marcas, readonly: readonly }) + '</div>' +
       dicasHTML(false) +
       '</div>';
+  }
+
+  /* Contador + barra ao marcar, sem redesenhar a lista (redesenhar no meio
+     do mercado faria a página pular de volta para o topo). */
+  function refreshPortal(marcas) {
+    var itens = [].slice.call(document.querySelectorAll("[data-lc-li]"));
+    if (!itens.length) return;
+    var feitos = 0;
+    itens.forEach(function (li) {
+      var done = marcas && marcas[li.getAttribute("data-lc-li")] === true;
+      if (done) feitos++;
+      li.classList.toggle("is-done", !!done);
+    });
+    var conta = document.getElementById("lc-conta");
+    if (conta) conta.textContent = feitos + " de " + itens.length + " no carrinho";
+    var fill = document.getElementById("lc-prog-fill");
+    if (fill) fill.style.width = (itens.length ? Math.round(feitos * 100 / itens.length) : 0) + "%";
   }
 
   /* ---------- Render: PDF (classes doc-*) ---------- */
@@ -256,6 +327,7 @@
   }
 
   window.ListaCompras = {
-    gerar: gerar, htmlNutri: htmlNutri, htmlPortal: htmlPortal, pdfHTML: pdfHTML, dicasHTML: dicasHTML
+    gerar: gerar, htmlNutri: htmlNutri, htmlPortal: htmlPortal, pdfHTML: pdfHTML,
+    dicasHTML: dicasHTML, refresh: refreshPortal
   };
 })();

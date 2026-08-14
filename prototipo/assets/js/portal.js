@@ -721,5 +721,8 @@
     if (key.indexOf("meta:") === 0 && window.MetasView && window.MetasView.refresh) {
       window.MetasView.refresh(ctx.marcas);
     }
+    if (key.indexOf("compra:") === 0 && window.ListaCompras && window.ListaCompras.refresh) {
+      window.ListaCompras.refresh(ctx.marcas);
+    }
   });
 })();

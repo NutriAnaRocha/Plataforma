@@ -23,9 +23,34 @@
 .lc-item:first-child { border-top: none; }
 .lc-item__nome { flex: 1; color: var(--texto); }
 .lc-item__qt { color: var(--texto-sutil); font-size: var(--fs-caption); white-space: nowrap; font-weight: 600; }
-.lc-item--check label { display: flex; align-items: baseline; gap: 8px; cursor: pointer; width: 100%; }
-.lc-item--check input { margin-top: 2px; accent-color: var(--vinho); flex: none; }
-.lc-item--check input:checked ~ .lc-item__nome { text-decoration: line-through; color: var(--texto-sutil); }
+/* Checklist do mercado: alvo de toque grande, porque isto é usado com o
+   celular numa mão e o carrinho na outra. O quadrado nativo de 13px não
+   servia. */
+.lc-item--check label { display: flex; align-items: center; gap: 10px; cursor: pointer; width: 100%; padding: 6px 0; }
+.lc-item--check input { position: absolute; opacity: 0; width: 0; height: 0; }
+.lc-item__box {
+  flex: none; width: 22px; height: 22px; border-radius: 6px;
+  border: 2px solid var(--cinza-borda); background: var(--branco);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background var(--t-fast), border-color var(--t-fast);
+}
+.lc-item__box::after {
+  content: "✓"; color: #fff; font-size: .8rem; font-weight: 700;
+  opacity: 0; transform: scale(.4); transition: opacity .15s, transform .15s;
+}
+.lc-item--check input:focus-visible ~ .lc-item__box { box-shadow: var(--ring-foco); }
+.lc-item--check.is-done .lc-item__box { background: var(--vinho); border-color: var(--vinho); }
+.lc-item--check.is-done .lc-item__box::after { opacity: 1; transform: scale(1); }
+.lc-item--check.is-done .lc-item__nome { text-decoration: line-through; color: var(--texto-sutil); }
+.lc-item--check.is-done .lc-item__qt { opacity: .5; }
+
+/* Barra de progresso do carrinho */
+.lc-prog { height: 6px; border-radius: 999px; background: var(--cinza-claro); overflow: hidden; margin: 8px 0 4px; }
+.lc-prog span { display: block; height: 100%; background: var(--vinho); border-radius: 999px; transition: width .35s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lc-prog span, .lc-item__box, .lc-item__box::after { transition: none; }
+}
 
 /* Dicas de marmita */
 .lc-dicas { margin-top: var(--sp-4); }
