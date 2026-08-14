@@ -63,7 +63,7 @@
     var lista = (p.orientacoes || []).slice().sort(function (a, b) { return (b.data || "").localeCompare(a.data || ""); });
     var toolbar = '<div class="op-bar">' +
       '<button class="btn btn--primary" id="op-add" type="button">＋ Da biblioteca</button>' +
-      '<button class="btn btn--ghost" id="op-custom" type="button">✍️ Escrever do zero</button>' +
+      '<button class="btn btn--ghost" id="op-custom" type="button">✍️ Sua orientação</button>' +
     "</div>";
     var atuais = lista.length ? lista.map(cardHTML).join("")
       : '<div class="empty-state">Nenhuma orientação anexada. Puxe da sua biblioteca ou escreva do zero — o PDF sai com a sua marca.</div>';
