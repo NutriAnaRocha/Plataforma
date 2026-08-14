@@ -714,7 +714,12 @@
   document.addEventListener("change", function (e) {
     var cb = e.target.closest && e.target.closest("[data-check]");
     if (!cb) return;
-    checkSet(cb.getAttribute("data-check"), cb.checked);
+    var key = cb.getAttribute("data-check");
+    checkSet(key, cb.checked);
     refreshAdesaoUI();
+    // Metas têm o próprio painel (anel + frase) e precisam responder na hora.
+    if (key.indexOf("meta:") === 0 && window.MetasView && window.MetasView.refresh) {
+      window.MetasView.refresh(ctx.marcas);
+    }
   });
 })();

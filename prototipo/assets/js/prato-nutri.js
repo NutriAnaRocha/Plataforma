@@ -66,6 +66,31 @@
     return tem ? Math.round(t) : null;
   }
 
+  /* Reações: um toque em vez de escrever. A lista é curta de propósito —
+     com muitas opções a escolha vira trabalho e ninguém usa. Nenhuma é
+     de reprovação: o que precisa de ressalva merece o comentário, não um
+     emoji seco no prato que a paciente teve o trabalho de registrar. */
+  var REACOES = [
+    { e: "😍", t: "Amei" },
+    { e: "👏", t: "Mandou bem" },
+    { e: "👍", t: "Tá bom" },
+    { e: "🥗", t: "Caprichou nos vegetais" },
+    { e: "🤔", t: "Dá pra melhorar" }
+  ];
+
+  function reacaoHTML(p) {
+    var atual = (p.reacao_nutri || "").trim();
+    return '<div class="pn-reac" data-pn-reacbox="' + esc(p.id) + '">' +
+      REACOES.map(function (r) {
+        var on = r.e === atual;
+        return '<button class="pn-reac__btn' + (on ? " is-on" : "") + '" type="button" ' +
+          'data-pn-reagir="' + esc(p.id) + '" data-pn-emoji="' + esc(r.e) + '" ' +
+          'title="' + esc(r.t) + '" aria-label="' + esc(r.t) + '" ' +
+          'aria-pressed="' + (on ? "true" : "false") + '">' + r.e + '</button>';
+      }).join("") +
+    '</div>';
+  }
+
   /* Bloco do comentário: ou o que já foi escrito (com editar/apagar),
      ou o convite para escrever. Trocado no lugar, sem recarregar a lista. */
   function comentarioHTML(p) {
@@ -116,6 +141,7 @@
         (itens ? '<p class="pn-itens">' + itens + '</p>' : '') +
         (p.observacao ? '<p class="pn-obs">Ela escreveu: “' + esc(p.observacao) + '”</p>' : '') +
         (alertas ? '<ul class="pn-alertas">' + alertas + '</ul>' : '') +
+        reacaoHTML(p) +
         comentarioHTML(p) +
       '</div>' +
       '<button class="pn-del" type="button" data-pn-apagar="' + esc(p.id) + '" ' +
@@ -176,6 +202,28 @@
     function caixa(id) { return box.querySelector('[data-pn-combox="' + id + '"]'); }
 
     box.addEventListener("click", function (e) {
+      var reagir = e.target.closest("[data-pn-reagir]");
+      if (reagir) {
+        var idR = reagir.getAttribute("data-pn-reagir");
+        var emoji = reagir.getAttribute("data-pn-emoji");
+        var alvo = porId[idR] || { id: idR };
+        var anterior = (alvo.reacao_nutri || "").trim();
+        var novo = anterior === emoji ? "" : emoji;   // clicar no mesmo desmarca
+        // Pinta antes de confirmar: o toque tem que responder na hora.
+        alvo.reacao_nutri = novo;
+        var cxR = box.querySelector('[data-pn-reacbox="' + idR + '"]');
+        if (cxR) cxR.outerHTML = reacaoHTML(alvo);
+        DB.reagirPrato(idR, novo).then(function () {
+          if (opts.toast) opts.toast(novo ? "Reação enviada. A paciente vê no portal." : "Reação removida.");
+        }).catch(function () {
+          alvo.reacao_nutri = anterior;
+          var volta = box.querySelector('[data-pn-reacbox="' + idR + '"]');
+          if (volta) volta.outerHTML = reacaoHTML(alvo);
+          if (opts.toast) opts.toast("Não foi possível salvar a reação.", true);
+        });
+        return;
+      }
+
       var abrir = e.target.closest("[data-pn-comentar]");
       if (abrir) {
         var idA = abrir.getAttribute("data-pn-comentar");

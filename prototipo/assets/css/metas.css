@@ -22,12 +22,59 @@
 .mt-ritem { border: 1px solid var(--cinza-borda); border-radius: var(--radius-input); padding: 8px 12px; background: var(--branco); font-size: var(--fs-sm); }
 
 /* ---- Portal (paciente) ---- */
+
+/* Painel de cima: anel que enche + a frase do dia. */
+.mt-hero { display: flex; align-items: center; gap: var(--sp-4, 16px); }
+.mt-hero__txt h2 { margin: 0 0 4px; font-size: var(--fs-h3); }
+.mt-hero__msg { margin: 0; font-size: var(--fs-sm); color: var(--texto-sutil); line-height: 1.45; }
+.mt-hero.is-full { background: var(--rosa-suave); border-color: var(--rosa); }
+.mt-hero.is-full .mt-hero__msg { color: var(--vinho); font-weight: 600; }
+
+.mt-ring { position: relative; flex: none; width: 96px; height: 96px; }
+.mt-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.mt-ring circle { fill: none; stroke-width: 10; }
+.mt-ring__bg { stroke: var(--cinza-borda); }
+.mt-ring__fg {
+  stroke: var(--vinho); stroke-linecap: round;
+  transition: stroke-dashoffset .5s cubic-bezier(.4, 0, .2, 1), stroke .3s;
+}
+/* Verde só no 100% — não há token verde na paleta e criar um só para
+   este anel poluiria os tokens; é a única ocorrência. */
+.mt-ring.is-full .mt-ring__fg { stroke: #2e9e6b; }
+.mt-ring__mid {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; line-height: 1.1;
+}
+.mt-ring__mid strong { font-size: 1.35rem; color: var(--vinho); }
+.mt-ring__mid strong span { font-size: .85rem; color: var(--texto-sutil); font-weight: 600; }
+.mt-ring__mid > span { font-size: var(--fs-caption); color: var(--texto-sutil); }
+
 .mt-plist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.mt-pitem label { display: flex; align-items: center; gap: 10px; cursor: pointer;
-  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: 12px 14px; background: var(--branco);
-  transition: border-color var(--t-fast), background var(--t-fast); }
+.mt-pitem label { display: flex; align-items: center; gap: 12px; cursor: pointer;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: 14px; background: var(--branco);
+  transition: border-color var(--t-fast), background var(--t-fast), transform var(--t-fast); }
 .mt-pitem label:hover { border-color: var(--rosa); }
-.mt-pitem input { accent-color: var(--vinho); flex: none; width: 18px; height: 18px; }
-.mt-pitem span { font-weight: 600; color: var(--texto); }
+.mt-pitem label:active { transform: scale(.99); }
+/* Checkbox nativo escondido: o quadrado desenhado abaixo é o que aparece. */
+.mt-pitem input { position: absolute; opacity: 0; width: 0; height: 0; }
+.mt-pitem__box {
+  flex: none; width: 26px; height: 26px; border-radius: 50%;
+  border: 2px solid var(--cinza-borda); background: var(--branco);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
+}
+.mt-pitem__box::after {
+  content: "✓"; color: #fff; font-size: .95rem; font-weight: 700;
+  opacity: 0; transform: scale(.4); transition: opacity .18s, transform .18s;
+}
+.mt-pitem__txt { font-weight: 600; color: var(--texto); }
+.mt-pitem input:focus-visible + .mt-pitem__box { box-shadow: var(--ring-foco); }
+
 .mt-pitem.is-done label { background: var(--rosa-suave); border-color: var(--rosa); }
-.mt-pitem.is-done span { text-decoration: line-through; color: var(--texto-sutil); }
+.mt-pitem.is-done .mt-pitem__box { background: var(--vinho); border-color: var(--vinho); }
+.mt-pitem.is-done .mt-pitem__box::after { opacity: 1; transform: scale(1); }
+.mt-pitem.is-done .mt-pitem__txt { color: var(--texto-sutil); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-ring__fg, .mt-pitem__box, .mt-pitem__box::after, .mt-pitem label { transition: none; }
+}

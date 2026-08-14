@@ -184,6 +184,10 @@
             : '<span class="prato-hist__ok">tudo certo</span>') +
           /* O recado da nutri vale mais que a estimativa da IA — por isso
              fica no card, com a voz dela marcada, e não escondido. */
+          ((p.reacao_nutri || "").trim()
+            ? '<span class="prato-hist__reac">' + esc(p.reacao_nutri.trim()) +
+              '<span>sua nutri reagiu</span></span>'
+            : '') +
           ((p.comentario_nutri || "").trim()
             ? '<span class="prato-hist__com"><strong>Sua nutri:</strong> ' + esc(p.comentario_nutri.trim()) + '</span>'
             : '') +

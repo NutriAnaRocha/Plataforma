@@ -190,6 +190,16 @@
 .prato-hist__kcal { font-size: var(--fs-sm); font-weight: 700; color: var(--vinho); }
 .prato-hist__flag, .prato-hist__ok { flex-basis: 100%; font-size: var(--fs-caption); color: var(--texto-sutil); }
 .prato-hist__ok { color: #2e7d5b; }
+/* Reação da nutri (migração 0061) — do lado da paciente é só leitura. */
+.prato-hist__reac {
+  flex-basis: 100%; margin-top: 4px;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 1.15rem; line-height: 1;
+}
+.prato-hist__reac span {
+  font-size: var(--fs-caption); color: var(--texto-sutil); line-height: 1.2;
+}
+
 .prato-hist__com {
   flex-basis: 100%; margin-top: 4px; padding: 8px 10px;
   background: var(--rosa-suave); border-radius: var(--radius-sm, 8px);

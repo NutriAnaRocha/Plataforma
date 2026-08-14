@@ -181,7 +181,45 @@
     persistir(null, "Metas excluídas");
   }
 
-  /* ---------- Portal (paciente) ---------- */
+  /* ---------- Portal (paciente) ----------
+     Aqui o objetivo não é informar, é dar vontade de cumprir. O que muda
+     em relação a uma lista seca:
+      • o progresso é um anel que enche — o vazio a preencher puxa mais
+        que uma barra fininha perdida no topo;
+      • a frase muda conforme o avanço e sempre diz o que falta em número
+        ("falta 1"), que é o que faz levantar e ir fazer;
+      • marcar responde na hora, sem esperar recarregar a página.
+     Nada aqui promete resultado — quem fala de resultado é a nutri, na
+     consulta (Código de Ética, CFN 856/2026). */
+
+  var CIRC = 2 * Math.PI * 52;   // r=52 no SVG abaixo
+
+  function faltamTxt(n) { return n === 1 ? "falta 1" : "faltam " + n; }
+
+  function mensagem(feitos, total) {
+    var falta = total - feitos;
+    if (total && feitos === total) return "Você cumpriu todas as metas. Que orgulho! 💜";
+    if (feitos === 0) return "Comece por uma. A primeira é a que puxa as outras.";
+    if (feitos * 2 < total) return "Já saiu do lugar — " + faltamTxt(falta) + " para fechar o dia.";
+    if (feitos * 2 === total) return "Metade do caminho feito. " + faltamTxt(falta).replace(/^f/, "F") + ".";
+    return "Quase lá! " + faltamTxt(falta).replace(/^f/, "F") + " para completar tudo.";
+  }
+
+  function anelHTML(feitos, total) {
+    var pct = total ? Math.round(feitos * 100 / total) : 0;
+    var off = CIRC * (1 - pct / 100);
+    return '<div class="mt-ring' + (total && feitos === total ? " is-full" : "") + '" id="mt-ring">' +
+      '<svg viewBox="0 0 120 120" aria-hidden="true">' +
+        '<circle class="mt-ring__bg" cx="60" cy="60" r="52"></circle>' +
+        '<circle class="mt-ring__fg" cx="60" cy="60" r="52" id="mt-ring-fg" ' +
+          'stroke-dasharray="' + CIRC.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"></circle>' +
+      '</svg>' +
+      '<div class="mt-ring__mid">' +
+        '<strong id="mt-ring-n">' + feitos + '<span>/' + total + '</span></strong>' +
+        '<span>metas</span>' +
+      '</div></div>';
+  }
+
   function portalHTML(p, marcas, readonly) {
     var mt = p.metas;
     var itens = mt && mt.publicado ? (mt.itens || []).filter(function (i) { return (i.texto || "").trim(); }) : [];
@@ -192,18 +230,49 @@
     var lis = itens.map(function (i, idx) {
       var key = "meta:" + idx;
       var done = marcas && marcas[key] === true; if (done) feitos++;
-      return '<li class="mt-pitem' + (done ? " is-done" : "") + '"><label>' +
+      // O <label> inteiro é o alvo de toque: no celular, mirar um
+      // quadradinho de 16px é o que faz a paciente desistir de marcar.
+      return '<li class="mt-pitem' + (done ? " is-done" : "") + '" data-mt-li="' + key + '"><label>' +
         '<input type="checkbox" data-check="' + key + '"' + (done ? " checked" : "") + (readonly ? " disabled" : "") + '>' +
-        '<span>' + esc(i.texto) + '</span></label></li>';
+        '<span class="mt-pitem__box" aria-hidden="true"></span>' +
+        '<span class="mt-pitem__txt">' + esc(i.texto) + '</span></label></li>';
     }).join("");
-    var pct = itens.length ? Math.round(feitos * 100 / itens.length) : 0;
-    return '<div class="pcard pcard--head"><h2>🎯 ' + esc(mt.titulo || "Minhas metas") + '</h2>' +
-      '<div class="plano-adesao"><div class="plano-adesao__bar"><span style="width:' + pct + '%"></span></div>' +
-        '<span class="plano-adesao__pct">' + feitos + '/' + itens.length + ' metas</span></div>' +
-      '<p class="pcard__hint">Marque o que você está conseguindo cumprir. Pequenos hábitos, grandes resultados. 💜</p></div>' +
+
+    return '<div class="pcard mt-hero' + (feitos === itens.length ? " is-full" : "") + '">' +
+        anelHTML(feitos, itens.length) +
+        '<div class="mt-hero__txt">' +
+          '<h2>🎯 ' + esc(mt.titulo || "Minhas metas") + '</h2>' +
+          '<p class="mt-hero__msg" id="mt-msg">' + esc(mensagem(feitos, itens.length)) + '</p>' +
+        '</div>' +
+      '</div>' +
       '<div class="pcard"><ul class="mt-plist">' + lis + '</ul></div>';
   }
 
+  /* Chamado pelo portal a cada marcação: recalcula anel e frase sem
+     redesenhar a lista (redesenhar tira o foco e perde a animação). */
+  function refreshPortal(marcas) {
+    var lista = document.querySelector(".mt-plist");
+    if (!lista) return;
+    var itens = [].slice.call(lista.querySelectorAll("[data-mt-li]"));
+    var total = itens.length, feitos = 0;
+    itens.forEach(function (li) {
+      var done = marcas && marcas[li.getAttribute("data-mt-li")] === true;
+      if (done) feitos++;
+      li.classList.toggle("is-done", !!done);
+    });
+    var fg = document.getElementById("mt-ring-fg");
+    if (fg) fg.setAttribute("stroke-dashoffset", (CIRC * (1 - (total ? feitos / total : 0))).toFixed(1));
+    var n = document.getElementById("mt-ring-n");
+    if (n) n.innerHTML = feitos + "<span>/" + total + "</span>";
+    var msg = document.getElementById("mt-msg");
+    if (msg) msg.textContent = mensagem(feitos, total);
+    var cheio = total > 0 && feitos === total;
+    var ring = document.getElementById("mt-ring");
+    if (ring) ring.classList.toggle("is-full", cheio);
+    var hero = document.querySelector(".mt-hero");
+    if (hero) hero.classList.toggle("is-full", cheio);
+  }
+
   window.MetasPaciente = { render: render, wire: wire };
-  window.MetasView = { portalHTML: portalHTML };
+  window.MetasView = { portalHTML: portalHTML, refresh: refreshPortal };
 })();

@@ -308,6 +308,21 @@
       });
     },
 
+    /* Reação da nutri (emoji) no prato. Mesma trava do comentário: o
+       banco só aceita estas colunas (migração 0061). Emoji vazio tira a
+       reação — clicar de novo no mesmo emoji desmarca. */
+    reagirPrato: function (id, emoji) {
+      var e = String(emoji == null ? "" : emoji).trim();
+      return client().then(function (c) {
+        return c.from("pratos_registrados")
+          .update({ reacao_nutri: e || null, reacao_em: e ? new Date().toISOString() : null })
+          .eq("id", id);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return true;
+      });
+    },
+
     assinarFotosPrato: function (paths, expiresIn) {
       var lista = (paths || []).filter(Boolean);
       if (!lista.length) return Promise.resolve({});

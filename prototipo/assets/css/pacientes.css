@@ -322,6 +322,23 @@
 .pn-alertas { margin: 6px 0 0; padding-left: 18px; font-size: var(--fs-sm); color: var(--texto); line-height: 1.45; }
 .pn-alertas li::marker { color: var(--vinho); }
 
+/* Reações da nutri no prato (migração 0061). Alvo de 34px porque isto é
+   usado no celular, entre consultas — botão pequeno vira erro de toque. */
+.pn-reac { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.pn-reac__btn {
+  width: 34px; height: 34px; padding: 0; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--cinza-borda); border-radius: 50%;
+  background: var(--branco); font-size: 1.05rem; cursor: pointer;
+  filter: grayscale(1); opacity: .55;
+  transition: transform .12s ease, opacity .12s ease, filter .12s ease;
+}
+.pn-reac__btn:hover { filter: none; opacity: 1; transform: scale(1.12); }
+.pn-reac__btn.is-on {
+  filter: none; opacity: 1;
+  border-color: var(--vinho); background: var(--rosa-suave, #fdf2f4);
+}
+
 /* Comentário da nutri no prato (migração 0057). Fica visualmente ao LADO
    da estimativa, com a marca da nutri, nunca no lugar dela. */
 .pn-com { margin-top: 8px; }

@@ -37,6 +37,8 @@ var SHELL = [
   "assets/js/pacientes-db.js",
   "assets/js/alimentos-data.js",
   "assets/js/lista-compras.js",
+  "assets/js/treino-paciente.js",
+  "assets/js/metas-paciente.js",
   "assets/js/portal.js",
   "assets/js/app.js",
   "assets/js/pwa.js",
