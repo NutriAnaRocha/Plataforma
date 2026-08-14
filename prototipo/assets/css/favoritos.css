@@ -1,0 +1,52 @@
+/* ============================================================
+   MEUS FAVORITOS — a estrela (fav-btn, em qualquer tela) e a tela
+   agregadora (fav-grid). Usa tokens.
+   ============================================================ */
+
+/* ---- Estrela injetada nas telas da Inteligência Clínica ---- */
+.fav-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer;
+  color: var(--texto-sutil); background: transparent;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-btn);
+  padding: 8px 14px; transition: color var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+}
+.fav-btn:hover { color: var(--vinho); border-color: var(--rosa); background: var(--rosa-suave); }
+.fav-btn.is-on { color: var(--vinho); border-color: var(--rosa); background: var(--rosa-suave); }
+.fav-btn__ico { font-size: 1.05rem; line-height: 1; }
+.fav-btn[disabled] { opacity: .6; cursor: default; }
+
+/* Nos cards de modelo (anamnese na ficha, plano na tela de escolha) a
+   estrela é só o ícone: o card já é pequeno e tem dois botões de ação. */
+.qmodelo__acoes .fav-btn, .pl-modelo__fav .fav-btn { padding: 6px 9px; border-color: transparent; }
+.qmodelo__acoes .fav-btn .fav-btn__lbl, .pl-modelo__fav .fav-btn .fav-btn__lbl { display: none; }
+.pl-modelo { position: relative; }
+.pl-modelo__fav { position: absolute; top: 6px; right: 6px; }
+
+/* ---- Tela ---- */
+.fav-grid { display: grid; gap: var(--sp-4); grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); align-items: start; }
+.fav-bloco { background: var(--branco); border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-4); box-shadow: var(--shadow-sm); }
+.fav-bloco__t { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-h3); color: var(--vinho); margin: 0 0 var(--sp-3); }
+.fav-bloco__n { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); background: var(--cinza-claro); border-radius: var(--radius-chip); padding: 2px 8px; }
+
+.fav-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.fav-item { display: flex; align-items: center; gap: var(--sp-2); }
+.fav-item__link {
+  flex: 1; min-width: 0; font-size: var(--fs-sm); font-weight: 600; color: var(--texto);
+  text-decoration: none; border-radius: var(--radius-sm); padding: 8px 10px;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+a.fav-item__link:hover { background: var(--rosa-suave); color: var(--vinho); }
+.fav-item__link--off { color: var(--texto-sutil); }
+.fav-tirar {
+  flex: none; font: inherit; font-size: 1.05rem; line-height: 1; cursor: pointer;
+  color: var(--vinho); background: transparent; border: 0; padding: 6px 8px; border-radius: var(--radius-sm);
+}
+.fav-tirar:hover { background: var(--rosa-suave); }
+
+/* ---- Vazio ---- */
+.fav-vazio { text-align: center; max-width: 560px; margin: 8vh auto; }
+.fav-vazio__ico { font-size: 3rem; display: block; margin-bottom: var(--sp-3); }
+.fav-vazio__t { font-size: var(--fs-h2); color: var(--vinho); margin: 0 0 var(--sp-2); }
+.fav-vazio__d { font-size: var(--fs-body); color: var(--texto-sutil); line-height: var(--lh-normal); margin: 0 0 var(--sp-5); }
+.fav-vazio__acoes { display: flex; flex-wrap: wrap; gap: var(--sp-2); justify-content: center; }

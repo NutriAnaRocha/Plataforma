@@ -1015,12 +1015,17 @@
   /* ---------- Tela de escolha ---------- */
   function escolhaHTML(p) {
     p = p || _p;
-    var modelos = MODELOS.map(function (m) {
+    // Modelos favoritados (⭐, migração 0060) sobem para o topo.
+    var F = window.Favoritos;
+    var listaModelos = MODELOS.slice();
+    if (F) listaModelos.sort(function (a, b) { return (F.tem("plano", b.id) ? 1 : 0) - (F.tem("plano", a.id) ? 1 : 0); });
+    var modelos = listaModelos.map(function (m) {
       var chips = (m.kcals || KCALS).map(function (k) {
         return '<button class="pl-modelo__kcal" type="button" data-modelo="' + m.id + '" data-kcal="' + k + '">' +
           k + '</button>';
       }).join("");
       return '<div class="pl-modelo">' +
+        (F ? '<div class="pl-modelo__fav">' + F.botaoHTML("plano", m.id, m.nome) + '</div>' : '') +
         '<span class="pl-modelo__ico">' + m.ico + '</span>' +
         '<span class="pl-modelo__nome">' + esc(m.nome) + '</span>' +
         '<span class="pl-modelo__desc">' + esc(m.desc) + '</span>' +

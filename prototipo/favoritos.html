@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-brand-title>Protocolos</title>
+  <title data-brand-title>Meus Favoritos</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -33,9 +33,9 @@
         <a href="exames.html"><span class="ico">🧪</span> Exames</a>
 
         <p class="menu__label">Inteligência Clínica</p>
-        <a href="favoritos.html"><span class="ico">⭐</span> Meus Favoritos</a>
+        <a href="favoritos.html" class="is-active"><span class="ico">⭐</span> Meus Favoritos</a>
         <a href="biblioteca-clinica.html"><span class="ico">🔬</span> Biblioteca Clínica</a>
-        <a href="protocolos.html" class="is-active"><span class="ico">📑</span> Protocolos</a>
+        <a href="protocolos.html"><span class="ico">📑</span> Protocolos</a>
         <a href="orientacoes.html"><span class="ico">📄</span> Orientações</a>
         <a href="receitas.html"><span class="ico">🍳</span> Receitas</a>
         <a href="formulacoes.html"><span class="ico">⚗️</span> Formulações</a>
@@ -66,40 +66,24 @@
       <header class="topbar">
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
         <div class="topbar__hello">
-          <h1>Protocolos</h1>
-          <p>Consulta rápida por condição clínica — com referência e limite de escopo</p>
+          <h1>Meus Favoritos</h1>
+          <p>O que você mais usa, reunido num lugar só</p>
         </div>
         <span class="avatar" id="user-avatar">AL</span>
       </header>
 
       <main class="canvas">
-        <div class="bc-bar">
-          <div class="bc-search">
-            🔍
-            <input type="search" id="bc-busca" autocomplete="off"
-                   placeholder="Buscar condição, sintoma ou exame… (ex.: fadiga, esteatose, ferritina)"
-                   aria-label="Buscar protocolo" />
-          </div>
-          <div class="bc-chips" id="bc-grupos" role="group" aria-label="Filtrar por eixo"></div>
-        </div>
-
-        <div class="bc-grid">
-          <section class="bc-col-lista" aria-label="Protocolos">
-            <div class="bc-count" id="bc-count"></div>
-            <div class="bc-list" id="bc-list"></div>
-          </section>
-          <section class="bc-detail" id="bc-detail" aria-live="polite"></section>
-        </div>
+        <div id="fav-tela"><div class="empty-state">Carregando seus favoritos…</div></div>
       </main>
     </div>
   </div>
 
   <script src="assets/js/supabase-client.js?v=5dec5cdd"></script>
   <script src="assets/js/auth-guard.js?v=2e5950de"></script>
-  <script src="assets/js/protocolos.js?v=955241b0"></script>
+  <script src="assets/js/favoritos.js?v=d9dbe7d5"></script>
+  <script src="assets/js/favoritos-tela.js?v=ce53ca74"></script>
   <script src="assets/js/perfil-db.js?v=4861c7ef"></script>
   <script src="assets/js/sidebar-user.js?v=168ca49c"></script>
-  <script src="assets/js/favoritos.js?v=d9dbe7d5"></script>
   <script src="assets/js/app.js?v=06763e27"></script>
 </body>
 </html>

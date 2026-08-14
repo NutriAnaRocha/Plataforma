@@ -132,7 +132,11 @@
   }
 
   function listaHTML(p) {
-    var cards = modelosPara(p).map(function (m) {
+    // Modelos favoritados (⭐, migração 0060) sobem para o topo.
+    var F = window.Favoritos;
+    var lista = modelosPara(p).slice();
+    if (F) lista.sort(function (a, b) { return (F.tem("anamnese", b.id) ? 1 : 0) - (F.tem("anamnese", a.id) ? 1 : 0); });
+    var cards = lista.map(function (m) {
       return '<div class="qmodelo">' +
         '<div class="qmodelo__top"><span class="qmodelo__ico">' + m.ico + '</span>' +
           '<span class="qmodelo__nome">' + esc(m.nome) + '</span></div>' +
@@ -140,6 +144,7 @@
         '<div class="qmodelo__acoes">' +
           '<button class="btn btn--primary btn--sm" type="button" data-quest-preencher="' + m.id + '">Preencher</button>' +
           '<button class="btn btn--outline btn--sm" type="button" data-quest-branco="' + m.id + '">PDF em branco</button>' +
+          (F ? F.botaoHTML("anamnese", m.id, m.nome) : "") +
         '</div>' +
       '</div>';
     }).join("");
