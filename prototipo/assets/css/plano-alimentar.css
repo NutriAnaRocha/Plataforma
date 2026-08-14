@@ -47,6 +47,26 @@
 }
 .pl-field input:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
 
+/* Meta calórica vinda do cálculo energético do prontuário */
+.pl-metafonte {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2);
+  margin: calc(var(--sp-4) * -1 + var(--sp-2)) 0 var(--sp-4);
+}
+.pl-metafonte__lbl { font-size: var(--fs-caption); font-weight: 600; color: var(--texto-sutil); }
+.pl-metafonte__chip {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  min-height: 44px; padding: 5px 12px; cursor: pointer;
+  font: inherit; font-size: var(--fs-sm); color: var(--cinza-escuro);
+  background: var(--branco); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input); transition: border-color .15s, background .15s;
+}
+.pl-metafonte__chip b { font-weight: 700; color: var(--vinho); }
+.pl-metafonte__chip:hover { border-color: var(--vinho); background: var(--vinho-claro, #faf5f7); }
+.pl-metafonte__chip.is-on { border-color: var(--vinho); box-shadow: inset 0 0 0 1px var(--vinho); }
+.pl-metafonte__chip:focus-visible { outline: 2px solid var(--vinho); outline-offset: 2px; }
+.pl-metafonte__sub { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.pl-metafonte--vazia { margin-top: calc(var(--sp-4) * -1 + var(--sp-2)); }
+
 /* Refeição */
 .pl-meal { border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-3); margin-bottom: var(--sp-3); background: var(--branco); }
 /* Quebra linha quando aperta: com duplicar/ordenar/excluir no cabeçalho, o

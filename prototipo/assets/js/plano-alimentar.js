@@ -1132,6 +1132,39 @@
       '</div></div>';
   }
 
+  /* ---------- Meta calórica vinda do cálculo energético ----------
+     A meta do plano era um número digitado à mão. O prontuário já guarda
+     TMB/GET/VET calculados (calculos.js → coluna `calculos`); aqui eles
+     viram botões: um toque põe o número no campo e o rodapé recalcula.
+     VET é o padrão — é a meta do objetivo (déficit/superávit já aplicado);
+     GET é a manutenção e TMB o basal, oferecidos porque a Ana às vezes
+     prescreve por eles. */
+  function calcSalvo() {
+    var c = (_ctx && _ctx.calculos) || (_p && _p.calculos);
+    return (c && typeof c === "object") ? c : null;
+  }
+  function metaFonteHTML(metaAtual) {
+    var c = calcSalvo();
+    if (!c || (c.vet == null && c.get == null && c.tmb == null)) {
+      return '<p class="pl-hint pl-metafonte pl-metafonte--vazia">🧮 Nenhum cálculo energético salvo para este paciente. ' +
+        'Faça em <strong>Cálculos energéticos</strong>, no prontuário, e o VET aparece aqui para virar a meta em um toque.</p>';
+    }
+    var chips = [
+      { k: "vet", lbl: "VET", sub: c.objetivoNome || "meta do objetivo" },
+      { k: "get", lbl: "GET", sub: "manutenção" },
+      { k: "tmb", lbl: "TMB", sub: c.formulaNome || "basal" }
+    ].filter(function (x) { return c[x.k] != null; }).map(function (x) {
+      var on = metaAtual && num(metaAtual) === num(c[x.k]);
+      return '<button class="pl-metafonte__chip' + (on ? " is-on" : "") + '" type="button" data-pl-usar-meta="' + esc(c[x.k]) + '" ' +
+        'title="Usar ' + esc(x.lbl) + ' como meta do plano">' +
+        '<b>' + esc(x.lbl) + '</b> ' + esc(c[x.k]) + ' kcal' +
+        '<span class="pl-metafonte__sub">' + esc(x.sub) + '</span></button>';
+    }).join("");
+    return '<div class="pl-metafonte">' +
+      '<span class="pl-metafonte__lbl">🧮 Do prontuário' + (c.atualizadoEm ? ' · ' + esc(c.atualizadoEm) : '') + '</span>' +
+      chips + '</div>';
+  }
+
   /* ---------- Editor ---------- */
   function editorHTML(plano) {
     var meals = plano.refeicoes.map(function (rf, mi) { return mealHTML(rf, mi); }).join("");
@@ -1147,6 +1180,7 @@
           '<label class="pl-field pl-field--wide"><span>Objetivo</span><input type="text" data-pl-objetivo value="' + esc(plano.objetivo || "") + '" placeholder="Ex.: emagrecimento" /></label>' +
           '<label class="pl-field"><span>Meta kcal</span><input type="number" data-pl-meta value="' + esc(plano.metaKcal || "") + '" placeholder="opcional" /></label>' +
         '</div>' +
+        metaFonteHTML(plano.metaKcal) +
         '<div id="pl-meals">' + meals + '</div>' +
         '<div class="pl-addmeals">' +
           '<button class="btn btn--outline btn--sm pl-addmeal" type="button" data-add-meal>＋ Adicionar refeição</button>' +
@@ -1379,10 +1413,25 @@
       '</div>';
   }
 
+  // Aplica ao campo "Meta kcal" um dos números do cálculo energético.
+  function usarMetaDoCalculo(btn) {
+    var r = root(); if (!r) return;
+    var campo = r.querySelector("[data-pl-meta]"); if (!campo) return;
+    campo.value = btn.getAttribute("data-pl-usar-meta");
+    r.querySelectorAll("[data-pl-usar-meta]").forEach(function (b) {
+      b.classList.toggle("is-on", b === btn);
+    });
+    recalc();
+    toast("Meta de " + campo.value + " kcal aplicada — o total do plano já compara com ela.");
+  }
+
   function abrirEditor(plano) {
-    // VET vindo da calculadora (seção Cálculos energéticos) entra como meta
-    // do plano quando ele ainda não tem uma.
+    // VET entra como meta do plano quando ele ainda não tem uma: primeiro o
+    // que veio da calculadora nesta navegação, senão o último cálculo salvo
+    // no prontuário. Assim a Ana não precisa reabrir os Cálculos energéticos
+    // só para anotar o número.
     if (!plano.metaKcal && _ctx && _ctx.metaKcal) plano.metaKcal = _ctx.metaKcal;
+    if (!plano.metaKcal) { var c = calcSalvo(); if (c && c.vet != null) plano.metaKcal = c.vet; }
     _draft = plano;
     var r = root(); if (!r) return;
     r.innerHTML = editorHTML(plano);
@@ -1436,6 +1485,7 @@
       else if (t.closest("[data-rm-meal]")) { removerMeal(t.closest("[data-meal]")); }
       else if (t.closest("[data-foto-add]") || t.closest("[data-foto-trocar]")) { pedirFoto(t.closest("[data-meal]")); }
       else if (t.closest("[data-foto-rm]")) { removerFoto(t.closest("[data-meal]")); }
+      else if (t.closest("[data-pl-usar-meta]")) { usarMetaDoCalculo(t.closest("[data-pl-usar-meta]")); }
       else if (t.closest("[data-pl-salvar]")) { salvar(); }
       else if (t.closest("[data-pl-pdf-edit]")) { gerarPDF(coletar()); }
     });
