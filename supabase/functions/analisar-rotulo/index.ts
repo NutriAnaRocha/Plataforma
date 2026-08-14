@@ -4,7 +4,10 @@
 //  (frente, tabela nutricional, lista de ingredientes) e recebe:
 //    1. a leitura do produto em linguagem de gente
 //    2. a explicação dos ingredientes que ninguém entende
-//    3. quando o produto não é boa escolha, PELO MENOS 3 MARCAS reais
+//    3. SEMPRE caminhos de troca por ALIMENTO (sem marca), em três
+//       degraus: versão melhor do mesmo item, mesmo papel na refeição
+//       com menos processamento, e a opção in natura
+//    4. quando o produto não é boa escolha, PELO MENOS 3 MARCAS reais
 //
 //  DIFERENÇAS EM RELAÇÃO AO RESTO DA PLATAFORMA
 //
@@ -62,6 +65,7 @@ const LIMITE_VISITANTE = 3;    // por dispositivo, por dia
 const LIMITE_LIBERADO = 15;    // paciente da Ana ou a própria nutri
 const LIMITE_GLOBAL = 150;     // teto do app inteiro por dia
 const LIMITE_CODIGO_DIA = 25;  // por pacote comprado, por dia (anti-vazamento)
+const LIMITE_ASSINANTE_DIA = 40;  // teto de segurança da assinatura, idem
 
 // Categorias que existem no espelho da Open Food Facts. O modelo é
 // OBRIGADO a escolher uma delas (ou "outro"): categoria livre não casaria
@@ -210,6 +214,12 @@ Devolva APENAS um JSON válido, sem texto fora do JSON, no formato EXATO:
   "destaques": ["o que ele tem de bom"],
   "alertas": ["o que pesa contra, do mais importante para o menos"],
   "ingredientes": [{ "termo": "farinha de trigo enriquecida com ferro e ácido fólico", "explicacao": "..." }],
+  "porcao_g": 10,
+  "consumo_g": 40,
+  "consumo_desc": "o pacotinho inteiro, 4 fatias",
+  "funcao": "base crocante que carrega recheio no lanche da tarde",
+  "caminhos_intro": "",
+  "caminhos": [{ "tipo": "melhor_versao", "titulo": "torrada 100% integral", "melhora": "farinha integral em primeiro lugar, o dobro de fibra por 100 g" }],
   "falta": []
 }
 
@@ -249,17 +259,39 @@ NUNCA use como destaque:
 
 "alertas": 0 a 4, do mais grave ao menos. Cada um: o FATO com o NÚMERO do rótulo e o que ele significa na prática ("34 g de açúcar por 100 g — mais de um terço do pacote é açúcar"). Nunca fale em doença, risco, "faz mal", "problemas de saúde" ou consequência a longo prazo: você está lendo um rótulo, não avaliando a saúde de ninguém.
 
+"porcao_g": o peso ou volume da porção declarada no rótulo, só o número, em g (ou ml). "10 g (1 fatia)" vira 10. null se não der para ler.
+"consumo_g": quanto uma pessoa come DE UMA VEZ desse produto, na vida real, no mesmo tipo de unidade. Ninguém come uma fatia de torrada, meio biscoito ou 20 g de salgadinho: se a embalagem for de porte individual (sachê, pacotinho de 15 g, unidade de 90 g), o consumo real é a embalagem inteira; se for pacote grande, estime com honestidade o que se come numa sentada. Deixe null só quando a porção declarada JÁ for o que se come de verdade.
+"consumo_desc": em poucas palavras, o QUE é a quantidade de "consumo_g" — "o pacotinho inteiro, 4 fatias", "meio pote", "a lata", "uma tigela". Descreve o CONSUMO, nunca a porção do rótulo: se consumo_g é 15 g e a porção é 10 g (1 fatia), a descrição é "o pacotinho de 15 g", não "1 fatia". "" se consumo_g for null. Se você citar um número de unidades, ele tem de FECHAR com os pesos: 4 fatias de uma porção de 10 g são 40 g, não 60 g.
+NÃO faça conta de caloria aqui: dê os números e a descrição; a conta é feita depois, fora de você.
+
+"funcao": em poucas palavras, o PAPEL desse alimento na refeição — o que ele resolve para quem comprou (base crocante que carrega recheio, lanche seco de trigo, bebida do café da manhã, proteína rápida do almoço). É o que permite sugerir caminho mesmo para produto que não se encaixa em categoria nenhuma.
+
+"caminhos": de 2 a 4 alternativas, SEMPRE. É PROIBIDO devolver lista vazia e é PROIBIDO dizer que você não identificou a categoria do produto: se a categoria não existir, trabalhe em cima da "funcao" que você mesmo escreveu. Nesta ordem, e no máximo um item de cada "tipo":
+1. "melhor_versao" — o MESMO tipo de produto com ingredientes melhores (mais integral, sem açúcar na lista, menos sódio).
+2. "mesmo_papel" — outro alimento que cumpre a MESMA função na refeição, com menos processamento.
+3. "in_natura" — comida que não vem com rótulo: fruta, ovo, raiz, tubérculo, castanha, aveia em flocos, tapioca, café. Pão, biscoito e iogurte de pote NÃO são in natura, mesmo integrais — se você não achar nada sem rótulo que sirva para aquele momento, deixe este item de fora e devolva só dois caminhos.
+"titulo": o alimento, em 2 a 6 palavras, SEM MARCA e CONCRETO o bastante para a pessoa saber o que pegar: "banana com pasta de amendoim", "ovo cozido", "torrada 100% integral" — nunca uma categoria solta como "fruta", "castanhas" ou "algo natural".
+"melhora": UMA frase dizendo o que exatamente melhora — fibra, açúcar, sódio, grau de processamento —, de preferência com número. É PROIBIDO o elogio genérico: "é mais saudável", "é natural", "é nutritiva", "é uma opção melhor", "menos processamento" sozinho não dizem nada.
+ERRADO: "banana — opção natural e nutritiva". CERTO: "banana — o açúcar vem com fibra, e não há sódio nem gordura adicionada como no recheio".
+ERRADO: "biscoito de aveia — menos processamento". CERTO: "biscoito de aveia — a aveia entra como primeiro ingrediente, o que triplica a fibra em relação a esse aqui".
+Nada de prometer resultado.
+
+CRITÉRIOS DE "MELHOR" (use só estes): posição dos ingredientes na lista, principalmente açúcar e gordura; integral de verdade, com farinha integral como 1º ingrediente; sódio e açúcar por 100 g, nunca só pela porção da embalagem; grau de processamento (classificação NOVA); fibra e proteína por 100 g.
+
+"caminhos_intro": UMA frase antes da lista. Se o produto já for uma escolha razoável (veredito "boa", ou "atencao" sem nada grave), diga isso com todas as letras — "esse aqui já é uma escolha ok, não precisa trocar" — e apresente os caminhos como variação, não como correção. Se o produto for fraco, NÃO repita o veredito nem os alertas ("esse produto não é uma boa escolha" a pessoa já leu acima): parta da vontade dela e emende nos caminhos — "se a vontade é de algo doce e crocante, dá para resolver assim".
+
 "falta": liste o que você NÃO conseguiu ler e que faria diferença. Use exatamente os valores "tabela" (não veio a tabela nutricional), "ingredientes" (não veio a lista de ingredientes) ou "nitidez" (a foto está ilegível). Se leu tudo, devolva [].
 
 PROIBIDO
 - Diagnosticar, prescrever dieta, mandar cortar refeição, sugerir jejum, suplemento ou medicamento.
 - Dizer "comida boa/ruim", "proibido", "veneno", "pecado", "engorda", "compensar". Sem moralizar comida.
 - Prometer resultado, peso ou prazo.
-- Falar de marca concorrente aqui. As alternativas são escolhidas em outra etapa, a partir de uma base real.
+- Citar MARCA em qualquer lugar, inclusive nos "caminhos": ali se fala de alimento ("torrada 100% integral", "fruta com pasta de amendoim"), nunca de fabricante. A indicação de marca é escolhida em outra etapa, a partir de uma base real de produtos.
+- Dizer que um alimento é "proibido", ou prescrever quantidade individual ("coma 2 fatias por dia").
 - Inventar número que não está na foto.
 
 Se a imagem NÃO for um rótulo/embalagem de alimento, devolva exatamente:
-{ "eh_rotulo": false, "produto": "o que a imagem parece ser", "marca": "", "categoria_tag": "outro", "porcao": "", "tabela": {}, "por_100g": {}, "diet_light": "nenhum", "veredito": "atencao", "resumo": "", "destaques": [], "alertas": [], "ingredientes": [], "falta": [] }`;
+{ "eh_rotulo": false, "produto": "o que a imagem parece ser", "marca": "", "categoria_tag": "outro", "porcao": "", "tabela": {}, "por_100g": {}, "diet_light": "nenhum", "veredito": "atencao", "resumo": "", "destaques": [], "alertas": [], "ingredientes": [], "porcao_g": null, "consumo_g": null, "consumo_desc": "", "funcao": "", "caminhos_intro": "", "caminhos": [], "falta": [] }`;
 
 const SYSTEM_ALTERNATIVAS = `Você escolhe alternativas de compra para o app "No mercado com a Nutri Ana".
 
@@ -310,6 +342,47 @@ function explicacaoDietLight(tipo: string): { termo: string; explicacao: string 
     case "ambos": return { termo: "Diet e light não são a mesma coisa", explicacao: diet + " Já o " + light.charAt(0).toLowerCase() + light.slice(1) };
     default: return null;
   }
+}
+
+/** "29 calorias por fatia" é verdade e é armadilha: ninguém come uma fatia.
+ *
+ *  A porção do rótulo é escolha do fabricante e existe para o número parecer
+ *  pequeno. O modelo só diz DUAS coisas aqui — quanto pesa a porção declarada
+ *  e quanto se come de uma vez na vida real —; a multiplicação é feita aqui,
+ *  porque conta errada com o CRN da Ana na tela é pior do que conta nenhuma.
+ *
+ *  Silêncio quando falta número ou quando a diferença é pequena (menos de
+ *  1,3×): aí não há armadilha, e a frase viraria alarme sem motivo. */
+function contaDoConsumoReal(
+  porcaoG: number | null,
+  consumoG: number | null,
+  desc: string,
+  p100: Record<string, unknown>,
+): string {
+  if (!porcaoG || !consumoG || consumoG < porcaoG * 1.3) return "";
+  const kcal100 = n(p100.kcal);
+  if (kcal100 == null) return "";
+
+  const f = consumoG / 100;
+  const num = (v: number) => String(Math.round(v)).replace(".", ",");
+  const dec = (v: number) => (Math.round(v * 10) / 10).toString().replace(".", ",");
+
+  const partes = [num(kcal100 * f) + " kcal"];
+  const ac = n(p100.acucar_g);
+  const so = n(p100.sodio_mg);
+  if (ac != null && ac > 0) partes.push(dec(ac * f) + " g de açúcar");
+  if (so != null && so > 0) partes.push(num(so * f) + " mg de sódio");
+
+  // A descrição vem do modelo e o peso também, e às vezes os dois brigam
+  // ("4 fatias" com 60 g quando a fatia tem 10 g). Quem manda é o peso, que é
+  // o número que entra na conta: se a contagem de unidades não bate com ele,
+  // a descrição cai e sobra só o peso. Contradição na tela derruba a leitura
+  // inteira, e a conta é o que a pessoa veio buscar.
+  const unidades = desc.match(/(\d+)\s*(fatia|unidade|biscoito|torrada|colher|copo|pacote)/i);
+  const bate = !unidades || Math.abs(Number(unidades[1]) * porcaoG - consumoG) <= consumoG * 0.2;
+  const oQue = desc && bate ? desc + " (" + dec(consumoG) + " g)" : dec(consumoG) + " g";
+  return "O rótulo faz a conta em cima de " + dec(porcaoG) + " g. Na quantidade que se come de " +
+    "verdade — " + oQue + " — são " + partes.join(", ") + ".";
 }
 
 function n(v: unknown): number | null {
@@ -463,7 +536,33 @@ Deno.serve(async (req) => {
   const codigo = txt(body.codigo, 16).toUpperCase();
   let pagante = false;
   let saldoAntes = 0;
+  let assinante = false;   // assinatura vigente: lê sem gastar crédito
+
+  // O MESMO campo de código serve para os dois produtos — a pessoa não
+  // deveria precisar saber se comprou "pacote" ou "assinatura". A
+  // assinatura é olhada primeiro porque quem assina não tem saldo para
+  // gastar: ela lê à vontade enquanto o acesso estiver em dia.
   if (/^[A-Z0-9-]{6,16}$/.test(codigo)) {
+    const { data: vale } = await admin.rpc("mercado_assinatura_valida", { p_codigo: codigo });
+    if (vale === true) {
+      assinante = true;
+      pagante = true;
+    }
+  }
+
+  if (!assinante && /^[A-Z0-9-]{6,16}$/.test(codigo)) {
+    // Assinatura que venceu não pode cair no "código inexistente": ela
+    // pagou de verdade, e o recado certo é renovar, não conferir letra.
+    const { data: acesso } = await admin.rpc("mercado_acesso", { p_codigo: codigo });
+    if (acesso && acesso.ok === true && acesso.tipo === "assinatura") {
+      return json({
+        error: "assinatura_vencida",
+        detail: "Sua assinatura venceu. Renovando, o acervo e a leitura sem limite " +
+                "voltam na hora — e você continua com o mesmo código. 🌸",
+        codigo_valido: true,
+      }, 402);
+    }
+
     const { data: s } = await admin.rpc("mercado_saldo", { p_codigo: codigo });
     if (s && s.ok === true && Number(s.restam) > 0) {
       pagante = true;
@@ -510,11 +609,19 @@ Deno.serve(async (req) => {
       .select("id", { count: "exact", head: true })
       .eq("codigo_credito", codigo)
       .gte("criado_em", desde);
-    if ((usoDoCodigo || 0) >= LIMITE_CODIGO_DIA) {
+    // A assinatura é "sem limite" para uma pessoa de verdade, não para um
+    // código colado num grupo de mil. 40 leituras num dia é muito acima de
+    // qualquer compra de mercado — e é o que impede que um código vazado
+    // vire uma fatura de OpenAI.
+    const tetoDoCodigo = assinante ? LIMITE_ASSINANTE_DIA : LIMITE_CODIGO_DIA;
+    if ((usoDoCodigo || 0) >= tetoDoCodigo) {
       return json({
         error: "limite_codigo_dia",
-        detail: `Esse código já leu ${LIMITE_CODIGO_DIA} rótulos hoje. Seus créditos ` +
-                "continuam guardados — amanhã ele volta a funcionar. 🌸",
+        detail: assinante
+          ? `Esse código já leu ${LIMITE_ASSINANTE_DIA} rótulos hoje — é o teto ` +
+            "de segurança da assinatura. Amanhã ele volta a funcionar. 🌸"
+          : `Esse código já leu ${LIMITE_CODIGO_DIA} rótulos hoje. Seus créditos ` +
+            "continuam guardados — amanhã ele volta a funcionar. 🌸",
       }, 429);
     }
   }
@@ -639,21 +746,40 @@ Deno.serve(async (req) => {
     }
   }
 
-  // ---------- 5) Alternativas (só quando o produto não é boa escolha) ----------
+  // ---------- 5a) Caminhos (SEMPRE, em qualquer veredito) ----------
+  // Duas perguntas diferentes, e o app confundia as duas. "Que MARCA eu levo"
+  // depende da base da Open Food Facts e da categoria; "o que eu levo no lugar
+  // disso" não depende de nada além do rótulo que ela acabou de fotografar.
+  // Antes, produto fora da taxonomia (uma torrada, por exemplo) caía no vazio e
+  // o app respondia que não sabia a categoria — desistindo dela por um detalhe
+  // interno que ninguém do lado de fora tem por que conhecer.
+  //
+  // Vêm da MESMA chamada da leitura: nenhum token a mais, nenhuma espera a
+  // mais. E são alimento, nunca marca — marca só sai da base real, abaixo.
+  const TIPOS_CAMINHO = ["melhor_versao", "mesmo_papel", "in_natura"];
+  const vistos = new Set<string>();
+  const caminhos = (Array.isArray(out.caminhos) ? out.caminhos : [])
+    .map((c: Record<string, unknown>) => ({
+      tipo: TIPOS_CAMINHO.includes(txt(c?.tipo, 20)) ? txt(c?.tipo, 20) : "mesmo_papel",
+      titulo: txt(c?.titulo, 90),
+      melhora: txt(c?.melhora, 260),
+    }))
+    .filter((c) => {
+      if (!c.titulo || !c.melhora) return false;
+      if (vistos.has(c.tipo)) return false;   // um item por tipo: são três olhares, não três repetições
+      vistos.add(c.tipo);
+      return true;
+    })
+    .sort((a, b) => TIPOS_CAMINHO.indexOf(a.tipo) - TIPOS_CAMINHO.indexOf(b.tipo))
+    .slice(0, 4);
+
+  // ---------- 5b) Marcas reais (só quando o produto não é boa escolha) ----------
   // Produto bom não ganha lista de concorrentes: a pessoa veio decidir uma
   // compra, e empurrar marca para quem já escolheu bem seria propaganda.
   let alternativas: Array<Record<string, unknown>> = [];
   let motivoSemAlternativa = "";
 
-  if (veredito !== "boa" && !categoria) {
-    // Categoria que o modelo não soube encaixar (devolveu "outro" ou um valor
-    // fora da lista). Sem categoria não há com o que comparar — mas o silêncio
-    // era pior: a pessoa via o veredito "evitar" e nenhuma palavra sobre
-    // alternativas, como se o app tivesse desistido dela no meio.
-    motivoSemAlternativa =
-      "Não consegui encaixar esse produto numa categoria que eu conheça, e comparar " +
-      "com marca de outra prateleira não ajudaria em nada. A leitura do rótulo acima vale.";
-  } else if (veredito !== "boa" && categoria) {
+  if (veredito !== "boa" && categoria) {
     const { data: cands } = await admin
       .from("mercado_produtos")
       .select("code,nome,marca,quantidade,nova,aditivos,kcal,ptn,cho,acucar,fibra,lip,sat,sodio,ingredientes")
@@ -694,8 +820,8 @@ Deno.serve(async (req) => {
       // A REGRA DAS 3 MARCAS: menos de três marcas diferentes e melhores,
       // não sugere nenhuma.
       motivoSemAlternativa =
-        "Ainda não tenho três marcas diferentes dessa categoria na base para comparar com honestidade — " +
-        "então prefiro não indicar nenhuma a indicar poucas.";
+        "Ainda não tenho três marcas diferentes dessa categoria na base para comparar com honestidade, " +
+        "então prefiro não indicar nenhuma a indicar poucas. Os caminhos acima valem do mesmo jeito.";
     } else {
       try {
         const escolha = await openai([
@@ -749,11 +875,13 @@ Deno.serve(async (req) => {
         if (alternativas.length < 3) {
           alternativas = [];
           motivoSemAlternativa =
-            "Não consegui fechar três marcas diferentes para comparar agora. Prefiro não indicar pela metade.";
+            "Não consegui fechar três marcas diferentes para comparar agora — prefiro não indicar pela metade. " +
+            "Os caminhos acima valem do mesmo jeito.";
         }
       } catch {
         alternativas = [];
-        motivoSemAlternativa = "Não consegui buscar as alternativas agora. Tente de novo daqui a pouco.";
+        motivoSemAlternativa =
+          "Não consegui buscar marcas para comparar agora. Os caminhos acima valem do mesmo jeito.";
       }
     }
   }
@@ -774,9 +902,23 @@ Deno.serve(async (req) => {
       declarada: out.tabela || {},
       por_100g: p100,
       diet_light: dietLight,
-      // Vai dentro do jsonb, e não numa coluna nova, para o histórico já
+      // Vão dentro do jsonb, e não em colunas novas, para o histórico já
       // gravado continuar abrindo sem migração de schema.
       referencia,
+      // Os dois números que o modelo deu ficam gravados junto com a frase:
+      // quando a conta não aparece, é aqui que se vê se faltou leitura da
+      // porção ou se ele achou que a porção já era realista.
+      consumo: {
+        porcao_g: n(out.porcao_g),
+        consumo_g: n(out.consumo_g),
+        desc: txt(out.consumo_desc, 80),
+      },
+      porcao_real: contaDoConsumoReal(
+        n(out.porcao_g), n(out.consumo_g), txt(out.consumo_desc, 80), p100,
+      ),
+      funcao: txt(out.funcao, 120),
+      caminhos_intro: txt(out.caminhos_intro, 240),
+      caminhos,
     },
     destaques: listaDeTextos(out.destaques, 3),
     alertas: listaDeTextos(out.alertas, 4),
@@ -815,7 +957,8 @@ Deno.serve(async (req) => {
   // desinstalar o app e contar para as amigas. O risco do outro lado
   // (duas leituras simultâneas com um crédito só) é de UMA leitura.
   let restamCreditos = 0;
-  if (pagante) {
+  if (pagante && !assinante) {
+    // Assinatura não gasta nada: o que ela comprou foi tempo, não leitura.
     const { data: deb } = await admin.rpc("mercado_consumir_credito", { p_codigo: codigo });
     restamCreditos = deb && deb.ok === true ? Number(deb.restam) : Math.max(0, saldoAntes - 1);
   }
@@ -825,8 +968,9 @@ Deno.serve(async (req) => {
     analise: gravado,
     sem_alternativa: motivoSemAlternativa,
     falta: listaDeTextos(out.falta, 3),
-    restam: pagante ? restamCreditos : Math.max(0, meuLimite - (usoMeu || 0) - 1),
+    restam: assinante ? null : (pagante ? restamCreditos : Math.max(0, meuLimite - (usoMeu || 0) - 1)),
     pagante,
+    assinante,
     liberado,
   });
 });
