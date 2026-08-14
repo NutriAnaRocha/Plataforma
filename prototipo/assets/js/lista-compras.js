@@ -84,8 +84,12 @@
     return AL_BY_NOME[it.alimento.toLowerCase()] || AL_BY_SLUG[slug(it.alimento)] || null;
   }
 
-  // Soma os itens do plano por alimento; devolve corredores ordenados com itens.
-  function gerar(plano) {
+  /* Soma os itens do plano por alimento; devolve corredores ordenados com itens.
+     `receitas` (opcional) são as receitas liberadas para o paciente (0058):
+     cada ingrediente entra como uma linha do corredor correspondente, com o
+     nome da receita no lugar da quantidade — ingrediente de receita é texto
+     livre ("2 abobrinhas médias"), não dá para somar em gramas. */
+  function gerar(plano, receitas) {
     var mapa = {}; // chave -> { nome, grupo, gramas, medidas:{medida:qtd} }
     (plano && plano.refeicoes || []).forEach(function (rf) {
       (rf.itens || []).forEach(function (it) {
@@ -103,6 +107,17 @@
       });
     });
 
+    (receitas || []).forEach(function (rc) {
+      (rc.ingredientes || []).forEach(function (linha) {
+        var txt = String(linha == null ? "" : linha).trim();
+        if (!txt) return;
+        var chave = "r:" + txt.toLowerCase();
+        if (!mapa[chave]) mapa[chave] = { nome: txt, grupo: null, gramas: 0, medidas: {}, receitas: [] };
+        var reg = mapa[chave];
+        if (reg.receitas && reg.receitas.indexOf(rc.nome) === -1) reg.receitas.push(rc.nome);
+      });
+    });
+
     var buckets = {};
     Object.keys(mapa).forEach(function (k) {
       var reg = mapa[k];
@@ -114,7 +129,12 @@
     CORREDORES.concat([OUTROS]).forEach(function (c) {
       var itens = buckets[c.key];
       if (!itens || !itens.length) return;
-      itens.sort(function (a, b) { return a.nome.localeCompare(b.nome); });
+      // O que veio do plano primeiro; depois o que veio das receitas.
+      itens.sort(function (a, b) {
+        var ra = a.receitas ? 1 : 0, rb = b.receitas ? 1 : 0;
+        if (ra !== rb) return ra - rb;
+        return a.nome.localeCompare(b.nome);
+      });
       out.push({ key: c.key, ico: c.ico, label: c.label, itens: itens.map(finalizaItem) });
     });
     return { corredores: out, totalItens: Object.keys(mapa).length };
@@ -132,6 +152,12 @@
     return "≈ " + g + " g";
   }
   function finalizaItem(reg) {
+    // Ingrediente de receita já traz a medida no texto: no lugar da quantidade
+    // vai de onde ele veio ("🍳 Lasanha de berinjela").
+    if (reg.receitas) {
+      return { nome: reg.nome, qtd: "🍳 " + reg.receitas.join(" · "), slug: slug(reg.nome),
+               gramas: 0, receitas: reg.receitas };
+    }
     return { nome: reg.nome, qtd: qtdTexto(reg), slug: slug(reg.nome), gramas: r0(reg.gramas) };
   }
 
@@ -180,25 +206,30 @@
     }).join("");
   }
 
-  function htmlNutri(plano) {
-    var lista = gerar(plano);
+  function htmlNutri(plano, receitas) {
+    var lista = gerar(plano, receitas);
+    var comReceitas = !!(receitas && receitas.length);
     return '<section class="fsec lc-sec">' +
       '<div class="fsec__head"><h2 class="fsec__title">🛒 Lista de compras</h2>' +
-        '<span class="lc-badge">' + lista.totalItens + ' itens · gerada do plano</span></div>' +
-      '<p class="pl-hint">Consolidada automaticamente a partir das refeições. Vai junto quando você libera o plano para o paciente.</p>' +
+        '<span class="lc-badge">' + lista.totalItens + ' itens · gerada do plano' +
+        (comReceitas ? ' e das receitas' : '') + '</span></div>' +
+      '<p class="pl-hint">Consolidada automaticamente a partir das refeições' +
+      (comReceitas ? ' e dos ingredientes das receitas liberadas' : '') +
+      '. Vai junto quando você libera o plano para o paciente.</p>' +
       '<div class="lc-cols">' + corredoresHTML(lista) + '</div>' +
       dicasHTML(true) +
       '</section>';
   }
 
   /* ---------- Render: portal do paciente (com check) ---------- */
-  function htmlPortal(plano, marcas, readonly) {
-    var lista = gerar(plano);
+  function htmlPortal(plano, marcas, readonly, receitas) {
+    var lista = gerar(plano, receitas);
     if (!lista.totalItens) return "";
     return '<div class="pcard lc-portal">' +
       '<div class="lc-portal__head"><h3>🛒 Sua lista de compras</h3>' +
         '<span class="pcard__meta">' + lista.totalItens + ' itens</span></div>' +
-      '<p class="pcard__hint">Marque o que já tem em casa. A lista sai do seu plano alimentar.</p>' +
+      '<p class="pcard__hint">Marque o que já tem em casa. A lista sai do seu plano alimentar' +
+      (receitas && receitas.length ? ' e das receitas que a sua nutricionista liberou' : '') + '.</p>' +
       '<div class="lc-cols">' + corredoresHTML(lista, { check: true, marcas: marcas, readonly: readonly }) + '</div>' +
       dicasHTML(false) +
       '</div>';

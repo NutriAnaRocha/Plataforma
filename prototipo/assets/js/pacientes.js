@@ -192,6 +192,7 @@
     // { id: "treino",    ico: "🏋️", tit: "Treino em casa",         sub: ["Blocos e exercícios", "Vídeos", "Liberar ao paciente"] }, // PROJETO FUTURO — oculto por ora (código preservado em treino-paciente.js)
     { id: "prato",        ico: "📷", tit: "Diário do prato",        sub: ["Fotos da paciente", "Estimativa da IA", "Resumo por dia"] },
     { id: "metas",        ico: "🎯", tit: "Metas",                  sub: ["Checklist do paciente", "Metas ativas", "Evolução"] },
+    { id: "receitas",     ico: "🍳", tit: "Receitas",               sub: ["Liberar ao paciente", "Ingredientes na lista de compras"] },
     { id: "prescricoes",  ico: "💊", tit: "Prescrições",            sub: ["Suplementação", "Fitoterapia", "Manipulados"] },
     { id: "orientacoes",  ico: "📄", tit: "Orientações",            sub: ["Atuais", "Histórico"] },
     { id: "arquivos",     ico: "📎", tit: "Arquivos",               sub: ["PDFs", "Fotos", "Documentos"] },
@@ -397,6 +398,8 @@
                                    : secWrap("Diário do prato", emBreve("Fotos dos pratos registrados pela paciente.")); break;
       case "treino":        html = secTreino(p); break;
       case "metas":         html = secMetas(p); break;
+      case "receitas":      html = window.ReceitasPaciente ? window.ReceitasPaciente.render(p)
+                                   : secWrap("Receitas", emBreve("Escolha as receitas que a paciente vê no portal.")); break;
       case "prescricoes":   html = secPrescricoes(p); break;
       case "orientacoes":   html = secOrientacoes(p); break;
       case "arquivos":      html = secArquivos(p); break;
@@ -497,6 +500,9 @@
           renderProfile(saved);
         }
       });
+    }
+    if (sec === "receitas" && window.ReceitasPaciente) {
+      window.ReceitasPaciente.wire(p, { toast: pacToast });
     }
     if (sec === "prescricoes" && window.PrescricoesPaciente) {
       window.PrescricoesPaciente.wire(p, {

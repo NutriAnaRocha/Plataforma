@@ -13,7 +13,7 @@
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
 
-  var ctx = { mode: "real", paciente: null, user: null, marcas: {}, assinatura: null };
+  var ctx = { mode: "real", paciente: null, user: null, marcas: {}, assinatura: null, receitas: [] };
 
   // WhatsApp da Ana — canal do convite de renovação. O programa é
   // pagamento único por período: renovar é uma decisão nova da paciente,
@@ -47,6 +47,7 @@
       .then(function (marcas) { ctx.marcas = marcas || {}; })
       .catch(function () { ctx.marcas = {}; })
       .then(function () { return carregarAssinatura(paciente); })
+      .then(function () { return carregarReceitas(paciente); })
       .then(function () { boot(); });
   }).catch(function () {
     el("portal-loading").textContent = "Não foi possível carregar. Verifique a conexão e recarregue.";
@@ -76,6 +77,15 @@
     }).catch(function () { ctx.assinatura = null; });
   }
 
+  /* Receitas que a nutri liberou para esta paciente (paciente_receitas, 0058).
+     Além da aba própria, os ingredientes entram na lista de compras do plano. */
+  function carregarReceitas(p) {
+    if (!window.ReceitasView) { ctx.receitas = []; return Promise.resolve(); }
+    return window.ReceitasView.carregar(p.id)
+      .then(function (rs) { ctx.receitas = rs || []; })
+      .catch(function () { ctx.receitas = []; });
+  }
+
   function boot() {
     var p = ctx.paciente;
     el("portal-loading").hidden = true;
@@ -96,6 +106,8 @@
       temReavaliacao(p) ? window.ReavaliacaoView.portalHTML() : "";
     el("pane-plano").innerHTML = renderPlano(p);
     el("pane-prato").innerHTML = (window.PratoView && temPrato(p)) ? window.PratoView.portalHTML() : "";
+    el("pane-receitas").innerHTML = window.ReceitasView ? window.ReceitasView.portalHTML(ctx.receitas) : "";
+    if (window.ReceitasView) window.ReceitasView.wire("pane-receitas");
     el("pane-treino").innerHTML = window.TreinoView ? window.TreinoView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-metas").innerHTML = window.MetasView ? window.MetasView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-evolucao").innerHTML = renderEvolucao(p);
@@ -261,6 +273,8 @@
       var id = t.getAttribute("data-t");
       var on;
       if (id === "treino") on = temTreino;
+      // Receitas não é feature paga: a aba nasce quando a nutri libera alguma.
+      else if (id === "receitas") on = !!(ctx.receitas && ctx.receitas.length);
       else if (id === "prato") on = temPrato(p);
       else if (id === "metas") on = temMetas;
       else if (id === "anamnese") on = temAnamnese(p);
@@ -446,7 +460,7 @@
       return (multi ? '<div class="plano-sep">' + esc(plano.titulo || "Plano alimentar") + '</div>' : '') + head + body;
     }).join("");
     // Lista de compras (uma só, do 1º plano liberado) + dicas de marmita.
-    var compras = window.ListaCompras ? window.ListaCompras.htmlPortal(planos[0], ctx.marcas, readonly) : "";
+    var compras = window.ListaCompras ? window.ListaCompras.htmlPortal(planos[0], ctx.marcas, readonly, ctx.receitas) : "";
     return renov + novo + corpo + compras;
   }
 
