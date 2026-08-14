@@ -182,6 +182,11 @@
           ((p.alertas || []).length
             ? '<span class="prato-hist__flag">' + p.alertas.length + (p.alertas.length === 1 ? ' ajuste' : ' ajustes') + '</span>'
             : '<span class="prato-hist__ok">tudo certo</span>') +
+          /* O recado da nutri vale mais que a estimativa da IA — por isso
+             fica no card, com a voz dela marcada, e não escondido. */
+          ((p.comentario_nutri || "").trim()
+            ? '<span class="prato-hist__com"><strong>Sua nutri:</strong> ' + esc(p.comentario_nutri.trim()) + '</span>'
+            : '') +
         '</div>' +
         '<button class="prato-hist__del" type="button" data-prato-apagar="' + esc(p.id) + '" ' +
           'data-prato-path="' + esc(p.foto_path) + '" aria-label="Apagar este registro">×</button>' +

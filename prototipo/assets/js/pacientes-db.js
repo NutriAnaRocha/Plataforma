@@ -292,6 +292,22 @@
       }).then(function () { return true; });
     },
 
+    /* Comentário da nutri em um prato. A única escrita que o cliente faz
+       nesta tabela — e o banco só deixa passar estas duas colunas, para
+       a nutri não reescrever a estimativa da IA (migração 0057).
+       Texto vazio apaga o comentário. */
+    comentarPrato: function (id, texto) {
+      var t = String(texto == null ? "" : texto).trim();
+      return client().then(function (c) {
+        return c.from("pratos_registrados")
+          .update({ comentario_nutri: t || null, comentario_em: t ? new Date().toISOString() : null })
+          .eq("id", id);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return true;
+      });
+    },
+
     assinarFotosPrato: function (paths, expiresIn) {
       var lista = (paths || []).filter(Boolean);
       if (!lista.length) return Promise.resolve({});

@@ -246,3 +246,42 @@ pelo que eram na época, porque o crédito é gravado no resgate.
 - As explicações fixas de **diet/light** são escritas no servidor, não pelo
   modelo — têm definição em lei (Portaria SVS/MS 29/1998 e RDC 54/2012) e num
   teste o modelo simplesmente ignorou a instrução de incluí-las.
+
+
+---
+
+## Receitas e assinatura (agosto/2026)
+
+O app deixou de ser só leitor de rótulo. As duas metades agora são: **o que NÃO levar**
+(rótulo) e **o que fazer com o que se levou** (receitas).
+
+### Onde mora o quê
+
+| Arquivo | Papel |
+| --- | --- |
+| `receitas_dados.py` | **A fonte.** As 70 receitas, ingrediente a ingrediente, com o `taco_id` de cada um. Nenhum kcal é digitado aqui. |
+| `calcular_receitas.py` | Soma pela TACO, divide pelo rendimento, confere e gera o SQL. `--sql` grava `supabase/migrations/0055_mercado_receitas_seed.sql`. |
+| `supabase/migrations/0054_*.sql` | Tabelas: receitas, assinaturas, pagamentos e o contador das 3 grátis. |
+| `supabase/functions/mercado-receitas` | Serve a lista (aberta) e a receita inteira (travada). |
+| `supabase/functions/mercado-assinatura` | Confere o pagamento no InfinitePay, cria ou renova o acesso. |
+
+### Para mexer numa receita
+
+1. edite `receitas_dados.py`;
+2. `python calcular_receitas.py` — confere os mapeamentos e mostra a tabela;
+3. `python calcular_receitas.py --sql`;
+4. `python ../apply_migration_api.py supabase/migrations/0055_mercado_receitas_seed.sql`.
+
+O seed é `on conflict do update`: rodar de novo não duplica nada. **Não edite o 0055 à mão** —
+ele é gerado, e a próxima geração apaga a edição.
+
+### Ingrediente que a TACO não tem
+
+Vai no dicionário `EXTRA` de `receitas_dados.py`, **com a fonte na própria linha**
+(USDA, TBCA ou média de rótulos). É exceção: a régua continua sendo a tabela brasileira.
+
+### As três de graça
+
+Contadas no servidor, por dispositivo, em `mercado_receitas_vistas`. Quem limpa o navegador
+ganha outras três — e tudo bem: servir texto pronto do banco não custa nada (diferente da
+leitura de rótulo, que chama a OpenAI), e quem faz isso não ia assinar mesmo.

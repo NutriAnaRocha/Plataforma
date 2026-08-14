@@ -5,11 +5,12 @@
 
    Expõe window.PratoNutri = { render, wire }.
 
-   Só LEITURA. A nutri não fotografa nem edita a estimativa: o dado é
-   o registro da paciente, e reescrevê-lo apagaria a diferença entre
-   "o que ela comeu" e "o que eu queria que ela tivesse comido" — que
-   é exatamente a informação clínica útil aqui. Ela pode apagar (a
-   paciente também), e comenta pelo chat do portal.
+   A nutri não fotografa nem edita a estimativa: o dado é o registro da
+   paciente, e reescrevê-lo apagaria a diferença entre "o que ela comeu"
+   e "o que eu queria que ela tivesse comido" — que é exatamente a
+   informação clínica útil aqui. Ela pode apagar (a paciente também) e
+   escrever um COMENTÁRIO em cada foto, que a paciente lê no portal —
+   ao lado da estimativa, nunca por cima dela (migração 0057).
 
    Requer pacientes-db.js ANTES deste arquivo.
    ============================================================ */
@@ -65,6 +66,27 @@
     return tem ? Math.round(t) : null;
   }
 
+  /* Bloco do comentário: ou o que já foi escrito (com editar/apagar),
+     ou o convite para escrever. Trocado no lugar, sem recarregar a lista. */
+  function comentarioHTML(p) {
+    var txt = (p.comentario_nutri || "").trim();
+    return '<div class="pn-com" data-pn-combox="' + esc(p.id) + '">' +
+      (txt
+        ? '<p class="pn-com__txt">' + esc(txt) + '</p>' +
+          '<button class="pn-com__btn" type="button" data-pn-comentar="' + esc(p.id) + '">editar</button>'
+        : '<button class="pn-com__btn" type="button" data-pn-comentar="' + esc(p.id) + '">💬 Comentar com a paciente</button>') +
+    '</div>';
+  }
+
+  function editorHTML(p) {
+    return '<textarea class="input pn-com__ta" rows="2" maxlength="500" ' +
+        'placeholder="O que você quer dizer sobre este prato?">' + esc(p.comentario_nutri || "") + '</textarea>' +
+      '<div class="pn-com__acoes">' +
+        '<button class="btn btn--primary btn--sm" type="button" data-pn-com-salvar="' + esc(p.id) + '">Salvar</button>' +
+        '<button class="btn btn--outline btn--sm" type="button" data-pn-com-cancelar="' + esc(p.id) + '">Cancelar</button>' +
+      '</div>';
+  }
+
   function pratoHTML(p) {
     var kcal = num(p.kcal);
     var macros = [
@@ -94,6 +116,7 @@
         (itens ? '<p class="pn-itens">' + itens + '</p>' : '') +
         (p.observacao ? '<p class="pn-obs">Ela escreveu: “' + esc(p.observacao) + '”</p>' : '') +
         (alertas ? '<ul class="pn-alertas">' + alertas + '</ul>' : '') +
+        comentarioHTML(p) +
       '</div>' +
       '<button class="pn-del" type="button" data-pn-apagar="' + esc(p.id) + '" ' +
         'data-pn-path="' + esc(p.foto_path) + '" aria-label="Apagar este registro">×</button>' +
@@ -137,8 +160,12 @@
         }).catch(function () { boxes.forEach(function (b) { b.remove(); }); });
     }
 
+    var porId = {};
+
     function carregar() {
       DB.listPratos(p.id, 60).then(function (rows) {
+        porId = {};
+        rows.forEach(function (r) { porId[r.id] = r; });
         box.innerHTML = listaHTML(rows);
         hidratar();
       }).catch(function () {
@@ -146,7 +173,46 @@
       });
     }
 
+    function caixa(id) { return box.querySelector('[data-pn-combox="' + id + '"]'); }
+
     box.addEventListener("click", function (e) {
+      var abrir = e.target.closest("[data-pn-comentar]");
+      if (abrir) {
+        var idA = abrir.getAttribute("data-pn-comentar");
+        var cxA = caixa(idA);
+        if (cxA) {
+          cxA.innerHTML = editorHTML(porId[idA] || { id: idA });
+          var ta = cxA.querySelector("textarea");
+          if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+        }
+        return;
+      }
+
+      var cancelar = e.target.closest("[data-pn-com-cancelar]");
+      if (cancelar) {
+        var idC = cancelar.getAttribute("data-pn-com-cancelar");
+        var cxC = caixa(idC);
+        if (cxC) cxC.outerHTML = comentarioHTML(porId[idC] || { id: idC });
+        return;
+      }
+
+      var salvar = e.target.closest("[data-pn-com-salvar]");
+      if (salvar) {
+        var idS = salvar.getAttribute("data-pn-com-salvar");
+        var cxS = caixa(idS);
+        var txt = cxS ? (cxS.querySelector("textarea").value || "").trim() : "";
+        salvar.disabled = true;
+        DB.comentarPrato(idS, txt).then(function () {
+          if (porId[idS]) porId[idS].comentario_nutri = txt;
+          if (cxS) cxS.outerHTML = comentarioHTML(porId[idS] || { id: idS, comentario_nutri: txt });
+          if (opts.toast) opts.toast(txt ? "Comentário salvo. A paciente vê no portal." : "Comentário removido.");
+        }).catch(function () {
+          salvar.disabled = false;
+          if (opts.toast) opts.toast("Não foi possível salvar o comentário.", true);
+        });
+        return;
+      }
+
       var del = e.target.closest("[data-pn-apagar]");
       if (!del) return;
       if (!window.confirm("Apagar este registro da paciente? A foto também sai.")) return;

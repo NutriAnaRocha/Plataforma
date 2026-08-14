@@ -190,6 +190,14 @@
 .prato-hist__kcal { font-size: var(--fs-sm); font-weight: 700; color: var(--vinho); }
 .prato-hist__flag, .prato-hist__ok { flex-basis: 100%; font-size: var(--fs-caption); color: var(--texto-sutil); }
 .prato-hist__ok { color: #2e7d5b; }
+.prato-hist__com {
+  flex-basis: 100%; margin-top: 4px; padding: 8px 10px;
+  background: var(--rosa-suave); border-radius: var(--radius-sm, 8px);
+  border-left: 3px solid var(--vinho);
+  font-size: var(--fs-sm); color: var(--texto); line-height: 1.45;
+}
+.prato-hist__com strong { color: var(--vinho); }
+
 .prato-hist__del {
   flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--cinza-borda);
   background: var(--branco); color: var(--texto-sutil); font-size: 1.1rem; line-height: 1; cursor: pointer;

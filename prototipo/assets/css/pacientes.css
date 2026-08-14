@@ -322,6 +322,21 @@
 .pn-alertas { margin: 6px 0 0; padding-left: 18px; font-size: var(--fs-sm); color: var(--texto); line-height: 1.45; }
 .pn-alertas li::marker { color: var(--vinho); }
 
+/* Comentário da nutri no prato (migração 0057). Fica visualmente ao LADO
+   da estimativa, com a marca da nutri, nunca no lugar dela. */
+.pn-com { margin-top: 8px; }
+.pn-com__txt {
+  margin: 0 0 4px; padding: 8px 10px; border-left: 3px solid var(--vinho);
+  background: var(--rosa-suave, #fdf2f4); border-radius: 8px;
+  font-size: var(--fs-sm); color: var(--texto); line-height: 1.45;
+}
+.pn-com__btn {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font-size: var(--fs-caption); color: var(--vinho); text-decoration: underline;
+}
+.pn-com__ta { width: 100%; resize: vertical; font-family: inherit; }
+.pn-com__acoes { display: flex; gap: var(--sp-2, 8px); margin-top: 6px; }
+
 .pn-del {
   flex: none; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--cinza-borda);
   background: #fff; color: var(--texto-sutil); font-size: 1rem; line-height: 1; cursor: pointer;
