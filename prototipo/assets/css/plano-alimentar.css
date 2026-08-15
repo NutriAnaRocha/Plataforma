@@ -169,6 +169,27 @@
 .pl-ac__nome { flex: 1; min-width: 0; }
 .pl-ac__kc { font-size: var(--fs-caption); color: var(--texto-sutil); white-space: nowrap; }
 .pl-ac__vazio { padding: 10px; font-size: var(--fs-caption); color: var(--texto-sutil); text-align: center; }
+/* Rodapé fixo da lista: cadastrar o alimento que a TACO não tem */
+.pl-ac__novo {
+  display: block; width: 100%; text-align: left; cursor: pointer; font: inherit;
+  font-size: var(--fs-sm); font-weight: 700; color: var(--vinho);
+  background: var(--rosa-suave); border: 1px dashed var(--vinho);
+  border-radius: var(--radius-input); padding: 8px; margin-top: 4px;
+}
+.pl-ac__novo:hover { background: var(--vinho); color: #fff; }
+.pl-ac__meu {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  background: var(--rosa-suave); color: var(--vinho); border-radius: 999px; padding: 1px 6px; margin-left: 4px;
+}
+
+/* Formulário de cadastro de alimento (dentro do modal padrão da ficha) */
+.pl-algrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.pl-alfs { border: 1px solid var(--cinza-borda); border-radius: var(--radius-input); padding: 8px 10px; }
+.pl-alfs legend { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); padding: 0 4px; }
+.pl-alradio { display: inline-flex; align-items: center; gap: 6px; margin-right: 14px; font-size: var(--fs-sm); }
+.pl-alnum { width: 78px; }
+.pl-almed { display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); }
+.pl-almed input { flex: 0 1 auto; }
 
 /* ---------- Substitutos do item ---------- */
 .pl-swap {

@@ -177,7 +177,15 @@
 .op-card__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .op-card__t { font-weight: 700; color: var(--cinza-escuro, #2b2229); }
 .op-card__meta { font-size: 12px; color: var(--texto-sutil, #8a7a80); margin-top: 2px; }
-.op-card__acts { display: flex; gap: 6px; flex-shrink: 0; }
+.op-card__acts { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; flex-shrink: 0; }
+/* Prescrição pausada: continua no prontuário e no PDF, só não conta como em uso. */
+.op-card--off { background: var(--cinza-fundo, #faf7f8); border-style: dashed; }
+.op-card--off .op-card__t, .op-card--off .op-bloco__t { color: var(--texto-sutil, #8a7a80); }
+.rx-selo {
+  display: inline-block; vertical-align: middle; margin-left: 6px; border-radius: 999px;
+  padding: 2px 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+}
+.rx-selo--off { background: #eee4e8; color: #7a6b71; }
 .op-card__resumo { margin: 8px 0 6px; font-weight: 600; }
 .op-bloco { margin-top: 8px; }
 .op-bloco__t { font-weight: 700; color: var(--vinho, #7a2342); font-size: 13.5px; margin-bottom: 4px; }

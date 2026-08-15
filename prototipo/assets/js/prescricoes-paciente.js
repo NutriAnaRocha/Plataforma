@@ -42,6 +42,24 @@
     return formulas;
   }
 
+  // Volta a fórmula para o texto que a nutri digitou — é o que o modo editar
+  // devolve no textarea. Espelho exato de textoToFormulas.
+  function formulasToTexto(formulas) {
+    return (formulas || []).map(function (f) {
+      var linhas = [];
+      if (f.titulo) linhas.push("# " + f.titulo);
+      (f.componentes || []).forEach(function (c) {
+        linhas.push("- " + [c.ativo, c.dose, c.obs].filter(Boolean).join(" | "));
+      });
+      if (f.posologia) linhas.push("Posologia: " + f.posologia);
+      if (f.duracao) linhas.push("Duração: " + f.duracao);
+      if (f.via) linhas.push("Via: " + f.via);
+      return linhas.join("\n");
+    }).join("\n\n");
+  }
+  // Prescrição sem o campo "ativa" é antiga: conta como ativa.
+  function estaAtiva(o) { return o.ativa !== false; }
+
   function formulasHTML(o) {
     return (o.formulas || []).map(function (f) {
       var comp = (f.componentes || []).map(function (c) {
@@ -59,12 +77,19 @@
   }
 
   function cardHTML(o) {
-    return '<div class="op-card" data-id="' + esc(o.id) + '">' +
+    var ativa = estaAtiva(o);
+    return '<div class="op-card' + (ativa ? "" : " op-card--off") + '" data-id="' + esc(o.id) + '">' +
       '<div class="op-card__head"><div>' +
-        '<div class="op-card__t">' + esc(o.titulo) + "</div>" +
+        '<div class="op-card__t">' + esc(o.titulo) +
+          (ativa ? "" : ' <span class="rx-selo rx-selo--off">pausada</span>') + "</div>" +
         '<div class="op-card__meta">' + esc(CAT_LABEL[o.categoria] || "") +
           (o.categoria ? " · " : "") + "prescrita em " + fmtData(o.data) + "</div>" +
       "</div><div class=\"op-card__acts\">" +
+        '<button class="btn btn--ghost" data-rx-toggle="' + esc(o.id) + '" type="button" ' +
+          'aria-pressed="' + (ativa ? "true" : "false") + '" ' +
+          'title="' + (ativa ? "Pausar: fica no histórico, mas marcada como não em uso" : "Reativar esta prescrição") + '">' +
+          (ativa ? "⏸️ Pausar" : "▶️ Reativar") + "</button>" +
+        '<button class="btn btn--ghost" data-rx-edit="' + esc(o.id) + '" type="button" title="Editar esta prescrição">✏️ Editar</button>' +
         '<button class="btn btn--ghost" data-rx-pdf="' + esc(o.id) + '" type="button">📄 PDF</button>' +
         '<button class="btn btn--ghost rx-del" data-rx-rm="' + esc(o.id) + '" type="button" title="Excluir esta prescrição">🗑️ Excluir</button>' +
       "</div></div>" +
@@ -86,7 +111,8 @@
     var hist = lista.length
       ? '<div class="ilist">' + lista.map(function (o) {
           return '<div class="iitem"><span class="iitem__ico">💊</span>' +
-            '<div class="iitem__info"><div class="iitem__title">' + esc(o.titulo) + "</div>" +
+            '<div class="iitem__info"><div class="iitem__title">' + esc(o.titulo) +
+            (estaAtiva(o) ? "" : ' <span class="rx-selo rx-selo--off">pausada</span>') + "</div>" +
             '<div class="iitem__date">' + fmtData(o.data) + "</div></div>" +
             '<button class="btn btn--ghost" data-rx-pdf="' + esc(o.id) + '" type="button">PDF</button>' +
             '<button class="btn btn--ghost rx-del" data-rx-rm="' + esc(o.id) + '" type="button" title="Excluir esta prescrição" aria-label="Excluir prescrição">🗑️</button></div>';
@@ -105,6 +131,24 @@
       if (_ctx.onSaved) _ctx.onSaved(saved);
       if (_ctx.toast) _ctx.toast("Prescrição registrada");
     }).catch(function (e) { if (_ctx.toast) _ctx.toast("Não consegui registrar. " + (e && e.message || ""), true); });
+  }
+  // Grava por cima da prescrição que já existe (editar / pausar), preservando
+  // a ordem da lista — a nutri espera o card no mesmo lugar depois de salvar.
+  function atualizar(id, patch, msg) {
+    var lista = (_p.prescricoes || []).map(function (o) {
+      return o.id === id ? Object.assign({}, o, patch) : o;
+    });
+    if (_ctx.toast) _ctx.toast("Salvando…");
+    return salvar(lista).then(function (saved) {
+      if (_ctx.onSaved) _ctx.onSaved(saved);
+      if (_ctx.toast) _ctx.toast(msg || "Salvo");
+    }).catch(function (e) { if (_ctx.toast) _ctx.toast("Não consegui salvar. " + (e && e.message || ""), true); });
+  }
+  function alternarAtiva(id) {
+    var o = (_p.prescricoes || []).find(function (x) { return x.id === id; });
+    if (!o) return;
+    var ligar = !estaAtiva(o);
+    atualizar(id, { ativa: ligar }, ligar ? "Prescrição reativada" : "Prescrição pausada");
   }
   function remover(id) {
     var o = (_p.prescricoes || []).find(function (x) { return x.id === id; });
@@ -186,20 +230,24 @@
     });
   }
 
-  /* ---------- Escrever do zero ---------- */
-  function abrirCustom() {
+  /* ---------- Escrever do zero / editar ----------
+     O mesmo formulário serve para criar e para corrigir: sem ele, errar a dose
+     obrigava a excluir e escrever tudo de novo. Vindo do banco de formulações,
+     editar aqui muda só a cópia do paciente — o banco fica intacto. */
+  function abrirCustom(edit) {
     var host = document.getElementById("ficha-main"); if (!host) return;
     var ov = document.createElement("div"); ov.className = "op-modal"; ov.id = "rx-modal";
     ov.innerHTML =
-      '<div class="op-modal__box"><div class="op-modal__head"><b>Escrever prescrição</b>' +
+      '<div class="op-modal__box"><div class="op-modal__head"><b>' + (edit ? "Editar prescrição" : "Escrever prescrição") + "</b>" +
       '<button class="op-modal__x" id="rx-modal-x" type="button" aria-label="Fechar">✕</button></div>' +
       '<form id="rx-form" class="op-form">' +
-        '<label>Título<input name="titulo" required placeholder="Ex.: Suporte para ansiedade" /></label>' +
-        '<label>Indicação (opcional)<input name="indicacao" placeholder="Para quê" /></label>' +
+        '<label>Título<input name="titulo" required placeholder="Ex.: Suporte para ansiedade" value="' + esc(edit && edit.titulo || "") + '" /></label>' +
+        '<label>Indicação (opcional)<input name="indicacao" placeholder="Para quê" value="' + esc(edit && edit.indicacao || "") + '" /></label>' +
         '<label>Fórmulas <span class="op-hint">“# Título” abre uma fórmula; “- Ativo | dose | obs”; Posologia:/Duração:/Via:.</span>' +
-          '<textarea name="formulas" rows="9" placeholder="# Fitoterápico&#10;- Passiflora | 200-400 mg/dia&#10;Posologia: 1x à noite"></textarea></label>' +
-        '<label>Interações / cautelas (opcional)<input name="interacoes" placeholder="Ex.: potencializa sedativos" /></label>' +
-        '<div class="op-form__acts"><button class="btn btn--primary" type="submit">Registrar</button>' +
+          '<textarea name="formulas" rows="9" placeholder="# Fitoterápico&#10;- Passiflora | 200-400 mg/dia&#10;Posologia: 1x à noite">' +
+          esc(edit ? formulasToTexto(edit.formulas) : "") + "</textarea></label>" +
+        '<label>Interações / cautelas (opcional)<input name="interacoes" placeholder="Ex.: potencializa sedativos" value="' + esc(edit && edit.interacoes || "") + '" /></label>' +
+        '<div class="op-form__acts"><button class="btn btn--primary" type="submit">' + (edit ? "Salvar alterações" : "Registrar") + "</button>" +
           '<button class="btn btn--ghost" type="button" id="rx-modal-x2">Cancelar</button></div>' +
       "</form></div>";
     host.appendChild(ov);
@@ -212,11 +260,13 @@
       e.preventDefault();
       var fd = new FormData(e.target);
       var titulo = (fd.get("titulo") || "").trim(); if (!titulo) return;
-      attach({
-        id: uid(), titulo: titulo, origem_slug: null, categoria: "custom",
+      var dados = {
+        titulo: titulo,
         indicacao: (fd.get("indicacao") || "").trim(), formulas: textoToFormulas(fd.get("formulas") || ""),
-        interacoes: (fd.get("interacoes") || "").trim() || null, data: hojeISO()
-      });
+        interacoes: (fd.get("interacoes") || "").trim() || null
+      };
+      if (edit) atualizar(edit.id, dados, "Prescrição atualizada");
+      else attach(Object.assign({ id: uid(), origem_slug: null, categoria: "custom", data: hojeISO() }, dados));
       ov.remove();
     });
   }
@@ -225,6 +275,14 @@
   function onClick(ev) {
     if (ev.target.closest("#rx-add")) { abrirPicker(); return; }
     if (ev.target.closest("#rx-custom")) { abrirCustom(); return; }
+    var ed = ev.target.closest("[data-rx-edit]");
+    if (ed) {
+      var alvo = (_p.prescricoes || []).find(function (x) { return x.id === ed.getAttribute("data-rx-edit"); });
+      if (alvo) abrirCustom(alvo);
+      return;
+    }
+    var tg = ev.target.closest("[data-rx-toggle]");
+    if (tg) { alternarAtiva(tg.getAttribute("data-rx-toggle")); return; }
     var pdf = ev.target.closest("[data-rx-pdf]");
     if (pdf) { var o = (_p.prescricoes || []).find(function (x) { return x.id === pdf.getAttribute("data-rx-pdf"); }); if (o) gerarPDF(o); return; }
     var rm = ev.target.closest("[data-rx-rm]");

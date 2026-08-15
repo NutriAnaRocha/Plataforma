@@ -107,6 +107,40 @@
     return AL_BY_NOME[valor.toLowerCase()] || acharAlimento(valor);
   }
 
+  /* ---------- Alimentos cadastrados pela nutri ----------
+     A TACO não tem tudo: produto de marca (Rap10, requeijão light), corte que
+     ela usa com outro nome (frango desfiado) ou receita da casa. Antes disso a
+     nutri digitava o nome livre e o item ficava 0 kcal — o plano fechava com
+     conta errada. Ficam na tabela alimentos_nutri (uma por nutri, id numérico
+     a partir de 900001 para não colidir com a TACO) e entram na mesma busca. */
+  function registraAlimento(a) {
+    if (!a || AL_BY_ID[a.id]) return null;
+    AL.push(a); AL_BY_ID[a.id] = a; AL_BY_NOME[a.nome.toLowerCase()] = a;
+    AL_NORM.push(limpa(a.nome));
+    return a;
+  }
+  function linhaParaAlimento(row) {
+    var med = (row.medidas && row.medidas.length) ? row.medidas.slice() : [];
+    // "grama" sempre presente e sempre em primeiro: é o denominador do cálculo.
+    med = med.filter(function (m) { return m && m.nome && num(m.g) > 0 && m.nome !== "grama"; });
+    med.unshift({ nome: "grama", g: 1 });
+    return {
+      id: row.id, nome: row.nome, grupo: row.grupo || "Meus alimentos",
+      kcal: num(row.kcal), cho: num(row.cho), ptn: num(row.ptn), lip: num(row.lip), fibra: num(row.fibra),
+      medidas: med, meu: true
+    };
+  }
+  var _meusOk = false;
+  function carregarMeusAlimentos() {
+    if (_meusOk || !window.NutriDBReady) return Promise.resolve();
+    _meusOk = true;
+    return window.NutriDBReady.then(function (db) {
+      return db.from("alimentos_nutri").select("*").order("nome");
+    }).then(function (r) {
+      ((r && r.data) || []).forEach(function (row) { registraAlimento(linhaParaAlimento(row)); });
+    }).catch(function () { _meusOk = false; });
+  }
+
   /* ---------- MODELOS pré-prontos (6 × 4 metas) ----------
      Itens referenciam o alimento por busca (`q`), resolvidos no banco na
      hora de aplicar — assim o modelo não depende de ids fixos.
@@ -1233,10 +1267,10 @@
      ícone passava despercebido. */
   function mealAcoesHTML() {
     return '<div class="pl-meal__acoes">' +
-      '<button class="pl-mbtn" type="button" data-foto-add title="Foto do prato montado (a paciente vê no portal)" aria-label="Foto da refeição">📷</button>' +
-      '<button class="pl-mbtn" type="button" data-dup-meal title="Duplicar como outra opção desta refeição" aria-label="Duplicar refeição">⧉</button>' +
-      '<button class="pl-mbtn" type="button" data-up-meal title="Mover para cima" aria-label="Mover refeição para cima">↑</button>' +
-      '<button class="pl-mbtn" type="button" data-down-meal title="Mover para baixo" aria-label="Mover refeição para baixo">↓</button>' +
+      '<button class="pl-mbtn" type="button" data-foto-add title="Foto do prato montado (a paciente vê no portal)" aria-label="Foto da refeição">📷<span class="pl-mbtn__t">Foto</span></button>' +
+      '<button class="pl-mbtn" type="button" data-dup-meal title="Duplicar como outra opção desta refeição" aria-label="Duplicar refeição">⧉<span class="pl-mbtn__t">Duplicar</span></button>' +
+      '<button class="pl-mbtn pl-mbtn--ico" type="button" data-up-meal title="Mover para cima" aria-label="Mover refeição para cima">↑</button>' +
+      '<button class="pl-mbtn pl-mbtn--ico" type="button" data-down-meal title="Mover para baixo" aria-label="Mover refeição para baixo">↓</button>' +
       '<button class="pl-mbtn pl-mbtn--del" type="button" data-rm-meal title="Excluir esta refeição" aria-label="Excluir refeição">🗑️ Excluir</button>' +
     '</div>';
   }
@@ -1319,6 +1353,9 @@
     // então o foco só se perde quando a ficha muda de paciente.
     if (!_p || _p.id !== p.id) _viewId = null;
     _p = p; _ctx = ctx || {};
+    // Os alimentos que a nutri cadastrou entram no banco de busca antes de ela
+    // abrir o editor — se chegarem depois, o item já lançado calcula 0 kcal.
+    carregarMeusAlimentos();
     var r = root(); if (!r) return;
     // Estado inicial: se já tem plano(s) salvo(s), mostramos o painel; senão a escolha.
     // A escolha é re-renderizada aqui (e não só fiada) porque render() roda
@@ -1473,6 +1510,8 @@
       var t = e.target;
       var op = t.closest("[data-ac-op]");
       if (op) { escolherAC(op); return; }
+      var novo = t.closest("[data-ac-novo]");
+      if (novo) { abrirCadastroAlimento(novo); return; }
       if (t.closest("[data-add-item]")) { addItem(t.closest("[data-meal]")); }
       else if (t.closest("[data-rm-item]")) { t.closest("[data-item]").remove(); recalc(); }
       else if (t.closest("[data-toggle-subs]")) { alternarSubs(t.closest("[data-item]")); }
@@ -1501,14 +1540,20 @@
   function abrirAC(input) {
     var box = acDe(input); if (!box) return;
     var lista = buscar(input.value, 60);
+    var termo = (input.value || "").trim();
+    // O "cadastrar" fica sempre à mão, no rodapé da lista: o alimento que
+    // falta quase sempre PARECE existir (vem um primo dele na busca), então
+    // esperar a lista vazia não resolveria.
+    var novo = '<button class="pl-ac__novo" type="button" data-ac-novo tabindex="-1">' +
+      "＋ Cadastrar " + (termo ? '“' + esc(termo) + '”' : "um alimento meu") + "</button>";
     if (!lista.length) {
-      box.innerHTML = '<div class="pl-ac__vazio">Nenhum alimento encontrado</div>';
+      box.innerHTML = '<div class="pl-ac__vazio">Nenhum alimento encontrado</div>' + novo;
     } else {
       box.innerHTML = lista.map(function (a, i) {
         return '<button class="pl-ac__op' + (i === 0 ? " is-hl" : "") + '" type="button" data-ac-op="' + a.id + '" tabindex="-1">' +
-          '<span class="pl-ac__nome">' + esc(a.nome) + '</span>' +
+          '<span class="pl-ac__nome">' + esc(a.nome) + (a.meu ? ' <span class="pl-ac__meu">meu</span>' : "") + '</span>' +
           '<span class="pl-ac__kc">' + r0(a.kcal) + ' kcal/100 g</span></button>';
-      }).join("");
+      }).join("") + novo;
     }
     box.hidden = false;
     box.scrollTop = 0;
@@ -1554,6 +1599,100 @@
     input.focus();
     _vindoDaEscolha = false;
   }
+  /* ---------- Cadastrar alimento (o que a TACO não tem) ----------
+     O rótulo do produto quase nunca vem "por 100 g" — vem por porção. Por isso
+     o formulário aceita os dois e converte, senão o Rap10 de 40 g entraria como
+     se 100 g tivessem 130 kcal. A porção informada já vira medida caseira. */
+  function abrirCadastroAlimento(btnNovo) {
+    var box = btnNovo.closest("[data-ac]");
+    var input = box && box.parentNode.querySelector(".pl-food");
+    var termo = input ? (input.value || "").trim() : "";
+    if (box) fecharAC(box);
+    var host = document.getElementById("ficha-main") || document.body;
+    var ov = document.createElement("div"); ov.className = "op-modal"; ov.id = "pl-al-modal";
+    ov.innerHTML =
+      '<div class="op-modal__box"><div class="op-modal__head"><b>Cadastrar alimento</b>' +
+      '<button class="op-modal__x" type="button" data-al-x aria-label="Fechar">✕</button></div>' +
+      '<form class="op-form" data-al-form>' +
+        '<label>Nome<input name="nome" required placeholder="Ex.: Rap10 integral" value="' + esc(termo) + '" /></label>' +
+        '<fieldset class="pl-alfs"><legend>Os valores do rótulo são por:</legend>' +
+          '<label class="pl-alradio"><input type="radio" name="base" value="100" checked /> 100 g</label>' +
+          '<label class="pl-alradio"><input type="radio" name="base" value="porcao" /> uma porção de' +
+            '<input class="pl-alnum" name="porcao_g" type="number" min="1" step="0.1" placeholder="40" /> g</label>' +
+        "</fieldset>" +
+        '<div class="pl-algrid">' +
+          '<label>Calorias (kcal)<input name="kcal" type="number" min="0" step="0.1" required /></label>' +
+          '<label>Carboidrato (g)<input name="cho" type="number" min="0" step="0.1" /></label>' +
+          '<label>Proteína (g)<input name="ptn" type="number" min="0" step="0.1" /></label>' +
+          '<label>Gordura (g)<input name="lip" type="number" min="0" step="0.1" /></label>' +
+          '<label>Fibra (g)<input name="fibra" type="number" min="0" step="0.1" /></label>' +
+        "</div>" +
+        '<label>Medida caseira (opcional) <span class="op-hint">como você vai lançar no plano: unidade, fatia, colher…</span>' +
+          '<span class="pl-almed"><input name="med_nome" placeholder="unidade" />' +
+          '<input class="pl-alnum" name="med_g" type="number" min="1" step="0.1" placeholder="40" /> g cada</span></label>' +
+        '<div class="op-form__acts"><button class="btn btn--primary" type="submit">Salvar alimento</button>' +
+          '<button class="btn btn--ghost" type="button" data-al-x>Cancelar</button></div>' +
+      "</form></div>";
+    host.appendChild(ov);
+    var inpNome = ov.querySelector('[name="nome"]'); if (inpNome) inpNome.focus();
+
+    ov.addEventListener("click", function (e) {
+      if (e.target === ov || e.target.closest("[data-al-x]")) ov.remove();
+    });
+    ov.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var fd = new FormData(e.target);
+      var nome = String(fd.get("nome") || "").trim();
+      if (!nome) return;
+      var porBase = String(fd.get("base") || "100");
+      var pg = num(fd.get("porcao_g"));
+      if (porBase === "porcao" && pg <= 0) { toast("Diga quantos gramas tem a porção do rótulo.", true); return; }
+      var k = porBase === "porcao" ? 100 / pg : 1;   // fator para virar "por 100 g"
+      var medNome = String(fd.get("med_nome") || "").trim();
+      var medG = num(fd.get("med_g"));
+      var medidas = [{ nome: "grama", g: 1 }];
+      if (medNome && medG > 0) medidas.push({ nome: medNome, g: medG });
+      else if (porBase === "porcao") medidas.push({ nome: "porcao", g: pg });
+      var novo = {
+        nome: nome, grupo: "Meus alimentos",
+        kcal: r1(num(fd.get("kcal")) * k), cho: r1(num(fd.get("cho")) * k), ptn: r1(num(fd.get("ptn")) * k),
+        lip: r1(num(fd.get("lip")) * k), fibra: r1(num(fd.get("fibra")) * k), medidas: medidas
+      };
+      var btn = e.target.querySelector('button[type="submit"]');
+      if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; }
+      salvarAlimentoNovo(novo).then(function (a) {
+        ov.remove();
+        if (input) {
+          input.value = a.nome;
+          atualizarMedidas(input);
+          var ehSub = input.hasAttribute("data-sub-food");
+          var sel = input.closest(ehSub ? "[data-sub]" : ".pl-item").querySelector(ehSub ? "[data-sub-med]" : "[data-med]");
+          if (sel && sel.options.length > 1) sel.selectedIndex = 1;
+          recalc();
+          input.focus();
+        }
+        toast('"' + a.nome + '" entrou nos seus alimentos');
+      }).catch(function (err) {
+        if (btn) { btn.disabled = false; btn.textContent = "Salvar alimento"; }
+        toast("Não consegui salvar o alimento. " + (err && err.message || ""), true);
+      });
+    });
+  }
+  // Grava na tabela da nutri e devolve o alimento já no formato do banco local.
+  // Sem gravar não registra em memória: um alimento que só existe nesta aba
+  // faria o plano abrir com 0 kcal na próxima vez.
+  function salvarAlimentoNovo(novo) {
+    if (!window.NutriDBReady) return Promise.reject(new Error("Sem conexão com o banco."));
+    return window.NutriDBReady.then(function (db) {
+      return db.from("alimentos_nutri").insert(novo).select().single();
+    }).then(function (r) {
+      if (r && r.error) throw r.error;
+      var row = r && r.data;
+      if (!row) throw new Error("Resposta vazia do banco.");
+      return registraAlimento(linhaParaAlimento(row)) || AL_BY_ID[row.id];
+    });
+  }
+
   function onACKey(e) {
     var input = e.target.closest ? e.target.closest(".pl-food") : null;
     if (!input) return;
