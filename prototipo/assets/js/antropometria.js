@@ -24,40 +24,47 @@
   }
 
   /* ---------- Silhueta de referência (SVG schematic) ----------
-     Contorno fino, sem preenchimento: a figura é só a referência de ONDE
-     medir, então ela não pode competir com o marcador nem sugerir um corpo
-     específico. A silhueta anterior era de blocos preenchidos (braços em
-     losango, pernas em trapézio) e destoava do resto da ficha.
-     O viewBox (80×165) e as proporções foram mantidos: as coordenadas x/y
-     de cada circunferência e dobra continuam caindo no mesmo ponto. */
+     A figura é a referência de ONDE medir: corpo preenchido em véu claro, com
+     o marcador em cima — em 56px o contorno fino virava um rabisco e a medida
+     não se lia. O viewBox (80×165) é fixo.
+     ⚠ A anatomia do contorno segue as coordenadas do catálogo: o tórax é largo
+     até ~y46, a cintura MÍNIMA cai em y77 (onde a medida "cintura" marca), o
+     quadril é o mais largo em y95 e as mãos chegam à altura da coxa. Mexer no
+     desenho sem conferir CIRC/DOBRAS coloca marcador fora do lugar do corpo. */
   var CABECA = '<circle cx="40" cy="13.5" r="8.4"/>';
   var TRONCO =
       // pescoço (senão a cabeça flutua sobre os ombros)
       '<path class="fig-neck" d="M36.9 21.2 C36.6 22.6 36.4 23.6 36.2 24.4"/>' +
       '<path class="fig-neck" d="M43.1 21.2 C43.4 22.6 43.6 23.6 43.8 24.4"/>' +
-      // tronco + pernas, contorno contínuo (ombro → cintura → quadril → pernas)
-      '<path d="M36.2 24.4 C33.6 25.2 31.2 27.4 29.4 31.4' +
-        ' C28.4 37.6 27.9 43.2 28.2 48.4 C28.6 56 29.8 64.4 31.6 71.6' +
-        ' C28.6 78.6 25.6 85.8 24.9 92.6 C24.4 98 25.2 102.6 26.2 106.6' +
-        ' C27.2 112.6 27.8 117 27.9 121.6 C28 130 28.2 141 28.4 149.6' +
-        ' L34.9 149.6 C35.1 141 35.3 130 35.4 121.6 C35.5 114.4 35.9 108.6 36.7 102.4' +
-        ' L40 96 L43.3 102.4 C44.1 108.6 44.5 114.4 44.6 121.6' +
-        ' C44.7 130 44.9 141 45.1 149.6 L51.6 149.6' +
-        ' C51.8 141 52 130 52.1 121.6 C52.2 117 52.8 112.6 53.8 106.6' +
-        ' C54.8 102.6 55.6 98 55.1 92.6 C54.4 85.8 51.4 78.6 48.4 71.6' +
-        ' C50.2 64.4 51.4 56 51.8 48.4 C52.1 43.2 51.6 37.6 50.6 31.4' +
-        ' C48.8 27.4 46.4 25.2 43.8 24.4 Z"/>' +
-      // braços soltos ao lado do corpo (contorno próprio, com folga do tronco)
-      '<path d="M30.2 32.6 C26 40 22.6 49.2 20.8 57.6' +
-        ' C19.7 63 18.9 68.6 18.5 73 C18.2 76.4 22.2 76.6 22.5 73.2' +
-        ' C22.9 68.4 23.7 63 24.9 58 C26.5 50.6 28.4 43.2 31 37 Z"/>' +
-      '<path d="M49.8 32.6 C54 40 57.4 49.2 59.2 57.6' +
-        ' C60.3 63 61.1 68.6 61.5 73 C61.8 76.4 57.8 76.6 57.5 73.2' +
-        ' C57.1 68.4 56.3 63 55.1 58 C53.5 50.6 51.6 43.2 49 37 Z"/>';
+      // tronco + pernas, contorno contínuo (ombro → tórax → cintura → quadril → pernas)
+      '<path d="M36.2 24.4 C33.4 25.4 30.6 27.6 28.8 31.6' +
+        ' C27.8 36 27.2 41 27.4 46 C27.8 54 29.6 64 30.8 72' +
+        ' C31.2 74.6 31 76 30.6 77.6 C30.4 79.6 30.8 80.8 31.4 82' +
+        ' C29.4 86 26.6 90 25.6 95 C25.2 100 26 105 27 110' +
+        ' C27.6 118 27.9 128 28.4 149.6' +
+        ' L34.9 149.6 C35.2 138 35.6 126 36.2 114' +
+        ' C36.6 108 37.4 104 38.2 101.5 L40 99 L41.8 101.5' +
+        ' C42.6 104 43.4 108 43.8 114 C44.4 126 44.8 138 45.1 149.6' +
+        ' L51.6 149.6 C52.1 128 52.4 118 53 110' +
+        ' C54 105 54.8 100 54.4 95 C53.4 90 50.6 86 48.6 82' +
+        ' C49.2 80.8 49.6 79.6 49.4 77.6 C49 76 48.8 74.6 49.2 72' +
+        ' C50.4 64 52.2 54 52.6 46 C52.8 41 52.2 36 51.2 31.6' +
+        ' C49.4 27.6 46.6 25.4 43.8 24.4 Z"/>' +
+      // braços soltos ao lado do corpo, mão na altura da coxa (contorno próprio)
+      '<path d="M29.4 32.4 C25.6 38 22.6 46 21 54' +
+        ' C19.8 60 19 68 18.8 76 C18.6 84 19.4 90 20.6 93.4' +
+        ' C21.6 96 24.4 95.4 24.2 92.6 C23.8 86 24 79 24.6 72' +
+        ' C25.2 64 26.6 55 28.6 47 C29.4 43 30.2 39.4 31.2 36.6 Z"/>' +
+      '<path d="M50.6 32.4 C54.4 38 57.4 46 59 54' +
+        ' C60.2 60 61 68 61.2 76 C61.4 84 60.6 90 59.4 93.4' +
+        ' C58.4 96 55.6 95.4 55.8 92.6 C56.2 86 56 79 55.4 72' +
+        ' C54.8 64 53.4 55 51.4 47 C50.6 43 49.8 39.4 48.8 36.6 Z"/>';
   var SILHUETA = '<g class="antro-fig__body">' + CABECA + TRONCO + '</g>';
   function figura(x, y) {
     return '<svg class="antro-fig" viewBox="0 0 80 165" aria-hidden="true">' + SILHUETA +
       '<g class="antro-fig__mk" transform="translate(' + x + ',' + y + ')">' +
+        // halo branco: sem ele o anel se perde no corpo preenchido
+        '<circle r="9.2" class="antro-fig__halo"/>' +
         '<circle r="8" class="antro-fig__ring"/><circle r="2.6" class="antro-fig__dot"/>' +
       '</g></svg>';
   }
@@ -229,33 +236,33 @@
      Mesmo viewBox 80×165 e mesmo contorno (CABECA/TRONCO) das figuras de medida. */
   var MUSCULOS =
       // deltoides
-      '<path d="M30.6 31.8 C28.4 34.4 27.6 37.6 27.9 40.4"/>' +
-      '<path d="M49.4 31.8 C51.6 34.4 52.4 37.6 52.1 40.4"/>' +
+      '<path d="M30 31.8 C28.2 34.6 27.5 37.6 27.5 40.6"/>' +
+      '<path d="M50 31.8 C51.8 34.6 52.5 37.6 52.5 40.6"/>' +
       // peitorais (esterno + os dois arcos)
-      '<path d="M40 33.6 L40 44"/>' +
-      '<path d="M39.2 43.6 C35.8 44.4 32.4 43.2 30.6 40.4 C30.2 37.2 31.4 34.8 33.4 33.6"/>' +
-      '<path d="M40.8 43.6 C44.2 44.4 47.6 43.2 49.4 40.4 C49.8 37.2 48.6 34.8 46.6 33.6"/>' +
+      '<path d="M40 34 L40 47"/>' +
+      '<path d="M39.2 46.6 C35.6 47.4 32 46 30.4 43 C30 39 31.4 36.2 33.6 34.4"/>' +
+      '<path d="M40.8 46.6 C44.4 47.4 48 46 49.6 43 C50 39 48.6 36.2 46.4 34.4"/>' +
       // abdômen: linha alba + as três divisões
-      '<path d="M40 45.4 L40 67.5"/>' +
-      '<path d="M34.8 50.4 L45.2 50.4"/>' +
-      '<path d="M34.6 56.4 L45.4 56.4"/>' +
-      '<path d="M35 62 L45 62"/>' +
-      // oblíquos / virilha
-      '<path d="M32.8 63.6 C34.8 68 37.2 70.4 40 71.4 C42.8 70.4 45.2 68 47.2 63.6"/>' +
+      '<path d="M40 48.4 L40 74"/>' +
+      '<path d="M34.8 54 L45.2 54"/>' +
+      '<path d="M35 61 L45 61"/>' +
+      '<path d="M35.4 68 L44.6 68"/>' +
+      // virilha (V do quadril)
+      '<path d="M31.8 86 C34.6 91.6 37.2 94.6 40 96.2 C42.8 94.6 45.4 91.6 48.2 86"/>' +
       // bíceps e antebraços
-      '<path d="M27.6 38.8 C25.2 43.6 23.8 48.4 23 53"/>' +
-      '<path d="M52.4 38.8 C54.8 43.6 56.2 48.4 57 53"/>' +
-      '<path d="M22.2 57.8 C21.2 62.4 20.6 67.2 20.4 71.2"/>' +
-      '<path d="M57.8 57.8 C58.8 62.4 59.4 67.2 59.6 71.2"/>' +
+      '<path d="M27.2 40 C24.8 45.6 23 51.4 22.2 57"/>' +
+      '<path d="M52.8 40 C55.2 45.6 57 51.4 57.8 57"/>' +
+      '<path d="M22.4 63 C21.6 70 21.2 78 21.4 86"/>' +
+      '<path d="M57.6 63 C58.4 70 58.8 78 58.6 86"/>' +
       // quadríceps
-      '<path d="M31.6 100 C30.7 107 30.5 114 30.9 120.4"/>' +
-      '<path d="M48.4 100 C49.3 107 49.5 114 49.1 120.4"/>' +
+      '<path d="M31.4 104 C30.6 111 30.4 118 30.8 124"/>' +
+      '<path d="M48.6 104 C49.4 111 49.6 118 49.2 124"/>' +
       // joelhos
-      '<path d="M29.2 124.4 C30.8 126 32.8 126 34.4 124.4"/>' +
-      '<path d="M45.6 124.4 C47.2 126 49.2 126 50.8 124.4"/>' +
+      '<path d="M29 128 C30.6 129.6 33 129.6 34.6 128"/>' +
+      '<path d="M45.4 128 C47 129.6 49.4 129.6 51 128"/>' +
       // panturrilhas
-      '<path d="M30.6 129 C30 133.6 30.2 138 31 141.6"/>' +
-      '<path d="M49.4 129 C50 133.6 49.8 138 49 141.6"/>';
+      '<path d="M30.5 132.5 C29.9 136.5 30.1 140 31 143"/>' +
+      '<path d="M49.5 132.5 C50.1 136.5 49.9 140 49 143"/>';
 
   function _rgb(h) {
     h = h.replace("#", "");
@@ -295,8 +302,8 @@
       '<g class="bc-fig__fill" style="fill:' + pele + '">' + body + '</g>' +
       // 2. véu de gordura (barriga + quadril), recortado pelo corpo
       '<g clip-path="url(#' + uid + '-c)">' +
-        '<ellipse cx="40" cy="60" rx="' + rGord.toFixed(1) + '" ry="' + ryGord.toFixed(1) + '" fill="url(#' + uid + '-g)"/>' +
-        '<ellipse cx="40" cy="88" rx="' + (rGord + 3).toFixed(1) + '" ry="10" fill="url(#' + uid + '-g)"/>' +
+        '<ellipse cx="40" cy="78" rx="' + rGord.toFixed(1) + '" ry="' + ryGord.toFixed(1) + '" fill="url(#' + uid + '-g)"/>' +
+        '<ellipse cx="40" cy="95" rx="' + (rGord + 3).toFixed(1) + '" ry="10" fill="url(#' + uid + '-g)"/>' +
       '</g>' +
       // 3. relevo muscular — aparece conforme a massa magra
       '<g class="bc-fig__musc" clip-path="url(#' + uid + '-c)" style="stroke:' + traco +
@@ -1002,5 +1009,5 @@
   }
 
   // corpoSilhueta/faixaGordura ficam expostos para reuso da figura fora da ficha.
-  window.Antropometria = { render: render, wire: wire, corpoSilhueta: corpoSilhueta, faixaGordura: faixaGordura };
+  window.Antropometria = { render: render, wire: wire, figura: figura, corpoSilhueta: corpoSilhueta, faixaGordura: faixaGordura };
 })();

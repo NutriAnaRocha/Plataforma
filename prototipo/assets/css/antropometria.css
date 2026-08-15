@@ -72,9 +72,13 @@
 }
 .antro-card__fig { position: relative; flex: none; width: 56px; }
 .antro-fig { width: 56px; height: auto; display: block; }
-/* Contorno fino: a silhueta é referência de posição, não ilustração —
-   preenchida ela pesava mais que o próprio marcador da medida. */
-.antro-fig__body { fill: none; stroke: var(--vinho); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; opacity: .55; }
+/* Corpo em véu claro + contorno: em 56px o contorno sozinho virava rabisco.
+   O marcador ganha halo branco para não sumir dentro do preenchimento. */
+.antro-fig__body {
+  fill: var(--vinho); fill-opacity: .13; stroke: var(--vinho); stroke-width: 1.1;
+  stroke-linejoin: round; stroke-linecap: round; opacity: .85;
+}
+.antro-fig__halo { fill: var(--branco); opacity: .9; }
 .antro-fig__ring { fill: none; stroke: var(--vinho); stroke-width: 2.4; }
 .antro-fig__dot { fill: var(--vinho); }
 .antro-card__lado {
