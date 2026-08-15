@@ -23,16 +23,38 @@
     return (a >= 0 && a < 130) ? a : null;
   }
 
-  /* ---------- Silhueta de referência (SVG schematic) ---------- */
+  /* ---------- Silhueta de referência (SVG schematic) ----------
+     Contorno fino, sem preenchimento: a figura é só a referência de ONDE
+     medir, então ela não pode competir com o marcador nem sugerir um corpo
+     específico. A silhueta anterior era de blocos preenchidos (braços em
+     losango, pernas em trapézio) e destoava do resto da ficha.
+     O viewBox (80×165) e as proporções foram mantidos: as coordenadas x/y
+     de cada circunferência e dobra continuam caindo no mesmo ponto. */
   var SILHUETA =
     '<g class="antro-fig__body">' +
-      '<circle cx="40" cy="14" r="9"/>' +
-      '<rect x="36.5" y="22" width="7" height="6" rx="2"/>' +
-      '<path d="M27 31 Q40 26 53 31 L55 92 Q40 99 25 92 Z"/>' +
-      '<path d="M28 33 L17 72 L22 74 L33 39 Z"/>' +
-      '<path d="M52 33 L63 72 L58 74 L47 39 Z"/>' +
-      '<path d="M30 92 L26 151 L33 151 L38 96 Z"/>' +
-      '<path d="M50 92 L54 151 L47 151 L42 96 Z"/>' +
+      '<circle cx="40" cy="13.5" r="8.4"/>' +
+      // pescoço (senão a cabeça flutua sobre os ombros)
+      '<path d="M36.9 21.2 C36.6 22.6 36.4 23.6 36.2 24.4"/>' +
+      '<path d="M43.1 21.2 C43.4 22.6 43.6 23.6 43.8 24.4"/>' +
+      // tronco + pernas, contorno contínuo (ombro → cintura → quadril → pernas)
+      '<path d="M36.2 24.4 C33.6 25.2 31.2 27.4 29.4 31.4' +
+        ' C28.4 37.6 27.9 43.2 28.2 48.4 C28.6 56 29.8 64.4 31.6 71.6' +
+        ' C28.6 78.6 25.6 85.8 24.9 92.6 C24.4 98 25.2 102.6 26.2 106.6' +
+        ' C27.2 112.6 27.8 117 27.9 121.6 C28 130 28.2 141 28.4 149.6' +
+        ' L34.9 149.6 C35.1 141 35.3 130 35.4 121.6 C35.5 114.4 35.9 108.6 36.7 102.4' +
+        ' L40 96 L43.3 102.4 C44.1 108.6 44.5 114.4 44.6 121.6' +
+        ' C44.7 130 44.9 141 45.1 149.6 L51.6 149.6' +
+        ' C51.8 141 52 130 52.1 121.6 C52.2 117 52.8 112.6 53.8 106.6' +
+        ' C54.8 102.6 55.6 98 55.1 92.6 C54.4 85.8 51.4 78.6 48.4 71.6' +
+        ' C50.2 64.4 51.4 56 51.8 48.4 C52.1 43.2 51.6 37.6 50.6 31.4' +
+        ' C48.8 27.4 46.4 25.2 43.8 24.4 Z"/>' +
+      // braços soltos ao lado do corpo (contorno próprio, com folga do tronco)
+      '<path d="M30.2 32.6 C26 40 22.6 49.2 20.8 57.6' +
+        ' C19.7 63 18.9 68.6 18.5 73 C18.2 76.4 22.2 76.6 22.5 73.2' +
+        ' C22.9 68.4 23.7 63 24.9 58 C26.5 50.6 28.4 43.2 31 37 Z"/>' +
+      '<path d="M49.8 32.6 C54 40 57.4 49.2 59.2 57.6' +
+        ' C60.3 63 61.1 68.6 61.5 73 C61.8 76.4 57.8 76.6 57.5 73.2' +
+        ' C57.1 68.4 56.3 63 55.1 58 C53.5 50.6 51.6 43.2 49 37 Z"/>' +
     '</g>';
   function figura(x, y) {
     return '<svg class="antro-fig" viewBox="0 0 80 165" aria-hidden="true">' + SILHUETA +

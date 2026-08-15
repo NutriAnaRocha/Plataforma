@@ -61,7 +61,7 @@
   border-radius: var(--radius-input); transition: border-color .15s, background .15s;
 }
 .pl-metafonte__chip b { font-weight: 700; color: var(--vinho); }
-.pl-metafonte__chip:hover { border-color: var(--vinho); background: var(--vinho-claro, #faf5f7); }
+.pl-metafonte__chip:hover { border-color: var(--vinho); background: var(--rosa-suave); }
 .pl-metafonte__chip.is-on { border-color: var(--vinho); box-shadow: inset 0 0 0 1px var(--vinho); }
 .pl-metafonte__chip:focus-visible { outline: 2px solid var(--vinho); outline-offset: 2px; }
 .pl-metafonte__sub { font-size: var(--fs-caption); color: var(--texto-sutil); }
@@ -89,14 +89,23 @@
 
 /* Ações da refeição: duplicar, ordenar, excluir */
 .pl-meal__acoes { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+/* Botão de ação: ícone sozinho passava despercebido no cabeçalho branco, então
+   ganhou rótulo, cor da marca, fundo e alvo de toque de 34px. */
 .pl-mbtn {
-  border: 1px solid var(--cinza-borda); background: var(--branco); color: var(--cinza-escuro);
-  border-radius: var(--radius-input); padding: 4px 7px; font: inherit; font-size: var(--fs-caption);
+  display: inline-flex; align-items: center; gap: 5px; min-height: 34px;
+  border: 1px solid color-mix(in srgb, var(--vinho) 40%, var(--cinza-borda));
+  background: color-mix(in srgb, var(--rosa-suave) 55%, var(--branco)); color: var(--vinho);
+  border-radius: var(--radius-input); padding: 6px 10px; font: inherit; font-size: var(--fs-sm);
   font-weight: 700; line-height: 1; cursor: pointer; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .06);
 }
-.pl-mbtn:hover { border-color: var(--vinho); color: var(--vinho); background: var(--rosa-suave); }
-.pl-mbtn--del { color: #9b1c2e; }
-.pl-mbtn--del:hover { border-color: #9b1c2e; color: #9b1c2e; background: #fdecee; }
+.pl-mbtn--ico { padding: 6px 11px; font-size: var(--fs-body); }
+.pl-mbtn:hover { border-color: var(--vinho); color: var(--vinho); background: var(--rosa-suave); box-shadow: 0 2px 6px rgba(0, 0, 0, .12); }
+.pl-mbtn:focus-visible { outline: 2px solid var(--vinho); outline-offset: 2px; }
+.pl-mbtn--del { color: #9b1c2e; border-color: color-mix(in srgb, #9b1c2e 45%, var(--cinza-borda)); background: #fdecee; }
+.pl-mbtn--del:hover { border-color: #9b1c2e; color: #9b1c2e; background: #fbdadf; }
+/* Celular: o rótulo sai e ficam só os ícones, senão o cabeçalho quebra em 3 linhas. */
+@media (max-width: 560px) { .pl-mbtn__t { display: none; } .pl-mbtn { padding: 6px 9px; } }
 .pl-addmeals { display: flex; flex-wrap: wrap; gap: 8px; }
 
 /* Foto do prato: miniatura larga no editor, com as ações por cima no canto.

@@ -72,7 +72,9 @@
 }
 .antro-card__fig { position: relative; flex: none; width: 56px; }
 .antro-fig { width: 56px; height: auto; display: block; }
-.antro-fig__body { fill: var(--rosa); }
+/* Contorno fino: a silhueta é referência de posição, não ilustração —
+   preenchida ela pesava mais que o próprio marcador da medida. */
+.antro-fig__body { fill: none; stroke: var(--vinho); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; opacity: .55; }
 .antro-fig__ring { fill: none; stroke: var(--vinho); stroke-width: 2.4; }
 .antro-fig__dot { fill: var(--vinho); }
 .antro-card__lado {
