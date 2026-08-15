@@ -30,12 +30,11 @@
      losango, pernas em trapézio) e destoava do resto da ficha.
      O viewBox (80×165) e as proporções foram mantidos: as coordenadas x/y
      de cada circunferência e dobra continuam caindo no mesmo ponto. */
-  var SILHUETA =
-    '<g class="antro-fig__body">' +
-      '<circle cx="40" cy="13.5" r="8.4"/>' +
+  var CABECA = '<circle cx="40" cy="13.5" r="8.4"/>';
+  var TRONCO =
       // pescoço (senão a cabeça flutua sobre os ombros)
-      '<path d="M36.9 21.2 C36.6 22.6 36.4 23.6 36.2 24.4"/>' +
-      '<path d="M43.1 21.2 C43.4 22.6 43.6 23.6 43.8 24.4"/>' +
+      '<path class="fig-neck" d="M36.9 21.2 C36.6 22.6 36.4 23.6 36.2 24.4"/>' +
+      '<path class="fig-neck" d="M43.1 21.2 C43.4 22.6 43.6 23.6 43.8 24.4"/>' +
       // tronco + pernas, contorno contínuo (ombro → cintura → quadril → pernas)
       '<path d="M36.2 24.4 C33.6 25.2 31.2 27.4 29.4 31.4' +
         ' C28.4 37.6 27.9 43.2 28.2 48.4 C28.6 56 29.8 64.4 31.6 71.6' +
@@ -54,8 +53,8 @@
         ' C22.9 68.4 23.7 63 24.9 58 C26.5 50.6 28.4 43.2 31 37 Z"/>' +
       '<path d="M49.8 32.6 C54 40 57.4 49.2 59.2 57.6' +
         ' C60.3 63 61.1 68.6 61.5 73 C61.8 76.4 57.8 76.6 57.5 73.2' +
-        ' C57.1 68.4 56.3 63 55.1 58 C53.5 50.6 51.6 43.2 49 37 Z"/>' +
-    '</g>';
+        ' C57.1 68.4 56.3 63 55.1 58 C53.5 50.6 51.6 43.2 49 37 Z"/>';
+  var SILHUETA = '<g class="antro-fig__body">' + CABECA + TRONCO + '</g>';
   function figura(x, y) {
     return '<svg class="antro-fig" viewBox="0 0 80 165" aria-hidden="true">' + SILHUETA +
       '<g class="antro-fig__mk" transform="translate(' + x + ',' + y + ')">' +
@@ -227,14 +226,11 @@
     // 15% ≈ referência magra; cada ponto acima alarga um pouco o corpo.
     var sx = bf == null ? 1 : Math.max(0.84, Math.min(1.22, 0.9 + (bf - 15) / 90));
     return '<svg class="bc-fig" viewBox="0 0 80 165" aria-hidden="true">' +
-      '<g class="bc-fig__body" style="fill:' + cor + '" transform="translate(40,0) scale(' + sx.toFixed(3) + ',1) translate(-40,0)">' +
-        '<circle cx="40" cy="14" r="9"/>' +
-        '<rect x="36.5" y="22" width="7" height="6" rx="2"/>' +
-        '<path d="M27 31 Q40 26 53 31 L55 92 Q40 99 25 92 Z"/>' +
-        '<path d="M28 33 L17 72 L22 74 L33 39 Z"/>' +
-        '<path d="M52 33 L63 72 L58 74 L47 39 Z"/>' +
-        '<path d="M30 92 L26 151 L33 151 L38 96 Z"/>' +
-        '<path d="M50 92 L54 151 L47 151 L42 96 Z"/>' +
+      '<g class="bc-fig__body" style="fill:' + cor + ';stroke:' + cor + '">' +
+        CABECA +   // a cabeça fica fora do scaleX — esticada ela vira uma bola oval
+        '<g class="bc-fig__corpo" transform="translate(40,0) scale(' + sx.toFixed(3) + ',1) translate(-40,0)">' +
+          TRONCO +
+        '</g>' +
       '</g></svg>';
   }
   // Anel (donut) de percentual.
