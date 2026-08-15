@@ -30,35 +30,54 @@
      ⚠ A anatomia do contorno segue as coordenadas do catálogo: o tórax é largo
      até ~y46, a cintura MÍNIMA cai em y77 (onde a medida "cintura" marca), o
      quadril é o mais largo em y95 e as mãos chegam à altura da coxa. Mexer no
-     desenho sem conferir CIRC/DOBRAS coloca marcador fora do lugar do corpo. */
-  var CABECA = '<circle cx="40" cy="13.5" r="8.4"/>';
+     desenho sem conferir CIRC/DOBRAS coloca marcador fora do lugar do corpo.
+     A figura é SÓLIDA (silhueta preenchida, sem contorno): cabeça e corpo são
+     dois caminhos que se sobrepõem no pescoço, e só a cor chapada esconde a
+     emenda — por isso NÃO se põe stroke nem fill-opacity nestes dois paths
+     (a sobreposição apareceria como um risco no pescoço). */
+  // Cabeça + pescoço (fica fora do "engorda" da composição corporal: esticada
+  // horizontalmente a cabeça vira um ovo).
+  var CABECA =
+      '<path d="M40 3.4 C44.5 3.4 47.4 6.8 47.4 11.6' +
+        ' C47.4 16 46.6 20 45.1 22.4 C44.4 23.5 44 24.4 43.8 25.4' +
+        ' C43.6 27.4 43.7 29 44 30.4 L44 33 L36 33' +
+        ' C36.3 29 36.4 27.4 36.2 25.4 C36 24.4 35.6 23.5 34.9 22.4' +
+        ' C33.4 20 32.6 16 32.6 11.6 C32.6 6.8 35.5 3.4 40 3.4 Z"/>';
+  /* Corpo inteiro num só contorno: ombro → braço → mão → axila → tronco →
+     quadril → perna → pé → entrepernas → e o mesmo do outro lado. O vão entre
+     antebraço e cintura é vazado de propósito (é o que dá leitura de braço). */
   var TRONCO =
-      // pescoço (senão a cabeça flutua sobre os ombros)
-      '<path class="fig-neck" d="M36.9 21.2 C36.6 22.6 36.4 23.6 36.2 24.4"/>' +
-      '<path class="fig-neck" d="M43.1 21.2 C43.4 22.6 43.6 23.6 43.8 24.4"/>' +
-      // tronco + pernas, contorno contínuo (ombro → tórax → cintura → quadril → pernas)
-      '<path d="M36.2 24.4 C33.4 25.4 30.6 27.6 28.8 31.6' +
-        ' C27.8 36 27.2 41 27.4 46 C27.8 54 29.6 64 30.8 72' +
-        ' C31.2 74.6 31 76 30.6 77.6 C30.4 79.6 30.8 80.8 31.4 82' +
-        ' C29.4 86 26.6 90 25.6 95 C25.2 100 26 105 27 110' +
-        ' C27.6 118 27.9 128 28.4 149.6' +
-        ' L34.9 149.6 C35.2 138 35.6 126 36.2 114' +
-        ' C36.6 108 37.4 104 38.2 101.5 L40 99 L41.8 101.5' +
-        ' C42.6 104 43.4 108 43.8 114 C44.4 126 44.8 138 45.1 149.6' +
-        ' L51.6 149.6 C52.1 128 52.4 118 53 110' +
-        ' C54 105 54.8 100 54.4 95 C53.4 90 50.6 86 48.6 82' +
-        ' C49.2 80.8 49.6 79.6 49.4 77.6 C49 76 48.8 74.6 49.2 72' +
-        ' C50.4 64 52.2 54 52.6 46 C52.8 41 52.2 36 51.2 31.6' +
-        ' C49.4 27.6 46.6 25.4 43.8 24.4 Z"/>' +
-      // braços soltos ao lado do corpo, mão na altura da coxa (contorno próprio)
-      '<path d="M29.4 32.4 C25.6 38 22.6 46 21 54' +
-        ' C19.8 60 19 68 18.8 76 C18.6 84 19.4 90 20.6 93.4' +
-        ' C21.6 96 24.4 95.4 24.2 92.6 C23.8 86 24 79 24.6 72' +
-        ' C25.2 64 26.6 55 28.6 47 C29.4 43 30.2 39.4 31.2 36.6 Z"/>' +
-      '<path d="M50.6 32.4 C54.4 38 57.4 46 59 54' +
-        ' C60.2 60 61 68 61.2 76 C61.4 84 60.6 90 59.4 93.4' +
-        ' C58.4 96 55.6 95.4 55.8 92.6 C56.2 86 56 79 55.4 72' +
-        ' C54.8 64 53.4 55 51.4 47 C50.6 43 49.8 39.4 48.8 36.6 Z"/>';
+      '<path d="M44 26 C44.2 27.6 44.4 28.6 44.8 29.4' +
+        ' C47.6 30.4 50.8 31.6 52.8 34 C54.9 36.2 56.2 39 56.9 42.4' +
+        ' C57.9 47 58.7 51 59.3 55.4 C59.9 60 60.2 66 60.3 71.6' +      // braço direito (fora)
+        ' C60.2 76 59.9 80 59.5 84 C59.2 88 59 92 58.9 95.6' +
+        ' C58.8 99.4 58.5 102.8 57.7 104.8 C57 106.6 55.3 106.3 55.2 104.2' + // mão
+        ' C55.1 101.8 55.1 98.4 55.3 95.6 C55.5 92 55.7 88 55.9 84' +
+        ' C56.1 80 56.4 76 56.5 71.4 C56.4 66 56.1 60 55.5 55.4' +      // braço direito (dentro)
+        ' C53.9 51.4 53.4 49 52.6 47' +                                  // axila
+        ' C53.1 52 53.3 58 52.7 64 C52.1 70 50.2 74 49.5 77.4' +        // tórax → cintura (y77)
+        ' C49.1 81 50.1 84 51.3 87 C52.5 90 53.1 93 52.9 96.4' +        // quadril (y95)
+        ' C52.6 101 52.2 106 51.6 111 C51 116 50.4 120 49.9 124.4' +    // coxa → joelho
+        ' C49.5 129 49.9 134 49.7 139 C49.5 144 48.8 148 48 152' +      // panturrilha → tornozelo
+        ' C47.6 155.5 47.4 158.5 48 161 C48.3 162.2 47.4 162.8 46 162.8' +
+        ' L42.6 162.8 C41.4 162.8 41.2 162 41.4 160.6' +                // pé direito
+        ' C41.8 156 42.2 152 42.4 148 C42.6 142 42.2 136 42.2 130' +
+        ' C42.2 124 42.4 116 41.8 108 C41.4 103.6 40.8 100.8 40 99' +   // entrepernas
+        ' C39.2 100.8 38.6 103.6 38.2 108 C37.6 116 37.8 124 37.8 130' +
+        ' C37.8 136 37.4 142 37.6 148 C37.8 152 38.2 156 38.6 160.6' +
+        ' C38.8 162 38.6 162.8 37.4 162.8 L34 162.8' +                  // pé esquerdo
+        ' C32.6 162.8 31.7 162.2 32 161 C32.6 158.5 32.4 155.5 32 152' +
+        ' C31.2 148 30.5 144 30.3 139 C30.1 134 30.5 129 30.1 124.4' +
+        ' C29.6 120 29 116 28.4 111 C27.8 106 27.4 101 27.1 96.4' +
+        ' C26.9 93 27.5 90 28.7 87 C29.9 84 30.9 81 30.5 77.4' +
+        ' C29.8 74 27.9 70 27.3 64 C26.7 58 26.9 52 27.4 47' +          // cintura → axila esquerda
+        ' C26.6 49 26.1 51.4 24.5 55.4 C23.9 60 23.6 66 23.5 71.4' +
+        ' C23.6 76 23.9 80 24.1 84 C24.3 88 24.5 92 24.7 95.6' +
+        ' C24.9 98.4 24.9 101.8 24.8 104.2 C24.7 106.3 23 106.6 22.3 104.8' +
+        ' C21.5 102.8 21.2 99.4 21.1 95.6 C21 92 20.8 88 20.5 84' +
+        ' C20.1 80 19.8 76 19.7 71.6 C19.8 66 20.1 60 20.7 55.4' +
+        ' C21.3 51 22.1 47 23.1 42.4 C23.8 39 25.1 36.2 27.2 34' +
+        ' C29.2 31.6 32.4 30.4 35.2 29.4 C35.6 28.6 35.8 27.6 36 26 Z"/>';
   var SILHUETA = '<g class="antro-fig__body">' + CABECA + TRONCO + '</g>';
   function figura(x, y) {
     return '<svg class="antro-fig" viewBox="0 0 80 165" aria-hidden="true">' + SILHUETA +
@@ -94,7 +113,7 @@
     { key: "peitoral",     lbl: "Peitoral (torácica)", x: 33, y: 46, lado: "frente",
       como: "Oblíqua, dirigida ao mamilo. Homens: ½ da distância axila–mamilo; mulheres: ⅓.",
       protocolo: "Marcação: homens, metade da distância entre a linha axilar anterior e o mamilo; mulheres, a um terço dessa distância a partir da linha axilar anterior. Direção: oblíqua ao eixo longitudinal, para baixo e para dentro. Avaliado em pé, braço ligeiramente afastado do tronco. Destacar a dobra no sentido da linha axila–mamilo e aplicar o plicômetro 1 cm abaixo dos dedos." },
-    { key: "axilar",       lbl: "Axilar média",        x: 27, y: 60, lado: "frente",
+    { key: "axilar",       lbl: "Axilar média",        x: 29, y: 60, lado: "frente",
       como: "Linha axilar média, na altura do apêndice xifoide. Braço deslocado para trás.",
       protocolo: "Marcação: intersecção da linha axilar média com uma horizontal na altura do apêndice xifoide do esterno. Direção: transversal por Jackson et al. (1978) — convenção das equações usadas aqui; oblíqua por Petroski (1995). Os autores divergem: use uma e mantenha a MESMA nas reavaliações. Avaliado em pé, braço deslocado para trás para expor o ponto." },
     { key: "triceps",      lbl: "Tríceps",             x: 57, y: 52, lado: "costas",
@@ -103,7 +122,7 @@
     { key: "subescapular", lbl: "Subescapular",        x: 48, y: 49, lado: "costas",
       como: "2 cm abaixo do ângulo inferior da escápula, oblíqua a ~45°.",
       protocolo: "Marcação: dois centímetros abaixo do ângulo inferior da escápula. Direção: oblíqua a ~45°, seguindo a orientação natural dos arcos costais (dirigida ínfero-lateralmente). Avaliado em pé, ombros relaxados e braços soltos. Se o ângulo for difícil de palpar, pedir para levar o braço às costas e devolver à posição antes de medir." },
-    { key: "suprailiaca",  lbl: "Suprailíaca",         x: 29, y: 78, lado: "frente",
+    { key: "suprailiaca",  lbl: "Suprailíaca",         x: 31.5, y: 78, lado: "frente",
       como: "Metade da distância entre o último arco costal e a crista ilíaca, na linha axilar média.",
       protocolo: "Marcação: ponto médio entre o último arco costal e a crista ilíaca, sobre a linha axilar média. Direção: oblíqua, acompanhando a linha natural da pele (ântero-inferior). Avaliado em pé, braço afastado para trás para liberar o ponto. Palpar as duas referências ósseas antes de marcar." },
     { key: "abdominal",    lbl: "Abdominal",           x: 45, y: 86, lado: "frente",
@@ -258,11 +277,11 @@
       '<path d="M31.4 104 C30.6 111 30.4 118 30.8 124"/>' +
       '<path d="M48.6 104 C49.4 111 49.6 118 49.2 124"/>' +
       // joelhos
-      '<path d="M29 128 C30.6 129.6 33 129.6 34.6 128"/>' +
-      '<path d="M45.4 128 C47 129.6 49.4 129.6 51 128"/>' +
+      '<path d="M30.4 125.6 C31.8 127 34.4 127 35.8 125.6"/>' +
+      '<path d="M44.2 125.6 C45.6 127 48.2 127 49.6 125.6"/>' +
       // panturrilhas
-      '<path d="M30.5 132.5 C29.9 136.5 30.1 140 31 143"/>' +
-      '<path d="M49.5 132.5 C50.1 136.5 49.9 140 49 143"/>';
+      '<path d="M31.2 131 C30.6 136 30.8 141 31.8 145"/>' +
+      '<path d="M48.8 131 C49.4 136 49.2 141 48.2 145"/>';
 
   function _rgb(h) {
     h = h.replace("#", "");
@@ -312,8 +331,6 @@
         ';opacity:' + ((0.05 + mus * 0.78) * (1 - adip * 0.5)).toFixed(2) + '">' +
         '<g transform="translate(40,0) scale(' + sx.toFixed(3) + ',1) translate(-40,0)">' + MUSCULOS + '</g>' +
       '</g>' +
-      // 4. contorno por cima
-      '<g class="bc-fig__body" style="stroke:' + traco + '">' + body + '</g>' +
       '</svg>';
   }
   // Anel (donut) de percentual.

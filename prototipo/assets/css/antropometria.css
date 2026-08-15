@@ -72,12 +72,10 @@
 }
 .antro-card__fig { position: relative; flex: none; width: 56px; }
 .antro-fig { width: 56px; height: auto; display: block; }
-/* Corpo em véu claro + contorno: em 56px o contorno sozinho virava rabisco.
-   O marcador ganha halo branco para não sumir dentro do preenchimento. */
-.antro-fig__body {
-  fill: var(--vinho); fill-opacity: .13; stroke: var(--vinho); stroke-width: 1.1;
-  stroke-linejoin: round; stroke-linecap: round; opacity: .85;
-}
+/* Silhueta sólida (nada de contorno: cabeça e corpo se sobrepõem no pescoço e
+   qualquer stroke/fill-opacity revelaria a emenda). O marcador ganha halo
+   branco para não sumir dentro do corpo cheio. */
+.antro-fig__body { fill: var(--vinho); stroke: none; opacity: .28; }
 .antro-fig__halo { fill: var(--branco); opacity: .9; }
 .antro-fig__ring { fill: none; stroke: var(--vinho); stroke-width: 2.4; }
 .antro-fig__dot { fill: var(--vinho); }
@@ -160,14 +158,11 @@
 .bc__fig { flex: none; width: 108px; display: grid; place-items: center; }
 .bc-fig { width: 108px; height: auto; display: block; filter: drop-shadow(0 4px 10px rgba(132, 11, 85, .12)); }
 /* Corpo anatômico: preenchimento em tom de pele (rosado ↔ amarelado conforme a
-   composição), relevo muscular por dentro e contorno por cima. */
-.bc-fig__fill { stroke: none; fill-opacity: .5; transition: fill var(--t-med); }
+   composição) e relevo muscular por dentro.
+   Sólida pelo mesmo motivo da figura de medida: a emenda do pescoço apareceria
+   com qualquer transparência ou contorno. */
+.bc-fig__fill { stroke: none; transition: fill var(--t-med); }
 .bc-fig__musc { fill: none; stroke-linecap: round; stroke-linejoin: round; transition: opacity var(--t-med), stroke var(--t-med); }
-.bc-fig__body {
-  fill: none; stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round;
-  transition: stroke var(--t-med);
-}
-.bc-fig__body .fig-neck, .bc-fig__fill .fig-neck, .antro-fig__body .fig-neck { fill: none; }
 .bc__data { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
 .bc__donuts { display: flex; gap: var(--sp-5); }
 .bc-donut { display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
