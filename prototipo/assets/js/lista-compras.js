@@ -18,7 +18,6 @@
     });
   }
   function r0(n) { return Math.round(n); }
-  function r1(n) { return Math.round(n * 10) / 10; }
   function slug(s) {
     return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "")
       .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -121,6 +120,65 @@
     return null;
   }
 
+  /* ---------- Nome de compra ----------
+     A TACO nomeia por chave de busca ("Carne, bovina, patinho, moído, cru"),
+     que não é como se pede no açougue. Aqui o nome vira o que se compra:
+     inverte a vírgula, joga fora o preparo (cru, grelhado, cozido — ninguém
+     compra grelhado) e mantém o que muda a compra (integral, moído, sem pele,
+     em conserva). O nome no BANCO continua o da TACO: isto é só exibição. */
+  var NOME_PREPARO = /^(crua?s?|cozid[oa]s?(\/\d+\s*minutos?)?|grelhad[oa]s?|assad[oa]s?|frit[oa]s?|refogad[oa]s?|desfiad[oa]s?|ensopad[oa]s?|tostad[oa]s?|escaldad[oa]s?|cozinhad[oa]s?|à milanesa|a milanesa|na chapa|na manteiga)$/i;
+  var NOME_ESPECIE = /^(bovina|suína|suina)$/i;
+  // Parte que pede "de" no meio: "Ovo de galinha", "Leite de vaca".
+  var NOME_DE = /^(galinha|codorna|vaca|cabra|búfala|bufala|soja|milho|trigo|arroz|aveia|centeio|coco|oliva|leite)$/i;
+  // Corte, que vem antes do animal: "Peito de frango", "Filé de linguado".
+  var NOME_CORTE = /^(peito|coxa|sobrecoxa|asa|filé|file|posta|lombo|costela|pernil|paleta|coração|coracao|fígado|figado|moela|rabada|músculo|musculo)$/i;
+  // Casos em que a regra geral não chega no nome de feira.
+  var NOME_FIXO = {
+    "arroz-tipo-1-cru": "Arroz branco", "arroz-tipo-1-cozido": "Arroz branco",
+    "arroz-tipo-2-cru": "Arroz branco", "arroz-tipo-2-cozido": "Arroz branco",
+    "pao-trigo-forma-integral": "Pão de forma integral",
+    "pao-trigo-frances": "Pão francês",
+    "pao-trigo-sovado": "Pão sovado",
+    "pao-aveia-forma": "Pão de forma de aveia",
+    "pao-milho-forma": "Pão de forma de milho",
+    "pao-gluten-forma": "Pão de forma de glúten",
+    "queijo-requeijao-cremoso": "Requeijão cremoso",
+    "macarrao-trigo-cru": "Macarrão", "macarrao-trigo-cru-com-ovos": "Macarrão com ovos",
+    "aveia-flocos-crua": "Aveia em flocos",
+    "carne-bovina-patinho-sem-gordura-cru": "Bife de patinho",
+    "carne-bovina-patinho-sem-gordura-grelhado": "Bife de patinho"
+  };
+  // "com casca" só diz respeito ao preparo da fruta — na feira é ruído.
+  var NOME_RUIDO = /^com casca$/i;
+  function nomeCompra(nome) {
+    var bruto = String(nome == null ? "" : nome).trim().replace(/\s+/g, " ");
+    if (!bruto) return "";
+    var fixo = NOME_FIXO[slug(bruto)];
+    if (fixo) return fixo;
+    if (bruto.indexOf(",") === -1) return bruto;
+
+    var partes = bruto.split(",").map(function (p) { return p.trim(); }).filter(Boolean);
+    var cabeca = partes[0];
+    var resto = partes.slice(1).filter(function (p) {
+      return !NOME_PREPARO.test(p) && !NOME_RUIDO.test(p);
+    });
+
+    // "Carne, bovina, patinho" → no açougue o que identifica é o corte.
+    if (/^carnes?$/i.test(cabeca) && resto.length && NOME_ESPECIE.test(resto[0])) {
+      resto.shift();
+      if (resto.length) cabeca = resto.shift();
+    }
+    // "Frango, peito" → "Peito de frango".
+    if (resto.length && NOME_CORTE.test(resto[0])) {
+      var corte = resto.shift();
+      cabeca = corte.charAt(0).toUpperCase() + corte.slice(1) + " de " + cabeca.toLowerCase();
+    }
+
+    var txt = cabeca;
+    resto.forEach(function (p) { txt += (NOME_DE.test(p) ? " de " : " ") + p; });
+    return txt.charAt(0).toUpperCase() + txt.slice(1);
+  }
+
   function alimentoDe(it) {
     if (it.alimentoId != null && AL_BY_ID[it.alimentoId]) return AL_BY_ID[it.alimentoId];
     if (!it.alimento) return null;
@@ -139,10 +197,15 @@
         var nome = it.alimento || (it.nome) || "";
         if (!nome.trim()) return;
         var al = alimentoDe(it);
-        var chave = al ? ("id" + al.id) : ("n" + nome.toLowerCase());
+        var bruto = al ? al.nome : nome;
+        var exib = nomeCompra(bruto);
+        // A chave é o nome DE COMPRA: patinho cru e patinho grelhado viram a
+        // mesma linha da lista — na feira é a mesma carne, e duas linhas com
+        // o mesmo nome é justamente o que se quer evitar.
+        var chave = "c" + slug(exib);
         // it.grupo cobre o alimento vindo da TACO do banco, que não está
         // no arquivo local; sem ele sobra a pista pelo nome, lá embaixo.
-        if (!mapa[chave]) mapa[chave] = { nome: al ? al.nome : nome, grupo: (al && al.grupo) || it.grupo || null, gramas: 0, medidas: {} };
+        if (!mapa[chave]) mapa[chave] = { nome: exib, bruto: bruto, al: al, grupo: (al && al.grupo) || it.grupo || null, gramas: 0, medidas: {} };
         var reg = mapa[chave];
         reg.gramas += (+it.gramas || 0);
         var med = it.medida || "grama", qtd = +it.qtd || 0;
@@ -166,7 +229,10 @@
       var reg = mapa[k];
       // Nome primeiro: é o que distingue frango de carne e folha de raiz.
       // O grupo da TACO só entra quando o nome não diz nada.
-      var corr = corredorPeloNome(reg.nome) || (reg.grupo && GRUPO2CORR[reg.grupo]) || OUTROS.key;
+      // Pista pelo nome da TACO, não pelo de compra: as pistas foram escritas
+      // sobre o nome cru ("Carne, bovina, ...") e o de compra já perdeu palavra.
+      var corr = corredorPeloNome(reg.bruto || reg.nome) || corredorPeloNome(reg.nome) ||
+                 (reg.grupo && GRUPO2CORR[reg.grupo]) || OUTROS.key;
       (buckets[corr] = buckets[corr] || []).push(reg);
     });
 
@@ -185,16 +251,31 @@
     return { corredores: out, totalItens: Object.keys(mapa).length };
   }
 
-  // Texto amigável de quantidade: "3 unidades · 150 g" ou "≈ 320 g".
+  /* Quantidade: o TOTAL que se compra, e só ele. A medida caseira do plano
+     ("2 colheres de sopa", "1 porcao") não serve na feira — ninguém compra
+     azeite em colher. Vira grama/quilo, ou unidade quando o alimento é
+     contável (ovo, pão, fruta): aí a conta é o total ÷ peso da unidade. */
+  function pesoUnidade(al) {
+    var meds = (al && al.medidas) || [];
+    for (var i = 0; i < meds.length; i++) {
+      if (/^unidade/i.test(meds[i].nome) && +meds[i].g > 0) return +meds[i].g;
+    }
+    return 0;
+  }
+  function textoPeso(g) {
+    if (g >= 1000) return String((g / 1000).toFixed(g % 1000 ? 1 : 0)).replace(".", ",") + " kg";
+    return r0(g) + " g";
+  }
   function qtdTexto(reg) {
-    var partes = [];
-    Object.keys(reg.medidas).forEach(function (m) {
-      var q = reg.medidas[m];
-      partes.push(r1(q) + " " + m + (q > 1 && !/s$|colher|fatia|pires|concha/.test(m) ? "s" : ""));
-    });
-    var g = r0(reg.gramas);
-    if (partes.length) return partes.join(" · ") + (g ? " · " + g + " g" : "");
-    return "≈ " + g + " g";
+    var g = reg.gramas || 0;
+    // Unidade só quando o plano prescreveu em unidade: 2 fatias de pão de
+    // forma não devem virar "1 unidade", mas 2 ovos viram "2 unidades".
+    var pu = reg.medidas && reg.medidas["unidade"] ? pesoUnidade(reg.al) : 0;
+    if (pu > 0) {
+      var n = Math.round(g / pu);
+      if (n >= 1) return n + (n > 1 ? " unidades" : " unidade") + " (" + textoPeso(g) + ")";
+    }
+    return textoPeso(g);
   }
   function finalizaItem(reg) {
     // Ingrediente de receita já traz a medida no texto: no lugar da quantidade
@@ -328,6 +409,6 @@
 
   window.ListaCompras = {
     gerar: gerar, htmlNutri: htmlNutri, htmlPortal: htmlPortal, pdfHTML: pdfHTML,
-    dicasHTML: dicasHTML, refresh: refreshPortal
+    dicasHTML: dicasHTML, refresh: refreshPortal, nomeCompra: nomeCompra
   };
 })();
