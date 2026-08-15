@@ -639,7 +639,8 @@
     if (p.plano && (p.plano.titulo || (p.plano.refeicoes || []).length)) {
       var refs = (p.plano.refeicoes || []).map(function (r) {
         var itens = (r.itens || []).map(function (i) {
-          return '<div class="fmeal__item"><span>' + esc(i.alimento || i.nome || "") + '</span><span>' + esc(i.qtd || "") + '</span></div>';
+          var nm = window.NomeAlimento ? window.NomeAlimento.doItem(i) : (i.alimento || i.nome || "");
+          return '<div class="fmeal__item"><span>' + esc(nm) + '</span><span>' + esc(i.qtd || "") + '</span></div>';
         }).join("");
         return '<div class="fmeal"><div class="fmeal__head">' + esc(r.nome || r.hora || "Refeição") + '</div>' + itens + '</div>';
       }).join("");

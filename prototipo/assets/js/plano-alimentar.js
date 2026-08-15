@@ -34,12 +34,20 @@
   /* ---------- Banco de alimentos ---------- */
   var AL = window.ALIMENTOS || [];
   var AL_BY_ID = {}, AL_BY_NOME = {};
-  AL.forEach(function (a) { AL_BY_ID[a.id] = a; AL_BY_NOME[a.nome.toLowerCase()] = a; });
+  /* `a.nome` já vem em português (nome-alimento.js reescreveu o banco) e
+     `a.taco` guarda o nome original. Os dois entram no índice: plano salvo
+     antes disso gravou o nome da TACO no item, e a nutri que aprendeu a
+     buscar por "carne bovina patinho" continua achando. */
+  AL.forEach(function (a) {
+    AL_BY_ID[a.id] = a;
+    AL_BY_NOME[a.nome.toLowerCase()] = a;
+    if (a.taco) AL_BY_NOME[a.taco.toLowerCase()] = a;
+  });
 
   function limpa(s) { return normaliza(s).replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim(); }
 
   // Índice de nomes já normalizados — a busca roda a cada tecla digitada.
-  var AL_NORM = AL.map(function (a) { return limpa(a.nome); });
+  var AL_NORM = AL.map(function (a) { return limpa(a.nome + " " + (a.taco || "")); });
 
   /* Palavras de ligação: a TACO escreve "Pão, trigo, forma, integral", mas a
      nutri digita "pão de forma". Sem ignorar o "de" nada casava — e sem
@@ -1108,7 +1116,7 @@
     var meals = (plano.refeicoes || []).map(function (rf) {
       var itens = (rf.itens || []).map(function (it) {
         var c = calcItem(it);
-        return '<div class="pl-res__item"><span>' + esc(it.alimento || "—") + '</span>' +
+        return '<div class="pl-res__item"><span>' + esc(nomeItem(it) || "—") + '</span>' +
           '<span class="pl-res__qt">' + esc(qtdLabel(it, c)) + '</span>' +
           '<span class="pl-res__kc">' + c.kcal + ' kcal</span></div>' + subsResumoHTML(it);
       }).join("");
@@ -1223,7 +1231,8 @@
         '<p class="pl-hint">Para dar outra opção da mesma refeição, use o <strong>⧉ duplicar</strong> no cabeçalho dela: ' +
           'sai um <em>Jantar — Opção 2</em> com os mesmos alimentos, que você troca à vontade. ' +
           'A cópia já entra como opção e <strong>não é somada</strong> no total do dia — o paciente come uma ou a outra. ' +
-          'As setas <strong>↑ ↓</strong> mudam a ordem das refeições.</p>' +
+          'As setas <strong>↑ ↓</strong> mudam a ordem — as do cabeçalho movem a refeição inteira, ' +
+          'as da linha do alimento mudam a ordem dentro do prato.</p>' +
       '</section>' +
       '<div class="pl-totbar" id="pl-totbar">' + '</div>' +
       '<div class="pl-actions">' +
@@ -1300,13 +1309,22 @@
     '</div>';
   }
 
+  /* Nome do item para EXIBIR. O texto gravado no plano pode ser o nome antigo
+     da TACO ("Arroz, tipo 1, cozido"); quem manda é o alimento do banco, que
+     nome-alimento.js já deixou em português. */
+  function nomeItem(it) {
+    if (!it) return "";
+    var al = it.alimentoId != null ? AL_BY_ID[it.alimentoId] : alimentoDoValor(it.alimento);
+    return al ? al.nome : (it.alimento || "");
+  }
+
   function itemHTML(it, mi, ii) {
     var al = it.alimentoId != null ? AL_BY_ID[it.alimentoId] : alimentoDoValor(it.alimento);
     var medidas = al ? al.medidas : [{ nome: "grama", g: 1 }];
     var subs = (it.subs || []).filter(function (s) { return s && s.alimento; });
     return '<div class="pl-itemwrap" data-item>' +
       '<div class="pl-item">' +
-        foodInputHTML(it.alimento, "data-food", "buscar alimento…") +
+        foodInputHTML(nomeItem(it), "data-food", "buscar alimento…") +
         '<input class="pl-item__qt" type="number" step="0.5" min="0" data-qt value="' + esc(it.qtd != null ? it.qtd : 1) + '" />' +
         '<select class="pl-item__med" data-med>' + medOptsHTML(medidas, it.medida) + '</select>' +
         '<span class="pl-item__g" data-gramas>—</span>' +
@@ -1314,6 +1332,12 @@
         '<button class="pl-swap' + (subs.length ? " is-on" : "") + '" type="button" data-toggle-subs ' +
           'aria-label="Opções de substituição" title="Alimentos que substituem este">⇄' +
           '<span class="pl-swap__n" data-subs-n>' + (subs.length || "") + '</span></button>' +
+        // Ordem dentro da refeição: a nutri monta o prato na ordem que quer que
+        // a paciente leia (arroz e feijão no topo, salada depois).
+        '<span class="pl-ord">' +
+          '<button class="pl-ord__b" type="button" data-up-item title="Mover para cima" aria-label="Mover alimento para cima">↑</button>' +
+          '<button class="pl-ord__b" type="button" data-down-item title="Mover para baixo" aria-label="Mover alimento para baixo">↓</button>' +
+        '</span>' +
         '<button class="pl-x" type="button" data-rm-item aria-label="Remover">✕</button>' +
       '</div>' +
       subsBoxHTML(subs) +
@@ -1335,7 +1359,7 @@
     var medidas = al ? al.medidas : [{ nome: "grama", g: 1 }];
     return '<div class="pl-sub" data-sub>' +
       '<span class="pl-sub__ico" aria-hidden="true">⇄</span>' +
-      foodInputHTML(s.alimento, "data-sub-food", "alimento substituto…") +
+      foodInputHTML(nomeItem(s), "data-sub-food", "alimento substituto…") +
       '<input class="pl-item__qt" type="number" step="0.5" min="0" data-sub-qt value="' + esc(s.qtd != null ? s.qtd : 1) + '" />' +
       '<select class="pl-item__med" data-sub-med>' + medOptsHTML(medidas, s.medida) + '</select>' +
       '<span class="pl-item__kc" data-sub-kc>—</span>' +
@@ -1519,6 +1543,8 @@
       else if (t.closest("[data-rm-sub]")) { var itw = t.closest("[data-item]"); t.closest("[data-sub]").remove(); contarSubs(itw); recalc(); }
       else if (t.closest("[data-alt-meal]")) { alternarAlt(t.closest("[data-meal]")); }
       else if (t.closest("[data-dup-meal]")) { duplicarMeal(t.closest("[data-meal]")); }
+      else if (t.closest("[data-up-item]")) { moverItem(t.closest("[data-item]"), -1); }
+      else if (t.closest("[data-down-item]")) { moverItem(t.closest("[data-item]"), 1); }
       else if (t.closest("[data-up-meal]")) { moverMeal(t.closest("[data-meal]"), -1); }
       else if (t.closest("[data-down-meal]")) { moverMeal(t.closest("[data-meal]"), 1); }
       else if (t.closest("[data-rm-meal]")) { removerMeal(t.closest("[data-meal]")); }
@@ -1810,6 +1836,20 @@
         !window.confirm('Excluir "' + rf.nome + '" e os ' + rf.itens.length + ' alimentos dela?')) return;
     mealEl.remove();
     recalc();
+  }
+  /* Ordem dos alimentos dentro da refeição. Como coletar() lê o DOM de cima
+     para baixo, mover o nó já muda o plano — não há índice a atualizar. */
+  function moverItem(itemEl, delta) {
+    if (!itemEl) return;
+    var box = itemEl.parentNode;
+    if (delta < 0) {
+      var ant = itemEl.previousElementSibling;
+      if (ant) box.insertBefore(itemEl, ant);
+    } else {
+      var prox = itemEl.nextElementSibling;
+      if (prox) box.insertBefore(prox, itemEl);
+    }
+    if (itemEl.scrollIntoView) itemEl.scrollIntoView({ block: "nearest" });
   }
   function moverMeal(mealEl, delta) {
     if (!mealEl) return;
@@ -2199,7 +2239,7 @@
       var itens = (rf.itens || []).map(function (it) {
         var c = calcItem(it); sub += c.kcal;
         var st = subsTexto(it);
-        return '<div class="doc-meal__item"><span>' + esc(it.alimento) +
+        return '<div class="doc-meal__item"><span>' + esc(nomeItem(it)) +
             (st.length ? '<span class="doc-meal__sub"> ou ' + esc(st.join(" · ")) + '</span>' : '') + '</span>' +
           '<span class="doc-meal__qt">' + esc(qtdLabel(it, c)) + ' · ' + c.kcal + ' kcal</span></div>';
       }).join("");

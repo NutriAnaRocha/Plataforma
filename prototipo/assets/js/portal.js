@@ -380,7 +380,8 @@
   function itemTexto(it) {
     if (it == null) return "";
     if (typeof it === "string") return it;
-    var nome = it.alimento || it.nome || "";
+    // O plano gravado antes da humanização traz o nome da TACO no item.
+    var nome = window.NomeAlimento ? window.NomeAlimento.doItem(it) : (it.alimento || it.nome || "");
     var q;
     if (it.medida && it.medida !== "grama") q = (it.qtd != null ? it.qtd + " " : "") + it.medida;
     else if (it.gramas != null) q = it.gramas + " g";

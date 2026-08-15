@@ -129,7 +129,7 @@
 /* Item */
 .pl-items { display: flex; flex-direction: column; gap: 6px; }
 .pl-itemwrap { display: flex; flex-direction: column; }
-.pl-item { display: grid; grid-template-columns: 1fr 66px minmax(120px, 150px) 62px 74px 28px 28px; gap: 6px; align-items: center; }
+.pl-item { display: grid; grid-template-columns: 1fr 66px minmax(120px, 150px) 62px 74px 28px 22px 28px; gap: 6px; align-items: center; }
 .pl-item input, .pl-item select {
   font: inherit; font-size: var(--fs-sm); border: 1px solid var(--cinza-borda);
   border-radius: var(--radius-input); padding: 6px 8px; background: var(--branco); min-width: 0; width: 100%;
@@ -139,6 +139,16 @@
 .pl-item__kc { font-weight: 700; color: var(--cinza-escuro); }
 .pl-x { border: none; background: none; cursor: pointer; color: var(--texto-sutil); font-size: 14px; padding: 2px; line-height: 1; }
 .pl-x:hover { color: var(--vinho); }
+
+/* Setas de ordem do alimento: empilhadas para caber na linha do item sem
+   roubar espaço do campo de busca. */
+.pl-ord { display: flex; flex-direction: column; gap: 1px; }
+.pl-ord__b {
+  border: none; background: none; cursor: pointer; color: var(--texto-sutil);
+  font-size: 11px; line-height: 1; padding: 3px 2px; border-radius: 4px;
+}
+.pl-ord__b:hover { color: var(--vinho); background: var(--rosa-suave); }
+.pl-ord__b:focus-visible { outline: none; box-shadow: var(--ring-foco); }
 
 .pl-additem { margin-top: 8px; border: 1px dashed var(--cinza-borda); background: none; color: var(--vinho); border-radius: var(--radius-input); padding: 6px 10px; font: inherit; font-size: var(--fs-caption); font-weight: 700; cursor: pointer; }
 .pl-additem:hover { background: var(--rosa-suave); }
@@ -304,9 +314,12 @@
 @media (max-width: 640px) {
   .pl-meta { grid-template-columns: 1fr 1fr; }
   .pl-item {
-    grid-template-columns: 1fr 56px 28px 28px;
-    grid-template-areas: "food food food food" "qt med med med" "g kc swap x";
+    grid-template-columns: 1fr 56px 26px 28px 28px;
+    grid-template-areas: "food food food food food" "qt med med med med" "g kc ord swap x";
   }
+  /* No celular a seta é alvo de dedo, não de mouse. */
+  .pl-ord { grid-area: ord; }
+  .pl-ord__b { padding: 6px 2px; font-size: 12px; }
   .pl-foodwrap { grid-area: food; }
   .pl-item__qt { grid-area: qt; }
   .pl-item__med { grid-area: med; }

@@ -32,6 +32,8 @@
     // ("Feijão vermelho , cozido") e o casamento exato falha — o item
     // perdia o grupo e caía em "Outros" na lista de compras.
     AL_BY_SLUG[slug(a.nome)] = a;
+    // Plano salvo antes da humanização gravou o nome da TACO no item.
+    if (a.taco) { AL_BY_NOME[a.taco.toLowerCase()] = a; AL_BY_SLUG[slug(a.taco)] = a; }
   });
 
   /* grupo do alimento → corredor de mercado (ordem = ordem de exibição).
@@ -85,7 +87,8 @@
     { k: "legumes", re: /\b(milho verde|milho em conserva)\b/ },    // não é o grão de cereais
     { k: "folhas", re: /\bcouve\b/ },            // "couve, manteiga" não é laticínio
     { k: "tuberculos", re: /\bbatata\b/ },       // "batata, doce" não é doce
-    { k: "oleos", re: /\b(oleo de coco|azeite|oleo|banha|vinagre|sal\b|pimenta|alho|cebola em po|colorau|oregano|louro|cominho|tempero|caldo de|molho de soja|shoyu|mostarda|ketchup|maionese)\b/ },
+    { k: "oleos", re: /\b(oleo de coco|azeite|oleo|banha|vinagre|sal\b|pimenta|pepper|paprica|curcuma|acafrao|chimichurri|ervas finas|especiaria|alho|cebola em po|colorau|oregano|louro|cominho|tempero|caldo de|molho de soja|shoyu|mostarda|ketchup|maionese)\b/ },
+    { k: "mercearia", re: /\b(psyllium|psilio|fibra em po)\b/ },
 
     { k: "aves", re: /\b(frango|peito de frango|coxa|sobrecoxa|file de frango|peru|chester|codorna|ave)\b/ },
     { k: "peixes", re: /\b(peixe|salmao|tilapia|sardinha|atum|bacalhau|merluza|pescada|camarao|lula|polvo|mexilhao|marisco|frutos do mar)\b/ },
@@ -121,62 +124,12 @@
   }
 
   /* ---------- Nome de compra ----------
-     A TACO nomeia por chave de busca ("Carne, bovina, patinho, moído, cru"),
-     que não é como se pede no açougue. Aqui o nome vira o que se compra:
-     inverte a vírgula, joga fora o preparo (cru, grelhado, cozido — ninguém
-     compra grelhado) e mantém o que muda a compra (integral, moído, sem pele,
-     em conserva). O nome no BANCO continua o da TACO: isto é só exibição. */
-  var NOME_PREPARO = /^(crua?s?|cozid[oa]s?(\/\d+\s*minutos?)?|grelhad[oa]s?|assad[oa]s?|frit[oa]s?|refogad[oa]s?|desfiad[oa]s?|ensopad[oa]s?|tostad[oa]s?|escaldad[oa]s?|cozinhad[oa]s?|à milanesa|a milanesa|na chapa|na manteiga)$/i;
-  var NOME_ESPECIE = /^(bovina|suína|suina)$/i;
-  // Parte que pede "de" no meio: "Ovo de galinha", "Leite de vaca".
-  var NOME_DE = /^(galinha|codorna|vaca|cabra|búfala|bufala|soja|milho|trigo|arroz|aveia|centeio|coco|oliva|leite)$/i;
-  // Corte, que vem antes do animal: "Peito de frango", "Filé de linguado".
-  var NOME_CORTE = /^(peito|coxa|sobrecoxa|asa|filé|file|posta|lombo|costela|pernil|paleta|coração|coracao|fígado|figado|moela|rabada|músculo|musculo)$/i;
-  // Casos em que a regra geral não chega no nome de feira.
-  var NOME_FIXO = {
-    "arroz-tipo-1-cru": "Arroz branco", "arroz-tipo-1-cozido": "Arroz branco",
-    "arroz-tipo-2-cru": "Arroz branco", "arroz-tipo-2-cozido": "Arroz branco",
-    "pao-trigo-forma-integral": "Pão de forma integral",
-    "pao-trigo-frances": "Pão francês",
-    "pao-trigo-sovado": "Pão sovado",
-    "pao-aveia-forma": "Pão de forma de aveia",
-    "pao-milho-forma": "Pão de forma de milho",
-    "pao-gluten-forma": "Pão de forma de glúten",
-    "queijo-requeijao-cremoso": "Requeijão cremoso",
-    "macarrao-trigo-cru": "Macarrão", "macarrao-trigo-cru-com-ovos": "Macarrão com ovos",
-    "aveia-flocos-crua": "Aveia em flocos",
-    "carne-bovina-patinho-sem-gordura-cru": "Bife de patinho",
-    "carne-bovina-patinho-sem-gordura-grelhado": "Bife de patinho"
-  };
-  // "com casca" só diz respeito ao preparo da fruta — na feira é ruído.
-  var NOME_RUIDO = /^com casca$/i;
+     O formatador de nome mora em nome-alimento.js (o mesmo que renomeia o
+     banco inteiro). Aqui entra a versão SEM preparo: na feira não se compra
+     "grelhado". Se o arquivo não estiver na página, o nome sai como está. */
   function nomeCompra(nome) {
-    var bruto = String(nome == null ? "" : nome).trim().replace(/\s+/g, " ");
-    if (!bruto) return "";
-    var fixo = NOME_FIXO[slug(bruto)];
-    if (fixo) return fixo;
-    if (bruto.indexOf(",") === -1) return bruto;
-
-    var partes = bruto.split(",").map(function (p) { return p.trim(); }).filter(Boolean);
-    var cabeca = partes[0];
-    var resto = partes.slice(1).filter(function (p) {
-      return !NOME_PREPARO.test(p) && !NOME_RUIDO.test(p);
-    });
-
-    // "Carne, bovina, patinho" → no açougue o que identifica é o corte.
-    if (/^carnes?$/i.test(cabeca) && resto.length && NOME_ESPECIE.test(resto[0])) {
-      resto.shift();
-      if (resto.length) cabeca = resto.shift();
-    }
-    // "Frango, peito" → "Peito de frango".
-    if (resto.length && NOME_CORTE.test(resto[0])) {
-      var corte = resto.shift();
-      cabeca = corte.charAt(0).toUpperCase() + corte.slice(1) + " de " + cabeca.toLowerCase();
-    }
-
-    var txt = cabeca;
-    resto.forEach(function (p) { txt += (NOME_DE.test(p) ? " de " : " ") + p; });
-    return txt.charAt(0).toUpperCase() + txt.slice(1);
+    var N = window.NomeAlimento;
+    return N ? N.compra(nome) : String(nome == null ? "" : nome);
   }
 
   function alimentoDe(it) {
@@ -197,7 +150,8 @@
         var nome = it.alimento || (it.nome) || "";
         if (!nome.trim()) return;
         var al = alimentoDe(it);
-        var bruto = al ? al.nome : nome;
+        // `taco` é o nome original; `nome` já vem humanizado por nome-alimento.js.
+        var bruto = al ? (al.taco || al.nome) : nome;
         var exib = nomeCompra(bruto);
         // A chave é o nome DE COMPRA: patinho cru e patinho grelhado viram a
         // mesma linha da lista — na feira é a mesma carne, e duas linhas com

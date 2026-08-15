@@ -134,7 +134,7 @@
     var itens = (m.itens || []).map(function (i) {
       var qt = (i.qtd != null ? i.qtd : "") + " " + (i.medida || "");
       if (i.gramas) qt += " (" + r0(i.gramas) + " g)";
-      return '<div class="meal__item"><span class="meal__nm">' + esc(i.alimento) + '</span>' +
+      return '<div class="meal__item"><span class="meal__nm">' + esc(window.NomeAlimento ? window.NomeAlimento.doItem(i) : i.alimento) + '</span>' +
         '<span class="meal__qt">' + esc(qt.trim()) + '</span>' +
         '<span class="meal__kc">' + r0(i.kcal) + ' kcal</span></div>';
     }).join("");
@@ -202,7 +202,7 @@
       var itens = (m.itens || []).map(function (i) {
         var qt = (i.qtd != null ? i.qtd : "") + " " + (i.medida || "");
         if (i.gramas) qt += " (" + r0(i.gramas) + " g)";
-        return '<div class="doc-meal__item"><span>' + esc(i.alimento) + '</span>' +
+        return '<div class="doc-meal__item"><span>' + esc(window.NomeAlimento ? window.NomeAlimento.doItem(i) : i.alimento) + '</span>' +
           '<span class="doc-meal__qt">' + esc(qt.trim()) + '</span></div>';
       }).join("");
       return '<div class="doc-meal"><div class="doc-meal__head">' +

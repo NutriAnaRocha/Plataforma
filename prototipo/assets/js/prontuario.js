@@ -254,7 +254,7 @@
 
     var meals = (pl.refeicoes || []).map(function (m) {
       var foods = m.itens.map(function (it) {
-        return '<div class="food-row"><span class="food-name"><span class="food-check" data-check></span>' + esc(it.alimento) + "</span>" +
+        return '<div class="food-row"><span class="food-name"><span class="food-check" data-check></span>' + esc(window.NomeAlimento ? window.NomeAlimento.doItem(it) : it.alimento) + "</span>" +
           '<span class="food-qtd">' + esc(it.qtd) + "</span><span class=\"food-kcal\">" + it.kcal + " kcal</span></div>";
       }).join("");
       var foot = (m.subs || m.obs) ? '<div class="meal-card__foot">' + (m.subs ? "🔄 <strong>Substituição:</strong> " + esc(m.subs) + "  " : "") + (m.obs ? "📝 " + esc(m.obs) : "") + "</div>" : "";
