@@ -219,19 +219,95 @@
     return { nivel: nivel, cor: cor, pontos: pontos, motivos: motivos, ind: ind };
   }
 
-  /* Silhueta que "engorda/emagrece" conforme o % de gordura e muda de cor
-     conforme a faixa. scaleX no tronco/membros dá a leitura visual pedida. */
-  function corpoSilhueta(bf, faixa) {
-    var cor = faixa ? faixa.cor : COR.rosa;
-    // 15% ≈ referência magra; cada ponto acima alarga um pouco o corpo.
-    var sx = bf == null ? 1 : Math.max(0.84, Math.min(1.22, 0.9 + (bf - 15) / 90));
+  /* ---------- Corpo anatômico da composição corporal ----------
+     Pedido da Ana: no lugar da silhueta chapada, um corpo "de anatomia" que
+     LÊ a composição — muita gordura deixa o corpo mais largo e amarelado;
+     muita massa magra deixa mais rosado e com a musculatura aparente.
+     Dois eixos independentes:
+       adip (0..1) ← % de gordura  → cor (rosa→amarelo), largura e véu de gordura
+       mus  (0..1) ← % de músculo  → opacidade/traço do relevo muscular
+     Mesmo viewBox 80×165 e mesmo contorno (CABECA/TRONCO) das figuras de medida. */
+  var MUSCULOS =
+      // deltoides
+      '<path d="M30.6 31.8 C28.4 34.4 27.6 37.6 27.9 40.4"/>' +
+      '<path d="M49.4 31.8 C51.6 34.4 52.4 37.6 52.1 40.4"/>' +
+      // peitorais (esterno + os dois arcos)
+      '<path d="M40 33.6 L40 44"/>' +
+      '<path d="M39.2 43.6 C35.8 44.4 32.4 43.2 30.6 40.4 C30.2 37.2 31.4 34.8 33.4 33.6"/>' +
+      '<path d="M40.8 43.6 C44.2 44.4 47.6 43.2 49.4 40.4 C49.8 37.2 48.6 34.8 46.6 33.6"/>' +
+      // abdômen: linha alba + as três divisões
+      '<path d="M40 45.4 L40 67.5"/>' +
+      '<path d="M34.8 50.4 L45.2 50.4"/>' +
+      '<path d="M34.6 56.4 L45.4 56.4"/>' +
+      '<path d="M35 62 L45 62"/>' +
+      // oblíquos / virilha
+      '<path d="M32.8 63.6 C34.8 68 37.2 70.4 40 71.4 C42.8 70.4 45.2 68 47.2 63.6"/>' +
+      // bíceps e antebraços
+      '<path d="M27.6 38.8 C25.2 43.6 23.8 48.4 23 53"/>' +
+      '<path d="M52.4 38.8 C54.8 43.6 56.2 48.4 57 53"/>' +
+      '<path d="M22.2 57.8 C21.2 62.4 20.6 67.2 20.4 71.2"/>' +
+      '<path d="M57.8 57.8 C58.8 62.4 59.4 67.2 59.6 71.2"/>' +
+      // quadríceps
+      '<path d="M31.6 100 C30.7 107 30.5 114 30.9 120.4"/>' +
+      '<path d="M48.4 100 C49.3 107 49.5 114 49.1 120.4"/>' +
+      // joelhos
+      '<path d="M29.2 124.4 C30.8 126 32.8 126 34.4 124.4"/>' +
+      '<path d="M45.6 124.4 C47.2 126 49.2 126 50.8 124.4"/>' +
+      // panturrilhas
+      '<path d="M30.6 129 C30 133.6 30.2 138 31 141.6"/>' +
+      '<path d="M49.4 129 C50 133.6 49.8 138 49 141.6"/>';
+
+  function _rgb(h) {
+    h = h.replace("#", "");
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  }
+  function _mix(a, b, t) {
+    var A = _rgb(a), B = _rgb(b);
+    return "rgb(" + A.map(function (v, i) { return Math.round(v + (B[i] - v) * t); }).join(",") + ")";
+  }
+  function _clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+
+  var _figSeq = 0;
+  function corpoSilhueta(bf, faixa, musc) {
+    var uid = "bcf" + (++_figSeq);
+    // adiposidade: 12% = magro, 40% = muito alto (escala visual, não diagnóstica —
+    // o diagnóstico continua na faixa/escala ao lado).
+    var adip = bf == null ? 0.35 : _clamp01((bf - 12) / 28);
+    // massa magra: 22% = baixa, 40% = alta (faixa usual de % de massa muscular).
+    var mus = musc == null ? 0.45 : _clamp01((musc - 22) / 18);
+    var sx = 1 + adip * 0.26 - 0.06;                       // corpo alarga com a gordura
+    var pele = _mix("#E79AAB", "#E7C463", adip);           // rosado → amarelado
+    var traco = _mix("#A83E5C", "#9A7415", adip);
+    var rGord = 9 + adip * 7, ryGord = 11 + adip * 5;      // barriga
+    var tr = 'translate(40,0) scale(' + sx.toFixed(3) + ',1) translate(-40,0)';
+    var body = CABECA + '<g transform="' + tr + '">' + TRONCO + '</g>';
+    // <clipPath> ignora <g>: o transform vai em cada path para o recorte valer.
+    var bodyClip = CABECA + TRONCO.replace(/<path /g, '<path transform="' + tr + '" ');
     return '<svg class="bc-fig" viewBox="0 0 80 165" aria-hidden="true">' +
-      '<g class="bc-fig__body" style="fill:' + cor + ';stroke:' + cor + '">' +
-        CABECA +   // a cabeça fica fora do scaleX — esticada ela vira uma bola oval
-        '<g class="bc-fig__corpo" transform="translate(40,0) scale(' + sx.toFixed(3) + ',1) translate(-40,0)">' +
-          TRONCO +
-        '</g>' +
-      '</g></svg>';
+      '<defs>' +
+        '<clipPath id="' + uid + '-c">' + bodyClip + '</clipPath>' +
+        '<radialGradient id="' + uid + '-g" cx="50%" cy="50%" r="50%">' +
+          '<stop offset="0%" stop-color="#E9C15A" stop-opacity="' + (0.15 + adip * 0.6).toFixed(2) + '"/>' +
+          '<stop offset="100%" stop-color="#E9C15A" stop-opacity="0"/>' +
+        '</radialGradient>' +
+      '</defs>' +
+      // 1. preenchimento do corpo
+      '<g class="bc-fig__fill" style="fill:' + pele + '">' + body + '</g>' +
+      // 2. véu de gordura (barriga + quadril), recortado pelo corpo
+      '<g clip-path="url(#' + uid + '-c)">' +
+        '<ellipse cx="40" cy="60" rx="' + rGord.toFixed(1) + '" ry="' + ryGord.toFixed(1) + '" fill="url(#' + uid + '-g)"/>' +
+        '<ellipse cx="40" cy="88" rx="' + (rGord + 3).toFixed(1) + '" ry="10" fill="url(#' + uid + '-g)"/>' +
+      '</g>' +
+      // 3. relevo muscular — aparece conforme a massa magra
+      '<g class="bc-fig__musc" clip-path="url(#' + uid + '-c)" style="stroke:' + traco +
+        // gordura por cima "apaga" o relevo: mais adiposidade, menos definição visível
+        ';stroke-width:' + (0.6 + mus * 0.8).toFixed(2) +
+        ';opacity:' + ((0.05 + mus * 0.78) * (1 - adip * 0.5)).toFixed(2) + '">' +
+        '<g transform="translate(40,0) scale(' + sx.toFixed(3) + ',1) translate(-40,0)">' + MUSCULOS + '</g>' +
+      '</g>' +
+      // 4. contorno por cima
+      '<g class="bc-fig__body" style="stroke:' + traco + '">' + body + '</g>' +
+      '</svg>';
   }
   // Anel (donut) de percentual.
   function donut(pct, cor, lbl) {
@@ -266,7 +342,7 @@
         '</div>';
     }
     return '<div class="bc">' +
-      '<div class="bc__fig">' + corpoSilhueta(gord, faixa) + '</div>' +
+      '<div class="bc__fig">' + corpoSilhueta(gord, faixa, musc) + '</div>' +
       '<div class="bc__data">' +
         '<div class="bc__donuts">' + donut(gord, COR.ambar, "Gordura") + donut(musc, COR.vinho, musLbl) + '</div>' +
         escala + extra +
@@ -925,5 +1001,6 @@
     document.body.appendChild(ov);
   }
 
-  window.Antropometria = { render: render, wire: wire };
+  // corpoSilhueta/faixaGordura ficam expostos para reuso da figura fora da ficha.
+  window.Antropometria = { render: render, wire: wire, corpoSilhueta: corpoSilhueta, faixaGordura: faixaGordura };
 })();

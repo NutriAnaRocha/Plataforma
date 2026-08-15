@@ -155,14 +155,15 @@
 }
 .bc__fig { flex: none; width: 108px; display: grid; place-items: center; }
 .bc-fig { width: 108px; height: auto; display: block; filter: drop-shadow(0 4px 10px rgba(132, 11, 85, .12)); }
-/* Mesmo contorno da figura de referência, aqui com um véu da cor da faixa:
-   o preenchimento chapado deixava a figura pesada e dura no cartão. */
+/* Corpo anatômico: preenchimento em tom de pele (rosado ↔ amarelado conforme a
+   composição), relevo muscular por dentro e contorno por cima. */
+.bc-fig__fill { stroke: none; fill-opacity: .5; transition: fill var(--t-med); }
+.bc-fig__musc { fill: none; stroke-linecap: round; stroke-linejoin: round; transition: opacity var(--t-med), stroke var(--t-med); }
 .bc-fig__body {
-  fill-opacity: .16; stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round;
-  transition: fill var(--t-med), stroke var(--t-med);
+  fill: none; stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round;
+  transition: stroke var(--t-med);
 }
-.bc-fig__corpo { transition: transform var(--t-med); }
-.bc-fig__body .fig-neck, .antro-fig__body .fig-neck { fill: none; }
+.bc-fig__body .fig-neck, .bc-fig__fill .fig-neck, .antro-fig__body .fig-neck { fill: none; }
 .bc__data { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
 .bc__donuts { display: flex; gap: var(--sp-5); }
 .bc-donut { display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
