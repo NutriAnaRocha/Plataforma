@@ -162,11 +162,22 @@
 /* Responsivo */
 @media (max-width: 900px) {
   .ficha { grid-template-columns: 1fr; }
+  /* No celular o menu era uma tira que rolava de lado: cabiam duas seções
+     na tela e as outras doze ficavam invisíveis — a Ana não achava
+     "Receitas" no celular. Agora ele quebra em duas colunas, tudo à vista
+     de uma rolada vertical, que é como o resto da ficha já se lê. */
   .ficha__menu {
-    position: static; flex-direction: row; overflow-x: auto; max-height: none;
-    -webkit-overflow-scrolling: touch;
+    position: static; flex-direction: row; flex-wrap: wrap;
+    overflow-x: visible; max-height: none; gap: 6px;
   }
-  .fmenu-item { flex: none; min-width: 190px; }
+  .fmenu-item {
+    flex: 1 1 calc(50% - 6px); min-width: 0;
+    align-items: center; padding: 10px;
+    border: 1px solid var(--cinza-borda); background: var(--rosa-suave);
+  }
+  .fmenu-item__tit { font-size: var(--fs-caption); }
+  /* A linha de subitens é dica de mouse; no celular só empurra o resto. */
+  .fmenu-item__sub { display: none; }
   .fhead__side { flex-direction: row; flex-wrap: wrap; }
 }
 
