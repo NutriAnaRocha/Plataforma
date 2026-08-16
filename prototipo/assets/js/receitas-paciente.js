@@ -58,6 +58,29 @@
     }).then(function (r) { if (r.error) throw new Error(r.error.message); });
   }
 
+  /* Liberar de uma vez o que está na tela. Liberar receita a receita é o
+     certo quando são poucas; com o catálogo inteiro filtrado por categoria
+     vira trabalho manual repetido — e foi por isso que o portal da paciente
+     ficou sem receita nenhuma. upsert com ignoreDuplicates: reclicar não
+     estoura por chave duplicada. */
+  function liberarVarias(pacienteId, ids) {
+    if (!ids.length) return Promise.resolve();
+    return db().then(function (c) {
+      return c.from("paciente_receitas").upsert(
+        ids.map(function (id) { return { paciente_id: pacienteId, receita_id: id }; }),
+        { onConflict: "paciente_id,receita_id", ignoreDuplicates: true }
+      );
+    }).then(function (r) { if (r.error) throw new Error(r.error.message); });
+  }
+
+  function ocultarVarias(pacienteId, ids) {
+    if (!ids.length) return Promise.resolve();
+    return db().then(function (c) {
+      return c.from("paciente_receitas").delete()
+        .eq("paciente_id", pacienteId).in("receita_id", ids);
+    }).then(function (r) { if (r.error) throw new Error(r.error.message); });
+  }
+
   function ocultar(pacienteId, receitaId) {
     return db().then(function (c) {
       return c.from("paciente_receitas").delete()
@@ -143,8 +166,14 @@
     var lista = filtradas();
     if (!lista.length) return '<div class="empty-state">Nenhuma receita encontrada.</div>';
     var n = Object.keys(_lib).length;
-    return '<p class="rcp-count">' + lista.length + (lista.length === 1 ? " receita" : " receitas") +
+    var faltam = lista.filter(function (o) { return !_lib[o.id]; }).length;
+    var acao = faltam
+      ? '<button class="rcp-lote" type="button" data-rcp-lote="liberar">Liberar as ' + faltam + ' desta lista</button>'
+      : '<button class="rcp-lote rcp-lote--off" type="button" data-rcp-lote="ocultar">Ocultar as ' + lista.length + ' desta lista</button>';
+    return '<div class="rcp-count-linha">' +
+      '<p class="rcp-count">' + lista.length + (lista.length === 1 ? " receita" : " receitas") +
       " · " + n + " liberada" + (n === 1 ? "" : "s") + " para " + esc((_p.nome || "").split(/\s+/)[0]) + "</p>" +
+      acao + '</div>' +
       '<ul class="rcp-list">' + lista.map(itemHTML).join("") + "</ul>";
   }
 
@@ -173,6 +202,8 @@
       if (tg) { alternar(tg.getAttribute("data-rcp-toggle"), tg); return; }
       var ch = ev.target.closest("[data-rcp-cat]");
       if (ch) { _cat = ch.getAttribute("data-rcp-cat"); pintar(); return; }
+      var lote = ev.target.closest("[data-rcp-lote]");
+      if (lote) { emLote(lote.getAttribute("data-rcp-lote") === "liberar", lote); return; }
     });
     var t;
     host.addEventListener("input", function (ev) {
@@ -201,6 +232,25 @@
       if (on) delete _lib[id]; else _lib[id] = true;
       pintar();
       toast(on ? "Receita ocultada do portal" : "Receita liberada para o paciente");
+    }).catch(function (e) {
+      btn.disabled = false;
+      toast("Não consegui salvar. " + (e && e.message ? e.message : ""), true);
+    });
+  }
+
+  // Age só sobre o que está filtrado na tela — o que a nutri está vendo é
+  // exatamente o que muda.
+  function emLote(liberando, btn) {
+    var alvo = filtradas().filter(function (o) { return liberando ? !_lib[o.id] : !!_lib[o.id]; })
+                          .map(function (o) { return o.id; });
+    if (!alvo.length) return;
+    if (!liberando && !window.confirm("Ocultar " + alvo.length + " receitas do portal do paciente?")) return;
+    btn.disabled = true;
+    btn.textContent = liberando ? "Liberando…" : "Ocultando…";
+    (liberando ? liberarVarias(_p.id, alvo) : ocultarVarias(_p.id, alvo)).then(function () {
+      alvo.forEach(function (id) { if (liberando) _lib[id] = true; else delete _lib[id]; });
+      pintar();
+      toast(alvo.length + (liberando ? " receitas liberadas para o paciente" : " receitas ocultadas"));
     }).catch(function (e) {
       btn.disabled = false;
       toast("Não consegui salvar. " + (e && e.message ? e.message : ""), true);

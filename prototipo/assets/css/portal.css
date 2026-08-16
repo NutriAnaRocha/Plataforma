@@ -182,7 +182,14 @@
 /* Histórico */
 .prato-hist-lista { display: flex; flex-direction: column; gap: var(--sp-3); }
 .prato-hist { display: flex; align-items: center; gap: var(--sp-3); }
-.prato-hist__foto { flex: none; width: 62px; height: 62px; border-radius: var(--radius-md, 12px); overflow: hidden; background: var(--rosa-suave); }
+/* O card inteiro é o botão que abre o relatório; o × fica fora dele. */
+.prato-hist__abrir {
+  flex: 1; display: flex; align-items: center; gap: var(--sp-3);
+  min-width: 0; padding: 0; border: 0; background: none; cursor: pointer;
+  text-align: left; font: inherit; color: inherit;
+}
+.prato-hist__abrir:focus-visible { outline: 2px solid var(--vinho); outline-offset: 3px; border-radius: var(--radius-md, 12px); }
+.prato-hist__foto { display: block; flex: none; width: 62px; height: 62px; border-radius: var(--radius-md, 12px); overflow: hidden; background: var(--rosa-suave); }
 .prato-hist__foto img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .prato-hist__txt { flex: 1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; min-width: 0; }
 .prato-hist__ref { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-sm); }
@@ -207,6 +214,36 @@
   font-size: var(--fs-sm); color: var(--texto); line-height: 1.45;
 }
 .prato-hist__com strong { color: var(--vinho); }
+
+.prato-hist__ver {
+  flex-basis: 100%; margin-top: 2px;
+  font-size: var(--fs-caption); font-weight: 700; color: var(--vinho);
+}
+.prato-hist__abrir[aria-expanded="true"] .prato-hist__seta { display: inline-block; transform: rotate(180deg); }
+
+/* Um registro comentado precisa saltar na lista — é o que a paciente
+   volta ao app para ver. */
+.prato-hist-box.has-com { border-left: 3px solid var(--vinho); padding-left: var(--sp-3); }
+
+.prato-hist__det {
+  margin-top: var(--sp-3); padding-top: var(--sp-3);
+  border-top: 1px dashed var(--cinza-borda);
+}
+
+/* Recado da nutri dentro do relatório */
+.prato-nutricom {
+  margin: var(--sp-3) 0 0; padding: 10px 12px;
+  background: var(--rosa-suave); border-left: 3px solid var(--vinho);
+  border-radius: var(--radius-sm, 8px);
+}
+.prato-nutricom__lab {
+  margin: 0 0 4px; display: flex; align-items: center; gap: 6px;
+  font-size: var(--fs-caption); font-weight: 800; color: var(--vinho);
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.prato-nutricom__reac { font-size: 1.15rem; line-height: 1; }
+.prato-nutricom__txt { margin: 0; font-size: var(--fs-body); color: var(--texto); line-height: 1.45; }
+.prato-nutricom__txt--so-reac { color: var(--texto-sutil); font-style: italic; }
 
 .prato-hist__del {
   flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--cinza-borda);

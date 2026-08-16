@@ -25,6 +25,19 @@
 
 /* ---- Lista de receitas com liga/desliga (nutri) ---- */
 .rcp-count { font-size: var(--fs-caption); color: var(--texto-sutil); margin: 0 0 var(--sp-2); }
+.rcp-count-linha {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-3); flex-wrap: wrap;
+}
+.rcp-count-linha .rcp-count { margin-bottom: var(--sp-2); }
+.rcp-lote {
+  margin-bottom: var(--sp-2); padding: 6px 12px; border-radius: 999px;
+  border: 1px solid var(--vinho); background: var(--vinho); color: #fff;
+  font-size: var(--fs-caption); font-weight: 700; cursor: pointer;
+}
+.rcp-lote:hover { filter: brightness(1.08); }
+.rcp-lote--off { background: transparent; color: var(--vinho); }
+.rcp-lote:disabled { opacity: .6; cursor: default; }
 .rcp-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .rcp-item {
   display: flex; align-items: center; gap: var(--sp-3);

@@ -59,6 +59,7 @@
     return d.getFullYear() === h.getFullYear() && d.getMonth() === h.getMonth() && d.getDate() === h.getDate();
   }
   function num(v) { return v == null || v === "" ? null : Math.round(Number(v)); }
+  function resumir(s, max) { return s.length <= max ? s : s.slice(0, max - 1).replace(/\s+\S*$/, "") + "…"; }
 
   /* ---------- HTML ---------- */
 
@@ -112,7 +113,26 @@
     }).join("") + '</div>';
   }
 
-  function resultadoHTML(p, extra) {
+  /* O recado da nutri vale mais que qualquer número da IA: abre o
+     relatório, com a voz dela marcada. Se ela só reagiu (sem texto),
+     a reação sozinha já é recado. */
+  function comentarioNutriHTML(p) {
+    var com = (p.comentario_nutri || "").trim();
+    var reac = (p.reacao_nutri || "").trim();
+    if (!com && !reac) return "";
+    return '<div class="prato-nutricom">' +
+      '<p class="prato-nutricom__lab">' +
+        (reac ? '<span class="prato-nutricom__reac">' + esc(reac) + '</span> ' : "") +
+        'Sua nutricionista' +
+      '</p>' +
+      (com ? '<p class="prato-nutricom__txt">' + esc(com) + '</p>'
+           : '<p class="prato-nutricom__txt prato-nutricom__txt--so-reac">Ela viu este prato.</p>') +
+    '</div>';
+  }
+
+  // Miolo do relatório — usado tanto logo após a análise quanto ao
+  // reabrir um registro antigo na lista.
+  function relatorioHTML(p, extra) {
     extra = extra || {};
     var conf = CONF_TXT[p.confianca] || CONF_TXT.media;
     var kcal = num(p.kcal);
@@ -125,11 +145,12 @@
     var bons = (p.pontos_bons || []).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("");
     var alertas = (p.alertas || []).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("");
 
-    return '<div class="pcard prato-result">' +
+    return '' +
       '<div class="prato-result__head">' +
         '<h2 class="pcard__title">' + esc(p.refeicao || "Refeição") + '</h2>' +
         '<span class="prato-conf prato-conf--' + esc(p.confianca || "media") + '">' + esc(conf.rotulo) + '</span>' +
       '</div>' +
+      comentarioNutriHTML(p) +
       (extra.descricao ? '<p class="prato-result__desc">' + esc(extra.descricao) + '</p>' : '') +
       (kcal != null
         ? '<div class="prato-kcal"><span class="prato-kcal__n">~' + kcal + '</span>' +
@@ -143,8 +164,11 @@
       (bons ? '<p class="prato-sec prato-sec--bom">O que está bom</p><ul class="prato-bons">' + bons + '</ul>' : '') +
       (alertas ? '<p class="prato-sec prato-sec--ajuste">O que dá para ajustar</p><ul class="prato-alertas">' + alertas + '</ul>' : '') +
       (extra.comentario ? '<p class="prato-result__fim">' + esc(extra.comentario) + '</p>' : '') +
-      '<p class="prato-nota">' + esc(conf.dica) + ' Estimativa por foto — quem avalia o seu caso é a sua nutricionista.</p>' +
-    '</div>';
+      '<p class="prato-nota">' + esc(conf.dica) + ' Estimativa por foto — quem avalia o seu caso é a sua nutricionista.</p>';
+  }
+
+  function resultadoHTML(p, extra) {
+    return '<div class="pcard prato-result">' + relatorioHTML(p, extra) + '</div>';
   }
 
   // Resumo do dia: só aparece com registro de hoje. É o que dá sentido a
@@ -173,27 +197,42 @@
     }
     var cards = lista.map(function (p) {
       var kcal = num(p.kcal);
-      return '<div class="prato-hist" data-prato-id="' + esc(p.id) + '">' +
-        '<div class="prato-hist__foto" data-prato-foto="' + esc(p.foto_path) + '"><img alt="" loading="lazy" /></div>' +
-        '<div class="prato-hist__txt">' +
-          '<span class="prato-hist__ref">' + esc(p.refeicao || "Refeição") + '</span>' +
-          '<span class="prato-hist__data">' + esc(dataHoraBR(p.criado_em)) + '</span>' +
-          (kcal != null ? '<span class="prato-hist__kcal">~' + kcal + ' kcal</span>' : '') +
-          ((p.alertas || []).length
-            ? '<span class="prato-hist__flag">' + p.alertas.length + (p.alertas.length === 1 ? ' ajuste' : ' ajustes') + '</span>'
-            : '<span class="prato-hist__ok">tudo certo</span>') +
-          /* O recado da nutri vale mais que a estimativa da IA — por isso
-             fica no card, com a voz dela marcada, e não escondido. */
-          ((p.reacao_nutri || "").trim()
-            ? '<span class="prato-hist__reac">' + esc(p.reacao_nutri.trim()) +
-              '<span>sua nutri reagiu</span></span>'
-            : '') +
-          ((p.comentario_nutri || "").trim()
-            ? '<span class="prato-hist__com"><strong>Sua nutri:</strong> ' + esc(p.comentario_nutri.trim()) + '</span>'
-            : '') +
+      var temCom = !!((p.comentario_nutri || "").trim() || (p.reacao_nutri || "").trim());
+      return '<div class="prato-hist-box' + (temCom ? " has-com" : "") + '" data-prato-box="' + esc(p.id) + '">' +
+        '<div class="prato-hist" data-prato-id="' + esc(p.id) + '">' +
+          /* O card inteiro abre o relatório: a estimativa completa (itens,
+             macros, o que ajustar) some da tela depois da análise, e sem
+             isto a paciente só reencontrava o número solto de kcal. */
+          '<button class="prato-hist__abrir" type="button" data-prato-abrir="' + esc(p.id) + '" ' +
+            'aria-expanded="false" aria-label="Ver o relatório deste prato">' +
+            '<span class="prato-hist__foto" data-prato-foto="' + esc(p.foto_path) + '"><img alt="" loading="lazy" /></span>' +
+            '<span class="prato-hist__txt">' +
+              '<span class="prato-hist__ref">' + esc(p.refeicao || "Refeição") + '</span>' +
+              '<span class="prato-hist__data">' + esc(dataHoraBR(p.criado_em)) + '</span>' +
+              (kcal != null ? '<span class="prato-hist__kcal">~' + kcal + ' kcal</span>' : '') +
+              ((p.alertas || []).length
+                ? '<span class="prato-hist__flag">' + p.alertas.length + (p.alertas.length === 1 ? ' ajuste' : ' ajustes') + '</span>'
+                : '<span class="prato-hist__ok">tudo certo</span>') +
+              /* O recado da nutri vale mais que a estimativa da IA — por isso
+                 fica no card, com a voz dela marcada, e não escondido. */
+              ((p.reacao_nutri || "").trim()
+                ? '<span class="prato-hist__reac">' + esc(p.reacao_nutri.trim()) +
+                  '<span>sua nutri reagiu</span></span>'
+                : '') +
+              /* No card vai só a chamada do recado — o texto inteiro fica no
+                 relatório logo abaixo, e repetir os dois por extenso faz a
+                 lista virar parede de texto. */
+              ((p.comentario_nutri || "").trim()
+                ? '<span class="prato-hist__com"><strong>Sua nutri:</strong> ' +
+                  esc(resumir(p.comentario_nutri.trim(), 90)) + '</span>'
+                : '') +
+              '<span class="prato-hist__ver">Ver o relatório <span class="prato-hist__seta">▾</span></span>' +
+            '</span>' +
+          '</button>' +
+          '<button class="prato-hist__del" type="button" data-prato-apagar="' + esc(p.id) + '" ' +
+            'data-prato-path="' + esc(p.foto_path) + '" aria-label="Apagar este registro">×</button>' +
         '</div>' +
-        '<button class="prato-hist__del" type="button" data-prato-apagar="' + esc(p.id) + '" ' +
-          'data-prato-path="' + esc(p.foto_path) + '" aria-label="Apagar este registro">×</button>' +
+        '<div class="prato-hist__det" data-prato-det="' + esc(p.id) + '" hidden></div>' +
       '</div>';
     }).join("");
     return '<div class="pcard"><h2 class="pcard__title">Meus registros</h2>' +
@@ -350,6 +389,26 @@
       }
 
       if (t.closest("[data-prato-analisar]")) { analisar(t.closest("[data-prato-analisar]")); return; }
+
+      var abrir = t.closest("[data-prato-abrir]");
+      if (abrir) {
+        var idA = abrir.getAttribute("data-prato-abrir");
+        var det = document.querySelector('[data-prato-det="' + idA + '"]');
+        if (!det) return;
+        if (!det.hidden) {                       // já aberto: fecha
+          det.hidden = true;
+          det.innerHTML = "";
+          abrir.setAttribute("aria-expanded", "false");
+          return;
+        }
+        var reg = null;
+        lista.forEach(function (p) { if (p.id === idA) reg = p; });
+        if (!reg) return;
+        det.innerHTML = relatorioHTML(reg, {});
+        det.hidden = false;
+        abrir.setAttribute("aria-expanded", "true");
+        return;
+      }
 
       var del = t.closest("[data-prato-apagar]");
       if (del) {
