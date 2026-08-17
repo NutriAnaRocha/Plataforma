@@ -48,9 +48,12 @@
         '<div class="op-card__t">' + esc(o.titulo) + "</div>" +
         '<div class="op-card__meta">' + esc(CAT_LABEL[o.categoria] || "") +
           (o.categoria ? " · " : "") + "anexada em " + fmtData(o.data) + "</div>" +
+      /* btn--ghost é branco sobre branco aqui — o card é claro. Com ghost,
+         "Remover" ficava invisível e do "📄 PDF" só sobrava o emoji. */
       "</div><div class=\"op-card__acts\">" +
-        '<button class="btn btn--ghost" data-op-pdf="' + esc(o.id) + '" type="button">📄 PDF</button>' +
-        '<button class="btn btn--ghost" data-op-rm="' + esc(o.id) + '" type="button">Remover</button>' +
+        '<button class="btn btn--outline" data-op-pdf="' + esc(o.id) + '" type="button">📄 PDF</button>' +
+        '<button class="op-lixeira" data-op-rm="' + esc(o.id) + '" type="button" ' +
+          'title="Apagar esta orientação" aria-label="Apagar a orientação ' + esc(o.titulo) + '">🗑</button>' +
       "</div></div>" +
       (o.resumo ? '<p class="op-card__resumo">' + esc(o.resumo) + "</p>" : "") +
       blocosHTML(o) +
@@ -63,7 +66,7 @@
     var lista = (p.orientacoes || []).slice().sort(function (a, b) { return (b.data || "").localeCompare(a.data || ""); });
     var toolbar = '<div class="op-bar">' +
       '<button class="btn btn--primary" id="op-add" type="button">＋ Da biblioteca</button>' +
-      '<button class="btn btn--ghost" id="op-custom" type="button">✍️ Sua orientação</button>' +
+      '<button class="btn btn--outline" id="op-custom" type="button">✍️ Sua orientação</button>' +
     "</div>";
     var atuais = lista.length ? lista.map(cardHTML).join("")
       : '<div class="empty-state">Nenhuma orientação anexada. Puxe da sua biblioteca ou escreva do zero — o PDF sai com a sua marca.</div>';
@@ -72,7 +75,9 @@
           return '<div class="iitem"><span class="iitem__ico">📄</span>' +
             '<div class="iitem__info"><div class="iitem__title">' + esc(o.titulo) + "</div>" +
             '<div class="iitem__date">' + fmtData(o.data) + "</div></div>" +
-            '<button class="btn btn--ghost" data-op-pdf="' + esc(o.id) + '" type="button">PDF</button></div>';
+            '<button class="btn btn--outline" data-op-pdf="' + esc(o.id) + '" type="button">PDF</button>' +
+            '<button class="op-lixeira" data-op-rm="' + esc(o.id) + '" type="button" ' +
+              'title="Apagar esta orientação" aria-label="Apagar a orientação ' + esc(o.titulo) + '">🗑</button></div>';
         }).join("") + "</div>"
       : '<div class="empty-state">Ainda não há histórico.</div>';
     return secWrap("Orientações atuais", toolbar + '<div class="op-list">' + atuais + "</div>") +
@@ -92,11 +97,15 @@
     }).catch(function (e) { if (_ctx.toast) _ctx.toast("Não consegui anexar. " + (e && e.message || ""), true); });
   }
   function remover(id) {
-    if (!confirm("Remover esta orientação do paciente?")) return;
+    var alvo = (_p.orientacoes || []).find(function (o) { return o.id === id; });
+    // Dizer que sai também do histórico: é o mesmo registro nas duas listas,
+    // e apagar sem avisar isso seria apagar prontuário sem ela saber.
+    if (!confirm('Apagar a orientação "' + ((alvo && alvo.titulo) || "") + '"?\n\n' +
+                 "Ela sai da ficha e do histórico do paciente. O PDF já entregue não muda.")) return;
     var lista = (_p.orientacoes || []).filter(function (o) { return o.id !== id; });
     salvar(lista).then(function (saved) {
       if (_ctx.onSaved) _ctx.onSaved(saved);
-      if (_ctx.toast) _ctx.toast("Removida");
+      if (_ctx.toast) _ctx.toast("Orientação apagada");
     }).catch(function (e) { if (_ctx.toast) _ctx.toast("Não consegui remover. " + (e && e.message || ""), true); });
   }
 

@@ -198,6 +198,15 @@
 }
 .rx-selo--off { background: #eee4e8; color: #7a6b71; }
 .op-card__resumo { margin: 8px 0 6px; font-weight: 600; }
+/* Lixeira: destrutiva, então discreta em repouso e vermelha só na intenção. */
+.op-lixeira {
+  flex: none; width: 34px; height: 34px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--cinza-borda, #e6dade); background: var(--branco, #fff);
+  font-size: 1rem; line-height: 1; color: var(--texto-sutil, #8a7a80);
+  transition: border-color .15s, background .15s;
+}
+.op-lixeira:hover { border-color: #b3261e; background: #fdeceb; }
+.op-lixeira:focus-visible { outline: 2px solid #b3261e; outline-offset: 2px; }
 .op-bloco { margin-top: 8px; }
 .op-bloco__t { font-weight: 700; color: var(--vinho, #7a2342); font-size: 13.5px; margin-bottom: 4px; }
 .op-bloco ul { margin: 0; padding-left: 18px; }
