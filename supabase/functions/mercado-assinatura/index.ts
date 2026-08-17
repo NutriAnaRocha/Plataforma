@@ -50,9 +50,13 @@ const HANDLE = "analuisarocha";
 // InfinitePay repassa o juros do parcelado ao comprador: quem paga em
 // 3x manda mais centavos que o preço de tabela, e recusar isso seria
 // negar a entrega de quem pagou a mais.
+// O 2990 é o preço ANTIGO do anual (até 16/08/2026). Ele fica na lista de
+// propósito: quem pagou por aquele link e ainda não resgatou o código não
+// pode ficar sem a entrega por causa de uma tabela de preço que mudou.
 const PLANOS = [
   { centavos: 1199, meses: 1,  plano: "mensal", nome: "1 mês" },
   { centavos: 2990, meses: 12, plano: "anual",  nome: "12 meses" },
+  { centavos: 5990, meses: 12, plano: "anual",  nome: "12 meses" },
 ];
 const TOLERANCIA_MENOR = 0.95;
 

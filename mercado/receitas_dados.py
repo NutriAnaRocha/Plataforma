@@ -1611,4 +1611,676 @@ dict(
     dica="A cremosidade vem da batata, não do creme de leite. A linguiça calabresa tradicional traz mais sódio numa rodela do que a sopa inteira precisa.",
 ),
 
+# ==================================================================
+#  LOTE 2 — as 30 que fecham o acervo em 100
+#
+#  Escolhidas pelo buraco, não pelo gosto: o acervo tinha só 7 sucos,
+#  11 saladas, 14 sobremesas e 10 cetogênicas contra 42 pratos
+#  principais. Aqui entram sobremesa sem forno, salada de verdade
+#  (que sustenta, não a folha triste), o básico que se cozinha uma vez
+#  e rende a semana, e as duas panelas que quase toda casa tem hoje:
+#  a air fryer e o liquidificador.
+# ==================================================================
+
+# ------------------------------- 5 MINUTOS -------------------------------
+
+dict(
+    slug="salada-de-manga-com-pepino-e-limao",
+    titulo="Salada de manga com pepino e limão",
+    chamada="Doce, ácida e crocante na mesma garfada — e fica pronta enquanto a panela esquenta.",
+    cat=["salada", "fruta", "vegana", "vegetariana", "economica", "detox"],
+    tempo=5, rende=2,
+    ing=[
+        ("1 manga Palmer firme", 200, 229),
+        ("1 pepino japonês", 150, 142),
+        ("suco de 1 limão", 20, 220),
+        ("hortelã, sal e pimenta", 5, "livre"),
+    ],
+    preparo=[
+        "Corte a manga e o pepino em cubos parecidos — o mesmo tamanho é o que faz a garfada ter as duas coisas.",
+        "Tempere com o limão, um pouco de sal e pimenta.",
+        "Rasgue a hortelã com a mão por cima na hora de servir.",
+    ],
+    dica="Escolha a manga ainda firme. A madura demais vira purê no prato e some no meio do pepino.",
+),
+
+dict(
+    slug="salada-de-rucula-com-pera-e-castanha",
+    titulo="Salada de rúcula com pera e castanha",
+    chamada="A salada que não parece castigo: amargo da rúcula, doce da pera, crocância da castanha.",
+    cat=["salada", "vegetariana", "lowcarb"],
+    tempo=5, rende=2,
+    ing=[
+        ("1 maço pequeno de rúcula", 60, 152),
+        ("1 pera", 130, 242),
+        ("2 colheres de sopa de castanha-de-caju", 30, 588),
+        ("1 colher de sopa de azeite", 10, 260),
+        ("limão, sal e pimenta", 10, "livre"),
+    ],
+    preparo=[
+        "Lave e seque bem a rúcula — folha molhada não segura tempero, escorrega.",
+        "Fatie a pera fina, com casca.",
+        "Junte tudo, quebre as castanhas com a mão e tempere só na hora de comer.",
+    ],
+    dica="A castanha aqui não é enfeite: é a gordura boa que segura a fome. Salada só de folha volta a dar fome em uma hora.",
+),
+
+dict(
+    slug="pasta-de-atum-com-cottage",
+    titulo="Pasta de atum com cottage",
+    chamada="Toda a proteína do atum sem a maionese — para o pão, a torrada ou a colher mesmo.",
+    cat=["lowcarb", "cetogenica", "principal", "economica"],
+    tempo=5, rende=2,
+    ing=[
+        ("1 lata de atum escorrido", 120, 277),
+        ("4 colheres de sopa de cottage", 100, "cottage"),
+        ("1 colher de sopa de azeite", 10, 260),
+        ("cebolinha, limão, sal e pimenta", 15, "livre"),
+    ],
+    preparo=[
+        "Escorra bem o atum, apertando com a tampa da lata.",
+        "Misture com o cottage até virar pasta, amassando com o garfo.",
+        "Termine com limão, cebolinha e pimenta.",
+    ],
+    dica="O cottage faz o papel cremoso da maionese com uma fração da gordura — e ainda soma proteína em vez de só somar caloria.",
+),
+
+dict(
+    slug="leite-dourado-de-curcuma",
+    titulo="Leite dourado de cúrcuma",
+    chamada="A bebida quente do fim da noite, para quem quer largar o doce depois do jantar.",
+    cat=["suco", "vegetariana", "detox"],
+    tempo=5, rende=2,
+    ing=[
+        ("2 xícaras de leite desnatado", 400, 457),
+        ("1 colher de chá de mel", 7, 507),
+        ("cúrcuma, canela e uma pitada de pimenta-do-reino", 5, "livre"),
+    ],
+    preparo=[
+        "Aqueça o leite sem deixar ferver.",
+        "Junte a cúrcuma, a canela e a pimenta — a pimenta é o que faz a cúrcuma ser aproveitada pelo corpo.",
+        "Adoce com o mel fora do fogo e beba quente.",
+    ],
+    dica="Cúrcuma não cura nada sozinha e não substitui remédio nenhum. O que esta xícara faz de concreto é ocupar o lugar do doce das 22 h — e isso já é bastante.",
+),
+
+dict(
+    slug="picole-de-iogurte-com-morango",
+    titulo="Picolé de iogurte com morango",
+    chamada="Três ingredientes, nenhum corante, e a criança nem desconfia que é fruta.",
+    cat=["sobremesa", "fruta", "vegetariana", "economica"],
+    tempo=5, rende=6,
+    ing=[
+        ("2 potes de iogurte natural", 400, 448),
+        ("1 caixa de morangos", 200, 239),
+        ("1 colher de sopa de mel", 30, 507),
+    ],
+    preparo=[
+        "Bata o iogurte com metade dos morangos e o mel.",
+        "Pique o resto dos morangos e misture com a colher, para ficar pedaço na mordida.",
+        "Encha as forminhas e leve ao congelador por cerca de 4 horas (tempo de espera, não de trabalho).",
+    ],
+    dica="Picolé de fruta comprado costuma ser água, açúcar e aroma. Aqui a fruta é o ingrediente principal — e o iogurte ainda traz proteína.",
+),
+
+dict(
+    slug="salada-de-beterraba-com-cenoura-ralada",
+    titulo="Salada de beterraba com cenoura ralada",
+    chamada="Duas raízes baratas, cruas e no ralador — a salada mais colorida do prato feito.",
+    cat=["salada", "vegana", "vegetariana", "economica", "detox"],
+    tempo=5, rende=4,
+    ing=[
+        ("1 beterraba média crua", 200, 98),
+        ("2 cenouras", 150, 110),
+        ("suco de 1 limão", 20, 220),
+        ("1 colher de sopa de azeite", 10, 260),
+        ("salsa e sal", 10, "livre"),
+    ],
+    preparo=[
+        "Rale a beterraba e a cenoura no ralador grosso.",
+        "Tempere na hora com limão, azeite e sal.",
+        "Sirva logo: crua e ralada na hora, ela é doce; parada de véspera, solta água.",
+    ],
+    dica="Crua a beterraba mantém melhor o folato e o nitrato natural, que se perdem na água quando ela é fervida — e ainda economiza gás.",
+),
+
+# ------------------------------ 10 MINUTOS ------------------------------
+
+dict(
+    slug="shakshuka-rapida",
+    titulo="Shakshuka rápida",
+    chamada="Ovos cozidos dentro do molho de tomate: jantar de uma frigideira só.",
+    cat=["principal", "lowcarb", "vegetariana", "economica"],
+    tempo=10, rende=2,
+    ing=[
+        ("4 ovos", 200, 489),
+        ("3 tomates maduros", 300, 157),
+        ("1 cebola", 80, 107),
+        ("2 dentes de alho", 8, 82),
+        ("1 colher e meia de sopa de azeite", 15, 260),
+        ("páprica, cominho, sal e pimenta", 5, "livre"),
+    ],
+    preparo=[
+        "Refogue a cebola e o alho no azeite até ficarem transparentes.",
+        "Junte o tomate picado e os temperos, e deixe apurar uns 5 minutos, amassando com a colher.",
+        "Abra quatro buracos no molho e quebre um ovo em cada um.",
+        "Tampe e deixe até a clara firmar e a gema ainda tremer — cerca de 4 minutos.",
+    ],
+    dica="Não mexa depois de pôr os ovos. É o molho quente que cozinha, e mexer transforma a shakshuka em ovo mexido com tomate.",
+),
+
+dict(
+    slug="aveia-dormida-com-frutas",
+    titulo="Aveia dormida com frutas",
+    chamada="Você monta hoje à noite e acorda com o café da manhã pronto na geladeira.",
+    cat=["economica", "vegetariana", "fruta"],
+    tempo=10, rende=1,
+    ing=[
+        ("4 colheres de sopa de aveia em flocos", 40, 7),
+        ("1 pote pequeno de iogurte natural", 120, 448),
+        ("1 banana", 80, 179),
+        ("1 colher de sopa de chia", 10, "chia"),
+        ("canela", 2, "livre"),
+    ],
+    preparo=[
+        "Num pote com tampa, misture a aveia, a chia e o iogurte.",
+        "Junte metade da banana amassada e a canela.",
+        "Tampe e deixe na geladeira de um dia para o outro.",
+        "De manhã, complete com o resto da banana em rodelas.",
+    ],
+    dica="A aveia de molho fica mais fácil de digerir e mais cremosa, sem cozinhar nada. É o mesmo prato do mingau — só que sem panela e sem pressa de manhã.",
+),
+
+dict(
+    slug="salada-de-lentilha-com-cenoura",
+    titulo="Salada de lentilha com cenoura",
+    chamada="A salada que substitui o prato: proteína vegetal, fibra e o preço da lentilha.",
+    cat=["salada", "vegana", "vegetariana", "economica", "principal"],
+    tempo=10, rende=3,
+    ing=[
+        ("2 xícaras de lentilha já cozida", 300, 577),
+        ("1 cenoura ralada", 100, 110),
+        ("1/2 cebola roxa", 60, 107),
+        ("salsa picada", 15, 153),
+        ("2 colheres de sopa de azeite", 20, 260),
+        ("limão, sal e pimenta", 15, "livre"),
+    ],
+    preparo=[
+        "Escorra bem a lentilha cozida e deixe esfriar.",
+        "Junte a cenoura ralada, a cebola em fatias finas e a salsa.",
+        "Tempere com azeite, limão, sal e pimenta e deixe descansar 5 minutos antes de comer.",
+    ],
+    dica="A vitamina C do limão ajuda o corpo a aproveitar o ferro da lentilha. Não é crendice: é o único truque de cozinha que muda mesmo a absorção do ferro vegetal.",
+),
+
+dict(
+    slug="cuscuz-com-atum",
+    titulo="Cuscuz com atum",
+    chamada="O almoço de dez minutos que cabe no bolso: cuscuz, uma lata e o que tiver na geladeira.",
+    cat=["economica", "principal"],
+    tempo=10, rende=2,
+    ing=[
+        ("2 xícaras de cuscuz de milho pronto", 300, 533),
+        ("1 lata de atum escorrido", 120, 277),
+        ("1 tomate", 100, 157),
+        ("1/2 cebola", 40, 107),
+        ("1 colher de sopa de azeite", 10, 260),
+        ("cheiro-verde, sal e pimenta", 10, "livre"),
+    ],
+    preparo=[
+        "Prepare o cuscuz na cuscuzeira ou no micro-ondas, como está no pacote.",
+        "Misture o atum escorrido com tomate, cebola e cheiro-verde.",
+        "Sirva por cima do cuscuz quente, com o azeite na hora.",
+    ],
+    dica="O flocão de milho sozinho é quase só carboidrato. É a lata de atum que transforma isso num almoço que sustenta até a noite.",
+),
+
+dict(
+    slug="salada-de-repolho-com-maca",
+    titulo="Salada de repolho com maçã",
+    chamada="O coleslaw da lanchonete, feito com iogurte no lugar da maionese.",
+    cat=["salada", "vegetariana", "economica"],
+    tempo=10, rende=4,
+    ing=[
+        ("1/2 repolho branco pequeno", 300, 149),
+        ("1 maçã com casca", 150, 222),
+        ("1 cenoura", 100, 110),
+        ("1/2 pote de iogurte natural", 100, 448),
+        ("1 colher de chá de mostarda", 10, "mostarda"),
+        ("limão, sal e pimenta", 10, "livre"),
+    ],
+    preparo=[
+        "Fatie o repolho bem fino e rale a cenoura e a maçã no ralador grosso.",
+        "Misture o iogurte com a mostarda, o limão, o sal e a pimenta.",
+        "Junte tudo e deixe 10 minutos na geladeira antes de servir.",
+    ],
+    dica="O limão na maçã ralada não é só sabor: é o que impede que ela escureça enquanto a salada espera na mesa.",
+),
+
+dict(
+    slug="vitamina-de-mamao-com-linhaca",
+    titulo="Vitamina de mamão com linhaça",
+    chamada="Para quem acorda com o intestino travado — fibra de verdade, não chá milagroso.",
+    cat=["suco", "fruta", "detox", "vegetariana", "economica"],
+    tempo=5, rende=2,
+    ing=[
+        ("1/2 mamão papaia", 300, 226),
+        ("1 xícara de leite desnatado", 200, 457),
+        ("1 colher de sopa de linhaça", 15, 594),
+        ("gelo", 100, "livre"),
+    ],
+    preparo=[
+        "Bata tudo no liquidificador até ficar liso.",
+        "Beba na hora: a linhaça moída oxida rápido e perde a graça se ficar parada.",
+    ],
+    dica="Quem faz o intestino andar é a fibra somada à água — e não a linhaça sozinha. Se o dia inteiro for de pouca água, nem esta vitamina resolve.",
+),
+
+dict(
+    slug="bowl-de-iogurte-com-aveia-e-banana",
+    titulo="Bowl de iogurte com aveia e banana",
+    chamada="A sobremesa que também serve de café da manhã — e que não precisa de forno nem de açúcar.",
+    cat=["sobremesa", "fruta", "vegetariana", "economica"],
+    tempo=5, rende=1,
+    ing=[
+        ("1 pote de iogurte natural", 200, 448),
+        ("1 banana", 100, 179),
+        ("2 colheres de sopa de aveia em flocos", 25, 7),
+        ("1 colher de sopa de castanha-de-caju picada", 10, 588),
+        ("canela", 2, "livre"),
+    ],
+    preparo=[
+        "Ponha o iogurte no fundo da tigela.",
+        "Cubra com a banana em rodelas, a aveia e a castanha picada.",
+        "Termine com canela por cima.",
+    ],
+    dica="Se quiser deixar mais doce, amasse metade da banana no iogurte antes. Banana amassada adoça muito mais do que banana em rodela.",
+),
+
+dict(
+    slug="pudim-de-chia-com-manga",
+    titulo="Pudim de chia com manga",
+    chamada="Sobremesa sem forno, sem leite de vaca e sem açúcar — e ainda parece coisa de cafeteria.",
+    cat=["sobremesa", "vegana", "vegetariana", "fruta"],
+    tempo=10, rende=2,
+    ing=[
+        ("3 colheres de sopa de chia", 30, "chia"),
+        ("1 xícara de leite de coco light", 200, "leite_coco_leve"),
+        ("1 manga madura", 200, 229),
+    ],
+    preparo=[
+        "Misture a chia com o leite de coco e mexa bem — e mexa de novo depois de 5 minutos, senão vira uma pedra no fundo.",
+        "Deixe na geladeira por pelo menos 3 horas (tempo de espera).",
+        "Bata a manga até virar creme e ponha por cima na hora de servir.",
+    ],
+    dica="É a manga madura que adoça: nenhum açúcar entra aqui. Se a sua estiver ácida, espere mais um ou dois dias na fruteira em vez de corrigir com açúcar.",
+),
+
+dict(
+    slug="mousse-de-maracuja-com-iogurte",
+    titulo="Mousse de maracujá com iogurte",
+    chamada="O sabor do mousse de leite condensado, sem a lata inteira de leite condensado.",
+    cat=["sobremesa", "vegetariana"],
+    tempo=10, rende=4,
+    ing=[
+        ("2 potes de iogurte grego natural", 400, "iogurte_grego"),
+        ("polpa de 2 maracujás", 100, 233),
+        ("1 colher de sopa de mel", 30, 507),
+    ],
+    preparo=[
+        "Bata o iogurte com metade da polpa e o mel até ficar aerado.",
+        "Distribua em taças e leve à geladeira por 1 hora (tempo de espera).",
+        "Cubra com o resto da polpa, com as sementes, na hora de servir.",
+    ],
+    dica="O mousse tradicional leva uma lata de leite condensado para quatro porções — perto de 90 g de açúcar. Aqui a acidez do maracujá faz o trabalho que o açúcar fazia.",
+),
+
+# ------------------------------ 30 MINUTOS ------------------------------
+
+dict(
+    slug="frango-na-air-fryer-com-paprica",
+    titulo="Frango na air fryer com páprica",
+    chamada="Dourado por fora, suculento por dentro, com uma colher de azeite no lugar da fritura.",
+    cat=["principal", "lowcarb", "cetogenica"],
+    tempo=30, rende=4,
+    ing=[
+        ("2 peitos de frango em filés", 600, 409),
+        ("2 colheres de sopa de azeite", 20, 260),
+        ("suco de 1 limão", 20, 220),
+        ("páprica, alho em pó, sal e pimenta", 15, "livre"),
+    ],
+    preparo=[
+        "Tempere os filés e deixe descansar 10 minutos — esse tempo é o que faz o tempero entrar.",
+        "Preaqueça a air fryer a 200 °C por 3 minutos.",
+        "Asse por 8 minutos, vire e asse mais 6.",
+        "Deixe descansar 3 minutos fora do aparelho antes de cortar, para o suco não escorrer todo na tábua.",
+    ],
+    dica="Não empilhe os filés no cesto. Air fryer é ar circulando: peça amontoada cozinha no vapor e sai pálida e borrachuda.",
+),
+
+dict(
+    slug="curry-de-grao-de-bico-com-leite-de-coco",
+    titulo="Curry de grão-de-bico com leite de coco",
+    chamada="Um prato vegano que sacia de verdade — e que fica melhor no dia seguinte.",
+    cat=["vegana", "vegetariana", "principal", "economica"],
+    tempo=30, rende=4,
+    ing=[
+        ("2 xícaras de grão-de-bico cozido", 400, "grao_bico_cozido"),
+        ("1 xícara de leite de coco light", 200, "leite_coco_leve"),
+        ("2 tomates", 200, 157),
+        ("1 cebola", 100, 107),
+        ("2 dentes de alho", 10, 82),
+        ("2 punhados de espinafre", 100, 119),
+        ("1 colher e meia de sopa de azeite", 15, 260),
+        ("curry, cúrcuma, gengibre em pó e sal", 10, "livre"),
+    ],
+    preparo=[
+        "Refogue cebola e alho no azeite e junte os temperos secos, mexendo 30 segundos para acordar o cheiro.",
+        "Ponha o tomate picado e deixe desmanchar.",
+        "Junte o grão-de-bico e o leite de coco e cozinhe 10 minutos em fogo baixo.",
+        "Desligue e misture o espinafre — ele murcha só com o calor da panela.",
+    ],
+    dica="Grão-de-bico com arroz forma proteína tão completa quanto a da carne. É por isso que quase toda cozinha do mundo tem um par assim: feijão com arroz é o nosso.",
+),
+
+dict(
+    slug="pts-a-bolonhesa",
+    titulo="Proteína de soja à bolonhesa",
+    chamada="O molho de carne moída do domingo, por uma fração do preço da carne.",
+    cat=["vegana", "vegetariana", "economica", "principal"],
+    tempo=30, rende=4,
+    ing=[
+        ("1 xícara de proteína de soja seca", 100, "pts_seca"),
+        ("4 tomates", 400, 157),
+        ("1 cebola", 80, 107),
+        ("2 dentes de alho", 8, 82),
+        ("1 colher e meia de sopa de azeite", 15, 260),
+        ("louro, orégano, sal e pimenta", 10, "livre"),
+    ],
+    preparo=[
+        "Hidrate a proteína de soja em água quente por 10 minutos, escorra e aperte bem para tirar a água.",
+        "Refogue cebola e alho no azeite, junte a soja e deixe dourar de verdade — é aqui que ela ganha gosto.",
+        "Ponha o tomate picado e os temperos e cozinhe 15 minutos em fogo baixo.",
+    ],
+    dica="Apertar a soja depois de hidratar é o passo que quase todo mundo pula — e é o que tira o gosto de papelão que dá fama ruim a ela.",
+),
+
+dict(
+    slug="bolinho-de-atum-assado",
+    titulo="Bolinho de atum assado",
+    chamada="Gosto de bolinho frito, feito no forno, com aveia no lugar da farinha branca.",
+    cat=["principal", "lowcarb", "economica"],
+    tempo=30, rende=4,
+    ing=[
+        ("2 latas de atum escorrido", 240, 277),
+        ("2 ovos", 100, 489),
+        ("6 colheres de sopa de aveia em flocos", 60, 7),
+        ("1/2 cebola", 60, 107),
+        ("salsa picada", 10, 153),
+        ("sal, pimenta e orégano", 5, "livre"),
+    ],
+    preparo=[
+        "Misture tudo numa tigela até dar liga e deixe 5 minutos parado — a aveia precisa desse tempo para absorver.",
+        "Faça bolinhas com a colher e ponha numa assadeira forrada.",
+        "Asse a 200 °C por 20 minutos, virando na metade.",
+    ],
+    dica="Servem de lanche da tarde, de jantar com salada e de recheio de sanduíche no dia seguinte. Feitos numa vez, resolvem três refeições.",
+),
+
+dict(
+    slug="kafta-de-carne-assada",
+    titulo="Kafta de carne assada",
+    chamada="Carne moída temperada de verdade, no forno, sem nada além de tempero fresco.",
+    cat=["principal", "lowcarb", "cetogenica"],
+    tempo=30, rende=4,
+    ing=[
+        ("500 g de acém moído", 500, 327),
+        ("1 cebola", 80, 107),
+        ("salsa e hortelã picadas", 20, 153),
+        ("2 dentes de alho", 8, 82),
+        ("sal, cominho, canela e pimenta", 10, "livre"),
+    ],
+    preparo=[
+        "Bata a cebola, o alho e as ervas no processador (ou pique muito fino) e misture à carne.",
+        "Sove a mistura com a mão por 2 minutos — sem isso a kafta racha e desmancha.",
+        "Modele em cilindros em volta de espetos ou faça no formato de linguiça.",
+        "Asse a 220 °C por 18 minutos, virando na metade.",
+    ],
+    dica="Uma pitada de canela na carne não deixa gosto de doce: é o que dá o sabor árabe que a gente reconhece e não sabe nomear.",
+),
+
+dict(
+    slug="tabule-de-bulgur",
+    titulo="Tabule de bulgur",
+    chamada="A salada em que a salsa é o ingrediente principal, não o enfeite.",
+    cat=["salada", "vegana", "vegetariana", "economica"],
+    tempo=30, rende=4,
+    ing=[
+        ("1 xícara de trigo para quibe", 120, "bulgur_seco"),
+        ("3 tomates sem semente", 300, 157),
+        ("1 pepino", 150, 142),
+        ("2 maços de salsa", 40, 153),
+        ("1/2 cebola roxa", 60, 107),
+        ("3 colheres de sopa de azeite", 30, 260),
+        ("suco de 2 limões e sal", 30, "livre"),
+    ],
+    preparo=[
+        "Cubra o trigo com água fria e deixe hidratar por 20 minutos (tempo de espera).",
+        "Escorra apertando bem numa peneira.",
+        "Pique tudo miúdo e misture com o azeite, o limão e o sal.",
+        "Deixe descansar 10 minutos na geladeira antes de servir.",
+    ],
+    dica="Água fria, não quente. Trigo hidratado na água fervente vira mingau e o tabule perde a mordida.",
+),
+
+dict(
+    slug="risoto-de-quinoa-com-champignon",
+    titulo="Risoto de quinoa com champignon",
+    chamada="A cremosidade do risoto sem ficar meia hora em pé mexendo a panela.",
+    cat=["vegetariana", "principal"],
+    tempo=30, rende=3,
+    ing=[
+        ("3 xícaras de quinoa cozida", 450, "quinoa_cozida"),
+        ("2 xícaras de champignon fatiado", 200, "champignon"),
+        ("1 cebola", 80, 107),
+        ("2 dentes de alho", 8, 82),
+        ("2 colheres de sopa de azeite", 20, 260),
+        ("60 g de queijo minas ralado", 60, 461),
+        ("caldo de legumes, sal e pimenta", 300, "livre"),
+    ],
+    preparo=[
+        "Doure o champignon no azeite sem mexer muito, até soltar a água e voltar a fritar.",
+        "Junte cebola e alho e refogue.",
+        "Ponha a quinoa cozida e o caldo aos poucos, mexendo até ficar cremoso.",
+        "Desligue e misture o queijo ralado.",
+    ],
+    dica="A quinoa já cozida vira risoto em cinco minutos. Cozinhe uma panela grande no domingo e ela resolve prato de semana inteira.",
+),
+
+dict(
+    slug="macarrao-ao-molho-de-tomate-caseiro",
+    titulo="Macarrão ao molho de tomate caseiro",
+    chamada="Tomate, alho e azeite: o molho de sempre, sem o açúcar e o sódio do vidro pronto.",
+    cat=["economica", "vegetariana", "vegana", "principal"],
+    tempo=30, rende=4,
+    ing=[
+        ("320 g de macarrão", 320, 40),
+        ("6 tomates maduros", 600, 157),
+        ("1 cebola", 100, 107),
+        ("3 dentes de alho", 12, 82),
+        ("3 colheres de sopa de azeite", 30, 260),
+        ("manjericão, sal e pimenta", 10, "livre"),
+    ],
+    preparo=[
+        "Refogue a cebola e o alho no azeite em fogo baixo, sem deixar queimar.",
+        "Junte os tomates picados e cozinhe 20 minutos, amassando com a colher.",
+        "Cozinhe o macarrão e junte ao molho na própria panela, com um pouco da água do cozimento.",
+        "Manjericão só no fim, com o fogo desligado.",
+    ],
+    dica="A água do cozimento tem amido e é ela que faz o molho grudar no macarrão. Escorrer tudo na pia é jogar fora o que ligaria o prato.",
+),
+
+dict(
+    slug="caldo-de-feijao-com-legumes",
+    titulo="Caldo de feijão com legumes",
+    chamada="O feijão que sobrou vira o jantar de hoje — quente, barato e com fibra de sobra.",
+    cat=["economica", "vegana", "vegetariana", "principal"],
+    tempo=30, rende=4,
+    ing=[
+        ("3 conchas de feijão carioca cozido", 500, 561),
+        ("1 cenoura", 100, 110),
+        ("2 fatias de abóbora cabotiá", 200, 65),
+        ("1 cebola", 80, 107),
+        ("2 dentes de alho", 8, 82),
+        ("1 colher e meia de sopa de azeite", 15, 260),
+        ("água, louro, sal e pimenta", 800, "livre"),
+    ],
+    preparo=[
+        "Cozinhe a cenoura e a abóbora em pedaços na água com sal até ficarem bem macias.",
+        "Bata metade do feijão com esses legumes e o caldo.",
+        "Refogue cebola e alho no azeite, junte tudo e o resto do feijão inteiro.",
+        "Deixe ferver 10 minutos para encorpar.",
+    ],
+    dica="É a abóbora batida que engrossa, não a farinha nem o creme de leite. Caldo grosso não precisa de nada além de um legume cozido demais.",
+),
+
+# ------------------------------ 60 MINUTOS ------------------------------
+
+dict(
+    slug="bolo-de-fuba-com-erva-doce",
+    titulo="Bolo de fubá com erva-doce",
+    chamada="O bolo de fubá da fazenda, no liquidificador, sem cobertura nenhuma.",
+    cat=["sobremesa", "economica", "vegetariana"],
+    tempo=60, rende=12,
+    ing=[
+        ("2 xícaras de fubá", 250, 43),
+        ("1 xícara de farinha de trigo", 100, 35),
+        ("3/4 de xícara de açúcar", 150, 492),
+        ("3 ovos", 150, 489),
+        ("1 xícara e meia de leite desnatado", 300, 457),
+        ("1/3 de xícara de óleo", 80, 272),
+        ("1 colher de sopa de fermento e erva-doce", 20, "livre"),
+    ],
+    preparo=[
+        "Bata no liquidificador os ovos, o leite, o óleo e o açúcar.",
+        "Passe para uma tigela e misture o fubá, a farinha e a erva-doce.",
+        "O fermento entra por último, mexendo com a colher.",
+        "Asse a 180 °C por cerca de 40 minutos, até o palito sair seco.",
+    ],
+    dica="Uma fatia deste bolo tem menos açúcar que a maioria dos bolos de caixinha — e nenhum ingrediente com nome que você não saiba pronunciar. Mas continua sendo bolo: a fatia é uma, não o pedaço inteiro.",
+),
+
+dict(
+    slug="bolo-de-maca-integral",
+    titulo="Bolo de maçã integral",
+    chamada="Metade da massa é maçã — e é ela que adoça, não a xícara de açúcar.",
+    cat=["sobremesa", "economica", "vegetariana", "fruta"],
+    tempo=60, rende=12,
+    ing=[
+        ("3 maçãs com casca", 400, 222),
+        ("2 xícaras de farinha de trigo integral", 250, "farinha_trigo_integral"),
+        ("1/2 xícara de aveia em flocos", 60, 7),
+        ("3 ovos", 150, 489),
+        ("1/2 xícara de açúcar mascavo", 100, 493),
+        ("1/4 de xícara de óleo", 60, 272),
+        ("1 colher de sopa de fermento e canela", 20, "livre"),
+    ],
+    preparo=[
+        "Rale duas maçãs e reserve a terceira em fatias para cobrir.",
+        "Bata os ovos com o açúcar e o óleo e junte a maçã ralada.",
+        "Misture a farinha integral, a aveia e a canela, e o fermento por último.",
+        "Cubra com as fatias, polvilhe canela e asse a 180 °C por 45 minutos.",
+    ],
+    dica="A farinha integral pede um pouco mais de líquido e deixa o bolo mais denso — é assim mesmo. Bolo integral fofinho como o branco costuma ser integral só no nome.",
+),
+
+dict(
+    slug="frango-recheado-com-ricota-e-espinafre",
+    titulo="Frango recheado com ricota e espinafre",
+    chamada="Prato de restaurante com dois ingredientes baratos escondidos dentro do filé.",
+    cat=["principal", "lowcarb"],
+    tempo=60, rende=4,
+    ing=[
+        ("2 peitos de frango grandes", 600, 409),
+        ("150 g de ricota", 150, 469),
+        ("2 punhados de espinafre", 150, 119),
+        ("2 dentes de alho", 8, 82),
+        ("2 colheres de sopa de azeite", 20, 260),
+        ("sal, noz-moscada e pimenta", 8, "livre"),
+    ],
+    preparo=[
+        "Refogue o espinafre com o alho, escorra a água e misture com a ricota amassada.",
+        "Abra os peitos em manta (corte lateral, sem separar) e tempere dos dois lados.",
+        "Recheie, feche com palito e sele numa frigideira quente.",
+        "Termine no forno a 200 °C por 25 minutos.",
+    ],
+    dica="Escorrer a água do espinafre é o que separa o recheio cremoso do recheio que vaza. Aperte na peneira até parar de pingar.",
+),
+
+dict(
+    slug="pao-de-aveia-de-forma",
+    titulo="Pão de aveia de forma",
+    chamada="Pão caseiro sem sova e sem tempo de crescer — mistura, assa e come.",
+    cat=["economica", "vegetariana"],
+    tempo=60, rende=12,
+    ing=[
+        ("3 xícaras de aveia em flocos", 300, 7),
+        ("1 xícara e meia de farinha de trigo integral", 150, "farinha_trigo_integral"),
+        ("3 ovos", 150, 489),
+        ("1 pote de iogurte natural", 200, 448),
+        ("1 colher de sopa de fermento e sal", 25, "livre"),
+        ("gergelim para polvilhar", 20, 593),
+    ],
+    preparo=[
+        "Bata metade da aveia no liquidificador até virar farinha.",
+        "Misture tudo numa tigela, com o fermento por último.",
+        "Ponha numa forma de bolo inglês untada e polvilhe o gergelim.",
+        "Asse a 180 °C por 40 minutos e espere esfriar antes de fatiar.",
+    ],
+    dica="Este pão é feito com fermento químico, não biológico: não cresce como pão de padaria e é mais denso mesmo. Em compensação fica pronto em uma hora, do zero.",
+),
+
+# ------------------------------ 120 MINUTOS -----------------------------
+
+dict(
+    slug="molho-de-tomate-caseiro-da-semana",
+    titulo="Molho de tomate caseiro da semana",
+    chamada="Uma panela no domingo e você não compra mais molho de vidro.",
+    cat=["economica", "vegana", "vegetariana"],
+    tempo=120, rende=8,
+    ing=[
+        ("15 tomates bem maduros", 1500, 157),
+        ("2 cebolas", 200, 107),
+        ("5 dentes de alho", 20, 82),
+        ("4 colheres de sopa de azeite", 40, 260),
+        ("manjericão, louro, sal e pimenta", 20, "livre"),
+    ],
+    preparo=[
+        "Faça um X na base de cada tomate, escalde em água fervente por 1 minuto e tire a pele.",
+        "Refogue cebola e alho no azeite em fogo baixo por 10 minutos, sem dourar.",
+        "Junte os tomates picados e cozinhe em fogo baixo por 1 hora e meia, mexendo de vez em quando.",
+        "Manjericão só no fim. Guarde em potes na geladeira por até 5 dias, ou congele em porções.",
+    ],
+    dica="O molho de vidro costuma trazer açúcar para corrigir a acidez do tomate ruim. Com tomate maduro de verdade e uma hora e meia de fogo baixo, o açúcar não faz falta.",
+),
+
+dict(
+    slug="grao-de-bico-cozido-do-zero",
+    titulo="Grão-de-bico cozido do zero",
+    chamada="Um pacote de grão seco rende o que cinco latas custam — e sem o sódio da conserva.",
+    cat=["economica", "vegana", "vegetariana"],
+    tempo=120, rende=8,
+    ing=[
+        ("500 g de grão-de-bico seco", 500, 575),
+        ("água, louro e sal", 2000, "livre"),
+    ],
+    preparo=[
+        "Deixe o grão de molho em água por 12 horas, trocando a água uma vez (tempo de espera).",
+        "Escorra, cubra com água nova e cozinhe na pressão por 25 minutos depois de pegar pressão.",
+        "Salgue só no fim do cozimento — sal no início endurece a casca.",
+        "Congele em porções com um pouco do caldo, que é o que impede o grão de ressecar.",
+    ],
+    dica="A água do molho leva junto boa parte dos compostos que dão gases. Trocar essa água e não cozinhar nela é o que faz diferença de verdade na barriga.",
+),
+
 ]

@@ -65,7 +65,20 @@ const LIMITE_VISITANTE = 3;    // por dispositivo, por dia
 const LIMITE_LIBERADO = 15;    // paciente da Ana ou a própria nutri
 const LIMITE_GLOBAL = 150;     // teto do app inteiro por dia
 const LIMITE_CODIGO_DIA = 25;  // por pacote comprado, por dia (anti-vazamento)
-const LIMITE_ASSINANTE_DIA = 40;  // teto de segurança da assinatura, idem
+// A assinatura NÃO tem teto por dia: uma compra de mercado é uma rajada (15
+// leituras numa tarde, nada por dez dias), e cortar no meio do corredor é
+// exatamente o momento errado. O teto é do MÊS, e a pessoa vê o saldo dele
+// depois de cada leitura. Janela corrida de 30 dias, não mês do calendário:
+// quem assina no dia 28 não pode ganhar dois tetos em três dias.
+const LIMITE_ASSINANTE_MES = 100;
+const JANELA_MES_MS = 30 * 24 * 3600 * 1000;
+// Aparelhos que podem usar o MESMO código pago. Os tetos acima seguram o
+// volume, mas não impedem um código colado num grupo de WhatsApp de virar o
+// app de meio bairro dentro desse volume. 3 cobre celular + tablet + uma
+// troca de aparelho; a vaga de quem sumiu há 30 dias volta sozinha (a regra
+// da janela mora na migration 0066).
+const LIMITE_APARELHOS = 3;
+const JANELA_APARELHOS_DIAS = 30;
 
 // Categorias que existem no espelho da Open Food Facts. O modelo é
 // OBRIGADO a escolher uma delas (ou "outro"): categoria livre não casaria
@@ -583,6 +596,32 @@ Deno.serve(async (req) => {
     }
   }
 
+  // ---------- 2c) Quantos aparelhos usam este código ----------
+  // Só vale para quem paga: o visitante já é contado por dispositivo, e um
+  // código só existe depois de uma compra. O registro acontece ANTES da
+  // leitura porque o que se está protegendo é justamente o custo dela.
+  if (pagante) {
+    const { data: ap, error: apErro } = await admin.rpc("mercado_dispositivo_ok", {
+      p_codigo: codigo,
+      p_dispositivo: dispositivo,
+      p_limite: LIMITE_APARELHOS,
+      p_janela_dias: JANELA_APARELHOS_DIAS,
+    });
+    // Falha de infra não pode barrar quem pagou: se a checagem não respondeu,
+    // a leitura segue. O risco de deixar passar é um centavo; o de bloquear
+    // é uma cliente pagante travada no corredor do mercado.
+    if (!apErro && ap && ap.ok === false && ap.motivo === "limite") {
+      return json({
+        error: "limite_dispositivos",
+        limite: LIMITE_APARELHOS,
+        detail: `Esse código já está em uso em ${LIMITE_APARELHOS} aparelhos. ` +
+          "Ele é pessoal — se você trocou de celular, é só usar o app neste " +
+          "mesmo aparelho por uns dias que a vaga do antigo se libera. " +
+          "Qualquer coisa, fale com a Ana. 🌸",
+      }, 429);
+    }
+  }
+
   // ---------- 3) Freios de custo ----------
   const desde = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
 
@@ -603,25 +642,43 @@ Deno.serve(async (req) => {
   // Mas o pagante também não é ilimitado no DIA: um código que vazou num
   // grupo grande poderia queimar o pacote inteiro (e a fatura junto) em
   // minutos. 25 leituras por dia é muito mais do que uma compra real pede.
-  if (pagante) {
+  // Quanto a assinante já leu no mês corrido. Calculado antes do teto porque
+  // o mesmo número vira o saldo que ela vê na tela depois da leitura.
+  let usoAssinaturaMes = 0;
+  if (assinante) {
+    const desdeMes = new Date(Date.now() - JANELA_MES_MS).toISOString();
+    const { count } = await admin
+      .from("mercado_analises")
+      .select("id", { count: "exact", head: true })
+      .eq("codigo_credito", codigo)
+      .gte("criado_em", desdeMes);
+    usoAssinaturaMes = count || 0;
+    if (usoAssinaturaMes >= LIMITE_ASSINANTE_MES) {
+      return json({
+        error: "limite_assinante_mes",
+        assinante: true,
+        limite: LIMITE_ASSINANTE_MES,
+        detail: `Você usou as ${LIMITE_ASSINANTE_MES} leituras do seu mês. ` +
+          "Elas voltam aos poucos, conforme as mais antigas completam 30 dias — " +
+          "e as 100 receitas continuam abertas. 🌸",
+      }, 429);
+    }
+  }
+
+  if (pagante && !assinante) {
     const { count: usoDoCodigo } = await admin
       .from("mercado_analises")
       .select("id", { count: "exact", head: true })
       .eq("codigo_credito", codigo)
       .gte("criado_em", desde);
-    // A assinatura é "sem limite" para uma pessoa de verdade, não para um
-    // código colado num grupo de mil. 40 leituras num dia é muito acima de
-    // qualquer compra de mercado — e é o que impede que um código vazado
-    // vire uma fatura de OpenAI.
-    const tetoDoCodigo = assinante ? LIMITE_ASSINANTE_DIA : LIMITE_CODIGO_DIA;
-    if ((usoDoCodigo || 0) >= tetoDoCodigo) {
+    // O pacote pré-pago mantém o teto do DIA: ele não tem janela mensal para
+    // segurar um código que vazou num grupo grande, e 25 leituras num dia já
+    // é muito acima de qualquer compra de mercado.
+    if ((usoDoCodigo || 0) >= LIMITE_CODIGO_DIA) {
       return json({
         error: "limite_codigo_dia",
-        detail: assinante
-          ? `Esse código já leu ${LIMITE_ASSINANTE_DIA} rótulos hoje — é o teto ` +
-            "de segurança da assinatura. Amanhã ele volta a funcionar. 🌸"
-          : `Esse código já leu ${LIMITE_CODIGO_DIA} rótulos hoje. Seus créditos ` +
-            "continuam guardados — amanhã ele volta a funcionar. 🌸",
+        detail: `Esse código já leu ${LIMITE_CODIGO_DIA} rótulos hoje. Seus créditos ` +
+          "continuam guardados — amanhã ele volta a funcionar. 🌸",
       }, 429);
     }
   }
@@ -968,7 +1025,13 @@ Deno.serve(async (req) => {
     analise: gravado,
     sem_alternativa: motivoSemAlternativa,
     falta: listaDeTextos(out.falta, 3),
-    restam: assinante ? null : (pagante ? restamCreditos : Math.max(0, meuLimite - (usoMeu || 0) - 1)),
+    // A assinante também vê saldo agora: um teto que existe e ninguém enxerga
+    // vira "o app parou de funcionar" no dia em que ela esbarra nele. O -1
+    // conta esta leitura, que acabou de ser gravada.
+    restam: assinante
+      ? Math.max(0, LIMITE_ASSINANTE_MES - usoAssinaturaMes - 1)
+      : (pagante ? restamCreditos : Math.max(0, meuLimite - (usoMeu || 0) - 1)),
+    limite_mes: assinante ? LIMITE_ASSINANTE_MES : null,
     pagante,
     assinante,
     liberado,

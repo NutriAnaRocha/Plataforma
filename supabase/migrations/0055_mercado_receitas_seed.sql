@@ -1693,5 +1693,725 @@ on conflict (slug) do update set
   dica=excluded.dica, ordem=excluded.ordem,
   atualizado_em=now();
 
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'salada-de-manga-com-pepino-e-limao',
+  'Salada de manga com pepino e limão',
+  'Doce, ácida e crocante na mesma garfada — e fica pronta enquanto a panela esquenta.',
+  array['salada', 'fruta', 'vegana', 'vegetariana', 'economica', 'detox']::text[],
+  5, 2, 188,
+  82.8, 1.2, 22.0, 0.2, 2.5,
+  '[{"item": "1 manga Palmer firme", "gramas": 200, "taco_id": 229, "fonte": null, "nome_tabela": "Manga, Palmer, crua"}, {"item": "1 pepino japonês", "gramas": 150, "taco_id": 142, "fonte": null, "nome_tabela": "Pepino, cru"}, {"item": "suco de 1 limão", "gramas": 20, "taco_id": 220, "fonte": null, "nome_tabela": "Limão, tahiti, cru"}, {"item": "hortelã, sal e pimenta", "gramas": 5, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Corte a manga e o pepino em cubos parecidos — o mesmo tamanho é o que faz a garfada ter as duas coisas.', 'Tempere com o limão, um pouco de sal e pimenta.', 'Rasgue a hortelã com a mão por cima na hora de servir.']::text[],
+  'Escolha a manga ainda firme. A madura demais vira purê no prato e some no meio do pepino.',
+  71)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'salada-de-rucula-com-pera-e-castanha',
+  'Salada de rúcula com pera e castanha',
+  'A salada que não parece castigo: amargo da rúcula, doce da pera, crocância da castanha.',
+  array['salada', 'vegetariana', 'lowcarb']::text[],
+  5, 2, 120,
+  173.1, 3.4, 15.5, 12.1, 3.0,
+  '[{"item": "1 maço pequeno de rúcula", "gramas": 60, "taco_id": 152, "fonte": null, "nome_tabela": "Rúcula, crua"}, {"item": "1 pera", "gramas": 130, "taco_id": 242, "fonte": null, "nome_tabela": "Pêra, Park, crua"}, {"item": "2 colheres de sopa de castanha-de-caju", "gramas": 30, "taco_id": 588, "fonte": null, "nome_tabela": "Castanha-de-caju, torrada, salgada"}, {"item": "1 colher de sopa de azeite", "gramas": 10, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "limão, sal e pimenta", "gramas": 10, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Lave e seque bem a rúcula — folha molhada não segura tempero, escorrega.', 'Fatie a pera fina, com casca.', 'Junte tudo, quebre as castanhas com a mão e tempere só na hora de comer.']::text[],
+  'A castanha aqui não é enfeite: é a gordura boa que segura a fome. Salada só de folha volta a dar fome em uma hora.',
+  72)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'pasta-de-atum-com-cottage',
+  'Pasta de atum com cottage',
+  'Toda a proteína do atum sem a maionese — para o pão, a torrada ou a colher mesmo.',
+  array['lowcarb', 'cetogenica', 'principal', 'economica']::text[],
+  5, 2, 122,
+  192.7, 21.3, 1.7, 10.8, 0.0,
+  '[{"item": "1 lata de atum escorrido", "gramas": 120, "taco_id": 277, "fonte": null, "nome_tabela": "Atum, conserva em óleo"}, {"item": "4 colheres de sopa de cottage", "gramas": 100, "taco_id": null, "fonte": "extra:cottage", "nome_tabela": "cottage"}, {"item": "1 colher de sopa de azeite", "gramas": 10, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "cebolinha, limão, sal e pimenta", "gramas": 15, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Escorra bem o atum, apertando com a tampa da lata.', 'Misture com o cottage até virar pasta, amassando com o garfo.', 'Termine com limão, cebolinha e pimenta.']::text[],
+  'O cottage faz o papel cremoso da maionese com uma fração da gordura — e ainda soma proteína em vez de só somar caloria.',
+  73)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'leite-dourado-de-curcuma',
+  'Leite dourado de cúrcuma',
+  'A bebida quente do fim da noite, para quem quer largar o doce depois do jantar.',
+  array['suco', 'vegetariana', 'detox']::text[],
+  5, 2, 206,
+  80.8, 6.8, 12.7, 0.4, 0.0,
+  '[{"item": "2 xícaras de leite desnatado", "gramas": 400, "taco_id": 457, "fonte": null, "nome_tabela": "Leite, de vaca, desnatado, UHT"}, {"item": "1 colher de chá de mel", "gramas": 7, "taco_id": 507, "fonte": null, "nome_tabela": "Mel, de abelha"}, {"item": "cúrcuma, canela e uma pitada de pimenta-do-reino", "gramas": 5, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Aqueça o leite sem deixar ferver.', 'Junte a cúrcuma, a canela e a pimenta — a pimenta é o que faz a cúrcuma ser aproveitada pelo corpo.', 'Adoce com o mel fora do fogo e beba quente.']::text[],
+  'Cúrcuma não cura nada sozinha e não substitui remédio nenhum. O que esta xícara faz de concreto é ocupar o lugar do doce das 22 h — e isso já é bastante.',
+  74)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'picole-de-iogurte-com-morango',
+  'Picolé de iogurte com morango',
+  'Três ingredientes, nenhum corante, e a criança nem desconfia que é fruta.',
+  array['sobremesa', 'fruta', 'vegetariana', 'economica']::text[],
+  5, 6, 105,
+  59.8, 3.0, 7.7, 2.1, 0.6,
+  '[{"item": "2 potes de iogurte natural", "gramas": 400, "taco_id": 448, "fonte": null, "nome_tabela": "Iogurte, natural"}, {"item": "1 caixa de morangos", "gramas": 200, "taco_id": 239, "fonte": null, "nome_tabela": "Morango, cru"}, {"item": "1 colher de sopa de mel", "gramas": 30, "taco_id": 507, "fonte": null, "nome_tabela": "Mel, de abelha"}]'::jsonb,
+  array['Bata o iogurte com metade dos morangos e o mel.', 'Pique o resto dos morangos e misture com a colher, para ficar pedaço na mordida.', 'Encha as forminhas e leve ao congelador por cerca de 4 horas (tempo de espera, não de trabalho).']::text[],
+  'Picolé de fruta comprado costuma ser água, açúcar e aroma. Aqui a fruta é o ingrediente principal — e o iogurte ainda traz proteína.',
+  75)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'salada-de-beterraba-com-cenoura-ralada',
+  'Salada de beterraba com cenoura ralada',
+  'Duas raízes baratas, cruas e no ralador — a salada mais colorida do prato feito.',
+  array['salada', 'vegana', 'vegetariana', 'economica', 'detox']::text[],
+  5, 4, 98,
+  60.9, 1.5, 9.0, 2.6, 3.0,
+  '[{"item": "1 beterraba média crua", "gramas": 200, "taco_id": 98, "fonte": null, "nome_tabela": "Beterraba, crua"}, {"item": "2 cenouras", "gramas": 150, "taco_id": 110, "fonte": null, "nome_tabela": "Cenoura, crua"}, {"item": "suco de 1 limão", "gramas": 20, "taco_id": 220, "fonte": null, "nome_tabela": "Limão, tahiti, cru"}, {"item": "1 colher de sopa de azeite", "gramas": 10, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "salsa e sal", "gramas": 10, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Rale a beterraba e a cenoura no ralador grosso.', 'Tempere na hora com limão, azeite e sal.', 'Sirva logo: crua e ralada na hora, ela é doce; parada de véspera, solta água.']::text[],
+  'Crua a beterraba mantém melhor o folato e o nitrato natural, que se perdem na água quando ela é fervida — e ainda economiza gás.',
+  76)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'shakshuka-rapida',
+  'Shakshuka rápida',
+  'Ovos cozidos dentro do molho de tomate: jantar de uma frigideira só.',
+  array['principal', 'lowcarb', 'vegetariana', 'economica']::text[],
+  10, 2, 304,
+  252.6, 15.6, 10.8, 16.7, 2.9,
+  '[{"item": "4 ovos", "gramas": 200, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "3 tomates maduros", "gramas": 300, "taco_id": 157, "fonte": null, "nome_tabela": "Tomate, com semente, cru"}, {"item": "1 cebola", "gramas": 80, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "2 dentes de alho", "gramas": 8, "taco_id": 82, "fonte": null, "nome_tabela": "Alho, cru"}, {"item": "1 colher e meia de sopa de azeite", "gramas": 15, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "páprica, cominho, sal e pimenta", "gramas": 5, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Refogue a cebola e o alho no azeite até ficarem transparentes.', 'Junte o tomate picado e os temperos, e deixe apurar uns 5 minutos, amassando com a colher.', 'Abra quatro buracos no molho e quebre um ovo em cada um.', 'Tampe e deixe até a clara firmar e a gema ainda tremer — cerca de 4 minutos.']::text[],
+  'Não mexa depois de pôr os ovos. É o molho quente que cozinha, e mexer transforma a shakshuka em ovo mexido com tomate.',
+  77)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'aveia-dormida-com-frutas',
+  'Aveia dormida com frutas',
+  'Você monta hoje à noite e acorda com o café da manhã pronto na geladeira.',
+  array['economica', 'vegetariana', 'fruta']::text[],
+  10, 1, 252,
+  341.1, 13.2, 52.2, 10.2, 8.6,
+  '[{"item": "4 colheres de sopa de aveia em flocos", "gramas": 40, "taco_id": 7, "fonte": null, "nome_tabela": "Aveia, flocos, crua"}, {"item": "1 pote pequeno de iogurte natural", "gramas": 120, "taco_id": 448, "fonte": null, "nome_tabela": "Iogurte, natural"}, {"item": "1 banana", "gramas": 80, "taco_id": 179, "fonte": null, "nome_tabela": "Banana, nanica, crua"}, {"item": "1 colher de sopa de chia", "gramas": 10, "taco_id": null, "fonte": "extra:chia", "nome_tabela": "chia"}, {"item": "canela", "gramas": 2, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Num pote com tampa, misture a aveia, a chia e o iogurte.', 'Junte metade da banana amassada e a canela.', 'Tampe e deixe na geladeira de um dia para o outro.', 'De manhã, complete com o resto da banana em rodelas.']::text[],
+  'A aveia de molho fica mais fácil de digerir e mais cremosa, sem cozinhar nada. É o mesmo prato do mingau — só que sem panela e sem pressa de manhã.',
+  78)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'salada-de-lentilha-com-cenoura',
+  'Salada de lentilha com cenoura',
+  'A salada que substitui o prato: proteína vegetal, fibra e o preço da lentilha.',
+  array['salada', 'vegana', 'vegetariana', 'economica', 'principal']::text[],
+  10, 3, 170,
+  172.4, 7.2, 20.9, 7.3, 9.5,
+  '[{"item": "2 xícaras de lentilha já cozida", "gramas": 300, "taco_id": 577, "fonte": null, "nome_tabela": "Lentilha, cozida"}, {"item": "1 cenoura ralada", "gramas": 100, "taco_id": 110, "fonte": null, "nome_tabela": "Cenoura, crua"}, {"item": "1/2 cebola roxa", "gramas": 60, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "salsa picada", "gramas": 15, "taco_id": 153, "fonte": null, "nome_tabela": "Salsa, crua"}, {"item": "2 colheres de sopa de azeite", "gramas": 20, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "limão, sal e pimenta", "gramas": 15, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Escorra bem a lentilha cozida e deixe esfriar.', 'Junte a cenoura ralada, a cebola em fatias finas e a salsa.', 'Tempere com azeite, limão, sal e pimenta e deixe descansar 5 minutos antes de comer.']::text[],
+  'A vitamina C do limão ajuda o corpo a aproveitar o ferro da lentilha. Não é crendice: é o único truque de cozinha que muda mesmo a absorção do ferro vegetal.',
+  79)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'cuscuz-com-atum',
+  'Cuscuz com atum',
+  'O almoço de dez minutos que cabe no bolso: cuscuz, uma lata e o que tiver na geladeira.',
+  array['economica', 'principal']::text[],
+  10, 2, 290,
+  329.5, 19.9, 41.3, 9.8, 4.2,
+  '[{"item": "2 xícaras de cuscuz de milho pronto", "gramas": 300, "taco_id": 533, "fonte": null, "nome_tabela": "Cuscuz, de milho, cozido com sal"}, {"item": "1 lata de atum escorrido", "gramas": 120, "taco_id": 277, "fonte": null, "nome_tabela": "Atum, conserva em óleo"}, {"item": "1 tomate", "gramas": 100, "taco_id": 157, "fonte": null, "nome_tabela": "Tomate, com semente, cru"}, {"item": "1/2 cebola", "gramas": 40, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "1 colher de sopa de azeite", "gramas": 10, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "cheiro-verde, sal e pimenta", "gramas": 10, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Prepare o cuscuz na cuscuzeira ou no micro-ondas, como está no pacote.', 'Misture o atum escorrido com tomate, cebola e cheiro-verde.', 'Sirva por cima do cuscuz quente, com o azeite na hora.']::text[],
+  'O flocão de milho sozinho é quase só carboidrato. É a lata de atum que transforma isso num almoço que sustenta até a noite.',
+  80)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'salada-de-repolho-com-maca',
+  'Salada de repolho com maçã',
+  'O coleslaw da lanchonete, feito com iogurte no lugar da maionese.',
+  array['salada', 'vegetariana', 'economica']::text[],
+  10, 4, 168,
+  56.7, 2.2, 11.2, 1.0, 2.8,
+  '[{"item": "1/2 repolho branco pequeno", "gramas": 300, "taco_id": 149, "fonte": null, "nome_tabela": "Repolho, branco, cru"}, {"item": "1 maçã com casca", "gramas": 150, "taco_id": 222, "fonte": null, "nome_tabela": "Maçã, Fuji, com casca, crua"}, {"item": "1 cenoura", "gramas": 100, "taco_id": 110, "fonte": null, "nome_tabela": "Cenoura, crua"}, {"item": "1/2 pote de iogurte natural", "gramas": 100, "taco_id": 448, "fonte": null, "nome_tabela": "Iogurte, natural"}, {"item": "1 colher de chá de mostarda", "gramas": 10, "taco_id": null, "fonte": "extra:mostarda", "nome_tabela": "mostarda"}, {"item": "limão, sal e pimenta", "gramas": 10, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Fatie o repolho bem fino e rale a cenoura e a maçã no ralador grosso.', 'Misture o iogurte com a mostarda, o limão, o sal e a pimenta.', 'Junte tudo e deixe 10 minutos na geladeira antes de servir.']::text[],
+  'O limão na maçã ralada não é só sabor: é o que impede que ela escureça enquanto a salada espera na mesa.',
+  81)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'vitamina-de-mamao-com-linhaca',
+  'Vitamina de mamão com linhaça',
+  'Para quem acorda com o intestino travado — fibra de verdade, não chá milagroso.',
+  array['suco', 'fruta', 'detox', 'vegetariana', 'economica']::text[],
+  5, 2, 308,
+  132.4, 5.2, 23.7, 2.8, 4.0,
+  '[{"item": "1/2 mamão papaia", "gramas": 300, "taco_id": 226, "fonte": null, "nome_tabela": "Mamão, Papaia, cru"}, {"item": "1 xícara de leite desnatado", "gramas": 200, "taco_id": 457, "fonte": null, "nome_tabela": "Leite, de vaca, desnatado, UHT"}, {"item": "1 colher de sopa de linhaça", "gramas": 15, "taco_id": 594, "fonte": null, "nome_tabela": "Linhaça, semente"}, {"item": "gelo", "gramas": 100, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Bata tudo no liquidificador até ficar liso.', 'Beba na hora: a linhaça moída oxida rápido e perde a graça se ficar parada.']::text[],
+  'Quem faz o intestino andar é a fibra somada à água — e não a linhaça sozinha. Se o dia inteiro for de pouca água, nem esta vitamina resolve.',
+  82)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'bowl-de-iogurte-com-aveia-e-banana',
+  'Bowl de iogurte com aveia e banana',
+  'A sobremesa que também serve de café da manhã — e que não precisa de forno nem de açúcar.',
+  array['sobremesa', 'fruta', 'vegetariana', 'economica']::text[],
+  5, 1, 337,
+  350.0, 14.9, 47.2, 12.9, 4.5,
+  '[{"item": "1 pote de iogurte natural", "gramas": 200, "taco_id": 448, "fonte": null, "nome_tabela": "Iogurte, natural"}, {"item": "1 banana", "gramas": 100, "taco_id": 179, "fonte": null, "nome_tabela": "Banana, nanica, crua"}, {"item": "2 colheres de sopa de aveia em flocos", "gramas": 25, "taco_id": 7, "fonte": null, "nome_tabela": "Aveia, flocos, crua"}, {"item": "1 colher de sopa de castanha-de-caju picada", "gramas": 10, "taco_id": 588, "fonte": null, "nome_tabela": "Castanha-de-caju, torrada, salgada"}, {"item": "canela", "gramas": 2, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Ponha o iogurte no fundo da tigela.', 'Cubra com a banana em rodelas, a aveia e a castanha picada.', 'Termine com canela por cima.']::text[],
+  'Se quiser deixar mais doce, amasse metade da banana no iogurte antes. Banana amassada adoça muito mais do que banana em rodela.',
+  83)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'pudim-de-chia-com-manga',
+  'Pudim de chia com manga',
+  'Sobremesa sem forno, sem leite de vaca e sem açúcar — e ainda parece coisa de cafeteria.',
+  array['sobremesa', 'vegana', 'vegetariana', 'fruta']::text[],
+  10, 2, 215,
+  220.4, 3.6, 27.7, 11.8, 6.8,
+  '[{"item": "3 colheres de sopa de chia", "gramas": 30, "taco_id": null, "fonte": "extra:chia", "nome_tabela": "chia"}, {"item": "1 xícara de leite de coco light", "gramas": 200, "taco_id": null, "fonte": "extra:leite_coco_leve", "nome_tabela": "leite_coco_leve"}, {"item": "1 manga madura", "gramas": 200, "taco_id": 229, "fonte": null, "nome_tabela": "Manga, Palmer, crua"}]'::jsonb,
+  array['Misture a chia com o leite de coco e mexa bem — e mexa de novo depois de 5 minutos, senão vira uma pedra no fundo.', 'Deixe na geladeira por pelo menos 3 horas (tempo de espera).', 'Bata a manga até virar creme e ponha por cima na hora de servir.']::text[],
+  'É a manga madura que adoça: nenhum açúcar entra aqui. Se a sua estiver ácida, espere mais um ou dois dias na fruteira em vez de corrigir com açúcar.',
+  84)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'mousse-de-maracuja-com-iogurte',
+  'Mousse de maracujá com iogurte',
+  'O sabor do mousse de leite condensado, sem a lata inteira de leite condensado.',
+  array['sobremesa', 'vegetariana']::text[],
+  10, 4, 132,
+  129.9, 9.2, 12.6, 5.0, 0.1,
+  '[{"item": "2 potes de iogurte grego natural", "gramas": 400, "taco_id": null, "fonte": "extra:iogurte_grego", "nome_tabela": "iogurte_grego"}, {"item": "polpa de 2 maracujás", "gramas": 100, "taco_id": 233, "fonte": null, "nome_tabela": "Maracujá, polpa, congelada"}, {"item": "1 colher de sopa de mel", "gramas": 30, "taco_id": 507, "fonte": null, "nome_tabela": "Mel, de abelha"}]'::jsonb,
+  array['Bata o iogurte com metade da polpa e o mel até ficar aerado.', 'Distribua em taças e leve à geladeira por 1 hora (tempo de espera).', 'Cubra com o resto da polpa, com as sementes, na hora de servir.']::text[],
+  'O mousse tradicional leva uma lata de leite condensado para quatro porções — perto de 90 g de açúcar. Aqui a acidez do maracujá faz o trabalho que o açúcar fazia.',
+  85)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'frango-na-air-fryer-com-paprica',
+  'Frango na air fryer com páprica',
+  'Dourado por fora, suculento por dentro, com uma colher de azeite no lugar da fritura.',
+  array['principal', 'lowcarb', 'cetogenica']::text[],
+  30, 4, 164,
+  224.6, 32.3, 0.6, 9.5, 0.1,
+  '[{"item": "2 peitos de frango em filés", "gramas": 600, "taco_id": 409, "fonte": null, "nome_tabela": "Frango, peito, sem pele, cru"}, {"item": "2 colheres de sopa de azeite", "gramas": 20, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "suco de 1 limão", "gramas": 20, "taco_id": 220, "fonte": null, "nome_tabela": "Limão, tahiti, cru"}, {"item": "páprica, alho em pó, sal e pimenta", "gramas": 15, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Tempere os filés e deixe descansar 10 minutos — esse tempo é o que faz o tempero entrar.', 'Preaqueça a air fryer a 200 °C por 3 minutos.', 'Asse por 8 minutos, vire e asse mais 6.', 'Deixe descansar 3 minutos fora do aparelho antes de cortar, para o suco não escorrer todo na tábua.']::text[],
+  'Não empilhe os filés no cesto. Air fryer é ar circulando: peça amontoada cozinha no vapor e sai pálida e borrachuda.',
+  86)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'curry-de-grao-de-bico-com-leite-de-coco',
+  'Curry de grão-de-bico com leite de coco',
+  'Um prato vegano que sacia de verdade — e que fica melhor no dia seguinte.',
+  array['vegana', 'vegetariana', 'principal', 'economica']::text[],
+  30, 4, 259,
+  259.0, 10.9, 33.4, 10.0, 9.4,
+  '[{"item": "2 xícaras de grão-de-bico cozido", "gramas": 400, "taco_id": null, "fonte": "extra:grao_bico_cozido", "nome_tabela": "grao_bico_cozido"}, {"item": "1 xícara de leite de coco light", "gramas": 200, "taco_id": null, "fonte": "extra:leite_coco_leve", "nome_tabela": "leite_coco_leve"}, {"item": "2 tomates", "gramas": 200, "taco_id": 157, "fonte": null, "nome_tabela": "Tomate, com semente, cru"}, {"item": "1 cebola", "gramas": 100, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "2 dentes de alho", "gramas": 10, "taco_id": 82, "fonte": null, "nome_tabela": "Alho, cru"}, {"item": "2 punhados de espinafre", "gramas": 100, "taco_id": 119, "fonte": null, "nome_tabela": "Espinafre, Nova Zelândia, cru"}, {"item": "1 colher e meia de sopa de azeite", "gramas": 15, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "curry, cúrcuma, gengibre em pó e sal", "gramas": 10, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Refogue cebola e alho no azeite e junte os temperos secos, mexendo 30 segundos para acordar o cheiro.', 'Ponha o tomate picado e deixe desmanchar.', 'Junte o grão-de-bico e o leite de coco e cozinhe 10 minutos em fogo baixo.', 'Desligue e misture o espinafre — ele murcha só com o calor da panela.']::text[],
+  'Grão-de-bico com arroz forma proteína tão completa quanto a da carne. É por isso que quase toda cozinha do mundo tem um par assim: feijão com arroz é o nosso.',
+  87)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'pts-a-bolonhesa',
+  'Proteína de soja à bolonhesa',
+  'O molho de carne moída do domingo, por uma fração do preço da carne.',
+  array['vegana', 'vegetariana', 'economica', 'principal']::text[],
+  30, 4, 153,
+  142.8, 14.3, 13.6, 4.3, 6.0,
+  '[{"item": "1 xícara de proteína de soja seca", "gramas": 100, "taco_id": null, "fonte": "extra:pts_seca", "nome_tabela": "pts_seca"}, {"item": "4 tomates", "gramas": 400, "taco_id": 157, "fonte": null, "nome_tabela": "Tomate, com semente, cru"}, {"item": "1 cebola", "gramas": 80, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "2 dentes de alho", "gramas": 8, "taco_id": 82, "fonte": null, "nome_tabela": "Alho, cru"}, {"item": "1 colher e meia de sopa de azeite", "gramas": 15, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "louro, orégano, sal e pimenta", "gramas": 10, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Hidrate a proteína de soja em água quente por 10 minutos, escorra e aperte bem para tirar a água.', 'Refogue cebola e alho no azeite, junte a soja e deixe dourar de verdade — é aqui que ela ganha gosto.', 'Ponha o tomate picado e os temperos e cozinhe 15 minutos em fogo baixo.']::text[],
+  'Apertar a soja depois de hidratar é o passo que quase todo mundo pula — e é o que tira o gosto de papelão que dá fama ruim a ela.',
+  88)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'bolinho-de-atum-assado',
+  'Bolinho de atum assado',
+  'Gosto de bolinho frito, feito no forno, com aveia no lugar da farinha branca.',
+  array['principal', 'lowcarb', 'economica']::text[],
+  30, 4, 119,
+  201.1, 21.4, 11.9, 7.1, 1.7,
+  '[{"item": "2 latas de atum escorrido", "gramas": 240, "taco_id": 277, "fonte": null, "nome_tabela": "Atum, conserva em óleo"}, {"item": "2 ovos", "gramas": 100, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "6 colheres de sopa de aveia em flocos", "gramas": 60, "taco_id": 7, "fonte": null, "nome_tabela": "Aveia, flocos, crua"}, {"item": "1/2 cebola", "gramas": 60, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "salsa picada", "gramas": 10, "taco_id": 153, "fonte": null, "nome_tabela": "Salsa, crua"}, {"item": "sal, pimenta e orégano", "gramas": 5, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Misture tudo numa tigela até dar liga e deixe 5 minutos parado — a aveia precisa desse tempo para absorver.', 'Faça bolinhas com a colher e ponha numa assadeira forrada.', 'Asse a 200 °C por 20 minutos, virando na metade.']::text[],
+  'Servem de lanche da tarde, de jantar com salada e de recheio de sanduíche no dia seguinte. Feitos numa vez, resolvem três refeições.',
+  89)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'kafta-de-carne-assada',
+  'Kafta de carne assada',
+  'Carne moída temperada de verdade, no forno, sem nada além de tempero fresco.',
+  array['principal', 'lowcarb', 'cetogenica']::text[],
+  30, 4, 154,
+  182.6, 24.9, 2.5, 7.4, 0.6,
+  '[{"item": "500 g de acém moído", "gramas": 500, "taco_id": 327, "fonte": null, "nome_tabela": "Carne, bovina, acém, moído, cru"}, {"item": "1 cebola", "gramas": 80, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "salsa e hortelã picadas", "gramas": 20, "taco_id": 153, "fonte": null, "nome_tabela": "Salsa, crua"}, {"item": "2 dentes de alho", "gramas": 8, "taco_id": 82, "fonte": null, "nome_tabela": "Alho, cru"}, {"item": "sal, cominho, canela e pimenta", "gramas": 10, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Bata a cebola, o alho e as ervas no processador (ou pique muito fino) e misture à carne.', 'Sove a mistura com a mão por 2 minutos — sem isso a kafta racha e desmancha.', 'Modele em cilindros em volta de espetos ou faça no formato de linguiça.', 'Asse a 220 °C por 18 minutos, virando na metade.']::text[],
+  'Uma pitada de canela na carne não deixa gosto de doce: é o que dá o sabor árabe que a gente reconhece e não sabe nomear.',
+  90)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'tabule-de-bulgur',
+  'Tabule de bulgur',
+  'A salada em que a salsa é o ingrediente principal, não o enfeite.',
+  array['salada', 'vegana', 'vegetariana', 'economica']::text[],
+  30, 4, 182,
+  193.2, 5.4, 27.8, 8.1, 7.3,
+  '[{"item": "1 xícara de trigo para quibe", "gramas": 120, "taco_id": null, "fonte": "extra:bulgur_seco", "nome_tabela": "bulgur_seco"}, {"item": "3 tomates sem semente", "gramas": 300, "taco_id": 157, "fonte": null, "nome_tabela": "Tomate, com semente, cru"}, {"item": "1 pepino", "gramas": 150, "taco_id": 142, "fonte": null, "nome_tabela": "Pepino, cru"}, {"item": "2 maços de salsa", "gramas": 40, "taco_id": 153, "fonte": null, "nome_tabela": "Salsa, crua"}, {"item": "1/2 cebola roxa", "gramas": 60, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "3 colheres de sopa de azeite", "gramas": 30, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "suco de 2 limões e sal", "gramas": 30, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Cubra o trigo com água fria e deixe hidratar por 20 minutos (tempo de espera).', 'Escorra apertando bem numa peneira.', 'Pique tudo miúdo e misture com o azeite, o limão e o sal.', 'Deixe descansar 10 minutos na geladeira antes de servir.']::text[],
+  'Água fria, não quente. Trigo hidratado na água fervente vira mingau e o tabule perde a mordida.',
+  91)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'risoto-de-quinoa-com-champignon',
+  'Risoto de quinoa com champignon',
+  'A cremosidade do risoto sem ficar meia hora em pé mexendo a panela.',
+  array['vegetariana', 'principal']::text[],
+  30, 3, 373,
+  320.0, 12.8, 37.8, 13.8, 5.6,
+  '[{"item": "3 xícaras de quinoa cozida", "gramas": 450, "taco_id": null, "fonte": "extra:quinoa_cozida", "nome_tabela": "quinoa_cozida"}, {"item": "2 xícaras de champignon fatiado", "gramas": 200, "taco_id": null, "fonte": "extra:champignon", "nome_tabela": "champignon"}, {"item": "1 cebola", "gramas": 80, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "2 dentes de alho", "gramas": 8, "taco_id": 82, "fonte": null, "nome_tabela": "Alho, cru"}, {"item": "2 colheres de sopa de azeite", "gramas": 20, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "60 g de queijo minas ralado", "gramas": 60, "taco_id": 461, "fonte": null, "nome_tabela": "Queijo, minas, frescal"}, {"item": "caldo de legumes, sal e pimenta", "gramas": 300, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Doure o champignon no azeite sem mexer muito, até soltar a água e voltar a fritar.', 'Junte cebola e alho e refogue.', 'Ponha a quinoa cozida e o caldo aos poucos, mexendo até ficar cremoso.', 'Desligue e misture o queijo ralado.']::text[],
+  'A quinoa já cozida vira risoto em cinco minutos. Cozinhe uma panela grande no domingo e ela resolve prato de semana inteira.',
+  92)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'macarrao-ao-molho-de-tomate-caseiro',
+  'Macarrão ao molho de tomate caseiro',
+  'Tomate, alho e azeite: o molho de sempre, sem o açúcar e o sódio do vidro pronto.',
+  array['economica', 'vegetariana', 'vegana', 'principal']::text[],
+  30, 4, 268,
+  399.4, 10.3, 69.9, 8.9, 4.8,
+  '[{"item": "320 g de macarrão", "gramas": 320, "taco_id": 40, "fonte": null, "nome_tabela": "Macarrão, trigo, cru"}, {"item": "6 tomates maduros", "gramas": 600, "taco_id": 157, "fonte": null, "nome_tabela": "Tomate, com semente, cru"}, {"item": "1 cebola", "gramas": 100, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "3 dentes de alho", "gramas": 12, "taco_id": 82, "fonte": null, "nome_tabela": "Alho, cru"}, {"item": "3 colheres de sopa de azeite", "gramas": 30, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "manjericão, sal e pimenta", "gramas": 10, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Refogue a cebola e o alho no azeite em fogo baixo, sem deixar queimar.', 'Junte os tomates picados e cozinhe 20 minutos, amassando com a colher.', 'Cozinhe o macarrão e junte ao molho na própria panela, com um pouco da água do cozimento.', 'Manjericão só no fim, com o fogo desligado.']::text[],
+  'A água do cozimento tem amido e é ela que faz o molho grudar no macarrão. Escorrer tudo na pia é jogar fora o que ligaria o prato.',
+  93)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'caldo-de-feijao-com-legumes',
+  'Caldo de feijão com legumes',
+  'O feijão que sobrou vira o jantar de hoje — quente, barato e com fibra de sobra.',
+  array['economica', 'vegana', 'vegetariana', 'principal']::text[],
+  30, 4, 426,
+  166.6, 7.7, 25.4, 4.7, 13.1,
+  '[{"item": "3 conchas de feijão carioca cozido", "gramas": 500, "taco_id": 561, "fonte": null, "nome_tabela": "Feijão, carioca, cozido"}, {"item": "1 cenoura", "gramas": 100, "taco_id": 110, "fonte": null, "nome_tabela": "Cenoura, crua"}, {"item": "2 fatias de abóbora cabotiá", "gramas": 200, "taco_id": 65, "fonte": null, "nome_tabela": "Abóbora, cabotian, crua"}, {"item": "1 cebola", "gramas": 80, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "2 dentes de alho", "gramas": 8, "taco_id": 82, "fonte": null, "nome_tabela": "Alho, cru"}, {"item": "1 colher e meia de sopa de azeite", "gramas": 15, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "água, louro, sal e pimenta", "gramas": 800, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Cozinhe a cenoura e a abóbora em pedaços na água com sal até ficarem bem macias.', 'Bata metade do feijão com esses legumes e o caldo.', 'Refogue cebola e alho no azeite, junte tudo e o resto do feijão inteiro.', 'Deixe ferver 10 minutos para encorpar.']::text[],
+  'É a abóbora batida que engrossa, não a farinha nem o creme de leite. Caldo grosso não precisa de nada além de um legume cozido demais.',
+  94)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'bolo-de-fuba-com-erva-doce',
+  'Bolo de fubá com erva-doce',
+  'O bolo de fubá da fazenda, no liquidificador, sem cobertura nenhuma.',
+  array['sobremesa', 'economica', 'vegetariana']::text[],
+  60, 12, 88,
+  237.6, 4.8, 36.6, 8.3, 1.2,
+  '[{"item": "2 xícaras de fubá", "gramas": 250, "taco_id": 43, "fonte": null, "nome_tabela": "Milho, fubá, cru"}, {"item": "1 xícara de farinha de trigo", "gramas": 100, "taco_id": 35, "fonte": null, "nome_tabela": "Farinha, de trigo"}, {"item": "3/4 de xícara de açúcar", "gramas": 150, "taco_id": 492, "fonte": null, "nome_tabela": "Açúcar, cristal"}, {"item": "3 ovos", "gramas": 150, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "1 xícara e meia de leite desnatado", "gramas": 300, "taco_id": 457, "fonte": null, "nome_tabela": "Leite, de vaca, desnatado, UHT"}, {"item": "1/3 de xícara de óleo", "gramas": 80, "taco_id": 272, "fonte": null, "nome_tabela": "Óleo, de soja"}, {"item": "1 colher de sopa de fermento e erva-doce", "gramas": 20, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Bata no liquidificador os ovos, o leite, o óleo e o açúcar.', 'Passe para uma tigela e misture o fubá, a farinha e a erva-doce.', 'O fermento entra por último, mexendo com a colher.', 'Asse a 180 °C por cerca de 40 minutos, até o palito sair seco.']::text[],
+  'Uma fatia deste bolo tem menos açúcar que a maioria dos bolos de caixinha — e nenhum ingrediente com nome que você não saiba pronunciar. Mas continua sendo bolo: a fatia é uma, não o pedaço inteiro.',
+  95)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'bolo-de-maca-integral',
+  'Bolo de maçã integral',
+  'Metade da massa é maçã — e é ela que adoça, não a xícara de açúcar.',
+  array['sobremesa', 'economica', 'vegetariana', 'fruta']::text[],
+  60, 12, 87,
+  201.8, 5.2, 31.6, 7.1, 3.1,
+  '[{"item": "3 maçãs com casca", "gramas": 400, "taco_id": 222, "fonte": null, "nome_tabela": "Maçã, Fuji, com casca, crua"}, {"item": "2 xícaras de farinha de trigo integral", "gramas": 250, "taco_id": null, "fonte": "extra:farinha_trigo_integral", "nome_tabela": "farinha_trigo_integral"}, {"item": "1/2 xícara de aveia em flocos", "gramas": 60, "taco_id": 7, "fonte": null, "nome_tabela": "Aveia, flocos, crua"}, {"item": "3 ovos", "gramas": 150, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "1/2 xícara de açúcar mascavo", "gramas": 100, "taco_id": 493, "fonte": null, "nome_tabela": "Açúcar, mascavo"}, {"item": "1/4 de xícara de óleo", "gramas": 60, "taco_id": 272, "fonte": null, "nome_tabela": "Óleo, de soja"}, {"item": "1 colher de sopa de fermento e canela", "gramas": 20, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Rale duas maçãs e reserve a terceira em fatias para cobrir.', 'Bata os ovos com o açúcar e o óleo e junte a maçã ralada.', 'Misture a farinha integral, a aveia e a canela, e o fermento por último.', 'Cubra com as fatias, polvilhe canela e asse a 180 °C por 45 minutos.']::text[],
+  'A farinha integral pede um pouco mais de líquido e deixa o bolo mais denso — é assim mesmo. Bolo integral fofinho como o branco costuma ser integral só no nome.',
+  96)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'frango-recheado-com-ricota-e-espinafre',
+  'Frango recheado com ricota e espinafre',
+  'Prato de restaurante com dois ingredientes baratos escondidos dentro do filé.',
+  array['principal', 'lowcarb']::text[],
+  60, 4, 234,
+  283.7, 37.9, 2.9, 12.6, 0.9,
+  '[{"item": "2 peitos de frango grandes", "gramas": 600, "taco_id": 409, "fonte": null, "nome_tabela": "Frango, peito, sem pele, cru"}, {"item": "150 g de ricota", "gramas": 150, "taco_id": 469, "fonte": null, "nome_tabela": "Queijo, ricota"}, {"item": "2 punhados de espinafre", "gramas": 150, "taco_id": 119, "fonte": null, "nome_tabela": "Espinafre, Nova Zelândia, cru"}, {"item": "2 dentes de alho", "gramas": 8, "taco_id": 82, "fonte": null, "nome_tabela": "Alho, cru"}, {"item": "2 colheres de sopa de azeite", "gramas": 20, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "sal, noz-moscada e pimenta", "gramas": 8, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Refogue o espinafre com o alho, escorra a água e misture com a ricota amassada.', 'Abra os peitos em manta (corte lateral, sem separar) e tempere dos dois lados.', 'Recheie, feche com palito e sele numa frigideira quente.', 'Termine no forno a 200 °C por 25 minutos.']::text[],
+  'Escorrer a água do espinafre é o que separa o recheio cremoso do recheio que vaza. Aperte na peneira até parar de pingar.',
+  97)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'pao-de-aveia-de-forma',
+  'Pão de aveia de forma',
+  'Pão caseiro sem sova e sem tempo de crescer — mistura, assa e come.',
+  array['economica', 'vegetariana']::text[],
+  60, 12, 70,
+  177.1, 7.8, 26.6, 4.9, 3.8,
+  '[{"item": "3 xícaras de aveia em flocos", "gramas": 300, "taco_id": 7, "fonte": null, "nome_tabela": "Aveia, flocos, crua"}, {"item": "1 xícara e meia de farinha de trigo integral", "gramas": 150, "taco_id": null, "fonte": "extra:farinha_trigo_integral", "nome_tabela": "farinha_trigo_integral"}, {"item": "3 ovos", "gramas": 150, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "1 pote de iogurte natural", "gramas": 200, "taco_id": 448, "fonte": null, "nome_tabela": "Iogurte, natural"}, {"item": "1 colher de sopa de fermento e sal", "gramas": 25, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}, {"item": "gergelim para polvilhar", "gramas": 20, "taco_id": 593, "fonte": null, "nome_tabela": "Gergelim, semente"}]'::jsonb,
+  array['Bata metade da aveia no liquidificador até virar farinha.', 'Misture tudo numa tigela, com o fermento por último.', 'Ponha numa forma de bolo inglês untada e polvilhe o gergelim.', 'Asse a 180 °C por 40 minutos e espere esfriar antes de fatiar.']::text[],
+  'Este pão é feito com fermento químico, não biológico: não cresce como pão de padaria e é mais denso mesmo. Em compensação fica pronto em uma hora, do zero.',
+  98)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'molho-de-tomate-caseiro-da-semana',
+  'Molho de tomate caseiro da semana',
+  'Uma panela no domingo e você não compra mais molho de vidro.',
+  array['economica', 'vegana', 'vegetariana']::text[],
+  120, 8, 222,
+  85.6, 2.7, 8.6, 5.4, 2.9,
+  '[{"item": "15 tomates bem maduros", "gramas": 1500, "taco_id": 157, "fonte": null, "nome_tabela": "Tomate, com semente, cru"}, {"item": "2 cebolas", "gramas": 200, "taco_id": 107, "fonte": null, "nome_tabela": "Cebola, crua"}, {"item": "5 dentes de alho", "gramas": 20, "taco_id": 82, "fonte": null, "nome_tabela": "Alho, cru"}, {"item": "4 colheres de sopa de azeite", "gramas": 40, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "manjericão, louro, sal e pimenta", "gramas": 20, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Faça um X na base de cada tomate, escalde em água fervente por 1 minuto e tire a pele.', 'Refogue cebola e alho no azeite em fogo baixo por 10 minutos, sem dourar.', 'Junte os tomates picados e cozinhe em fogo baixo por 1 hora e meia, mexendo de vez em quando.', 'Manjericão só no fim. Guarde em potes na geladeira por até 5 dias, ou congele em porções.']::text[],
+  'O molho de vidro costuma trazer açúcar para corrigir a acidez do tomate ruim. Com tomate maduro de verdade e uma hora e meia de fogo baixo, o açúcar não faz falta.',
+  99)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
+insert into public.mercado_receitas
+  (slug, titulo, chamada, categorias, tempo_min, rende, porcao_g,
+   kcal, ptn, cho, lip, fibra, ingredientes, preparo, dica, ordem)
+values (
+  'grao-de-bico-cozido-do-zero',
+  'Grão-de-bico cozido do zero',
+  'Um pacote de grão seco rende o que cinco latas custam — e sem o sódio da conserva.',
+  array['economica', 'vegana', 'vegetariana']::text[],
+  120, 8, 312,
+  221.7, 13.2, 36.2, 3.4, 7.8,
+  '[{"item": "500 g de grão-de-bico seco", "gramas": 500, "taco_id": 575, "fonte": null, "nome_tabela": "Grão-de-bico, cru"}, {"item": "água, louro e sal", "gramas": 2000, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Deixe o grão de molho em água por 12 horas, trocando a água uma vez (tempo de espera).', 'Escorra, cubra com água nova e cozinhe na pressão por 25 minutos depois de pegar pressão.', 'Salgue só no fim do cozimento — sal no início endurece a casca.', 'Congele em porções com um pouco do caldo, que é o que impede o grão de ressecar.']::text[],
+  'A água do molho leva junto boa parte dos compostos que dão gases. Trocar essa água e não cozinhar nela é o que faz diferença de verdade na barriga.',
+  100)
+on conflict (slug) do update set
+  titulo=excluded.titulo, chamada=excluded.chamada,
+  categorias=excluded.categorias, tempo_min=excluded.tempo_min,
+  rende=excluded.rende, porcao_g=excluded.porcao_g,
+  kcal=excluded.kcal, ptn=excluded.ptn, cho=excluded.cho,
+  lip=excluded.lip, fibra=excluded.fibra,
+  ingredientes=excluded.ingredientes, preparo=excluded.preparo,
+  dica=excluded.dica, ordem=excluded.ordem,
+  atualizado_em=now();
+
 
 notify pgrst, 'reload schema';

@@ -82,8 +82,11 @@ def main():
     source = open(path, encoding="utf-8").read()
 
     c = load_creds()
+    # Quando o PAT vence, a sessao do painel aberta no Chromium serve no mesmo
+    # endpoint: basta exportar SUPABASE_TOKEN (ver scratchpad/sql_painel.py).
+    token = os.environ.get("SUPABASE_TOKEN") or c["SUPABASE_PAT"]
     print(f">> deploy {slug} (verify_jwt={verify_jwt}) ...")
-    ok, out = deploy(c["SUPABASE_PAT"], c["PROJECT_REF"], slug, source, verify_jwt)
+    ok, out = deploy(token, c["PROJECT_REF"], slug, source, verify_jwt)
     if ok:
         try:
             j = json.loads(out)
