@@ -108,7 +108,7 @@
   /* ============================================================
      LADO DA NUTRI — seção "Receitas" na ficha do paciente
      ============================================================ */
-  var _p = null, _ctx = null, _todas = [], _lib = {}, _termo = "", _cat = "todas";
+  var _p = null, _ctx = null, _todas = [], _lib = {}, _termo = "", _cat = "todas", _aberta = {};
 
   function toast(m, e) { if (_ctx && _ctx.toast) _ctx.toast(m, e); }
   function root() { return document.getElementById("rcp-root"); }
@@ -147,18 +147,37 @@
     });
   }
 
+  /* Miolo da receita — o mesmo conteúdo que a paciente vê no portal.
+     A nutri precisa ler o que está liberando antes de liberar; sem isto
+     a lista dela era só nome e switch, e a receita não abria. */
+  function corpoHTML(o) {
+    var ingr = (o.ingredientes || []).map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("");
+    var passos = (o.modo_preparo || []).map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("");
+    return '<div class="rcv-card__corpo rcp-item__corpo">' +
+      (o.resumo ? '<p class="rcv-resumo">' + esc(o.resumo) + "</p>" : "") +
+      (ingr ? '<h4 class="rcv-sec">🧺 Ingredientes</h4><ul class="rcv-ingr">' + ingr + "</ul>" : "") +
+      (passos ? '<h4 class="rcv-sec">👩‍🍳 Modo de preparo</h4><ol class="rcv-passos">' + passos + "</ol>" : "") +
+      (o.dica ? '<p class="rcv-dica">💡 ' + esc(o.dica) + "</p>" : "") +
+      (o.atencao ? '<p class="rcv-atencao">⚠️ ' + esc(o.atencao) + "</p>" : "") +
+    "</div>";
+  }
+
   function itemHTML(o) {
     var on = !!_lib[o.id];
-    return '<li class="rcp-item' + (on ? " is-on" : "") + '" data-rcp-id="' + esc(o.id) + '">' +
-      '<div class="rcp-item__info">' +
-        '<div class="rcp-item__nome">' + (CAT_ICO[o.categoria] || "") + " " + esc(o.nome) +
-          (o.editavel ? ' <span class="rcp-selo">minha</span>' : "") + "</div>" +
-        (metaLinha(o) ? '<div class="rcp-item__meta">' + esc(metaLinha(o)) + "</div>" : "") +
-      "</div>" +
+    var aberta = !!_aberta[o.id];
+    return '<li class="rcp-item' + (on ? " is-on" : "") + (aberta ? " is-open" : "") + '" data-rcp-id="' + esc(o.id) + '">' +
+      '<button class="rcp-item__info" type="button" data-rcp-abrir="' + esc(o.id) + '" ' +
+        'aria-expanded="' + (aberta ? "true" : "false") + '">' +
+        '<span class="rcp-item__nome">' + (CAT_ICO[o.categoria] || "") + " " + esc(o.nome) +
+          (o.editavel ? ' <span class="rcp-selo">minha</span>' : "") +
+          ' <span class="rcp-item__seta" aria-hidden="true">▾</span></span>' +
+        (metaLinha(o) ? '<span class="rcp-item__meta">' + esc(metaLinha(o)) + "</span>" : "") +
+      "</button>" +
       '<button class="pl-switch' + (on ? " pl-switch--on" : "") + '" type="button" role="switch" ' +
         'aria-checked="' + on + '" data-rcp-toggle="' + esc(o.id) + '" ' +
         'title="' + (on ? "Liberada — clique para ocultar" : "Oculta — clique para liberar") + '">' +
         '<span class="pl-switch__knob"></span><span class="pl-switch__lbl">' + (on ? "Liberada" : "Oculta") + "</span></button>" +
+      (aberta ? corpoHTML(o) : "") +
       "</li>";
   }
 
@@ -184,7 +203,7 @@
 
   function wire(p, ctx) {
     _p = p; _ctx = ctx || {};
-    _termo = ""; _cat = "todas";
+    _termo = ""; _cat = "todas"; _aberta = {};
     if (!root()) return;
     Promise.all([listarReceitas(), listarLiberadas(p.id)]).then(function (res) {
       _todas = res[0];
@@ -202,6 +221,21 @@
       if (tg) { alternar(tg.getAttribute("data-rcp-toggle"), tg); return; }
       var ch = ev.target.closest("[data-rcp-cat]");
       if (ch) { _cat = ch.getAttribute("data-rcp-cat"); pintar(); return; }
+      var ab = ev.target.closest("[data-rcp-abrir]");
+      if (ab) {
+        var idAb = ab.getAttribute("data-rcp-abrir");
+        if (_aberta[idAb]) delete _aberta[idAb]; else _aberta[idAb] = true;
+        // Repinta só o <li>: repintar a lista inteira perderia o scroll.
+        var li = ab.closest(".rcp-item");
+        var alvo = null;
+        _todas.forEach(function (o) { if (o.id === idAb) alvo = o; });
+        if (li && alvo) {
+          var tmp = document.createElement("ul");
+          tmp.innerHTML = itemHTML(alvo);
+          li.replaceWith(tmp.firstChild);
+        }
+        return;
+      }
       var lote = ev.target.closest("[data-rcp-lote]");
       if (lote) { emLote(lote.getAttribute("data-rcp-lote") === "liberar", lote); return; }
     });

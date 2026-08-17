@@ -47,9 +47,22 @@
 }
 .rcp-item:hover { border-color: var(--rosa); }
 .rcp-item.is-on { background: var(--rosa-suave); border-color: var(--rosa); }
-.rcp-item__info { flex: 1; min-width: 0; }
-.rcp-item__nome { font-size: var(--fs-sm); font-weight: 700; color: var(--texto); }
-.rcp-item__meta { font-size: var(--fs-caption); color: var(--texto-sutil); margin-top: 2px; }
+/* O nome é botão: abre a receita inteira dentro do próprio item. */
+.rcp-item { flex-wrap: wrap; }
+.rcp-item__info {
+  flex: 1; min-width: 0; display: block; text-align: left;
+  background: none; border: 0; padding: 0; font: inherit; cursor: pointer; color: inherit;
+}
+.rcp-item__info:focus-visible { outline: 2px solid var(--vinho); outline-offset: 3px; border-radius: 6px; }
+.rcp-item__nome { display: block; font-size: var(--fs-sm); font-weight: 700; color: var(--texto); }
+.rcp-item__seta { color: var(--vinho); font-size: .8em; }
+.rcp-item.is-open .rcp-item__seta { display: inline-block; transform: rotate(180deg); }
+.rcp-item__corpo {
+  flex-basis: 100%; margin-top: 10px; padding: 10px 0 0;
+  border-top: 1px solid var(--cinza-borda);
+}
+.rcp-item__corpo .rcv-sec:first-child { margin-top: 0; }
+.rcp-item__meta { display: block; font-size: var(--fs-caption); color: var(--texto-sutil); margin-top: 2px; }
 .rcp-selo {
   font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
   color: var(--vinho); background: var(--rosa-suave); border-radius: var(--radius-chip);
