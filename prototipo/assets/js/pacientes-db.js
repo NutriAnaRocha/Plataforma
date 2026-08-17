@@ -21,7 +21,15 @@
     return (anos >= 0 && anos < 130) ? anos : null;
   }
 
-  var TODAS_FEATURES = ["plano", "evolucao", "consultas", "chat"];
+  var TODAS_FEATURES = ["plano", "evolucao", "consultas", "chat", "intestino", "ciclo"];
+
+  /* Features que NÃO nascem ligadas. "Meu ciclo" e "Meu intestino" são
+     espaços de registro íntimo: quem decide abrir é a nutri, na ficha,
+     paciente por paciente. Se entrassem no padrão, todo mundo que ainda
+     tem portal_features nulo (a maioria dos pacientes antigos) receberia
+     de presente um módulo de ciclo menstrual sem ninguém ter pedido. */
+  var FEATURES_OPT_IN = ["intestino", "ciclo"];
+  var FEATURES_PADRAO = TODAS_FEATURES.filter(function (f) { return FEATURES_OPT_IN.indexOf(f) < 0; });
 
   // Teto de features por plano de assinatura da nutri (profiles.plano_nutri).
   // 'full' libera tudo. Os planos comerciais ainda não foram definidos pela Ana:
@@ -36,6 +44,15 @@
     return TIER_FEATURES[tier] ? TIER_FEATURES[tier].slice() : TODAS_FEATURES.slice(); // desconhecido → não restringe
   }
   var _planoNutri = null; // cache do plano da nutri logada (1 fetch por sessão)
+  var _dicasCache = {};   // modulo -> dicas (conteúdo editorial, não muda na sessão)
+
+  // "YYYY-MM-DD" de N dias atrás — recorte das séries de registro diário.
+  function desdeISO(dias) {
+    var d = new Date();
+    d.setDate(d.getDate() - (dias || 30));
+    var p2 = function (n) { return (n < 10 ? "0" : "") + n; };
+    return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate());
+  }
 
   // DB row (snake) -> shape usado pela UI (camelCase, igual ao mock PAC_DATA)
   function fromRow(r) {
@@ -62,7 +79,7 @@
       treino: (r.treino && typeof r.treino === "object") ? r.treino : null,
       metas: (r.metas && typeof r.metas === "object") ? r.metas : null,
       calculos: (r.calculos && typeof r.calculos === "object") ? r.calculos : null,
-      portalFeatures: Array.isArray(r.portal_features) ? r.portal_features : TODAS_FEATURES.slice(),
+      portalFeatures: Array.isArray(r.portal_features) ? r.portal_features : FEATURES_PADRAO.slice(),
       prontuario: r.prontuario || null,
       criadoEm: r.created_at || ""
     };
@@ -347,6 +364,113 @@
       }).then(function (res) {
         if (res.error) throw res.error;
         return (res.data || []).map(fromRow);
+      });
+    },
+
+    /* ---- Meu intestino feliz (0067) e Meu ciclo (0068) ----
+       O oposto do diário do prato: aqui quem escreve é o PACIENTE, pelo
+       client mesmo, porque o dado É o relato dele. A nutri só lê (a RLS
+       garante). Um registro por dia: upsert em (paciente_id, data), para
+       a tela poder salvar sozinha enquanto ela mexe nos chips sem criar
+       cinco linhas do mesmo dia. */
+    listIntestino: function (pacienteId, dias) {
+      return client().then(function (c) {
+        return c.from("intestino_registros").select("*")
+          .eq("paciente_id", pacienteId)
+          .gte("data", desdeISO(dias || 60))
+          .order("data", { ascending: false });
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return res.data || [];
+      });
+    },
+
+    salvarIntestino: function (pacienteId, reg) {
+      var row = {
+        paciente_id: pacienteId,
+        data: reg.data,
+        classificacao: reg.classificacao,
+        bristol: reg.bristol == null || reg.bristol === "" ? null : +reg.bristol,
+        evacuacoes: reg.evacuacoes == null ? 0 : +reg.evacuacoes,
+        sintomas: Array.isArray(reg.sintomas) ? reg.sintomas : [],
+        observacao: (reg.observacao || "").trim() || null,
+        atualizado_em: new Date().toISOString()
+      };
+      return client().then(function (c) {
+        return c.from("intestino_registros").upsert(row, { onConflict: "paciente_id,data" })
+          .select("*").single();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return res.data;
+      });
+    },
+
+    removerIntestino: function (pacienteId, data) {
+      return client().then(function (c) {
+        return c.from("intestino_registros").delete()
+          .eq("paciente_id", pacienteId).eq("data", data);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return true;
+      });
+    },
+
+    listCiclo: function (pacienteId, dias) {
+      return client().then(function (c) {
+        return c.from("ciclo_registros").select("*")
+          .eq("paciente_id", pacienteId)
+          .gte("data", desdeISO(dias || 400))   // ~13 ciclos: o bastante para média e regularidade
+          .order("data", { ascending: false });
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return res.data || [];
+      });
+    },
+
+    salvarCiclo: function (pacienteId, reg) {
+      var row = {
+        paciente_id: pacienteId,
+        data: reg.data,
+        fluxo: reg.fluxo || "nenhum",
+        sintomas: Array.isArray(reg.sintomas) ? reg.sintomas : [],
+        humor: reg.humor || null,
+        energia: reg.energia == null || reg.energia === "" ? null : +reg.energia,
+        libido: reg.libido == null || reg.libido === "" ? null : +reg.libido,
+        observacao: (reg.observacao || "").trim() || null,
+        atualizado_em: new Date().toISOString()
+      };
+      return client().then(function (c) {
+        return c.from("ciclo_registros").upsert(row, { onConflict: "paciente_id,data" })
+          .select("*").single();
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return res.data;
+      });
+    },
+
+    removerCiclo: function (pacienteId, data) {
+      return client().then(function (c) {
+        return c.from("ciclo_registros").delete()
+          .eq("paciente_id", pacienteId).eq("data", data);
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return true;
+      });
+    },
+
+    /* Dicas curadas pela nutri (tabela editorial, mesma para todo mundo).
+       Uma consulta por módulo, cacheada na sessão: o conteúdo não muda
+       enquanto a paciente está com a tela aberta. */
+    listDicas: function (modulo) {
+      if (_dicasCache[modulo]) return Promise.resolve(_dicasCache[modulo]);
+      return client().then(function (c) {
+        return c.from("dicas_conteudo").select("gatilho,tipo,emoji,titulo,texto,ordem")
+          .eq("modulo", modulo).eq("ativo", true)
+          .order("ordem", { ascending: true });
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        _dicasCache[modulo] = res.data || [];
+        return _dicasCache[modulo];
       });
     },
 

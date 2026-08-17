@@ -192,6 +192,8 @@
     // { id: "treino",    ico: "🏋️", tit: "Treino em casa",         sub: ["Blocos e exercícios", "Vídeos", "Liberar ao paciente"] }, // PROJETO FUTURO — oculto por ora (código preservado em treino-paciente.js)
     { id: "prato",        ico: "📷", tit: "Diário do prato",        sub: ["Fotos da paciente", "Estimativa da IA", "Resumo por dia"] },
     { id: "metas",        ico: "🎯", tit: "Metas",                  sub: ["Checklist do paciente", "Metas ativas", "Evolução"] },
+    { id: "intestino",    ico: "🌿", tit: "Meu intestino feliz",    sub: ["Registro diário do paciente", "Padrão e sintomas"] },
+    { id: "ciclo",        ico: "🌸", tit: "Meu ciclo",              sub: ["Ciclo menstrual", "Sintomas e humor", "Regularidade"] },
     { id: "receitas",     ico: "🍳", tit: "Receitas",               sub: ["Liberar ao paciente", "Ingredientes na lista de compras"] },
     { id: "prescricoes",  ico: "💊", tit: "Prescrições",            sub: ["Suplementação", "Fitoterapia", "Manipulados"] },
     { id: "orientacoes",  ico: "📄", tit: "Orientações",            sub: ["Atuais", "Histórico"] },
@@ -398,6 +400,10 @@
                                    : secWrap("Diário do prato", emBreve("Fotos dos pratos registrados pela paciente.")); break;
       case "treino":        html = secTreino(p); break;
       case "metas":         html = secMetas(p); break;
+      case "intestino":     html = window.IntestinoNutri ? window.IntestinoNutri.render(p)
+                                   : secWrap("Meu intestino feliz", emBreve("Registro intestinal feito pelo paciente no portal.")); break;
+      case "ciclo":         html = window.CicloNutri ? window.CicloNutri.render(p)
+                                   : secWrap("Meu ciclo", emBreve("Registro do ciclo menstrual feito pela paciente no portal.")); break;
       case "receitas":      html = window.ReceitasPaciente ? window.ReceitasPaciente.render(p)
                                    : secWrap("Receitas", emBreve("Escolha as receitas que a paciente vê no portal.")); break;
       case "prescricoes":   html = secPrescricoes(p); break;
@@ -422,6 +428,8 @@
       });
     }
     if (sec === "prato" && window.PratoNutri) window.PratoNutri.wire(p, { toast: pacToast });
+    if (sec === "intestino" && window.IntestinoNutri) window.IntestinoNutri.wire(p, { toast: pacToast });
+    if (sec === "ciclo" && window.CicloNutri) window.CicloNutri.wire(p, { toast: pacToast });
     if (sec === "exames" && window.Exames) {
       window.Exames.wire(p, {
         toast: pacToast,
@@ -786,7 +794,16 @@
   }
 
   /* ---------- Portal do paciente: acesso + features (entitlements) ---------- */
-  var FEAT_LABELS = { plano: "Plano alimentar", evolucao: "Evolução", consultas: "Consultas", chat: "Chat" };
+  var FEAT_LABELS = {
+    plano: "Plano alimentar", evolucao: "Evolução", consultas: "Consultas", chat: "Chat",
+    intestino: "Meu intestino feliz", ciclo: "Meu ciclo"
+  };
+  // Explicação só onde a decisão não é óbvia (o resto se explica pelo nome).
+  var FEAT_HINTS = {
+    chat: "controla o envio de mensagens",
+    intestino: "registro diário do funcionamento intestinal",
+    ciclo: "ciclo menstrual — libere só para quem faz sentido"
+  };
 
   function renderPortalCard(p) {
     var feats = window.NutriPacientes.TODAS_FEATURES;
@@ -798,7 +815,7 @@
       var extra = permitido ? "" : ' <small class="feat-lock">(fora do seu plano)</small>';
       return '<label class="feat-toggle' + (permitido ? "" : " feat-toggle--locked") + '">' +
         '<input type="checkbox" data-feat="' + f + '"' + (on ? " checked" : "") + (permitido ? "" : " disabled") + '>' +
-        '<span>' + esc(FEAT_LABELS[f]) + (f === "chat" ? ' <small>(controla o envio de mensagens)</small>' : '') + extra + '</span></label>';
+        '<span>' + esc(FEAT_LABELS[f]) + (FEAT_HINTS[f] ? ' <small>(' + esc(FEAT_HINTS[f]) + ')</small>' : '') + extra + '</span></label>';
     }).join("");
 
     var acesso = p.userId

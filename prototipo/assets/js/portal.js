@@ -110,6 +110,8 @@
     if (window.ReceitasView) window.ReceitasView.wire("pane-receitas");
     el("pane-treino").innerHTML = window.TreinoView ? window.TreinoView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
     el("pane-metas").innerHTML = window.MetasView ? window.MetasView.portalHTML(p, ctx.marcas, ctx.mode === "preview") : "";
+    el("pane-intestino").innerHTML = (window.IntestinoView && temFeature(p, "intestino")) ? window.IntestinoView.portalHTML() : "";
+    el("pane-ciclo").innerHTML = (window.CicloView && temFeature(p, "ciclo")) ? window.CicloView.portalHTML() : "";
     el("pane-evolucao").innerHTML = renderEvolucao(p);
     hidratarFotosPortal(p);
     hidratarFotosRefeicao();
@@ -127,6 +129,13 @@
 
     if (window.PratoView && temPrato(p)) {
       window.PratoView.wire(p, { readonly: ctx.mode === "preview" });
+    }
+
+    if (window.IntestinoView && temFeature(p, "intestino")) {
+      window.IntestinoView.wire(p, { readonly: ctx.mode === "preview" });
+    }
+    if (window.CicloView && temFeature(p, "ciclo")) {
+      window.CicloView.wire(p, { readonly: ctx.mode === "preview" });
     }
 
     if (window.AnamneseView && temAnamnese(p)) {
@@ -192,8 +201,15 @@
      — e criar uma exigiria migrar a lista de todo paciente já existente
      só para ligar algo que deveria vir junto. */
   function temPrato(p) {
+    return temFeature(p, "plano");
+  }
+  /* "Meu intestino" e "Meu ciclo" são features de verdade em
+     portal_features, ao contrário do diário do prato: são espaços de
+     registro íntimo que a nutri abre paciente por paciente. Nada aqui é
+     deduzido do sexo cadastrado — quem decide é ela, na ficha. */
+  function temFeature(p, id) {
     var feats = Array.isArray(p.portalFeatures) ? p.portalFeatures : ["plano", "evolucao", "consultas", "chat"];
-    return feats.indexOf("plano") >= 0;
+    return feats.indexOf(id) >= 0;
   }
 
   function reavaliacaoAberta() {
@@ -709,6 +725,27 @@
       var box = el("chat-scroll"); if (box) box.innerHTML = '<div class="empty-state">Não foi possível carregar as mensagens.</div>';
     });
   }
+
+  /* Ponte dos módulos de registro (intestino, ciclo) com o chat: o botão
+     "falar com a nutri" leva a paciente para a aba 💬 com o contexto já
+     escrito. Ela edita e envia — não precisa resumir a própria semana,
+     que é justamente o que faz desistir de mandar a mensagem.
+     Sem a aba de mensagens liberada, cai no WhatsApp com o mesmo texto:
+     é melhor que um botão que não faz nada. */
+  function abrirChatCom(texto) {
+    var tab = el("portal-tabs").querySelector('.ptab[data-t="chat"]');
+    if (!tab || tab.hidden) {
+      window.open("https://wa.me/" + WA_NUTRI + "?text=" + encodeURIComponent(texto), "_blank", "noopener");
+      return;
+    }
+    switchTab("chat");
+    var inp = el("chat-input");
+    if (!inp) return;              // preview: a nutri vê a aba, mas não escreve
+    inp.value = texto;
+    inp.focus();
+    try { inp.setSelectionRange(texto.length, texto.length); } catch (e) {}
+  }
+  window.PortalChat = { abrirCom: abrirChatCom };
 
   function fmtTime(iso) {
     try {

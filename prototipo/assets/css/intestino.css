@@ -1,0 +1,190 @@
+/* ============================================================
+   MEU INTESTINO FELIZ — portal (.int-*) e ficha da nutri (.in-*)
+   Só tokens de tokens.css. Alvos de toque de 44px para cima:
+   quem registra é gente com o celular na mão, muitas vezes de pé.
+   ============================================================ */
+
+/* minmax(0,1fr) e não o `auto` implícito: o botão de falar com a nutri é
+   .btn (white-space: nowrap) e, com coluna `auto`, o min-content dele
+   arrastava TODOS os cards para 407px numa tela de 390. */
+.int-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
+.int-card { padding: var(--sp-5); }
+
+.int-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-3);
+}
+.int-head .pcard__title { margin: 0; }
+
+/* ---------- Três opções ---------- */
+.int-ops {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-2);
+}
+.int-op {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  min-height: 104px; padding: var(--sp-3) var(--sp-2);
+  border: 2px solid var(--cinza-borda); border-radius: var(--radius-card);
+  background: var(--branco); color: var(--texto);
+  font-family: var(--font-ui); cursor: pointer;
+  transition: transform var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+}
+.int-op:hover:not(:disabled) { border-color: var(--rosa); transform: translateY(-2px); }
+.int-op:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+.int-op:disabled { opacity: .6; cursor: default; }
+.int-op__emoji { font-size: 2rem; line-height: 1.1; }
+.int-op__lbl { font-size: var(--fs-sm); font-weight: 700; }
+.int-op__hint { font-size: var(--fs-caption); color: var(--texto-sutil); text-align: center; line-height: 1.3; }
+
+.int-op.is-on { border-color: var(--vinho); background: var(--rosa-suave); }
+.int-op.is-on .int-op__lbl { color: var(--vinho); }
+.int-op--constipado.is-on { border-color: #C98A17; background: #FDF6E7; }
+.int-op--constipado.is-on .int-op__lbl { color: #8A5D06; }
+.int-op--regular.is-on { border-color: #2E9367; background: #EAF7F1; }
+.int-op--regular.is-on .int-op__lbl { color: #1F6A4A; }
+.int-op--diarreia.is-on { border-color: #2C7BB6; background: #EAF3FA; }
+.int-op--diarreia.is-on .int-op__lbl { color: #1E5B87; }
+
+/* ---------- Detalhe do dia ---------- */
+.int-detalhe { margin-top: var(--sp-4); display: grid; gap: var(--sp-4); }
+.int-bloco { display: grid; gap: var(--sp-2); }
+.int-bloco__lbl {
+  font-size: var(--fs-sm); font-weight: 700; color: var(--texto);
+}
+.int-bloco__lbl small { font-weight: 500; color: var(--texto-sutil); }
+
+.int-num { display: flex; align-items: center; gap: var(--sp-3); }
+.int-num__b {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1.5px solid var(--cinza-borda); background: var(--branco);
+  font-size: 1.3rem; color: var(--vinho); cursor: pointer;
+}
+.int-num__b:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+.int-num__v { font-size: 1.3rem; font-weight: 800; min-width: 28px; text-align: center; }
+
+.int-brisrow { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+.int-bris {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1.5px solid var(--cinza-borda); background: var(--branco);
+  font-weight: 700; color: var(--texto-sutil); cursor: pointer;
+  transition: all var(--t-fast);
+}
+.int-bris.is-on { background: var(--vinho); border-color: var(--vinho); color: var(--branco); }
+.int-bris:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+.int-bris__txt { font-size: var(--fs-caption); color: var(--texto-sutil); margin: 0; min-height: 1.2em; }
+
+.int-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.int-chip {
+  min-height: 40px; padding: var(--sp-2) var(--sp-3);
+  border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-chip);
+  background: var(--branco); color: var(--texto);
+  font-family: var(--font-ui); font-size: var(--fs-sm); cursor: pointer;
+  transition: all var(--t-fast);
+}
+.int-chip.is-on { background: var(--rosa-suave); border-color: var(--vinho); color: var(--vinho); font-weight: 700; }
+.int-chip:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+
+.int-obs { width: 100%; resize: vertical; font-family: var(--font-ui); }
+
+.int-acoes-dia { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.int-salvo { font-size: var(--fs-caption); color: #1F6A4A; font-weight: 700; }
+
+/* ---------- Calendário ---------- */
+.int-cal { margin-top: var(--sp-2); }
+.int-cal__dow,
+.int-cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.int-cal__dow span {
+  text-align: center; font-size: var(--fs-caption); color: var(--texto-sutil);
+  font-weight: 700; padding-bottom: 4px;
+}
+.int-cel {
+  position: relative; aspect-ratio: 1 / 1; min-height: 38px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border: 1.5px solid var(--cinza-borda); border-radius: 12px;
+  background: var(--branco); cursor: pointer; padding: 0;
+  transition: all var(--t-fast);
+}
+.int-cel--vazia { border: none; background: none; cursor: default; }
+.int-cel__e { font-size: 1rem; line-height: 1; }
+.int-cel__n { font-size: 10px; color: var(--texto-sutil); line-height: 1.2; }
+.int-cel--constipado { background: #FDF6E7; border-color: #EBD9A8; }
+.int-cel--regular { background: #EAF7F1; border-color: #B7E0CD; }
+.int-cel--diarreia { background: #EAF3FA; border-color: #B4D3EA; }
+.int-cel.is-sel { border-color: var(--vinho); box-shadow: var(--ring-foco); }
+.int-cel:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+
+.int-resumo { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-3); }
+.int-res { font-size: var(--fs-sm); color: var(--texto-sutil); }
+.int-res b { color: var(--texto); }
+.int-res--tot { margin-left: auto; }
+
+/* ---------- Dicas ---------- */
+.int-dicas__sub { font-size: var(--fs-sm); font-weight: 700; color: var(--vinho); margin: 0 0 var(--sp-3); }
+.int-dicas { display: grid; gap: var(--sp-2); }
+.int-dica {
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-btn);
+  background: var(--branco); overflow: hidden;
+}
+.int-dica > summary {
+  display: flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-3); cursor: pointer; list-style: none;
+  font-size: var(--fs-body); font-weight: 600;
+}
+.int-dica > summary::-webkit-details-marker { display: none; }
+.int-dica[open] { background: var(--rosa-suave); border-color: var(--rosa); }
+.int-dica__e { font-size: 1.2rem; }
+.int-dica__t { flex: 1; }
+.int-dica__x { margin: 0; padding: 0 var(--sp-3) var(--sp-3) calc(var(--sp-3) + 1.2rem + var(--sp-2));
+  font-size: var(--fs-sm); color: var(--texto); line-height: var(--lh-normal); }
+
+.int-nota, .int-alerta { font-size: var(--fs-caption); line-height: 1.5; }
+.int-nota { color: var(--texto-sutil); margin: var(--sp-3) 0 0; }
+.int-alerta {
+  margin-top: var(--sp-3); padding: var(--sp-3);
+  border-radius: var(--radius-btn); border: 1px solid #F0D7A8; background: #FDF6E7;
+  color: #6B4A08;
+}
+
+.int-falar { text-align: center; display: grid; gap: var(--sp-3); justify-items: center; }
+.int-falar p { margin: 0; font-size: var(--fs-sm); color: var(--texto-sutil); }
+
+/* ============================================================
+   FICHA DA NUTRI
+   ============================================================ */
+.in-resumo { display: grid; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.in-barra { display: grid; grid-template-columns: 150px 1fr 90px; align-items: center; gap: var(--sp-3); }
+.in-barra__lbl { font-size: var(--fs-sm); }
+.in-barra__track { height: 10px; border-radius: 999px; background: var(--cinza-claro); overflow: hidden; }
+.in-barra__fill { display: block; height: 100%; border-radius: 999px; background: var(--vinho); }
+.in-barra__fill--constipado { background: #C98A17; }
+.in-barra__fill--regular { background: #2E9367; }
+.in-barra__fill--diarreia { background: #2C7BB6; }
+.in-barra__v { font-size: var(--fs-sm); font-weight: 700; text-align: right; }
+.in-barra__v small { font-weight: 500; color: var(--texto-sutil); }
+
+.in-faixa { display: flex; gap: 3px; }
+.in-tick { flex: 1; height: 22px; border-radius: 4px; background: var(--cinza-claro); }
+.in-tick--constipado { background: #E3B94A; }
+.in-tick--regular { background: #56B98C; }
+.in-tick--diarreia { background: #5AA0D0; }
+.in-faixa__lbl { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.in-sint { font-size: var(--fs-sm); display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+
+.in-tabela-wrap { overflow-x: auto; }
+.in-tabela { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); min-width: 560px; }
+.in-tabela th, .in-tabela td {
+  text-align: left; padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--cinza-borda); vertical-align: top;
+}
+.in-tabela th { font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .04em; color: var(--texto-sutil); }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 560px) {
+  .int-card { padding: var(--sp-4); }
+  .int-op { min-height: 96px; }
+  /* o texto do botão é longo; sem isso ele fica cortado pelo nowrap do .btn */
+  .int-falar .btn { white-space: normal; }
+  .int-op__hint { display: none; }
+  .int-res--tot { margin-left: 0; }
+  .in-barra { grid-template-columns: 120px 1fr 74px; }
+}

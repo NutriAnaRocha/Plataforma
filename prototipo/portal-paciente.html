@@ -18,6 +18,8 @@
   <link rel="stylesheet" href="assets/css/metas.css?v=13a1c815" />
   <link rel="stylesheet" href="assets/css/receitas-paciente.css?v=cedb5ae5" />
   <link rel="stylesheet" href="assets/css/anamnese.css?v=695bbe98" />
+  <link rel="stylesheet" href="assets/css/intestino.css?v=289b0e5d" />
+  <link rel="stylesheet" href="assets/css/ciclo.css?v=784a2515" />
 </head>
 <body class="portal-body">
 
@@ -59,6 +61,8 @@
       <button class="ptab" data-t="receitas" type="button">🍳 Receitas</button>
       <button class="ptab" data-t="treino" type="button">🏋️ Treino</button>
       <button class="ptab" data-t="metas" type="button">🎯 Metas</button>
+      <button class="ptab" data-t="intestino" type="button">🌿 Meu intestino</button>
+      <button class="ptab" data-t="ciclo" type="button">🌸 Meu ciclo</button>
       <button class="ptab" data-t="evolucao" type="button">📈 Evolução</button>
       <button class="ptab" data-t="consultas" type="button">📅 Consultas</button>
       <button class="ptab" data-t="chat" type="button">💬 Mensagens</button>
@@ -72,6 +76,8 @@
       <div class="portal-pane" data-pane="receitas" id="pane-receitas"></div>
       <div class="portal-pane" data-pane="treino" id="pane-treino"></div>
       <div class="portal-pane" data-pane="metas" id="pane-metas"></div>
+      <div class="portal-pane" data-pane="intestino" id="pane-intestino"></div>
+      <div class="portal-pane" data-pane="ciclo" id="pane-ciclo"></div>
       <div class="portal-pane" data-pane="evolucao" id="pane-evolucao"></div>
       <div class="portal-pane" data-pane="consultas" id="pane-consultas"></div>
       <div class="portal-pane" data-pane="chat" id="pane-chat"></div>
@@ -83,10 +89,10 @@
   <!-- Scripts -->
   <script src="assets/js/pwa.js?v=164a0057"></script>
   <script src="assets/js/supabase-client.js?v=5dec5cdd"></script>
-  <script src="assets/js/pacientes-db.js?v=2b947f44"></script>
+  <script src="assets/js/pacientes-db.js?v=f1ec5aa4"></script>
   <script src="assets/js/alimentos-data.js?v=db94e741"></script>
   <script src="assets/js/nome-alimento.js?v=5caaff64"></script>
-  <script src="assets/js/lista-compras.js?v=3e851543"></script>
+  <script src="assets/js/lista-compras.js?v=08a11133"></script>
   <script src="assets/js/anamnese-paciente.js?v=70b45bb1"></script>
   <script src="assets/js/reavaliacao-paciente.js?v=30afb16b"></script>
   <script src="assets/js/prato-paciente.js?v=b38d7329"></script>
@@ -95,7 +101,11 @@
        montar as abas 🏋️ e 🎯. Sem estes dois, as abas nascem vazias. -->
   <script src="assets/js/treino-paciente.js?v=2388fbbf"></script>
   <script src="assets/js/metas-paciente.js?v=8c662029"></script>
-  <script src="assets/js/portal.js?v=88217668"></script>
+  <!-- Espaços de auto-registro do paciente (0067/0068). Expõem
+       IntestinoView/CicloView, que portal.js monta nas abas 🌿 e 🌸. -->
+  <script src="assets/js/intestino.js?v=e096a89f"></script>
+  <script src="assets/js/ciclo.js?v=c320920e"></script>
+  <script src="assets/js/portal.js?v=dc4da50f"></script>
   <script src="assets/js/app.js?v=06763e27"></script>
 </body>
 </html>

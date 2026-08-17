@@ -1,0 +1,192 @@
+/* ============================================================
+   MEU CICLO — portal (.cic-*) e ficha da nutri (.cic-n*)
+   As quatro fases têm cor própria e a mesma cor volta no anel, na
+   legenda e nas dicas: é assim que a paciente aprende a ler o ciclo
+   dela sem precisar decorar nome de fase.
+   ============================================================ */
+
+:root {
+  --fase-menstrual: #C2185B;
+  --fase-folicular: #2E9367;
+  --fase-ovulatoria: #E0902B;
+  --fase-lutea: #7B5EA7;
+}
+
+/* mesma trava da 0067: coluna `auto` deixa o min-content de um .btn nowrap
+   arrastar a largura de todos os cards no celular. */
+.cic-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
+.cic-card { padding: var(--sp-5); }
+
+/* ---------- Anel ---------- */
+.cic-hero { display: flex; align-items: center; gap: var(--sp-5); flex-wrap: wrap; }
+.cic-ring { position: relative; width: 168px; height: 168px; flex: 0 0 auto; }
+.cic-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.cic-arc { fill: none; stroke-width: 12; stroke-linecap: butt; }
+.cic-arc--bg { stroke: var(--cinza-claro); }
+.cic-arc--menstrual { stroke: var(--fase-menstrual); }
+.cic-arc--folicular { stroke: var(--fase-folicular); }
+.cic-arc--ovulatoria { stroke: var(--fase-ovulatoria); }
+.cic-arc--lutea { stroke: var(--fase-lutea); }
+.cic-hoje { fill: var(--branco); stroke: var(--vinho); stroke-width: 3; }
+
+.cic-ring__mid {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px; text-align: center;
+}
+.cic-ring__mid strong {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: 1.5rem; color: var(--vinho); line-height: 1;
+}
+.cic-ring__mid span { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; }
+
+.cic-hero__txt { flex: 1 1 220px; }
+.cic-hero__txt .pcard__title { margin: 0 0 var(--sp-2); }
+.cic-hero__msg { margin: 0 0 var(--sp-2); font-size: var(--fs-body); font-weight: 600; color: var(--texto); }
+.cic-hero__meta { margin: 0; font-size: var(--fs-caption); color: var(--texto-sutil); }
+
+.cic-legenda { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-4); }
+.cic-leg {
+  font-size: var(--fs-caption); padding: 4px var(--sp-2);
+  border-radius: var(--radius-chip); border: 1px solid var(--cinza-borda);
+  color: var(--texto-sutil);
+}
+.cic-leg.is-on { font-weight: 700; color: var(--branco); border-color: transparent; }
+.cic-leg--menstrual.is-on { background: var(--fase-menstrual); }
+.cic-leg--folicular.is-on { background: var(--fase-folicular); }
+.cic-leg--ovulatoria.is-on { background: var(--fase-ovulatoria); }
+.cic-leg--lutea.is-on { background: var(--fase-lutea); }
+
+.cic-vazio { text-align: center; display: grid; gap: var(--sp-2); justify-items: center; }
+.cic-vazio__ico { font-size: 2.6rem; }
+
+/* ---------- Registro do dia ---------- */
+.cic-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-3);
+}
+.cic-head .pcard__title { margin: 0; }
+
+.cic-principal { margin-bottom: var(--sp-4); }
+.cic-btn-menstruei { width: 100%; min-height: 52px; font-size: var(--fs-body); }
+
+.cic-bloco { display: grid; gap: var(--sp-2); margin-bottom: var(--sp-4); }
+.cic-bloco:last-child { margin-bottom: 0; }
+.cic-bloco__lbl { font-size: var(--fs-sm); font-weight: 700; color: var(--texto); }
+
+.cic-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.cic-chip {
+  min-height: 40px; padding: var(--sp-2) var(--sp-3);
+  border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-chip);
+  background: var(--branco); color: var(--texto);
+  font-family: var(--font-ui); font-size: var(--fs-sm); cursor: pointer;
+  transition: all var(--t-fast);
+}
+.cic-chip.is-on { background: var(--rosa-suave); border-color: var(--vinho); color: var(--vinho); font-weight: 700; }
+.cic-chip--fluxo.is-on { background: #FCE7EF; border-color: var(--fase-menstrual); color: var(--fase-menstrual); }
+.cic-chip--off { color: var(--texto-sutil); }
+.cic-chip:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+
+.cic-humores { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.cic-humor {
+  min-width: 64px; min-height: 64px; padding: var(--sp-2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-btn);
+  background: var(--branco); cursor: pointer; transition: all var(--t-fast);
+  font-family: var(--font-ui);
+}
+.cic-humor span { font-size: 1.4rem; line-height: 1; }
+.cic-humor small { font-size: 10px; color: var(--texto-sutil); }
+.cic-humor.is-on { border-color: var(--vinho); background: var(--rosa-suave); }
+.cic-humor.is-on small { color: var(--vinho); font-weight: 700; }
+.cic-humor:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+
+.cic-obs { width: 100%; resize: vertical; font-family: var(--font-ui); }
+.cic-acoes-dia { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.cic-salvo { font-size: var(--fs-caption); color: #1F6A4A; font-weight: 700; }
+
+.cic-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cic-cel {
+  aspect-ratio: 1 / 1; min-height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid var(--cinza-borda); border-radius: 10px;
+  background: var(--branco); color: var(--texto-sutil);
+  font-size: var(--fs-caption); font-family: var(--font-ui); cursor: pointer; padding: 0;
+  transition: all var(--t-fast);
+}
+.cic-cel--reg { background: var(--rosa-suave); border-color: var(--rosa); color: var(--vinho); }
+.cic-cel--fluxo { background: var(--fase-menstrual); border-color: var(--fase-menstrual); color: var(--branco); font-weight: 700; }
+.cic-cel.is-sel { box-shadow: var(--ring-foco); border-color: var(--vinho); }
+.cic-cel:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+
+/* ---------- Dicas ---------- */
+.cic-dicas { display: grid; gap: var(--sp-2); }
+.cic-dica {
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-btn);
+  background: var(--branco); overflow: hidden;
+}
+.cic-dica > summary {
+  display: flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-3); cursor: pointer; list-style: none;
+  font-size: var(--fs-body); font-weight: 600;
+}
+.cic-dica > summary::-webkit-details-marker { display: none; }
+.cic-dica[open] { background: var(--rosa-suave); border-color: var(--rosa); }
+.cic-dica__e { font-size: 1.2rem; }
+.cic-dica__t { flex: 1; }
+.cic-dica__x {
+  margin: 0; padding: 0 var(--sp-3) var(--sp-3) calc(var(--sp-3) + 1.2rem + var(--sp-2));
+  font-size: var(--fs-sm); line-height: var(--lh-normal);
+}
+.cic-nota { font-size: var(--fs-caption); color: var(--texto-sutil); margin: var(--sp-3) 0 0; line-height: 1.5; }
+
+/* ---------- Histórico ---------- */
+.cic-bars { display: grid; gap: var(--sp-2); }
+.cic-bar { display: grid; grid-template-columns: 42px 1fr 48px; align-items: center; gap: var(--sp-3); }
+.cic-bar__lbl { font-size: var(--fs-caption); color: var(--texto-sutil); text-transform: capitalize; }
+.cic-bar__track { height: 12px; border-radius: 999px; background: var(--cinza-claro); overflow: hidden; }
+.cic-bar__track i { display: block; height: 100%; border-radius: 999px; background: var(--fase-menstrual); }
+.cic-bar__v { font-size: var(--fs-sm); font-weight: 700; text-align: right; }
+.cic-media { margin: var(--sp-3) 0 0; font-size: var(--fs-sm); }
+
+.cic-falar { text-align: center; display: grid; gap: var(--sp-3); justify-items: center; }
+.cic-falar p { margin: 0; font-size: var(--fs-sm); color: var(--texto-sutil); }
+.cic-aviso { font-size: var(--fs-caption); line-height: 1.5; }
+
+/* ============================================================
+   FICHA DA NUTRI
+   ============================================================ */
+.cic-nstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.cic-nstat {
+  padding: var(--sp-3); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-btn); background: var(--branco);
+  display: grid; gap: 2px;
+}
+.cic-nstat span { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.cic-nstat strong { font-size: var(--fs-h3); color: var(--vinho); }
+.cic-nalerta {
+  margin: 0 0 var(--sp-4); padding: var(--sp-3);
+  border-radius: var(--radius-btn); border: 1px solid #F0D7A8; background: #FDF6E7;
+  color: #6B4A08; font-size: var(--fs-sm);
+}
+.cic-nbloco { margin-bottom: var(--sp-4); }
+.cic-nlista { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.cic-nciclo {
+  display: grid; gap: 2px; padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-btn);
+  background: var(--branco);
+}
+.cic-nciclo span { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.cic-nciclo strong { font-size: var(--fs-sm); }
+.cic-nchips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 560px) {
+  .cic-card { padding: var(--sp-4); }
+  .cic-hero { justify-content: center; text-align: center; }
+  .cic-hero__txt { flex-basis: 100%; }
+  .cic-legenda { justify-content: center; }
+  .cic-ring { width: 148px; height: 148px; }
+  .cic-nstats { grid-template-columns: repeat(2, 1fr); }
+  .cic-bar { grid-template-columns: 36px 1fr 40px; }
+  .cic-falar .btn { white-space: normal; }
+}
