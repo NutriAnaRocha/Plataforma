@@ -315,7 +315,7 @@
         '<span class="lc-badge">' + lst.totalItens + ' itens</span></div>' +
       '<p class="pl-hint">Sai dos alimentos do plano — sem quantidade, porque quanto comprar é ' +
       'critério de quem compra. Você pode tirar o que não faz sentido e acrescentar o que quiser; ' +
-      'a paciente também pode ajustar a dela. Vai junto quando você libera o plano.</p>' +
+      'o que a paciente ajustou na lista dela já aparece aqui. Vai junto quando você libera o plano.</p>' +
       addHTML("Acrescentar item (ex.: café)") +
       '<div class="lc-cols">' + corredoresHTML(lst, { editar: true }) + '</div>' +
       dicasHTML(true) +
@@ -392,16 +392,26 @@
      acumularia lixo, e o item nunca mais poderia ser adicionado de novo. */
   function wireEdicao(raiz, getEdits, onChange) {
     if (!raiz) return;
+    // O container sobrevive ao redesenho (só o innerHTML troca), então chamar
+    // de novo empilharia listeners: o handler velho, com o estado velho em
+    // closure, gravaria por cima do novo. Um listener só, callbacks trocados.
+    raiz.__lcEdicao = { get: getEdits, change: onChange };
+    if (raiz.__lcWired) return;
+    raiz.__lcWired = true;
+    function getE() { return raiz.__lcEdicao.get(); }
+    function change(edits) { raiz.__lcEdicao.change(edits); }
     raiz.addEventListener("click", function (e) {
       var b = e.target.closest && e.target.closest("[data-lc-rm]");
       if (!b || !raiz.contains(b)) return;
       e.preventDefault();
       var s = b.getAttribute("data-lc-rm");
-      var ed = getEdits() || {};
+      var ed = getE() || {};
       var extras = lista(ed.extras).filter(function (n) { return slug(n) !== s; });
-      var remover = lista(ed.remover);
+      // Cópia: `remover` recebe push logo abaixo, e mutar o array de quem
+      // chamou faria o onChange comparar o novo estado com ele mesmo.
+      var remover = lista(ed.remover).slice();
       if (extras.length === lista(ed.extras).length && remover.indexOf(s) === -1) remover.push(s);
-      onChange({ extras: extras, remover: remover });
+      change({ extras: extras, remover: remover });
     });
     raiz.addEventListener("submit", function (e) {
       var f = e.target.closest && e.target.closest("[data-lc-add]");
@@ -411,8 +421,8 @@
       var txt = String((campo && campo.value) || "").trim();
       if (!txt) return;
       var s = slug(txt);
-      var ed = getEdits() || {};
-      var extras = lista(ed.extras);
+      var ed = getE() || {};
+      var extras = lista(ed.extras).slice(); // idem: `extras` recebe push abaixo
       var remover = lista(ed.remover);
       // O que já está desenhado na tela — é assim que se sabe se o item já
       // vem do plano sem precisar conhecer o plano aqui.
@@ -427,13 +437,13 @@
       remover = remover.filter(function (x) { return x !== s; });
       if (!desfaz && !naTela[s] && !extras.some(function (n) { return slug(n) === s; })) extras.push(txt);
       if (campo) campo.value = "";
-      onChange({ extras: extras, remover: remover });
+      change({ extras: extras, remover: remover });
     });
   }
 
   window.ListaCompras = {
     gerar: gerar, htmlNutri: htmlNutri, htmlPortal: htmlPortal, pdfHTML: pdfHTML,
-    dicasHTML: dicasHTML, refresh: refreshPortal, nomeCompra: nomeCompra,
+    dicasHTML: dicasHTML, refresh: refreshPortal, nomeCompra: nomeCompra, slug: slug,
     combinar: combinar, editsDasMarcas: editsDasMarcas, wireEdicao: wireEdicao
   };
 })();

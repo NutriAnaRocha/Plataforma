@@ -1145,7 +1145,7 @@
         totaisBarHTML(t, pc, plano.metaKcal) +
         '<div class="pl-res__meals">' + meals + '</div>' +
       '</section>' +
-      (window.ListaCompras ? window.ListaCompras.htmlNutri(plano, plano.compras) : "");
+      (window.ListaCompras ? window.ListaCompras.htmlNutri(plano, comprasCombinadas(plano)) : "");
   }
   function qtdLabel(it, c) {
     if (it.medida === "grama") return c.gramas + " g";
@@ -1380,6 +1380,7 @@
     // Os alimentos que a nutri cadastrou entram no banco de busca antes de ela
     // abrir o editor — se chegarem depois, o item já lançado calcula 0 kcal.
     carregarMeusAlimentos();
+    carregarMarcasPaciente();
     var r = root(); if (!r) return;
     // Estado inicial: se já tem plano(s) salvo(s), mostramos o painel; senão a escolha.
     // A escolha é re-renderizada aqui (e não só fiada) porque render() roda
@@ -1406,6 +1407,33 @@
         if (m) abrirEditor(expandir(fonteModelo(m, kcal)));
       });
     });
+  }
+
+  /* ---------- Lista de compras: a metade que é da paciente ----------
+     A nutri cura a lista na coluna `plano` (que é dela); a paciente mexe na
+     dela em plano_adesao.marcas, que a nutri só pode LER. Sem isso o painel
+     mostrava só metade da lista — a paciente via o que a nutri acrescentou,
+     mas não o contrário. Uma consulta por ficha aberta, e o painel só é
+     redesenhado se a paciente tiver mexido em alguma coisa. */
+  var _marcasPac = null, _marcasPacId = null;
+  function editsPaciente() {
+    return window.ListaCompras ? window.ListaCompras.editsDasMarcas(_marcasPac) : { extras: [], remover: [] };
+  }
+  function comprasCombinadas(plano) {
+    var c = plano && plano.compras;
+    return window.ListaCompras ? window.ListaCompras.combinar(c, editsPaciente()) : c;
+  }
+  function carregarMarcasPaciente() {
+    if (!_p || !window.NutriPacientes || !window.NutriPacientes.getAdesao) return;
+    if (_marcasPacId === _p.id) return; // já carregado para esta paciente
+    _marcasPacId = _p.id;
+    _marcasPac = null;
+    window.NutriPacientes.getAdesao(_p.id).then(function (m) {
+      if (!_p || _marcasPacId !== _p.id) return; // a ficha mudou no meio do caminho
+      var antes = JSON.stringify(editsPaciente());
+      _marcasPac = m || {};
+      if (JSON.stringify(editsPaciente()) !== antes && root() && libDe(_p).length) mostrarPainel();
+    }).catch(function () {});
   }
 
   // Devolve o plano em foco (o que está sendo exibido no detalhe).
@@ -1447,8 +1475,18 @@
       window.ListaCompras.wireEdicao(r,
         function () { return foco.compras; },
         function (edits) {
+          // Item que a paciente tirou da lista dela não volta por acréscimo da
+          // nutri (remover ganha de acrescentar, senão ninguém conseguiria tirar
+          // nada) — então some da tela dela sem explicação. Daí o aviso.
+          var antes = (foco.compras && foco.compras.extras) || [];
+          var pacRm = editsPaciente().remover || [];
+          var invis = (edits.extras || []).filter(function (n) {
+            return antes.indexOf(n) === -1 &&
+              pacRm.indexOf(window.ListaCompras.slug(n)) !== -1;
+          });
           foco.compras = edits;
           persistir(libDe(_p), foco.id);
+          if (invis.length) toast("A paciente tirou " + invis.join(", ") + " da lista dela — não vai reaparecer para ela.", true);
         });
     }
   }
@@ -2271,7 +2309,7 @@
     if (temAlt) legenda += '<div class="doc-note">↔ As refeições marcadas como <strong>opção alternativa</strong> substituem a refeição do mesmo horário — escolha uma das duas, não as duas. Por isso elas não entram no total de kcal do dia.</div>';
     var body = (plano.objetivo ? '<h2>Objetivo: ' + esc(plano.objetivo) + '</h2>' : '') + macros + refs + legenda +
       '<div class="doc-note">💡 Beba bastante água ao longo do dia. As medidas caseiras são aproximadas — siga as porções orientadas.</div>' +
-      (window.ListaCompras ? window.ListaCompras.pdfHTML(plano, plano.compras) : "");
+      (window.ListaCompras ? window.ListaCompras.pdfHTML(plano, comprasCombinadas(plano)) : "");
     window.NutriDoc.imprimir(perfil(), {
       tipo: "Planejamento Alimentar", paciente: _p.nome, data: hojeBR(), bodyHTML: body
     });
