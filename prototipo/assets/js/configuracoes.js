@@ -546,9 +546,17 @@
   function carregarConvites() {
     if (!window.NutriDBReady) return;
     window.NutriDBReady.then(function (c) {
-      return c.from("nutri_convites").select("nome,email,status,created_at").order("created_at", { ascending: false });
-    }).then(function (res) {
-      convites = (res && res.data) || [];
+      return Promise.all([
+        c.from("nutri_convites").select("nome,email,status,created_at").order("created_at", { ascending: false }),
+        // o estado real da assinatura não está visível por RLS: vem da function
+        c.functions.invoke("ativar-assinatura-admin", { body: { acao: "listar" } })
+          .catch(function () { return {}; })
+      ]);
+    }).then(function (r) {
+      convites = (r[0] && r[0].data) || [];
+      nutris = {};
+      var lista = (r[1] && r[1].data && r[1].data.nutris) || [];
+      lista.forEach(function (n) { if (n.email) nutris[String(n.email).toLowerCase()] = n; });
       renderAdmin();
     }).catch(function () { /* silencioso */ });
   }

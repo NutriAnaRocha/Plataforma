@@ -102,6 +102,7 @@ select.field__input { cursor: pointer; }
 .cfg-integr__btn { flex: none; }
 .cfg-badge { font-size: 0.64rem; font-weight: 800; padding: 3px 9px; border-radius: 999px; letter-spacing: 0.3px; }
 .cfg-badge--on { background: #E6F6EE; color: #1B8A5A; }
+.cfg-badge--off { background: #F1EEF0; color: #7A6B72; }
 
 /* ---------- Admin: credenciais geradas + lista de convites ---------- */
 .cfg-cred {
@@ -117,6 +118,19 @@ select.field__input { cursor: pointer; }
   user-select: all;
 }
 .cfg-convites { display: flex; flex-direction: column; gap: var(--sp-1); }
+/* Linha da nutri convidada: nome/e-mail, selo da assinatura e o botão de
+   pausar. No celular o botão cai para a linha de baixo em vez de espremer
+   o e-mail — e mantém os 44px de alvo de toque. */
+.cfg-convite {
+  display: flex; align-items: center; gap: var(--sp-3);
+  flex-wrap: wrap; padding: var(--sp-3) 0;
+}
+.cfg-convite + .cfg-convite { border-top: 1px solid var(--cinza-borda); }
+.cfg-convite .cfg-badge { flex: none; }
+.cfg-convite .btn { flex: none; min-height: 44px; }
+@media (max-width: 480px) {
+  .cfg-convite .btn { width: 100%; }
+}
 
 /* ---------- Toast ---------- */
 .cfg-toast {
