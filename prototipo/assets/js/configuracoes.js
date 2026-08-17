@@ -318,6 +318,27 @@
      painel chama a edge function create-nutri-access, que exige
      profiles.is_admin=true. A senha gerada volta aqui p/ a Ana repassar. */
   var convites = [];   // lista carregada de nutri_convites
+  var nutris = {};     // email -> estado REAL da assinatura (vem da edge function)
+
+  // O status do convite não é o status da assinatura: um convite "ativo" pode
+  // ter a assinatura vencida ou pausada. Quem manda no acesso é o profiles.
+  function assinaturaDe(email) {
+    return nutris[(email || "").toLowerCase()] || null;
+  }
+
+  function selo(a) {
+    if (!a) return { txt: "convidada", on: false };
+    if (a.is_admin) return { txt: "administradora", on: true };
+    var s = a.assinatura_status;
+    if (s === "ativa") {
+      var ate = a.assinatura_expira_em
+        ? " até " + new Date(a.assinatura_expira_em).toLocaleDateString("pt-BR") : "";
+      return { txt: "ativa" + ate, on: true };
+    }
+    if (s === "trial") return { txt: "avaliação", on: true };
+    if (s === "cancelada") return { txt: "pausada", on: false };
+    return { txt: "vencida", on: false };
+  }
 
   function renderAdmin() {
     var form =
@@ -333,10 +354,20 @@
 
     var lista = convites.length
       ? '<div class="cfg-convites">' + convites.map(function (c) {
-          return '<div class="cfg-toggle-row">' +
+          var a = assinaturaDe(c.email);
+          var s = selo(a);
+          var liberada = a && !a.is_admin && a.assinatura_status !== "cancelada";
+          var acao = a && !a.is_admin
+            ? '<button class="btn btn--ghost btn--sm" type="button" ' +
+                'data-action="' + (liberada ? "pausar-assinatura" : "reativar-assinatura") + '" ' +
+                'data-email="' + esc(c.email) + '">' +
+                (liberada ? "⏸️ Pausar" : "▶️ Reativar") + "</button>"
+            : "";
+          return '<div class="cfg-convite">' +
             '<div class="cfg-toggle-txt"><strong>' + esc(c.nome || "(sem nome)") + '</strong>' +
               '<span>' + esc(c.email) + ' · ' + esc((c.created_at || "").slice(0, 10)) + '</span></div>' +
-            '<span class="cfg-badge cfg-badge--on">' + esc(c.status || "ativo") + '</span></div>';
+            '<span class="cfg-badge ' + (s.on ? "cfg-badge--on" : "cfg-badge--off") + '">' +
+              esc(s.txt) + '</span>' + acao + '</div>';
         }).join("") + '</div>'
       : '<p class="cfg-hint">Nenhuma nutricionista convidada ainda.</p>';
 
@@ -452,6 +483,44 @@
     }).then(function () { busy(btn, false); });
   }
 
+  /* Pausar/reativar o acesso de uma nutri direto na lista.
+     "Pausar" grava assinatura_status='cancelada' (o domínio da coluna só
+     admite trial/ativa/vencida/cancelada) — nada é apagado, os dados dela
+     continuam lá e um "Reativar" devolve o acesso. */
+  function mudarAcesso(btn, pausar) {
+    if (!window.NutriDBReady) { toast("Banco indisponível.", true); return; }
+    var email = (btn.getAttribute("data-email") || "").trim().toLowerCase();
+    if (!email) return;
+    if (pausar && !confirm("Pausar o acesso de " + email + "?\n\nEla não consegue mais entrar até você reativar. Nenhum dado é apagado.")) return;
+    busy(btn, true, pausar ? "Pausando…" : "Reativando…");
+    window.NutriDBReady.then(function (c) {
+      return c.functions.invoke("ativar-assinatura-admin", {
+        body: pausar ? { email: email, acao: "pausar" } : { email: email, meses: 1 }
+      });
+    }).then(function (res) {
+      if (res.error) {
+        if (res.error.context && res.error.context.json) {
+          return res.error.context.json().then(function (b) { throw new Error(b && b.error || "falha"); });
+        }
+        throw new Error("falha");
+      }
+      var d = res.data || {};
+      if (d.error) throw new Error(d.error);
+      toast(pausar ? "Acesso pausado." : "Acesso reativado por 1 mês.");
+      carregarConvites();
+    }).catch(function (e) {
+      var m = (e && e.message) || "";
+      busy(btn, false);
+      toast(m === "nao_pause_a_si" ? "Você não pode pausar o próprio acesso."
+        : m === "conta_nao_encontrada" ? "Não achei uma conta com esse e-mail."
+        : m === "nao_autorizado" ? "Só a administradora pode fazer isso."
+        : "Não foi possível concluir. " + m, true);
+    });
+  }
+
+  function pausarAssinatura(btn) { mudarAcesso(btn, true); }
+  function reativarAssinatura(btn) { mudarAcesso(btn, false); }
+
   function mostrarCredenciais(nome, email, senha) {
     var box = el("adm-result");
     if (!box) return;
@@ -545,7 +614,8 @@
   var ACTIONS = { "save-perfil": savePerfil, "save-email": saveEmail, "save-senha": saveSenha,
     "save-notif": saveNotif, "invite-nutri": inviteNutri,
     "exportar-dados": exportarDados, "excluir-conta": excluirConta,
-    "ativar-assinatura": ativarAssinatura };
+    "ativar-assinatura": ativarAssinatura,
+    "pausar-assinatura": pausarAssinatura, "reativar-assinatura": reativarAssinatura };
 
   /* ---------- Foto de perfil ---------- */
   // Lê o arquivo, redimensiona para no máx. 320px e devolve um JPEG data URL leve.

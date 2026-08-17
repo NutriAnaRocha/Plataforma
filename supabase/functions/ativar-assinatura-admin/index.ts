@@ -54,9 +54,23 @@ Deno.serve(async (req) => {
   // 3) Corpo.
   let body: { email?: string; meses?: number; acao?: string };
   try { body = await req.json(); } catch { return json({ error: "invalid_body" }, 400); }
+  const acao = body.acao === "encerrar" || body.acao === "pausar" ? "encerrar"
+    : body.acao === "listar" ? "listar" : "ativar";
+
+  // 3.1) "listar": devolve o estado real da assinatura de cada nutri, que a
+  //      nutri_convites não sabe (status ali é só o do convite). A Ana não
+  //      enxerga o profiles das outras por RLS — por isso passa por aqui.
+  if (acao === "listar") {
+    const { data, error } = await admin
+      .from("profiles")
+      .select("email,nome,is_admin,assinatura_status,assinatura_expira_em,trial_expira_em")
+      .or("tipo.is.null,tipo.neq.paciente");
+    if (error) return json({ error: "erro_listar", detail: error.message }, 500);
+    return json({ ok: true, nutris: data || [] });
+  }
+
   const email = (body.email || "").trim().toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: "email_invalido" }, 400);
-  const acao = body.acao === "encerrar" ? "encerrar" : "ativar";
 
   // 4) Confere que existe uma nutri com esse e-mail.
   const { data: alvo, error: alvoErr } = await admin
@@ -67,6 +81,9 @@ Deno.serve(async (req) => {
 
   // 5) Executa via RPC (service_role).
   if (acao === "encerrar") {
+    // Trancar a própria administradora fora da plataforma seria irreversível
+    // pela interface — o painel Admin some junto com o acesso.
+    if (alvo.id === callerId) return json({ error: "nao_pause_a_si" }, 400);
     const { error } = await admin.rpc("encerrar_assinatura", { p_email: email, p_status: "cancelada" });
     if (error) return json({ error: "falha_encerrar", detail: error.message }, 500);
     return json({ ok: true, email, acao: "encerrada" });
