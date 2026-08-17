@@ -75,7 +75,7 @@
 
 .cic-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
 .cic-chip {
-  min-height: 40px; padding: var(--sp-2) var(--sp-3);
+  min-height: 44px; padding: var(--sp-2) var(--sp-3);
   border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-chip);
   background: var(--branco); color: var(--texto);
   font-family: var(--font-ui); font-size: var(--fs-sm); cursor: pointer;
