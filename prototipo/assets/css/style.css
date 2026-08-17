@@ -51,13 +51,24 @@ a { color: inherit; }
 }
 .btn--primary:hover { background: var(--vinho-escuro); }
 
-/* Ghost claro — para usar sobre o painel vinho */
+/* Ghost — fundo claro. Era branco-sobre-branco: a classe nasceu para o painel vinho
+   do login, mas foi usada em 51 lugares do app e do portal, todos claros (modal e
+   canvas são `--branco`), e ali o texto E a borda ficavam invisíveis. Agora o padrão
+   é o seguro; para fundo vinho existe `.btn--ghost-claro` abaixo. */
 .btn--ghost {
+  background: transparent;
+  color: var(--vinho);
+  border-color: var(--cinza-borda);
+}
+.btn--ghost:hover { border-color: var(--vinho); background: var(--rosa-suave); }
+
+/* Ghost claro — só sobre o painel vinho (hero do login) */
+.btn--ghost-claro {
   background: transparent;
   color: var(--branco);
   border-color: var(--sobre-vinho-16);
 }
-.btn--ghost:hover { background: var(--sobre-vinho-10); border-color: var(--sobre-vinho-70); }
+.btn--ghost-claro:hover { background: var(--sobre-vinho-10); border-color: var(--sobre-vinho-70); }
 
 /* Ghost escuro — sobre fundos claros */
 .btn--outline {
