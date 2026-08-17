@@ -461,7 +461,12 @@
       return (multi ? '<div class="plano-sep">' + esc(plano.titulo || "Plano alimentar") + '</div>' : '') + head + body;
     }).join("");
     // Lista de compras (uma só, do 1º plano liberado) + dicas de marmita.
-    var compras = window.ListaCompras ? window.ListaCompras.htmlPortal(planos[0], ctx.marcas, readonly, ctx.receitas) : "";
+    // Sai só dos alimentos do plano — ingrediente de receita não entra mais
+    // (a receita já lista os dela). O que a nutri curou está no próprio plano;
+    // o que a paciente mexeu, nas marcas dela.
+    var compras = window.ListaCompras
+      ? window.ListaCompras.htmlPortal(planos[0], ctx.marcas, readonly, comprasEdits(planos[0]))
+      : "";
     return renov + novo + corpo + compras;
   }
 
@@ -469,13 +474,27 @@
   // próprio paciente via RLS). A nutri só lê. Salvamento é debounced.
   function checkGet(key) { return ctx.marcas[key] === true; }
   var saveTimer = null;
-  function checkSet(key, val) {
-    if (val) ctx.marcas[key] = true; else delete ctx.marcas[key];
+  function salvarMarcas() {
     if (ctx.mode === "preview") return; // nutri em preview não grava (e RLS bloquearia)
     clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
       window.NutriPacientes.setAdesao(ctx.paciente.id, ctx.marcas).catch(function () {});
     }, 500);
+  }
+  function checkSet(key, val) {
+    if (val) ctx.marcas[key] = true; else delete ctx.marcas[key];
+    salvarMarcas();
+  }
+
+  /* Lista de compras: a curadoria da nutri vem no plano, a da paciente nas
+     marcas dela. As duas viram uma lista só. */
+  function comprasEdits(plano) {
+    if (!window.ListaCompras) return null;
+    return window.ListaCompras.combinar(plano && plano.compras,
+                                        window.ListaCompras.editsDasMarcas(ctx.marcas));
+  }
+  function edicaoComprasDaPaciente() {
+    return window.ListaCompras.editsDasMarcas(ctx.marcas);
   }
 
   // % de itens do plano marcados como seguidos (só conta itens que ainda existem).
@@ -726,4 +745,22 @@
       window.ListaCompras.refresh(ctx.marcas);
     }
   });
+
+  /* Edição da lista de compras pela paciente (tirar ✕ / acrescentar).
+     Delegado no document porque o painel do plano é redesenhado inteiro a
+     cada mudança — um listener preso ao pane morreria no primeiro redesenho.
+     Guardado nas marcas dela, que é o que a RLS a deixa gravar. */
+  if (window.ListaCompras && window.ListaCompras.wireEdicao) {
+    window.ListaCompras.wireEdicao(document, edicaoComprasDaPaciente, function (edits) {
+      if (edits.extras.length) ctx.marcas["lc:extra"] = edits.extras; else delete ctx.marcas["lc:extra"];
+      if (edits.remover.length) ctx.marcas["lc:rm"] = edits.remover; else delete ctx.marcas["lc:rm"];
+      salvarMarcas();
+      var pane = el("pane-plano");
+      if (pane && ctx.paciente) {
+        pane.innerHTML = renderPlano(ctx.paciente);
+        hidratarFotosPortal(ctx.paciente);
+        hidratarFotosRefeicao();
+      }
+    });
+  }
 })();

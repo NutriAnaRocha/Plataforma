@@ -1,12 +1,31 @@
 /* ============================================================
-   LISTA DE COMPRAS — gerada automaticamente a partir de um plano
-   alimentar. Soma os alimentos de todas as refeições, agrupa por
-   seção de mercado (grupo TACO → corredor) e mostra a quantidade
-   consolidada. Usada em 3 lugares:
-     • painel da nutri (abaixo do plano)   → ListaCompras.htmlNutri(plano)
-     • PDF do plano (via NutriDoc)          → ListaCompras.pdfHTML(plano)
-     • portal do paciente (com check)       → ListaCompras.htmlPortal(plano, marcas, readonly)
+   LISTA DE COMPRAS — sai do plano alimentar e só dele. Junta os
+   alimentos de todas as refeições e agrupa por seção de mercado
+   (pista pelo nome → corredor). Usada em 3 lugares:
+     • painel da nutri (abaixo do plano)   → ListaCompras.htmlNutri(plano, edits)
+     • PDF do plano (via NutriDoc)          → ListaCompras.pdfHTML(plano, edits)
+     • portal do paciente (com check)       → ListaCompras.htmlPortal(plano, marcas, readonly, edits)
    Também expõe as dicas de congelamento/porcionamento de marmita.
+
+   Duas decisões da Ana (16/08/2026), que desfazem features anteriores:
+
+   1. SEM QUANTIDADE. Quanto comprar é critério de quem compra — a
+      família toda come do mesmo arroz, e "487 g de patinho" era um número
+      falso de precisão.
+
+   2. SEM INGREDIENTE DE RECEITA. As receitas liberadas já mostram os
+      ingredientes organizados na própria receita; repetir aqui inchava a
+      lista com texto livre ("Recheio: 1 cenoura ralada, 1 xícara de
+      brócolis picado, ...") que não é item de mercado, não agrupa e, com
+      o nome da receita ocupando a coluna da direita, espremia o nome do
+      item numa palavra por linha no celular.
+
+   A lista é EDITÁVEL dos dois lados, e cada lado grava no que é seu:
+     • nutri    → plano.compras = { extras: [nome], remover: [slug] },
+                  dentro da coluna `plano` do paciente (que é dela).
+     • paciente → marcas["lc:extra"] / marcas["lc:rm"], em plano_adesao
+                  (que a RLS deixa só o paciente gravar; a nutri só lê).
+   Quem monta as duas metades numa lista só é `combinar()`.
    window.ListaCompras.
    ============================================================ */
 (function () {
@@ -17,7 +36,6 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
     });
   }
-  function r0(n) { return Math.round(n); }
   function slug(s) {
     return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "")
       .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -113,9 +131,9 @@
   ];
   function corredorPeloNome(nome) {
     var s = slug(nome).replace(/-/g, " ");
-    // Ingrediente de receita é texto livre e vem no plural ("2 bananas
-    // maduras"): tenta também sem o -s final das palavras longas, senão
-    // metade da receita cai em "Outros".
+    // Item posto à mão é texto livre e costuma vir no plural ("bananas
+    // maduras"): tenta também sem o -s final das palavras longas, senão cai
+    // em "Outros" quem tinha corredor certo.
     var sing = s.replace(/(\w{4,})s\b/g, "$1");
     for (var i = 0; i < PISTAS.length; i++) {
       if (PISTAS[i].re.test(s) || PISTAS[i].re.test(sing)) return PISTAS[i].k;
@@ -138,13 +156,40 @@
     return AL_BY_NOME[it.alimento.toLowerCase()] || AL_BY_SLUG[slug(it.alimento)] || null;
   }
 
-  /* Soma os itens do plano por alimento; devolve corredores ordenados com itens.
-     `receitas` (opcional) são as receitas liberadas para o paciente (0058):
-     cada ingrediente entra como uma linha do corredor correspondente, com o
-     nome da receita no lugar da quantidade — ingrediente de receita é texto
-     livre ("2 abobrinhas médias"), não dá para somar em gramas. */
-  function gerar(plano, receitas) {
-    var mapa = {}; // chave -> { nome, grupo, gramas, medidas:{medida:qtd} }
+  /* ---------- Edições das duas pontas ----------
+     Junta o que a nutri curou (plano.compras) com o que o paciente mexeu
+     (marcas["lc:extra"] / ["lc:rm"]) numa estrutura só. Remover ganha de
+     adicionar: se um lado tirou o item, ele não volta porque o outro lado
+     o tinha adicionado — senão não haveria como tirar item nenhum. */
+  function lista(v) { return Array.isArray(v) ? v : []; }
+  function combinar(doPlano, doPaciente) {
+    doPlano = doPlano || {};
+    doPaciente = doPaciente || {};
+    var extras = [], vistos = {};
+    lista(doPlano.extras).concat(lista(doPaciente.extras)).forEach(function (nome) {
+      var txt = String(nome == null ? "" : nome).trim();
+      var s = slug(txt);
+      if (!txt || vistos[s]) return;
+      vistos[s] = true;
+      extras.push(txt);
+    });
+    return { extras: extras, remover: lista(doPlano.remover).concat(lista(doPaciente.remover)) };
+  }
+  /* O que o paciente guarda em plano_adesao.marcas, no formato de edits. */
+  function editsDasMarcas(marcas) {
+    marcas = marcas || {};
+    return { extras: lista(marcas["lc:extra"]), remover: lista(marcas["lc:rm"]) };
+  }
+
+  /* Junta os itens do plano por alimento; devolve corredores ordenados com
+     itens. `edits` (opcional) é { extras:[nome], remover:[slug] } — ver
+     combinar(), acima. */
+  function gerar(plano, edits) {
+    edits = edits || {};
+    var fora = {};
+    lista(edits.remover).forEach(function (s) { fora[s] = true; });
+
+    var mapa = {}; // chave -> { nome, bruto, grupo }
     (plano && plano.refeicoes || []).forEach(function (rf) {
       (rf.itens || []).forEach(function (it) {
         var nome = it.alimento || (it.nome) || "";
@@ -156,26 +201,21 @@
         // A chave é o nome DE COMPRA: patinho cru e patinho grelhado viram a
         // mesma linha da lista — na feira é a mesma carne, e duas linhas com
         // o mesmo nome é justamente o que se quer evitar.
-        var chave = "c" + slug(exib);
+        var s = slug(exib);
+        if (fora[s]) return;
         // it.grupo cobre o alimento vindo da TACO do banco, que não está
         // no arquivo local; sem ele sobra a pista pelo nome, lá embaixo.
-        if (!mapa[chave]) mapa[chave] = { nome: exib, bruto: bruto, al: al, grupo: (al && al.grupo) || it.grupo || null, gramas: 0, medidas: {} };
-        var reg = mapa[chave];
-        reg.gramas += (+it.gramas || 0);
-        var med = it.medida || "grama", qtd = +it.qtd || 0;
-        if (med !== "grama" && qtd) reg.medidas[med] = (reg.medidas[med] || 0) + qtd;
+        if (!mapa["c" + s]) mapa["c" + s] = { nome: exib, bruto: bruto, grupo: (al && al.grupo) || it.grupo || null };
       });
     });
 
-    (receitas || []).forEach(function (rc) {
-      (rc.ingredientes || []).forEach(function (linha) {
-        var txt = String(linha == null ? "" : linha).trim();
-        if (!txt) return;
-        var chave = "r:" + txt.toLowerCase();
-        if (!mapa[chave]) mapa[chave] = { nome: txt, grupo: null, gramas: 0, medidas: {}, receitas: [] };
-        var reg = mapa[chave];
-        if (reg.receitas && reg.receitas.indexOf(rc.nome) === -1) reg.receitas.push(rc.nome);
-      });
+    // Item posto à mão entra como qualquer outro: o corredor sai da pista
+    // pelo nome, então "papel toalha" cai em Outros e "banana" em Frutas.
+    lista(edits.extras).forEach(function (nome) {
+      var txt = String(nome == null ? "" : nome).trim();
+      var s = slug(txt);
+      if (!txt || fora[s] || mapa["c" + s]) return;
+      mapa["c" + s] = { nome: txt, bruto: txt, grupo: null, extra: true };
     });
 
     var buckets = {};
@@ -194,51 +234,14 @@
     CORREDORES.concat([OUTROS]).forEach(function (c) {
       var itens = buckets[c.key];
       if (!itens || !itens.length) return;
-      // O que veio do plano primeiro; depois o que veio das receitas.
-      itens.sort(function (a, b) {
-        var ra = a.receitas ? 1 : 0, rb = b.receitas ? 1 : 0;
-        if (ra !== rb) return ra - rb;
-        return a.nome.localeCompare(b.nome);
-      });
+      itens.sort(function (a, b) { return a.nome.localeCompare(b.nome); });
       out.push({ key: c.key, ico: c.ico, label: c.label, itens: itens.map(finalizaItem) });
     });
     return { corredores: out, totalItens: Object.keys(mapa).length };
   }
 
-  /* Quantidade: o TOTAL que se compra, e só ele. A medida caseira do plano
-     ("2 colheres de sopa", "1 porcao") não serve na feira — ninguém compra
-     azeite em colher. Vira grama/quilo, ou unidade quando o alimento é
-     contável (ovo, pão, fruta): aí a conta é o total ÷ peso da unidade. */
-  function pesoUnidade(al) {
-    var meds = (al && al.medidas) || [];
-    for (var i = 0; i < meds.length; i++) {
-      if (/^unidade/i.test(meds[i].nome) && +meds[i].g > 0) return +meds[i].g;
-    }
-    return 0;
-  }
-  function textoPeso(g) {
-    if (g >= 1000) return String((g / 1000).toFixed(g % 1000 ? 1 : 0)).replace(".", ",") + " kg";
-    return r0(g) + " g";
-  }
-  function qtdTexto(reg) {
-    var g = reg.gramas || 0;
-    // Unidade só quando o plano prescreveu em unidade: 2 fatias de pão de
-    // forma não devem virar "1 unidade", mas 2 ovos viram "2 unidades".
-    var pu = reg.medidas && reg.medidas["unidade"] ? pesoUnidade(reg.al) : 0;
-    if (pu > 0) {
-      var n = Math.round(g / pu);
-      if (n >= 1) return n + (n > 1 ? " unidades" : " unidade") + " (" + textoPeso(g) + ")";
-    }
-    return textoPeso(g);
-  }
   function finalizaItem(reg) {
-    // Ingrediente de receita já traz a medida no texto: no lugar da quantidade
-    // vai de onde ele veio ("🍳 Lasanha de berinjela").
-    if (reg.receitas) {
-      return { nome: reg.nome, qtd: "🍳 " + reg.receitas.join(" · "), slug: slug(reg.nome),
-               gramas: 0, receitas: reg.receitas };
-    }
-    return { nome: reg.nome, qtd: qtdTexto(reg), slug: slug(reg.nome), gramas: r0(reg.gramas) };
+    return { nome: reg.nome, slug: slug(reg.nome), extra: !!reg.extra };
   }
 
   /* ---------- Dicas de congelamento & porcionamento de marmita ---------- */
@@ -262,12 +265,23 @@
       '<div class="lc-dicas__grid">' + cards + '</div></div>';
   }
 
-  /* ---------- Render: painel da nutri ---------- */
-  function corredoresHTML(lista, opts) {
+  /* ---------- Render ----------
+     `opts.check`  → checkbox do mercado (portal).
+     `opts.editar` → botão de tirar item da lista, e o campo de adicionar. */
+  function corredoresHTML(lst, opts) {
     opts = opts || {};
-    if (!lista.totalItens) return '<div class="empty-state">Adicione alimentos ao plano para gerar a lista de compras.</div>';
-    return lista.corredores.map(function (c) {
+    if (!lst.totalItens) {
+      return '<div class="empty-state">' + (opts.editar
+        ? "Nada na lista ainda. Adicione alimentos ao plano, ou ponha um item à mão no campo acima."
+        : "Adicione alimentos ao plano para gerar a lista de compras.") + '</div>';
+    }
+    return lst.corredores.map(function (c) {
       var itens = c.itens.map(function (it) {
+        var tirar = opts.editar
+          ? '<button class="lc-item__x" type="button" data-lc-rm="' + esc(it.slug) + '"' +
+            ' title="Tirar da lista" aria-label="Tirar ' + esc(it.nome) + ' da lista">✕</button>'
+          : "";
+        var marca = it.extra ? '<span class="lc-item__extra" title="Item posto à mão">+</span>' : "";
         if (opts.check) {
           var key = "compra:" + it.slug;
           var done = opts.marcas && opts.marcas[key] === true;
@@ -275,11 +289,9 @@
             '<label><input type="checkbox" data-check="' + esc(key) + '"' +
             (done ? " checked" : "") + (opts.readonly ? " disabled" : "") + '>' +
             '<span class="lc-item__box" aria-hidden="true"></span>' +
-            '<span class="lc-item__nome">' + esc(it.nome) + '</span>' +
-            '<span class="lc-item__qt">' + esc(it.qtd) + '</span></label></li>';
+            '<span class="lc-item__nome">' + esc(it.nome) + marca + '</span></label>' + tirar + '</li>';
         }
-        return '<li class="lc-item"><span class="lc-item__nome">' + esc(it.nome) + '</span>' +
-          '<span class="lc-item__qt">' + esc(it.qtd) + '</span></li>';
+        return '<li class="lc-item"><span class="lc-item__nome">' + esc(it.nome) + marca + '</span>' + tirar + '</li>';
       }).join("");
       return '<div class="lc-corr"><div class="lc-corr__head"><span class="lc-corr__ico">' + c.ico + '</span>' +
         '<span class="lc-corr__label">' + esc(c.label) + '</span>' +
@@ -288,38 +300,45 @@
     }).join("");
   }
 
-  function htmlNutri(plano, receitas) {
-    var lista = gerar(plano, receitas);
-    var comReceitas = !!(receitas && receitas.length);
+  /* Campo de adicionar. O corredor é decidido pela pista do nome, então não
+     há o que escolher: digita e entra no lugar certo. */
+  function addHTML(ph) {
+    return '<form class="lc-add" data-lc-add>' +
+      '<input class="lc-add__input" type="text" name="item" autocomplete="off" maxlength="60" placeholder="' + esc(ph) + '" aria-label="Adicionar item à lista" />' +
+      '<button class="btn btn--outline btn--sm" type="submit">Adicionar</button></form>';
+  }
+
+  function htmlNutri(plano, edits) {
+    var lst = gerar(plano, edits);
     return '<section class="fsec lc-sec">' +
       '<div class="fsec__head"><h2 class="fsec__title">🛒 Lista de compras</h2>' +
-        '<span class="lc-badge">' + lista.totalItens + ' itens · gerada do plano' +
-        (comReceitas ? ' e das receitas' : '') + '</span></div>' +
-      '<p class="pl-hint">Consolidada automaticamente a partir das refeições' +
-      (comReceitas ? ' e dos ingredientes das receitas liberadas' : '') +
-      '. Vai junto quando você libera o plano para o paciente.</p>' +
-      '<div class="lc-cols">' + corredoresHTML(lista) + '</div>' +
+        '<span class="lc-badge">' + lst.totalItens + ' itens</span></div>' +
+      '<p class="pl-hint">Sai dos alimentos do plano — sem quantidade, porque quanto comprar é ' +
+      'critério de quem compra. Você pode tirar o que não faz sentido e acrescentar o que quiser; ' +
+      'a paciente também pode ajustar a dela. Vai junto quando você libera o plano.</p>' +
+      addHTML("Acrescentar item (ex.: café)") +
+      '<div class="lc-cols">' + corredoresHTML(lst, { editar: true }) + '</div>' +
       dicasHTML(true) +
       '</section>';
   }
 
   /* ---------- Render: portal do paciente (com check) ---------- */
-  function htmlPortal(plano, marcas, readonly, receitas) {
-    var lista = gerar(plano, receitas);
-    if (!lista.totalItens) return "";
+  function htmlPortal(plano, marcas, readonly, edits) {
+    var lst = gerar(plano, edits);
     var comprados = 0;
-    lista.corredores.forEach(function (c) {
+    lst.corredores.forEach(function (c) {
       c.itens.forEach(function (it) { if (marcas && marcas["compra:" + it.slug] === true) comprados++; });
     });
     return '<div class="pcard lc-portal">' +
       '<div class="lc-portal__head"><h3>🛒 Sua lista de compras</h3>' +
-        '<span class="pcard__meta" id="lc-conta">' + comprados + ' de ' + lista.totalItens + ' no carrinho</span></div>' +
+        '<span class="pcard__meta" id="lc-conta">' + comprados + ' de ' + lst.totalItens + ' no carrinho</span></div>' +
       '<div class="lc-prog"><span id="lc-prog-fill" style="width:' +
-        (lista.totalItens ? Math.round(comprados * 100 / lista.totalItens) : 0) + '%"></span></div>' +
+        (lst.totalItens ? Math.round(comprados * 100 / lst.totalItens) : 0) + '%"></span></div>' +
       '<p class="pcard__hint">Vá marcando o que colocar no carrinho — fica salvo, dá para fechar e voltar no meio do mercado. ' +
-      'A lista sai do seu plano alimentar' +
-      (receitas && receitas.length ? ' e das receitas que a sua nutricionista liberou' : '') + '.</p>' +
-      '<div class="lc-cols">' + corredoresHTML(lista, { check: true, marcas: marcas, readonly: readonly }) + '</div>' +
+      'A lista sai do seu plano alimentar, sem quantidade: leve o que a sua casa consome. ' +
+      'Pode tirar o que já tem e acrescentar o que faltar.</p>' +
+      (readonly ? "" : addHTML("Acrescentar item (ex.: café)")) +
+      '<div class="lc-cols">' + corredoresHTML(lst, { check: true, marcas: marcas, readonly: readonly, editar: !readonly }) + '</div>' +
       dicasHTML(false) +
       '</div>';
   }
@@ -342,12 +361,14 @@
   }
 
   /* ---------- Render: PDF (classes doc-*) ---------- */
-  function pdfHTML(plano) {
-    var lista = gerar(plano);
-    if (!lista.totalItens) return "";
-    var corr = lista.corredores.map(function (c) {
+  function pdfHTML(plano, edits) {
+    var lst = gerar(plano, edits);
+    if (!lst.totalItens) return "";
+    var corr = lst.corredores.map(function (c) {
       var itens = c.itens.map(function (it) {
-        return '<div class="doc-lc__item"><span>' + esc(it.nome) + '</span><span class="doc-lc__qt">' + esc(it.qtd) + '</span></div>';
+        // Quadradinho para riscar no papel: no PDF não há checkbox, e a lista
+        // impressa vai para o mercado.
+        return '<div class="doc-lc__item"><span class="doc-lc__box">☐</span><span>' + esc(it.nome) + '</span></div>';
       }).join("");
       return '<div class="doc-lc__corr"><div class="doc-lc__corrhead">' + c.ico + ' ' + esc(c.label) + '</div>' + itens + '</div>';
     }).join("");
@@ -361,8 +382,58 @@
       '<div class="doc-lc__dicas">' + dicas + '</div>';
   }
 
+  /* ---------- Edição (nutri e portal usam o mesmo wire) ----------
+     `raiz` é o container onde a lista foi desenhada; `onChange(edits)` recebe
+     os edits DAQUELE lado já atualizados e é quem grava (a nutri na coluna
+     `plano`, o paciente em plano_adesao.marcas) e redesenha.
+
+     Tirar item do plano vira uma entrada em `remover`; tirar item que o
+     próprio lado tinha acrescentado só sai de `extras` — senão a lista
+     acumularia lixo, e o item nunca mais poderia ser adicionado de novo. */
+  function wireEdicao(raiz, getEdits, onChange) {
+    if (!raiz) return;
+    raiz.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest("[data-lc-rm]");
+      if (!b || !raiz.contains(b)) return;
+      e.preventDefault();
+      var s = b.getAttribute("data-lc-rm");
+      var ed = getEdits() || {};
+      var extras = lista(ed.extras).filter(function (n) { return slug(n) !== s; });
+      var remover = lista(ed.remover);
+      if (extras.length === lista(ed.extras).length && remover.indexOf(s) === -1) remover.push(s);
+      onChange({ extras: extras, remover: remover });
+    });
+    raiz.addEventListener("submit", function (e) {
+      var f = e.target.closest && e.target.closest("[data-lc-add]");
+      if (!f || !raiz.contains(f)) return;
+      e.preventDefault();
+      var campo = f.querySelector("input[name=item]");
+      var txt = String((campo && campo.value) || "").trim();
+      if (!txt) return;
+      var s = slug(txt);
+      var ed = getEdits() || {};
+      var extras = lista(ed.extras);
+      var remover = lista(ed.remover);
+      // O que já está desenhado na tela — é assim que se sabe se o item já
+      // vem do plano sem precisar conhecer o plano aqui.
+      var naTela = {};
+      [].forEach.call(raiz.querySelectorAll("[data-lc-rm]"), function (b) {
+        naTela[b.getAttribute("data-lc-rm")] = true;
+      });
+      // Acrescentar o que tinha sido tirado é o desfazer do ✕: basta sair de
+      // `remover`. Virar também item avulso em `extras` deixaria o item
+      // grudado na lista mesmo depois de sair do plano.
+      var desfaz = remover.indexOf(s) !== -1;
+      remover = remover.filter(function (x) { return x !== s; });
+      if (!desfaz && !naTela[s] && !extras.some(function (n) { return slug(n) === s; })) extras.push(txt);
+      if (campo) campo.value = "";
+      onChange({ extras: extras, remover: remover });
+    });
+  }
+
   window.ListaCompras = {
     gerar: gerar, htmlNutri: htmlNutri, htmlPortal: htmlPortal, pdfHTML: pdfHTML,
-    dicasHTML: dicasHTML, refresh: refreshPortal, nomeCompra: nomeCompra
+    dicasHTML: dicasHTML, refresh: refreshPortal, nomeCompra: nomeCompra,
+    combinar: combinar, editsDasMarcas: editsDasMarcas, wireEdicao: wireEdicao
   };
 })();

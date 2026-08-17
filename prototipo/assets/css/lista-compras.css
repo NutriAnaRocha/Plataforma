@@ -19,14 +19,39 @@
 .lc-corr__label { font-weight: 800; color: var(--vinho); font-size: var(--fs-sm); }
 .lc-corr__n { margin-left: auto; font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); background: var(--cinza-claro); border-radius: 999px; padding: 1px 8px; }
 .lc-list { list-style: none; margin: 0; padding: 6px 12px 10px; }
-.lc-item { display: flex; align-items: baseline; gap: 8px; padding: 4px 0; border-top: 1px dashed var(--cinza-borda); font-size: var(--fs-sm); }
+.lc-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-top: 1px dashed var(--cinza-borda); font-size: var(--fs-sm); }
 .lc-item:first-child { border-top: none; }
-.lc-item__nome { flex: 1; color: var(--texto); }
-.lc-item__qt { color: var(--texto-sutil); font-size: var(--fs-caption); white-space: nowrap; font-weight: 600; }
+/* `min-width:0` é o que faz o nome quebrar por palavra em vez de ser
+   espremido a uma palavra por linha: sem ele o item flex não encolhe abaixo
+   do conteúdo, e a coluna da direita empurrava o nome até a largura de
+   "queijo". Herdado de quando havia quantidade nesta linha. */
+.lc-item__nome { flex: 1; min-width: 0; color: var(--texto); overflow-wrap: anywhere; }
+/* Item posto à mão (por qualquer um dos dois lados) */
+.lc-item__extra {
+  margin-left: 6px; font-size: var(--fs-caption); font-weight: 800; color: var(--vinho);
+  background: var(--rosa-suave); border-radius: 999px; padding: 0 6px; vertical-align: 1px;
+}
+.lc-item__x {
+  flex: none; width: 28px; height: 28px; border-radius: 8px; cursor: pointer;
+  border: 1px solid transparent; background: none; color: var(--texto-sutil);
+  font-size: .85rem; line-height: 1; transition: all var(--t-fast);
+}
+.lc-item__x:hover { border-color: var(--cinza-borda); background: var(--cinza-claro); color: var(--vinho); }
+.lc-item__x:focus-visible { box-shadow: var(--ring-foco); outline: none; }
+
+/* Campo de acrescentar item */
+.lc-add { display: flex; gap: 8px; margin: var(--sp-3) 0; }
+.lc-add__input {
+  flex: 1; min-width: 0; padding: 10px 12px; font-family: inherit; font-size: var(--fs-sm);
+  color: var(--texto); background: var(--branco);
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-input);
+}
+.lc-add__input:focus { border-color: var(--vinho); box-shadow: var(--ring-foco); outline: none; }
+.lc-add .btn { flex: none; }
 /* Checklist do mercado: alvo de toque grande, porque isto é usado com o
    celular numa mão e o carrinho na outra. O quadrado nativo de 13px não
    servia. */
-.lc-item--check label { display: flex; align-items: center; gap: 10px; cursor: pointer; width: 100%; padding: 6px 0; }
+.lc-item--check label { display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; min-width: 0; padding: 6px 0; }
 .lc-item--check input { position: absolute; opacity: 0; width: 0; height: 0; }
 .lc-item__box {
   flex: none; width: 22px; height: 22px; border-radius: 6px;
@@ -42,7 +67,6 @@
 .lc-item--check.is-done .lc-item__box { background: var(--vinho); border-color: var(--vinho); }
 .lc-item--check.is-done .lc-item__box::after { opacity: 1; transform: scale(1); }
 .lc-item--check.is-done .lc-item__nome { text-decoration: line-through; color: var(--texto-sutil); }
-.lc-item--check.is-done .lc-item__qt { opacity: .5; }
 
 /* Barra de progresso do carrinho */
 .lc-prog { height: 6px; border-radius: 999px; background: var(--cinza-claro); overflow: hidden; margin: 8px 0 4px; }

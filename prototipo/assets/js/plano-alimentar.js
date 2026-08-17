@@ -1145,7 +1145,7 @@
         totaisBarHTML(t, pc, plano.metaKcal) +
         '<div class="pl-res__meals">' + meals + '</div>' +
       '</section>' +
-      (window.ListaCompras ? window.ListaCompras.htmlNutri(plano) : "");
+      (window.ListaCompras ? window.ListaCompras.htmlNutri(plano, plano.compras) : "");
   }
   function qtdLabel(it, c) {
     if (it.medida === "grama") return c.gramas + " g";
@@ -1440,6 +1440,17 @@
     r.querySelectorAll("[data-del-plano]").forEach(function (b) {
       b.addEventListener("click", function () { excluirPlano(b.getAttribute("data-del-plano")); });
     });
+    // ---- lista de compras: tirar/acrescentar item ----
+    // A curadoria da nutri mora no próprio plano (`plano.compras`), porque a
+    // coluna `plano` é a que ela pode gravar — plano_adesao é do paciente.
+    if (window.ListaCompras && foco) {
+      window.ListaCompras.wireEdicao(r,
+        function () { return foco.compras; },
+        function (edits) {
+          foco.compras = edits;
+          persistir(libDe(_p), foco.id);
+        });
+    }
   }
 
   /* Rascunho da anamnese: quem faz a leitura e a conta é rascunho-plano.js.
@@ -2260,7 +2271,7 @@
     if (temAlt) legenda += '<div class="doc-note">↔ As refeições marcadas como <strong>opção alternativa</strong> substituem a refeição do mesmo horário — escolha uma das duas, não as duas. Por isso elas não entram no total de kcal do dia.</div>';
     var body = (plano.objetivo ? '<h2>Objetivo: ' + esc(plano.objetivo) + '</h2>' : '') + macros + refs + legenda +
       '<div class="doc-note">💡 Beba bastante água ao longo do dia. As medidas caseiras são aproximadas — siga as porções orientadas.</div>' +
-      (window.ListaCompras ? window.ListaCompras.pdfHTML(plano) : "");
+      (window.ListaCompras ? window.ListaCompras.pdfHTML(plano, plano.compras) : "");
     window.NutriDoc.imprimir(perfil(), {
       tipo: "Planejamento Alimentar", paciente: _p.nome, data: hojeBR(), bodyHTML: body
     });

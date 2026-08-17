@@ -167,8 +167,8 @@
       '.doc-lc{column-count:2;column-gap:18px;margin:4px 0;}' +
       '.doc-lc__corr{break-inside:avoid;margin-bottom:10px;}' +
       '.doc-lc__corrhead{font-weight:800;color:var(--doc-primaria);font-size:12px;border-bottom:1.2px solid var(--doc-secundaria);padding-bottom:2px;margin-bottom:3px;}' +
-      '.doc-lc__item{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;padding:1px 0;}' +
-      '.doc-lc__qt{color:#888;white-space:nowrap;}' +
+      '.doc-lc__item{display:flex;align-items:baseline;gap:6px;font-size:11.5px;padding:1px 0;}' +
+      '.doc-lc__box{color:#999;flex:none;}' +
       '.doc-lc__dicas{font-size:11px;color:#444;}' +
       '.doc-lc__dica{padding:3px 0;border-top:1px dashed #eee;}' +
       '.doc-lc__dica:first-child{border-top:none;}' +
