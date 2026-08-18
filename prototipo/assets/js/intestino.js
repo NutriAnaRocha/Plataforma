@@ -57,6 +57,50 @@
     "Totalmente líquida, sem pedaços"
   ];
 
+  /* Cada tipo tem o DESENHO junto do número. Só o texto não resolve:
+     quem nunca viu a escala não liga "salsicha com rachaduras" a nada, e
+     a maioria não vai clicar para ler a descrição. O desenho é SVG
+     inline (nada de imagem para carregar) e usa currentColor, então
+     acompanha o botão quando ele fica selecionado. As "rachaduras" e os
+     vãos usam var(--bris-bg), que o CSS troca junto com o fundo. */
+  var BRIS_SVG = [
+    // 1 — bolinhas duras separadas
+    '<circle cx="7" cy="15" r="4.2"/><circle cx="17" cy="15" r="4.6"/>' +
+    '<circle cx="27" cy="15" r="4.2"/><circle cx="37" cy="15" r="4.6"/>',
+    // 2 — salsicha grumosa e dura
+    '<circle cx="11" cy="15" r="7.4"/><circle cx="21" cy="15" r="7.8"/>' +
+    '<circle cx="31" cy="15" r="7.4"/><circle cx="40" cy="15" r="6.4"/>' +
+    '<path d="M15.5 8.6v12.8M25.5 8.2v13.6M35 9v12" stroke="var(--bris-bg)" stroke-width="1.4" fill="none"/>',
+    // 3 — salsicha com rachaduras na superfície
+    '<rect x="3" y="8" width="42" height="14" rx="7"/>' +
+    '<path d="M13 9.5v11M22 9v12M31 9.5v11M39 10.5v9" stroke="var(--bris-bg)" stroke-width="1.6" fill="none"/>',
+    // 4 — lisa e macia
+    '<rect x="2" y="9.5" width="44" height="11" rx="5.5"/>',
+    // 5 — pedaços macios com bordas definidas (maiores e mais juntos que
+    //     as bolinhas do tipo 1, senão os dois desenhos se confundem)
+    '<rect x="2" y="6.5" width="15" height="17" rx="7"/>' +
+    '<rect x="18.5" y="8" width="13" height="14" rx="6.5"/>' +
+    '<rect x="33" y="6" width="14" height="18" rx="7"/>',
+    // 6 — pedaços moles e esfarelados
+    '<path d="M5 19c-1.6-4.4 3-8 7.4-6.6C14 8 20 6.8 23.6 9.6c3.6-2.4 9-1 10.4 3 3.6.4 5.4 4.6 2.6 6.8-4.4 3-27.4 3-31.6-.4z"/>' +
+    '<circle cx="40.5" cy="21" r="2"/><circle cx="8" cy="23" r="1.6"/><circle cx="24" cy="23.5" r="1.8"/>',
+    // 7 — totalmente líquida: poça larga e rasa, sem pedaço nenhum
+    '<path d="M1.5 17c3-3.4 7-1 10.5-2.6 3.4-1.6 6 1.4 9.4.6 3.6-.8 5.6-2.6 9-1.4 3 1 5.4-.4 8.2 1.2 2.6 1.4 3.4 4.2 1.4 5.6-3.6 2.6-35 2.8-38.6.4-1.4-1-1.4-2.6.1-3.8z"/>'
+  ];
+
+  function brisSVG(n) {
+    return '<svg class="int-bris__fig" viewBox="0 0 48 30" aria-hidden="true" focusable="false">' +
+      BRIS_SVG[n - 1] + '</svg>';
+  }
+
+  // Leitura em uma linha, que é o que a paciente precisa saber.
+  function brisGrupo(n) {
+    if (n <= 2) return "tende a preso";
+    if (n <= 4) return "no ponto ideal";
+    if (n === 5) return "um pouco mole";
+    return "tende a solto";
+  }
+
   /* ---------- Datas ---------- */
   function p2(n) { return (n < 10 ? "0" : "") + n; }
   function hojeISO() { var d = new Date(); return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()); }
@@ -97,6 +141,11 @@
       pane.__intWired = true;
       pane.addEventListener("click", onClick);
       pane.addEventListener("input", onInput);
+      // Passar o dedo/mouse por cima já mostra a descrição do tipo, sem
+      // precisar selecionar para descobrir o que aquele desenho é.
+      pane.addEventListener("mouseover", onEspiar);
+      pane.addEventListener("focusin", onEspiar);
+      pane.addEventListener("mouseleave", restaurarBris);
     }
 
     return Promise.all([
@@ -137,8 +186,9 @@
       var bris = BRISTOL.map(function (txt, i) {
         var n = i + 1, on = reg.bristol === n;
         return '<button type="button" class="int-bris' + (on ? " is-on" : "") + '" data-int-bristol="' + n + '"' +
-          (_readonly ? " disabled" : "") + ' title="' + esc(txt) + '" aria-label="' + esc(txt) + '">' +
-          '<span class="int-bris__n">' + n + '</span></button>';
+          (_readonly ? " disabled" : "") + ' title="' + esc(n + ". " + txt) + '"' +
+          ' aria-label="' + esc("Tipo " + n + ": " + txt) + '">' +
+          brisSVG(n) + '<span class="int-bris__n">' + n + '</span></button>';
       }).join("");
       var atuais = Array.isArray(reg.sintomas) ? reg.sintomas : [];
       var chips = SINTOMAS.map(function (s) {
@@ -159,9 +209,16 @@
             '</div>' +
           '</div>' +
           '<div class="int-bloco">' +
-            '<span class="int-bloco__lbl">Como estava? <small>(escala de Bristol — passe o dedo para ver a descrição)</small></span>' +
+            '<span class="int-bloco__lbl">Como estava? <small>(escala de Bristol — toque no desenho mais parecido)</small></span>' +
             '<div class="int-brisrow">' + bris + '</div>' +
-            '<p class="int-bris__txt" id="int-bris-txt">' + esc(reg.bristol ? BRISTOL[reg.bristol - 1] : "Opcional — se quiser detalhar.") + '</p>' +
+            '<p class="int-bris__txt" id="int-bris-txt">' +
+              (reg.bristol
+                ? '<b>' + reg.bristol + '.</b> ' + esc(BRISTOL[reg.bristol - 1]) +
+                  ' <em>— ' + esc(brisGrupo(reg.bristol)) + '</em>'
+                : "Opcional — se quiser detalhar.") + '</p>' +
+            '<div class="int-brisreg" aria-hidden="true">' +
+              '<span>1–2 preso</span><span>3–4 ideal</span><span>5–7 solto</span>' +
+            '</div>' +
           '</div>' +
           '<div class="int-bloco">' +
             '<span class="int-bloco__lbl">Sentiu mais alguma coisa?</span>' +
@@ -368,6 +425,21 @@
     }
   }
 
+  function brisTexto(n) {
+    return '<b>' + n + '.</b> ' + esc(BRISTOL[n - 1]) + ' <em>— ' + esc(brisGrupo(n)) + '</em>';
+  }
+  function onEspiar(e) {
+    var b = e.target && e.target.closest && e.target.closest("[data-int-bristol]");
+    if (!b) return;
+    var alvo = el("int-bris-txt"); if (!alvo) return;
+    alvo.innerHTML = brisTexto(+b.getAttribute("data-int-bristol"));
+  }
+  function restaurarBris() {
+    var alvo = el("int-bris-txt"); if (!alvo) return;
+    var reg = porData(_dia);
+    alvo.innerHTML = reg && reg.bristol ? brisTexto(reg.bristol) : "Opcional — se quiser detalhar.";
+  }
+
   function onInput(e) {
     if (_readonly) return;
     var obs = e.target.closest && e.target.closest("[data-int-obs]");
@@ -488,7 +560,10 @@
         .map(function (x) { return SINT_MAP[x] ? SINT_MAP[x].label : x; }).join(", ");
       return '<tr><td>' + esc(dataBR(r.data)) + '</td>' +
         '<td>' + c.emoji + " " + esc(c.label) + '</td>' +
-        '<td>' + (r.bristol ? "Bristol " + r.bristol : "—") + '</td>' +
+        '<td>' + (r.bristol
+          ? '<span class="in-bris-cel" title="' + esc(BRISTOL[r.bristol - 1]) + '">' +
+            brisSVG(r.bristol) + ' ' + r.bristol + '</span>'
+          : "—") + '</td>' +
         '<td>' + (r.evacuacoes || 0) + '×</td>' +
         '<td>' + (s ? esc(s) : "—") + '</td>' +
         '<td>' + (r.observacao ? esc(r.observacao) : "—") + '</td></tr>';

@@ -433,7 +433,10 @@
         data: reg.data,
         fluxo: reg.fluxo || "nenhum",
         sintomas: Array.isArray(reg.sintomas) ? reg.sintomas : [],
-        humor: reg.humor || null,
+        // `humores` é a fonte (0069). `humor` segue gravado com o primeiro
+        // item só para não quebrar leitura antiga.
+        humores: Array.isArray(reg.humores) ? reg.humores : (reg.humor ? [reg.humor] : []),
+        humor: (Array.isArray(reg.humores) && reg.humores[0]) || reg.humor || null,
         energia: reg.energia == null || reg.energia === "" ? null : +reg.energia,
         libido: reg.libido == null || reg.libido === "" ? null : +reg.libido,
         observacao: (reg.observacao || "").trim() || null,

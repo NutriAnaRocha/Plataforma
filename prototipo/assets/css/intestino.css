@@ -62,16 +62,43 @@
 .int-num__b:focus-visible { outline: none; box-shadow: var(--ring-foco); }
 .int-num__v { font-size: 1.3rem; font-weight: 800; min-width: 28px; text-align: center; }
 
-.int-brisrow { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+/* ---------- Escala de Bristol ilustrada ----------
+   O desenho é o que identifica o tipo; o número é só a etiqueta. Grid de
+   7 colunas porque a escala só se lê como escala se os sete tipos
+   aparecerem juntos: eles encolhem no celular em vez de rolar para fora. */
+.int-brisrow {
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px; max-width: 460px;
+}
 .int-bris {
-  width: 44px; height: 44px; border-radius: 50%;
-  border: 1.5px solid var(--cinza-borda); background: var(--branco);
+  --bris-bg: var(--branco);
+  width: 100%; min-height: 58px; padding: 5px 2px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  border-radius: var(--radius-btn);
+  border: 1.5px solid var(--cinza-borda); background: var(--bris-bg);
   font-weight: 700; color: var(--texto-sutil); cursor: pointer;
   transition: all var(--t-fast);
 }
-.int-bris.is-on { background: var(--vinho); border-color: var(--vinho); color: var(--branco); }
+.int-bris__fig { width: 100%; max-width: 40px; height: 24px; display: block; fill: currentColor; color: #8A6A52; }
+.int-bris__n { font-size: 11px; line-height: 1; }
+.int-bris:hover { border-color: var(--vinho); }
+.int-bris.is-on {
+  --bris-bg: var(--vinho);
+  background: var(--vinho); border-color: var(--vinho); color: var(--branco);
+}
+.int-bris.is-on .int-bris__fig { color: var(--branco); }
 .int-bris:focus-visible { outline: none; box-shadow: var(--ring-foco); }
 .int-bris__txt { font-size: var(--fs-caption); color: var(--texto-sutil); margin: 0; min-height: 1.2em; }
+.int-bris__txt em { font-style: normal; color: var(--vinho); font-weight: 700; }
+
+.int-brisreg {
+  display: flex; justify-content: space-between; gap: var(--sp-2);
+  font-size: 10px; color: var(--texto-sutil); max-width: 460px;
+}
+
+/* Miniatura na tabela da nutri */
+.in-bris-cel { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.in-bris-cel .int-bris__fig { width: 26px; height: 16px; fill: currentColor; color: #8A6A52; }
 
 .int-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
 .int-chip {

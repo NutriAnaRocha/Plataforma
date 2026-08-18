@@ -52,21 +52,36 @@
   var SINT_MAP = {};
   SINTOMAS.forEach(function (s) { SINT_MAP[s.id] = s; });
 
+  /* Humor é MÚLTIPLO (0069): num mesmo dia dá para estar irritada e
+     ansiosa, e obrigar a escolher uma só apaga metade do relato. */
   var HUMORES = [
     { id: "bem",      emoji: "🙂", label: "Bem" },
     { id: "disposta", emoji: "⚡", label: "Disposta" },
+    { id: "calma",    emoji: "😌", label: "Calma" },
     { id: "irritada", emoji: "😤", label: "Irritada" },
     { id: "ansiosa",  emoji: "😰", label: "Ansiosa" },
+    { id: "sensivel", emoji: "🥺", label: "Sensível" },
     { id: "triste",   emoji: "😢", label: "Triste" }
   ];
   var HUMOR_MAP = {};
   HUMORES.forEach(function (h) { HUMOR_MAP[h.id] = h; });
 
+  // Registro antigo tem `humor` (texto único); o novo tem `humores`.
+  function humoresDe(reg) {
+    if (!reg) return [];
+    if (Array.isArray(reg.humores) && reg.humores.length) return reg.humores;
+    return reg.humor ? [reg.humor] : [];
+  }
+
   var FASES = {
-    menstrual:  { lbl: "Menstruação", emoji: "🩸", cor: "menstrual" },
-    folicular:  { lbl: "Fase folicular", emoji: "🌱", cor: "folicular" },
-    ovulatoria: { lbl: "Ovulação", emoji: "🥚", cor: "ovulatoria" },
-    lutea:      { lbl: "Fase lútea", emoji: "🌙", cor: "lutea" }
+    menstrual:  { lbl: "Menstruação", emoji: "🩸", cor: "menstrual",
+                  msg: "Fase de descanso: energia mais baixa aqui é fisiologia, não preguiça." },
+    folicular:  { lbl: "Fase folicular", emoji: "🌱", cor: "folicular",
+                  msg: "Disposição em alta — é a melhor janela para treinar e se organizar." },
+    ovulatoria: { lbl: "Ovulação", emoji: "🥚", cor: "ovulatoria",
+                  msg: "Pico hormonal: pode vir mais retenção e sensibilidade nos seios." },
+    lutea:      { lbl: "Fase lútea", emoji: "🌙", cor: "lutea",
+                  msg: "Fase da TPM: mais fome e mais sensibilidade são esperados." }
   };
 
   var CICLO_PADRAO = 28;   // só enquanto não há histórico suficiente
@@ -83,6 +98,15 @@
   function somaDias(s, n) { var d = doISO(s); d.setDate(d.getDate() + n); return iso(d); }
   var MES_CURTO = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
   function mesDe(s) { var d = doISO(s); return d ? MES_CURTO[d.getMonth()] : ""; }
+  var DOW = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+  function dataLonga(s) { var d = doISO(s); return d ? DOW[d.getDay()] + ", " + dataBR(s) : ""; }
+  function emQuantosDias(n) {
+    if (n === 0) return "hoje";
+    if (n === 1) return "amanhã";
+    if (n > 1) return "em " + n + " dias";
+    if (n === -1) return "ontem";
+    return "há " + Math.abs(n) + " dias";
+  }
 
   /* ============================================================
      ESTADO E CÁLCULO DO CICLO
@@ -160,10 +184,21 @@
     else if (dia <= ovul + 1) fase = "ovulatoria";
     else fase = "lutea";
 
+    /* Previsões. A ovulação deste ciclo cai no dia `ovul`; se ela já
+       passou, a próxima é a do ciclo seguinte — contada a partir da
+       menstruação prevista, não de hoje, senão a data anda sozinha. */
+    var proxima = somaDias(inicio, media);
+    var ovulEsteCiclo = somaDias(inicio, ovul - 1);
+    var ovulPassou = delta(hoje, ovulEsteCiclo) < 0;
+    var proxOvulacao = ovulPassou ? somaDias(proxima, ovul - 1) : ovulEsteCiclo;
+
     return {
       inicio: inicio, dia: dia, media: media, menstruacao: menst, ovulacao: ovul,
-      fase: fase, proxima: somaDias(inicio, media),
-      faltam: delta(hoje, somaDias(inicio, media)),
+      fase: fase, proxima: proxima,
+      faltam: delta(hoje, proxima),
+      proxOvulacao: proxOvulacao,
+      faltamOvulacao: delta(hoje, proxOvulacao),
+      ovulacaoPassou: ovulPassou,
       atrasado: dia > media + 5,
       temMedia: mediaCiclo() != null
     };
@@ -250,18 +285,22 @@
     var ang = frac * 2 * Math.PI - Math.PI / 2;
     var mx = (60 + R * Math.cos(ang)).toFixed(1), my = (60 + R * Math.sin(ang)).toFixed(1);
 
+    // Marcador da ovulação prevista, para ela achar a data no anel.
+    var angOv = ((s.ovulacao - 1) / s.media) * 2 * Math.PI - Math.PI / 2;
+    var ox = (60 + R * Math.cos(angOv)).toFixed(1), oy = (60 + R * Math.sin(angOv)).toFixed(1);
+
+    // As datas ficam nos cards de previsão logo abaixo; aqui vai a
+    // leitura da fase, para não repetir a mesma contagem duas vezes.
     var legenda = s.atrasado
       ? "Passou de " + s.media + " dias. Atraso acontece por vários motivos — se repetir, vale conversar."
-      : s.faltam > 1 ? "faltam " + s.faltam + " dias para a próxima"
-      : s.faltam === 1 ? "falta 1 dia para a próxima"
-      : s.faltam === 0 ? "a próxima é prevista para hoje"
-      : "prevista para " + dataBR(s.proxima);
+      : f.msg;
 
     return '<div class="cic-hero">' +
         '<div class="cic-ring">' +
           '<svg viewBox="0 0 120 120" aria-hidden="true">' +
             '<circle class="cic-arc cic-arc--bg" cx="60" cy="60" r="' + R + '"></circle>' +
             arcos +
+            '<circle class="cic-ovmark" cx="' + ox + '" cy="' + oy + '" r="3.5"></circle>' +
             '<circle class="cic-hoje" cx="' + mx + '" cy="' + my + '" r="6"></circle>' +
           '</svg>' +
           '<div class="cic-ring__mid">' +
@@ -277,11 +316,41 @@
             ' · começou em ' + esc(dataBR(s.inicio)) + '</p>' +
         '</div>' +
       '</div>' +
+      previsaoHTML(s) +
       '<div class="cic-legenda">' +
         Object.keys(FASES).map(function (k) {
           return '<span class="cic-leg cic-leg--' + FASES[k].cor + (k === s.fase ? " is-on" : "") + '">' +
             FASES[k].emoji + " " + esc(FASES[k].lbl) + '</span>';
         }).join("") +
+      '</div>';
+  }
+
+  /* O que vem pela frente. Estimativa a partir da média dela — e a tela
+     diz que é estimativa, porque ciclo não é relógio e ninguém deve usar
+     isto como método contraceptivo. */
+  function previsaoHTML(s) {
+    var ovTxt = s.ovulacaoPassou
+      ? "Ovulação prevista para " + esc(dataLonga(s.proxOvulacao)) + ", no próximo ciclo"
+      : (s.faltamOvulacao === 0 ? "Ovulação prevista para hoje"
+        : esc(dataLonga(s.proxOvulacao)) + " · " + emQuantosDias(s.faltamOvulacao));
+
+    var mnTxt = s.atrasado
+      ? "Estava prevista para " + esc(dataLonga(s.proxima)) + " (" + emQuantosDias(s.faltam) + ")"
+      : (s.faltam === 0 ? "Prevista para hoje"
+        : esc(dataLonga(s.proxima)) + " · " + emQuantosDias(s.faltam));
+
+    return '<div class="cic-prev">' +
+        '<div class="cic-prev__item cic-prev__item--ov">' +
+          '<span class="cic-prev__ico" aria-hidden="true">🥚</span>' +
+          '<span class="cic-prev__txt"><small>Próxima ovulação</small><strong>' + ovTxt + '</strong></span>' +
+        '</div>' +
+        '<div class="cic-prev__item cic-prev__item--mn' + (s.atrasado ? " is-atraso" : "") + '">' +
+          '<span class="cic-prev__ico" aria-hidden="true">🩸</span>' +
+          '<span class="cic-prev__txt"><small>Próxima menstruação</small><strong>' + mnTxt + '</strong></span>' +
+        '</div>' +
+        '<p class="cic-prev__nota">Estimativa pela sua média de ' + s.media + ' dias' +
+          (s.temMedia ? '' : ' (referência, até eu ter o seu histórico)') +
+          '. O corpo varia — não use como método contraceptivo.</p>' +
       '</div>';
   }
 
@@ -309,8 +378,9 @@
         s.emoji + " " + esc(s.label) + '</button>';
     }).join("");
 
+    var hAtuais = humoresDe(reg);
     var humores = HUMORES.map(function (h) {
-      var on = reg && reg.humor === h.id;
+      var on = hAtuais.indexOf(h.id) >= 0;
       return '<button type="button" class="cic-humor' + (on ? " is-on" : "") + '" data-cic-humor="' + h.id + '"' +
         (_readonly ? " disabled" : "") + ' aria-pressed="' + (on ? "true" : "false") + '"' +
         ' title="' + esc(h.label) + '"><span aria-hidden="true">' + h.emoji + '</span>' +
@@ -328,7 +398,8 @@
         '</div></div>' +
       '<div class="cic-bloco"><span class="cic-bloco__lbl">Sintomas</span>' +
         '<div class="cic-chips">' + chips + '</div></div>' +
-      '<div class="cic-bloco"><span class="cic-bloco__lbl">Humor</span>' +
+      '<div class="cic-bloco"><span class="cic-bloco__lbl">Humor ' +
+          '<small class="cic-bloco__hint">(pode marcar mais de um)</small></span>' +
         '<div class="cic-humores">' + humores + '</div></div>' +
       '<div class="cic-bloco">' +
         '<label class="cic-bloco__lbl" for="cic-obs">Quer anotar mais alguma coisa?</label>' +
@@ -468,7 +539,10 @@
     if (hm) {
       var r3 = porData(_dia);
       var h = hm.getAttribute("data-cic-humor");
-      salvar({ humor: (r3 && r3.humor === h) ? null : h }, r3);
+      var hs = humoresDe(r3).slice();
+      var ph = hs.indexOf(h);
+      if (ph >= 0) hs.splice(ph, 1); else hs.push(h);
+      salvar({ humores: hs }, r3);
       return;
     }
 
@@ -500,11 +574,15 @@
      registro legítimo — por isso não exigimos "fluxo" para gravar. O que
      não se grava é linha totalmente vazia. */
   function salvar(patch, base, silencioso) {
+    // Normaliza o registro antigo (humor único) antes de mesclar, senão
+    // um toque num sintoma apagaria o humor que ela já tinha marcado.
+    var b = Object.assign({}, base || {});
+    b.humores = humoresDe(base);
     var reg = Object.assign({
-      data: _dia, fluxo: "nenhum", sintomas: [], humor: null, observacao: ""
-    }, base || {}, patch);
+      data: _dia, fluxo: "nenhum", sintomas: [], humores: [], observacao: ""
+    }, b, patch);
     var vazio = (reg.fluxo === "nenhum" || !reg.fluxo) && !(reg.sintomas || []).length &&
-                !reg.humor && !String(reg.observacao || "").trim();
+                !(reg.humores || []).length && !String(reg.observacao || "").trim();
     if (vazio) {
       if (!base) return;   // nada a gravar
       return window.NutriPacientes.removerCiclo(_p.id, _dia).then(function () {
@@ -588,13 +666,21 @@
         '<div class="cic-nstat"><span>Fase atual</span><strong>' + (s ? esc(FASES[s.fase].lbl) : "—") + '</strong></div>' +
         '<div class="cic-nstat"><span>Duração média</span><strong>' + (media ? media + " dias" : "—") + '</strong></div>' +
         '<div class="cic-nstat"><span>Variação</span><strong>' + (variacao == null ? "—" : variacao + " dias") + '</strong></div>' +
+        '<div class="cic-nstat"><span>Próx. ovulação (prev.)</span><strong>' + (s ? esc(dataBR(s.proxOvulacao)) : "—") + '</strong></div>' +
+        '<div class="cic-nstat"><span>Próx. menstruação (prev.)</span><strong>' + (s ? esc(dataBR(s.proxima)) : "—") + '</strong></div>' +
       '</div>' +
       (s && s.atrasado ? '<p class="cic-nalerta">⚠️ Ciclo atual passou da média em mais de 5 dias.</p>' : '');
 
-    var cont = {};
+    var cont = {}, contH = {};
     regs.forEach(function (r) {
       (Array.isArray(r.sintomas) ? r.sintomas : []).forEach(function (x) { cont[x] = (cont[x] || 0) + 1; });
+      humoresDe(r).forEach(function (x) { contH[x] = (contH[x] || 0) + 1; });
     });
+    var freqH = Object.keys(contH).sort(function (a, b) { return contH[b] - contH[a]; }).slice(0, 6)
+      .map(function (x) {
+        var m = HUMOR_MAP[x];
+        return '<span class="chip">' + (m ? m.emoji + " " + esc(m.label) : esc(x)) + ' · ' + contH[x] + '</span>';
+      }).join("");
     var freq = Object.keys(cont).sort(function (a, b) { return cont[b] - cont[a]; }).slice(0, 6)
       .map(function (x) {
         var m = SINT_MAP[x];
@@ -610,17 +696,20 @@
     var linhas = regs.slice(0, 25).map(function (r) {
       var sn = (Array.isArray(r.sintomas) ? r.sintomas : [])
         .map(function (x) { return SINT_MAP[x] ? SINT_MAP[x].label : x; }).join(", ");
-      var hm = HUMOR_MAP[r.humor];
+      var hm = humoresDe(r).map(function (x) {
+        return HUMOR_MAP[x] ? HUMOR_MAP[x].emoji + " " + esc(HUMOR_MAP[x].label) : esc(x);
+      }).join(", ");
       return '<tr><td>' + esc(dataBR(r.data)) + '</td>' +
         '<td>' + esc((FLUXO_MAP[r.fluxo] || {}).label || "—") + '</td>' +
         '<td>' + (sn ? esc(sn) : "—") + '</td>' +
-        '<td>' + (hm ? hm.emoji + " " + esc(hm.label) : "—") + '</td>' +
+        '<td>' + (hm || "—") + '</td>' +
         '<td>' + (r.observacao ? esc(r.observacao) : "—") + '</td></tr>';
     }).join("");
 
     return stats +
       '<div class="cic-nbloco"><h3 class="fsec__sub">Últimos ciclos</h3>' + ciclos + '</div>' +
       (freq ? '<div class="cic-nbloco"><h3 class="fsec__sub">Sintomas mais frequentes</h3><div class="cic-nchips">' + freq + '</div></div>' : '') +
+      (freqH ? '<div class="cic-nbloco"><h3 class="fsec__sub">Humor mais relatado</h3><div class="cic-nchips">' + freqH + '</div></div>' : '') +
       '<div class="in-tabela-wrap"><table class="in-tabela">' +
         '<thead><tr><th>Data</th><th>Fluxo</th><th>Sintomas</th><th>Humor</th><th>Observação</th></tr></thead>' +
         '<tbody>' + linhas + '</tbody></table></div>';
