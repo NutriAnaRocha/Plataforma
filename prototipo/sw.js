@@ -10,7 +10,7 @@
    ============================================================ */
 "use strict";
 
-var CACHE = "nutri-portal-v3";
+var CACHE = "nutri-portal-v4";
 
 /* Toda ida à rede feita AQUI ignora o cache HTTP do navegador.
    Sem isto o stale-while-revalidate era uma armadilha: a Hostinger manda

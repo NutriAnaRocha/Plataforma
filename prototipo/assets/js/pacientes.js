@@ -534,8 +534,17 @@
         }
       });
     }
+    if (sec === "arquivos" && window.ArquivosPaciente) {
+      window.ArquivosPaciente.wire(p, { toast: pacToast });
+    }
+    if (sec === "financeiro" && window.FinanceiroPaciente) {
+      window.FinanceiroPaciente.wire(p, { toast: pacToast, perfil: perfilNutri });
+    }
     if (sec === "perfil") { wirePortalCard(p); refreshAdesaoReal(p); }
-    if (sec === "comunicacao") { initChatPane(p); loadChatPane(p); }
+    if (sec === "comunicacao") {
+      initChatPane(p); loadChatPane(p);
+      if (window.WAEnvio) window.WAEnvio.wire(p, { toast: pacToast });
+    }
   }
 
   /* ---------- Blocos utilitários das seções ---------- */
@@ -687,17 +696,20 @@
   }
 
   function secArquivos(p) {
-    return secWrap("Arquivos do paciente", emBreve("PDFs, fotos e documentos enviados — organizados por tipo e data."));
+    if (window.ArquivosPaciente) return window.ArquivosPaciente.render(p);
+    return secWrap("Arquivos do paciente", emBreve("O módulo de arquivos não carregou nesta tela."));
   }
 
   function secComunicacao(p) {
     var chat = '<p class="ftxt fmuted">Conversa do portal (paciente ↔ você):</p>' + paneChat();
-    return secWrap("Mensagens (portal)", chat) +
-      secWrap("WhatsApp & automáticas", emBreve("Histórico de WhatsApp, mensagens automáticas enviadas e respostas do paciente aparecem aqui quando o motor de envio for conectado."));
+    var wa = window.WAEnvio ? window.WAEnvio.render(p)
+      : secWrap("WhatsApp", emBreve("O módulo de WhatsApp não carregou nesta tela."));
+    return secWrap("Mensagens (portal)", chat) + wa;
   }
 
   function secFinanceiro(p) {
-    return secWrap("Financeiro do paciente", emBreve("Consultas pagas, pendências, notas fiscais e recibos deste paciente.")) ;
+    if (window.FinanceiroPaciente) return window.FinanceiroPaciente.render(p);
+    return secWrap("Financeiro do paciente", emBreve("O módulo financeiro não carregou nesta tela."));
   }
 
   function secProntuario(p) {
@@ -1082,7 +1094,7 @@
       '<span class="card__sub">peso · ' + esc(labels[0]) + '–' + esc(labels[labels.length - 1]) + '</span></div>' +
       '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Evolução de peso">' +
       '<defs><linearGradient id="gradWine2" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0%" stop-color="#840B55" stop-opacity="0.20"/><stop offset="100%" stop-color="#840B55" stop-opacity="0"/></linearGradient></defs>' +
+      '<stop offset="0%" stop-color="#0E4C5C" stop-opacity="0.20"/><stop offset="100%" stop-color="#0E4C5C" stop-opacity="0"/></linearGradient></defs>' +
       '<path class="chart__area" style="fill:url(#gradWine2)" d="' + area + '"></path>' +
       '<path class="chart__line" d="' + line + '"></path>' + dots + lbls + '</svg>';
   }

@@ -48,7 +48,7 @@
 
   /* Consultas reais carregadas (dated). Preenchido por loadThenPaint(). */
   var EVENTS = [];
-  var PAC_INDEX = {};   /* nome (lower) -> paciente_id, para vincular a ficha */
+  var PAC_INDEX = {};   /* nome (lower) -> { id, tel }, para vincular a ficha e mandar WhatsApp */
 
   function mondayOfState() { return addDays(BASE_MONDAY, state.weekOffset * 7); }
   function selectedDate() { return addDays(mondayOfState(), state.selDay); }
@@ -102,7 +102,7 @@
       var dl = el("ag-pac-list");
       var opts = "";
       (list || []).forEach(function (p) {
-        PAC_INDEX[String(p.nome).toLowerCase()] = p.id;
+        PAC_INDEX[String(p.nome).toLowerCase()] = { id: p.id, tel: (p.contato && p.contato.tel) || "" };
         opts += '<option value="' + esc(p.nome) + '">';
       });
       if (dl) dl.innerHTML = opts;
@@ -320,6 +320,9 @@
       c.addEventListener("click", function () { setModo(c.dataset.modo); });
     });
 
+    var wa = el("ag-wa");
+    if (wa) wa.addEventListener("click", onWhatsApp);
+
     el("btn-novo").addEventListener("click", function () { openModal(); });
     el("ag-cancel").addEventListener("click", closeModal);
     el("ag-del").addEventListener("click", onDelete);
@@ -338,6 +341,8 @@
     el("ag-submit").textContent = edit ? "Salvar alterações" : "Agendar consulta";
     el("ag-del").hidden = !edit;
     el("ag-status-wrap").hidden = !edit;
+    var waBtn = el("ag-wa");
+    if (waBtn) waBtn.hidden = !(edit && window.WAEnvio);   // só faz sentido com consulta já marcada
 
     if (edit) {
       el("ag-pac").value = edit.pacienteNome || "";
@@ -376,6 +381,36 @@
     for (var i = 0; i < sel.options.length; i++) { if (sel.options[i].value === t) { sel.selectedIndex = i; return; } }
   }
 
+  /* ---------- WhatsApp da consulta aberta ----------
+     Abre o seletor de mensagens já com o modelo que faz sentido para a
+     data: confirmação quando ainda falta tempo, lembrete na véspera/no
+     dia, acompanhamento quando a consulta já passou. */
+  function modeloSugerido(dataISO) {
+    var hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    var d = isoToDate(dataISO); d.setHours(0, 0, 0, 0);
+    var dias = Math.round((d - hoje) / 86400000);
+    if (dias > 1) return "confirmacao";
+    if (dias >= 0) return "lembrete_24h";
+    return "pos_3dias";
+  }
+
+  function onWhatsApp() {
+    if (!window.WAEnvio) return;
+    var c = EVENTS.filter(function (x) { return String(x.id) === String(editId); })[0];
+    if (!c) return;
+    var pac = PAC_INDEX[String(c.pacienteNome || "").toLowerCase()] || {};
+    closeModal();
+    window.WAEnvio.abrir({
+      pacienteId: c.pacienteId || pac.id || null,
+      nome: c.pacienteNome,
+      telefone: pac.tel || "",
+      consultaId: c.id,
+      dataConsulta: window.WAEnvio.dataBR(c.data),
+      horaConsulta: c.inicio,
+      templateId: modeloSugerido(c.data)
+    });
+  }
+
   function coletar() {
     var nome = el("ag-pac").value.trim();
     if (!nome) { el("ag-pac").focus(); return null; }
@@ -384,7 +419,7 @@
     var dur = +el("ag-dur").value || 45;
     return {
       pacienteNome: nome,
-      pacienteId: PAC_INDEX[nome.toLowerCase()] || null,
+      pacienteId: (PAC_INDEX[nome.toLowerCase()] || {}).id || null,
       data: dataStr,
       inicio: hora,
       fim: minToHHMM(toMin(hora) + dur),

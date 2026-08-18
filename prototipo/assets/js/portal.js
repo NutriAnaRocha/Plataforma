@@ -13,7 +13,7 @@
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
 
-  var ctx = { mode: "real", paciente: null, user: null, marcas: {}, assinatura: null, receitas: [] };
+  var ctx = { mode: "real", paciente: null, user: null, marcas: {}, assinatura: null, receitas: [], documentos: [] };
 
   // WhatsApp da Ana — canal do convite de renovação. O programa é
   // pagamento único por período: renovar é uma decisão nova da paciente,
@@ -48,6 +48,7 @@
       .catch(function () { ctx.marcas = {}; })
       .then(function () { return carregarAssinatura(paciente); })
       .then(function () { return carregarReceitas(paciente); })
+      .then(function () { return carregarDocumentos(paciente); })
       .then(function () { boot(); });
   }).catch(function () {
     el("portal-loading").textContent = "Não foi possível carregar. Verifique a conexão e recarregue.";
@@ -86,6 +87,17 @@
       .catch(function () { ctx.receitas = []; });
   }
 
+  /* Arquivos que a nutri liberou nesta ficha (paciente_arquivos, 0070).
+     Só os marcados como visíveis — a RLS já recorta para a paciente, e o
+     ArquivosView filtra de novo por causa do modo "ver como paciente",
+     em que quem consulta é a nutri e enxergaria tudo. */
+  function carregarDocumentos(p) {
+    if (!window.ArquivosView) { ctx.documentos = []; return Promise.resolve(); }
+    return window.ArquivosView.carregar(p.id)
+      .then(function (ds) { ctx.documentos = ds || []; })
+      .catch(function () { ctx.documentos = []; });
+  }
+
   function boot() {
     var p = ctx.paciente;
     el("portal-loading").hidden = true;
@@ -115,6 +127,8 @@
     el("pane-evolucao").innerHTML = renderEvolucao(p);
     hidratarFotosPortal(p);
     hidratarFotosRefeicao();
+    el("pane-documentos").innerHTML = window.ArquivosView ? window.ArquivosView.portalHTML(ctx.documentos) : "";
+    if (window.ArquivosView) window.ArquivosView.wire("pane-documentos");
     el("pane-consultas").innerHTML = renderConsultas(p);
 
     // Abas
@@ -292,6 +306,9 @@
       // Receitas não é feature paga: a aba nasce quando a nutri libera alguma.
       else if (id === "receitas") on = !!(ctx.receitas && ctx.receitas.length);
       else if (id === "prato") on = temPrato(p);
+      // Documentos também não é feature paga: a aba nasce quando existe
+      // pelo menos um arquivo liberado para ela.
+      else if (id === "documentos") on = !!(ctx.documentos && ctx.documentos.length);
       else if (id === "metas") on = temMetas;
       else if (id === "anamnese") on = temAnamnese(p);
       else if (id === "reavaliacao") on = temReavaliacao(p);
@@ -661,7 +678,7 @@
       '<span class="card__sub">peso · ' + esc(labels[0] || "") + '–' + esc(labels[labels.length - 1] || "") + '</span></div>' +
       '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Evolução de peso">' +
       '<defs><linearGradient id="gradWineP" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0%" stop-color="#840B55" stop-opacity="0.20"/><stop offset="100%" stop-color="#840B55" stop-opacity="0"/></linearGradient></defs>' +
+      '<stop offset="0%" stop-color="#0E4C5C" stop-opacity="0.20"/><stop offset="100%" stop-color="#0E4C5C" stop-opacity="0"/></linearGradient></defs>' +
       '<path class="chart__area" style="fill:url(#gradWineP)" d="' + area + '"></path>' +
       '<path class="chart__line" d="' + line + '"></path>' + dots + lbls + '</svg>';
   }

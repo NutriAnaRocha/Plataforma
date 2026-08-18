@@ -49,6 +49,18 @@
         return (res.data || []).map(fromRow);
       });
     },
+    /* Lançamentos de UM paciente (ficha → aba Financeiro). Sem recorte de
+       data: a ficha é o histórico inteiro dele, não o mês corrente. */
+    listPorPaciente: function (pacienteId) {
+      return client().then(function (c) {
+        return c.from("lancamentos").select(COLS)
+          .eq("paciente_id", pacienteId)
+          .order("data", { ascending: false });
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return (res.data || []).map(fromRow);
+      });
+    },
     create: function (l) {
       return client().then(function (c) {
         return c.from("lancamentos").insert(toRow(l)).select(COLS).single();

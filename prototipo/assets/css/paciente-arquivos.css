@@ -1,0 +1,118 @@
+/* ============================================================
+   ARQUIVOS DO PACIENTE — anexos da ficha (nutri) + aba Documentos
+   do portal (paciente). Ver arquivos-paciente.js / migração 0070.
+   ============================================================ */
+
+/* ---------- Zona de envio ---------- */
+.arq-drop {
+  margin: var(--sp-3) 0 var(--sp-4);
+  padding: var(--sp-5) var(--sp-4);
+  border: 1.5px dashed var(--cinza-borda);
+  border-radius: var(--radius-card);
+  background: var(--rosa-suave);
+  color: var(--texto-sutil);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--t-fast), background var(--t-fast), color var(--t-fast);
+}
+.arq-drop span { display: block; font-size: 1.5rem; margin-bottom: var(--sp-1); }
+.arq-drop small { display: block; margin-top: var(--sp-1); font-size: var(--fs-caption); font-weight: 500; opacity: .8; }
+.arq-drop:hover, .arq-drop.is-over { border-color: var(--vinho); background: #FBE6F2; color: var(--vinho); }
+.arq-drop.is-busy { cursor: progress; border-style: solid; border-color: var(--rosa); }
+
+/* ---------- Filtros por categoria ---------- */
+.arq-filters { margin-bottom: var(--sp-4); }
+
+/* ---------- Lista ---------- */
+.arq-grupo { margin-bottom: var(--sp-5); }
+.arq-grupo__mes {
+  font-size: var(--fs-caption);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--texto-sutil);
+  margin: 0 0 var(--sp-2);
+}
+
+.arq-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-card);
+  background: var(--branco);
+  margin-bottom: var(--sp-2);
+  transition: box-shadow var(--t-fast), border-color var(--t-fast);
+}
+.arq-item:hover { border-color: var(--rosa); box-shadow: var(--shadow-sm); }
+.arq-item__ico { font-size: 1.4rem; line-height: 1.2; flex: none; }
+.arq-item__body { flex: 1; min-width: 0; }
+
+.arq-item__nome {
+  font: inherit;
+  font-weight: 700;
+  color: var(--vinho);
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  word-break: break-word;
+}
+.arq-item__nome:hover { text-decoration: underline; }
+
+.arq-item__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+  margin-top: var(--sp-1);
+  font-size: var(--fs-caption);
+  color: var(--texto-sutil);
+}
+.arq-item__obs { margin: var(--sp-1) 0 0; font-size: var(--fs-caption); color: var(--texto); opacity: .85; }
+
+.arq-tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: var(--radius-chip);
+  background: var(--cinza-claro);
+  font-weight: 700;
+}
+.arq-tag--on { background: #E4F5EC; color: #1F7A4D; }
+
+.arq-item__acoes { display: flex; gap: var(--sp-1); flex: none; }
+.arq-item__acoes .icon-btn { width: 34px; height: 34px; font-size: .95rem; }
+
+/* ---------- Edição inline ---------- */
+.arq-item--edit { display: block; background: var(--rosa-suave); }
+.arq-edit { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
+.arq-edit .pl-field { flex: 1 1 180px; }
+.arq-edit .pl-field--wide { flex: 1 1 100%; }
+.arq-edit .pl-actions { flex: 1 1 100%; display: flex; gap: var(--sp-2); }
+
+/* ---------- Portal do paciente ---------- */
+.arq-plist { list-style: none; margin: var(--sp-3) 0 0; padding: 0; }
+.arq-pitem {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+  border-top: 1px solid var(--cinza-borda);
+}
+.arq-pitem:first-child { border-top: 0; }
+.arq-pitem__ico { font-size: 1.3rem; flex: none; }
+.arq-pitem__txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.arq-pitem__txt strong { font-size: var(--fs-sm); color: var(--texto); word-break: break-word; }
+.arq-pitem__txt small { font-size: var(--fs-caption); color: var(--texto-sutil); }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 640px) {
+  .arq-item { flex-wrap: wrap; }
+  .arq-item__acoes { width: 100%; justify-content: flex-end; }
+  .arq-pitem { flex-wrap: wrap; }
+  .arq-pitem .btn { width: 100%; }
+}

@@ -1,0 +1,175 @@
+/* ============================================================
+   WHATSAPP — ENVIO (seletor de mensagem + histórico)
+   Usado na ficha do paciente (aba Comunicação), na agenda e na
+   central de WhatsApp. Classes com prefixo .wae- para não colidir
+   com a central (.wa-).
+   ============================================================ */
+
+/* ---------- Overlay do seletor ---------- */
+.wae-ov {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgba(60, 60, 60, 0.45);
+  animation: wae-fade var(--t-fast);
+}
+@keyframes wae-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.wae-card {
+  width: min(560px, 100%);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--branco);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.wae-card__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-5) var(--sp-3);
+  border-bottom: 1px solid var(--cinza-borda);
+}
+.wae-card__tit {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--vinho);
+}
+.wae-card__sub {
+  margin: 2px 0 0;
+  font-size: var(--fs-sm);
+  color: var(--texto-sutil);
+}
+.wae-x {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--cinza-medio);
+  cursor: pointer;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--radius-sm);
+}
+.wae-x:hover { background: var(--cinza-claro); color: var(--texto); }
+
+.wae-card__body {
+  padding: var(--sp-4) var(--sp-5);
+  overflow-y: auto;
+}
+
+.wae-field { display: block; margin-bottom: var(--sp-4); }
+.wae-field > span {
+  display: block;
+  margin-bottom: var(--sp-2);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-sutil);
+}
+.wae-field select,
+.wae-field textarea {
+  width: 100%;
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  color: var(--texto);
+  background: var(--branco);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input);
+  padding: 10px 12px;
+}
+.wae-field textarea { resize: vertical; line-height: var(--lh-normal); }
+.wae-field select:focus,
+.wae-field textarea:focus { outline: 0; border-color: var(--vinho-claro); box-shadow: var(--ring-foco); }
+
+.wae-hint { margin: 0; font-size: var(--fs-sm); color: var(--texto-sutil); }
+.wae-alerta {
+  margin: 0 0 var(--sp-4);
+  padding: var(--sp-3);
+  border-radius: var(--radius-sm);
+  background: var(--rosa-suave);
+  border: 1px solid var(--rosa);
+  font-size: var(--fs-sm);
+  color: var(--vinho-escuro);
+}
+
+.wae-card__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5) var(--sp-5);
+  border-top: 1px solid var(--cinza-borda);
+}
+
+/* ---------- Histórico ---------- */
+.wae-lista { display: flex; flex-direction: column; gap: var(--sp-2); }
+
+.wae-item {
+  display: flex;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  background: var(--branco);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-sm);
+}
+.wae-item__ico { font-size: 1.1rem; line-height: 1.3; }
+.wae-item__body { flex: 1; min-width: 0; }
+.wae-item__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-bottom: 2px;
+}
+.wae-item__head strong { font-size: var(--fs-sm); color: var(--vinho); }
+.wae-item__data { margin-left: auto; font-size: var(--fs-caption); color: var(--texto-sutil); }
+.wae-item__txt {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--texto);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Aviso (telas sem toast próprio, como a agenda) ---------- */
+.wae-toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--sp-5);
+  transform: translate(-50%, 16px);
+  z-index: 140;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 10px 16px;
+  border-radius: var(--radius-btn);
+  background: var(--vinho);
+  color: var(--branco);
+  font-size: var(--fs-sm);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-fast), transform var(--t-fast);
+}
+.wae-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+.wae-toast.is-error { background: #B3261E; }
+
+/* ---------- Botão de WhatsApp no modal da agenda ---------- */
+.ag-wa { margin-right: auto; }
+
+@media (max-width: 560px) {
+  .wae-ov { padding: 0; align-items: flex-end; }
+  .wae-card { width: 100%; max-height: 94vh; border-radius: var(--radius-card) var(--radius-card) 0 0; }
+  .wae-card__head, .wae-card__body { padding-left: var(--sp-4); padding-right: var(--sp-4); }
+  .wae-card__foot { padding-left: var(--sp-4); padding-right: var(--sp-4); flex-wrap: wrap; }
+  .wae-card__foot .btn { flex: 1; }
+  .ag-wa { margin-right: 0; }
+}

@@ -93,30 +93,22 @@
   /* ============================================================
      PAINEL — CONEXÃO
      ============================================================ */
-  function statusInfo(st) {
-    if (st === "conectado") return { cls: "on", dot: "🟢", label: "Conectado" };
-    if (st === "conectando") return { cls: "wait", dot: "🟡", label: "Conectando…" };
-    return { cls: "off", dot: "🔴", label: "Desconectado" };
-  }
-
   function renderConexao() {
-    var s = statusInfo(config.conexao.status);
     var statusCard =
       '<section class="card cfg-card">' +
         '<div class="card__body">' +
           '<div class="wa-status">' +
-            '<div class="wa-status__pill wa-status__pill--' + s.cls + '">' + s.dot + ' ' + s.label + '</div>' +
+            '<div class="wa-status__pill wa-status__pill--on">💬 Envio ativo</div>' +
             '<div class="wa-status__info">' +
-              '<div class="wa-status__num">' + (config.numeroEnvio ? esc(config.numeroEnvio) : "Nenhum número conectado ainda") + '</div>' +
-              '<p class="cfg-hint">A conexão real acontece por QR Code quando o motor de mensagens estiver ativo.</p>' +
+              '<div class="wa-status__num">Pelo seu próprio WhatsApp</div>' +
+              '<p class="cfg-hint">Na ficha do paciente (aba <strong>Comunicação</strong>) e na consulta da <strong>agenda</strong> ' +
+                'existe o botão <strong>Enviar no WhatsApp</strong>: a plataforma monta a mensagem com o nome, a data e a hora ' +
+                'já preenchidos e abre a conversa — você confere e aperta enviar. Tudo que sai fica no histórico.</p>' +
             '</div>' +
-            '<button class="btn btn--primary" type="button" id="wa-conectar">Conectar via QR Code</button>' +
           '</div>' +
-          '<div class="wa-qr" id="wa-qr" hidden>' +
-            '<div class="wa-qr__box">📷<br>QR Code</div>' +
-            '<div class="wa-qr__txt"><strong>Aguardando o motor de mensagens.</strong>' +
-              '<p class="cfg-hint">Quando conectarmos o servidor de WhatsApp, o QR Code aparece aqui e você escaneia pelo app do celular (Aparelhos conectados), igual ao WhatsApp Web.</p></div>' +
-          '</div>' +
+          '<p class="cfg-hint">O envio 100% automático (sem você apertar nada) exige a API oficial do WhatsApp Business, ' +
+            'com conta verificada e modelos aprovados pela Meta — cerca de R$ 0,08 por conversa. ' +
+            'Fazer isso por atalhos não oficiais colocaria seu número pessoal em risco de banimento, então não é o caminho.</p>' +
         '</div>' +
       '</section>';
 
@@ -265,13 +257,19 @@
      PAINEL — HISTÓRICO
      ============================================================ */
   function renderHistorico() {
-    el("panel-historico").innerHTML =
+    var box = el("panel-historico");
+    if (window.WAEnvio) {
+      box.innerHTML = '<section class="card cfg-card"><div class="card__body">' +
+        '<div class="empty-state">Carregando histórico…</div></div></section>';
+      window.WAEnvio.painelHistorico(box);
+      return;
+    }
+    box.innerHTML =
       '<section class="card cfg-card"><div class="card__body">' +
         '<div class="wa-empty">' +
           '<div class="wa-empty__ico">🕓</div>' +
           '<h3>O histórico aparece aqui</h3>' +
-          '<p class="cfg-hint">Cada mensagem enviada ficará registrada na ficha do paciente e nesta lista — com data, hora e status (enviada, entregue, lida) e as respostas dele.</p>' +
-          '<p class="cfg-hint">Começa a preencher assim que o motor de mensagens for conectado.</p>' +
+          '<p class="cfg-hint">Cada mensagem enviada fica registrada na ficha do paciente e nesta lista, com data, hora e o texto que saiu.</p>' +
         '</div>' +
       '</div></section>';
   }
@@ -367,11 +365,6 @@
       if (e.target.closest("#wa-save-conexao")) { salvarConexao(e.target.closest("#wa-save-conexao")); return; }
       if (e.target.closest("#wa-save-autos")) { salvarAutomacoes(e.target.closest("#wa-save-autos")); return; }
       if (e.target.closest("#wa-nova")) { novaMensagem(); return; }
-      if (e.target.closest("#wa-conectar")) {
-        var qr = el("wa-qr"); if (qr) qr.hidden = false;
-        toast("O motor de mensagens ainda será conectado (próximo passo técnico).");
-        return;
-      }
     });
   }
 

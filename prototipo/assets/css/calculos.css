@@ -55,7 +55,7 @@
 .calc-macro__g { font-weight: 800; color: var(--vinho); }
 .calc-bar { height: 8px; border-radius: 999px; background: var(--cinza-claro); overflow: hidden; }
 .calc-bar span { display: block; height: 100%; border-radius: 999px; }
-.calc-macro--cho .calc-bar span { background: #A82670; }
+.calc-macro--cho .calc-bar span { background: #17758A; }
 .calc-macro--carb .calc-bar span { background: #b8860b; }
 .calc-macro--lip .calc-bar span { background: #2e7d6b; }
 .calc-macro__foot { font-size: 11.5px; color: var(--texto-sutil); margin-top: 4px; }

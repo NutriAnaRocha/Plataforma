@@ -21,3 +21,4 @@ mercado/*.log
 
 # cache local do deploy.py (espelho do manifesto remoto)
 .deploy-manifest.local.json
+.backup-cor/

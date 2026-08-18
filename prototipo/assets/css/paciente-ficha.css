@@ -211,7 +211,7 @@
 .op-bloco__t { font-weight: 700; color: var(--vinho, #7a2342); font-size: 13.5px; margin-bottom: 4px; }
 .op-bloco ul { margin: 0; padding-left: 18px; }
 .op-bloco li { margin-bottom: 4px; line-height: 1.5; }
-.op-dica { margin-top: 10px; background: var(--rosa-suave, #f7ecf0); border-radius: 10px; padding: 8px 12px; font-size: 13.5px; }
+.op-dica { margin-top: 10px; background: var(--rosa-suave, #EEF6F8); border-radius: 10px; padding: 8px 12px; font-size: 13.5px; }
 .op-hint { font-weight: 400; font-size: 11.5px; color: var(--texto-sutil, #8a7a80); }
 
 /* modal (picker / escrever) */

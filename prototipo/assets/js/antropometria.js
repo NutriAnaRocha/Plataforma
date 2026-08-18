@@ -181,7 +181,7 @@
      abaixo são validadas na literatura e usam medidas que a nutri
      já coleta na antropometria.
      ============================================================ */
-  var COR = { verde: "#1B8A5A", teal: "#2E9E6B", ambar: "#E0A100", vermelho: "#B23A3A", vinho: "#840B55", cinza: "#8A8A8A" };
+  var COR = { verde: "#1B8A5A", teal: "#2E9E6B", ambar: "#E0A100", vermelho: "#B23A3A", vinho: "#0E4C5C", cinza: "#8A8A8A" };
 
   // RFM — Relative Fat Mass (Woolcott & Bergman, 2018; validado vs DXA).
   // Usa altura e cintura na MESMA unidade (cm). Devolve % de gordura.
