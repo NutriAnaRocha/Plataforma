@@ -45,11 +45,11 @@ a { color: inherit; }
 .btn:active { transform: translateY(1px); }
 
 .btn--primary {
-  background: var(--vinho);
+  background: var(--magenta);
   color: var(--branco);
   box-shadow: var(--shadow-sm);
 }
-.btn--primary:hover { background: var(--vinho-escuro); }
+.btn--primary:hover { background: var(--magenta-escuro); }
 
 /* Ghost — fundo claro. Era branco-sobre-branco: a classe nasceu para o painel vinho
    do login, mas foi usada em 51 lugares do app e do portal, todos claros (modal e
@@ -355,8 +355,9 @@ a { color: inherit; }
 .brand-panel {
   position: relative;
   background:
-    radial-gradient(120% 90% at 100% 0%, var(--vinho-claro) 0%, transparent 55%),
-    linear-gradient(160deg, var(--vinho) 0%, var(--vinho-escuro) 100%);
+    radial-gradient(90% 70% at 100% 100%, rgba(132, 11, 85, 0.55) 0%, transparent 60%),
+    radial-gradient(120% 90% at 100% 0%, var(--petroleo-claro) 0%, transparent 55%),
+    linear-gradient(160deg, var(--petroleo) 0%, var(--petroleo-escuro) 100%);
   color: var(--branco);
   padding: var(--sp-7) clamp(var(--sp-5), 4vw, var(--sp-7));
   display: flex;

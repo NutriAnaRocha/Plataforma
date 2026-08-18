@@ -22,6 +22,12 @@
   --petroleo-claro: #17758A;
   --azul-suave: #EEF6F8;
 
+  /* Acento da marca da Ana (Pantone 235 C) — acao e destaque sobre o petroleo */
+  --magenta: #840B55;
+  --magenta-escuro: #5E0A3D;
+  --magenta-claro: #A82670;
+  --magenta-suave: #FCEFF7;
+
   --vinho: var(--petroleo);
   --rosa: #9FCBD6;
   --branco: #FFFFFF;
@@ -71,7 +77,7 @@
                0 12px 28px rgba(14, 76, 92, 0.08);
   --shadow-lg: 0 10px 24px rgba(60, 60, 60, 0.10),
                0 24px 60px rgba(14, 76, 92, 0.12);
-  --ring-foco: 0 0 0 3px rgba(14, 76, 92, 0.18);
+  --ring-foco: 0 0 0 3px rgba(132, 11, 85, 0.20);   /* foco no magenta: e acao */
 
   /* ---------- Espaçamento (escala 4) ---------- */
   --sp-1: 4px;

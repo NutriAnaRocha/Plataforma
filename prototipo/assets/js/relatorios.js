@@ -9,7 +9,7 @@
   var M = window.REL_DATA || {};   // modelo atual (mock até o real chegar)
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
-  var CORES = ["#0E4C5C", "#17758A", "#3F97AC", "#7FBFCE", "#BFDEE6"];
+  var CORES = ["#0E4C5C", "#840B55", "#17758A", "#A82670", "#7FBFCE"];
 
   /* ---------- KPIs ---------- */
   function renderKpis() {
