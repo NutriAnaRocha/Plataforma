@@ -76,7 +76,11 @@
             '<span class="note__txt"><strong>Como aplicar com seus pacientes?</strong>' + c.aplicar + '</span></div>' +
         '</div>' +
         '<div class="news-card__foot">' +
-          '<span class="evid">Nível de evidência ' + stars(c.evidencia) + '</span>' +
+          // evidencia 0 = item que não é estudo indexado (ex.: conteúdo de gestão):
+          // não faz sentido exibir a régua de evidência.
+          (c.evidencia
+            ? '<span class="evid">Nível de evidência ' + stars(c.evidencia) + '</span>'
+            : '<span class="evid">Curadoria da plataforma</span>') +
           articleLinkHTML(c) +
         '</div>' +
       '</article>';

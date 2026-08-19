@@ -13,10 +13,10 @@
   <link rel="stylesheet" href="assets/css/style.css?v=ff5279c1" />
 
   <style>
-    /* ---- Página do artigo (leitura do Feed Científico) ---- */
+    /* ---- Página do artigo (leitura completa do Feed Científico) ---- */
     .article-page {
       min-height: 100vh;
-      background: var(--rosa-suave);
+      background: var(--azul-suave);
       padding: var(--sp-5) var(--sp-4) var(--sp-8);
     }
     .article-wrap { max-width: 760px; margin: 0 auto; }
@@ -24,10 +24,10 @@
     .article-back {
       display: inline-flex; align-items: center; gap: var(--sp-2);
       background: none; border: none; cursor: pointer;
-      color: var(--vinho); font-family: var(--font-ui); font-weight: 600;
+      color: var(--petroleo); font-family: var(--font-ui); font-weight: 600;
       font-size: var(--fs-sm); padding: var(--sp-2) 0; margin-bottom: var(--sp-4);
     }
-    .article-back:hover { color: var(--vinho-escuro); text-decoration: underline; }
+    .article-back:hover { color: var(--petroleo-escuro); text-decoration: underline; }
 
     .article {
       background: var(--branco);
@@ -42,16 +42,16 @@
       margin-bottom: var(--sp-4);
     }
     .article__tag {
-      background: var(--rosa); color: var(--vinho);
+      background: var(--magenta-suave); color: var(--magenta);
       font-size: var(--fs-caption); font-weight: 700; letter-spacing: .04em;
       text-transform: uppercase; padding: 4px 12px; border-radius: var(--radius-chip);
     }
-    .article__date { color: var(--texto-sutil); font-size: var(--fs-sm); }
+    .article__date, .article__read { color: var(--texto-sutil); font-size: var(--fs-sm); }
 
     .article__title {
-      font-family: var(--font-ui); font-weight: 800; color: var(--vinho);
+      font-family: var(--font-ui); font-weight: 800; color: var(--petroleo);
       font-size: clamp(1.5rem, 3.4vw, 2.1rem); line-height: var(--lh-tight);
-      margin-bottom: var(--sp-4);
+      margin-bottom: var(--sp-3);
     }
 
     .article__evid {
@@ -63,45 +63,97 @@
     .article__evid .stars__off { color: var(--cinza-borda); }
     .article__evid .stars__on { position: absolute; left: 0; top: 0; color: #E7B10A; overflow: hidden; white-space: nowrap; }
 
+    /* ---- Ficha do estudo original ---- */
+    .study {
+      border: 1px solid var(--cinza-borda);
+      border-left: 4px solid var(--petroleo);
+      border-radius: var(--radius-sm);
+      background: var(--azul-suave);
+      padding: var(--sp-4);
+      margin-bottom: var(--sp-5);
+    }
+    .study__h {
+      font-family: var(--font-ui); font-weight: 700; color: var(--petroleo);
+      font-size: var(--fs-sm); text-transform: uppercase; letter-spacing: .05em;
+      margin-bottom: var(--sp-3);
+    }
+    .study__grid { display: grid; gap: var(--sp-2); }
+    @media (min-width: 620px) { .study__grid { grid-template-columns: 150px 1fr; gap: var(--sp-2) var(--sp-3); } }
+    .study__k {
+      font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil);
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+    .study__v { font-size: var(--fs-sm); color: var(--texto); line-height: var(--lh-normal); word-break: break-word; }
+    .study__v a { color: var(--magenta); font-weight: 600; }
+
     .article__lead {
-      font-size: 1.1rem; line-height: var(--lh-normal); color: var(--texto);
+      font-size: 1.05rem; line-height: var(--lh-normal); color: var(--texto);
       padding: var(--sp-4); background: var(--cinza-claro);
-      border-radius: var(--radius-sm); margin-bottom: var(--sp-5);
+      border-radius: var(--radius-sm); margin-bottom: var(--sp-6);
     }
 
-    .article__block { margin-bottom: var(--sp-5); }
+    /* ---- Corpo da leitura completa ---- */
+    .article__body { margin-bottom: var(--sp-6); }
+    .article__sec { margin-bottom: var(--sp-5); }
+    .article__sec h2 {
+      font-family: var(--font-ui); font-weight: 700; color: var(--petroleo);
+      font-size: var(--fs-h3); line-height: var(--lh-tight);
+      margin-bottom: var(--sp-2);
+      padding-left: var(--sp-3); border-left: 3px solid var(--magenta);
+    }
+    .article__sec p { line-height: 1.75; color: var(--texto); font-size: var(--fs-body); }
+
+    .article__block {
+      margin-bottom: var(--sp-4); padding: var(--sp-4);
+      background: var(--magenta-suave); border-radius: var(--radius-sm);
+    }
     .article__block h2 {
       display: flex; align-items: center; gap: var(--sp-2);
-      font-family: var(--font-ui); font-weight: 700; color: var(--vinho);
+      font-family: var(--font-ui); font-weight: 700; color: var(--magenta);
       font-size: var(--fs-h3); margin-bottom: var(--sp-2);
     }
     .article__block p { line-height: var(--lh-normal); color: var(--texto); font-size: var(--fs-body); }
 
+    .article__sep {
+      border: none; border-top: 1px solid var(--cinza-borda);
+      margin: var(--sp-6) 0 var(--sp-5);
+    }
+    .article__sep-label {
+      display: block; text-align: center; margin-bottom: var(--sp-4);
+      font-size: var(--fs-caption); font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--texto-sutil);
+    }
+
     .article__source {
       display: inline-flex; align-items: center; gap: var(--sp-2);
-      margin-top: var(--sp-3); padding: var(--sp-3) var(--sp-5);
-      background: var(--vinho); color: var(--branco);
+      margin-top: var(--sp-2); padding: var(--sp-3) var(--sp-5);
+      background: var(--magenta); color: var(--branco);
       border-radius: var(--radius-btn); font-weight: 600; font-size: var(--fs-sm);
       text-decoration: none; transition: background var(--t-fast);
     }
-    .article__source:hover { background: var(--vinho-escuro); }
+    .article__source:hover { background: var(--magenta-escuro); }
 
-    .article__soon {
-      margin-top: var(--sp-4); padding: var(--sp-4);
+    .article__nosource {
+      margin-top: var(--sp-2); padding: var(--sp-4);
       border: 1px dashed var(--cinza-borda); border-radius: var(--radius-sm);
-      color: var(--texto-sutil); font-size: var(--fs-sm); text-align: center;
+      color: var(--texto-sutil); font-size: var(--fs-sm);
     }
 
     .article__foot {
       margin-top: var(--sp-6); padding-top: var(--sp-4);
       border-top: 1px solid var(--cinza-borda);
-      color: var(--texto-sutil); font-size: var(--fs-caption);
+      color: var(--texto-sutil); font-size: var(--fs-caption); line-height: var(--lh-normal);
     }
 
     .article-missing {
       text-align: center; padding: var(--sp-8) var(--sp-4); color: var(--texto-sutil);
     }
-    .article-missing h1 { color: var(--vinho); font-family: var(--font-ui); margin-bottom: var(--sp-3); }
+    .article-missing h1 { color: var(--petroleo); font-family: var(--font-ui); margin-bottom: var(--sp-3); }
+
+    @media (max-width: 480px) {
+      .article-page { padding: var(--sp-4) var(--sp-3) var(--sp-7); }
+      .article__source { width: 100%; justify-content: center; }
+    }
   </style>
 </head>
 <body>
@@ -112,7 +164,7 @@
     </div>
   </main>
 
-  <script src="assets/js/feed-data.js?v=f422c8fd"></script>
+  <script src="assets/js/feed-data.js?v=54bba27e"></script>
   <script>
     (function () {
       "use strict";
@@ -128,6 +180,15 @@
         for (var i = 0; i < 5; i++) { (i < n ? (on += "★") : (off += "★")); }
         return '<span class="stars"><span class="stars__on">' + on +
                '</span><span class="stars__off">' + off + '</span></span>';
+      }
+
+      // Estimativa de tempo de leitura (~200 palavras/min).
+      function tempoLeitura(card) {
+        var txt = [card.resumo, card.mudou, card.aplicar]
+          .concat((card.leitura || []).map(function (s) { return s.h + " " + s.p; }))
+          .join(" ");
+        var min = Math.max(1, Math.round(txt.split(/\s+/).length / 200));
+        return min + " min de leitura";
       }
 
       // O botão "voltar" retorna à página anterior (feed) ou, se aberto direto, à home.
@@ -153,23 +214,78 @@
 
       document.title = card.title + " · Feed Científico";
 
-      // Fonte externa real só quando o link não é vazio nem "#".
+      /* ---- Ficha do estudo original (só quando existe fonte indexada) ---- */
+      var f = card.fonte;
+      var fichaHTML = "";
+      if (f) {
+        var linhas = [
+          ["Autores", esc(f.autores)],
+          ["Publicado em", esc(f.revista) + (f.ano ? ", " + esc(f.ano) : "")],
+          ["Tipo de estudo", esc(f.desenho)],
+          ["Amostra", esc(f.amostra)]
+        ];
+        if (f.doi) {
+          linhas.push(["DOI", '<a href="https://doi.org/' + esc(f.doi) + '" target="_blank" rel="noopener">' + esc(f.doi) + '</a>']);
+        }
+        if (f.pubmed) {
+          linhas.push(["PubMed", '<a href="https://pubmed.ncbi.nlm.nih.gov/' + esc(f.pubmed) + '/" target="_blank" rel="noopener">PMID ' + esc(f.pubmed) + '</a>']);
+        }
+        linhas.push(["Acesso", esc(f.acesso)]);
+
+        fichaHTML =
+          '<section class="study">' +
+            '<p class="study__h">Estudo original</p>' +
+            '<div class="study__grid">' +
+              linhas.filter(function (l) { return l[1] && l[1] !== "—"; }).map(function (l) {
+                return '<div class="study__k">' + l[0] + '</div><div class="study__v">' + l[1] + '</div>';
+              }).join("") +
+            '</div>' +
+          '</section>';
+      }
+
+      /* ---- Leitura completa ---- */
+      var corpoHTML = (card.leitura || []).map(function (s) {
+        return '<section class="article__sec">' +
+                 '<h2>' + esc(s.h) + '</h2>' +
+                 '<p>' + esc(s.p) + '</p>' +
+               '</section>';
+      }).join("");
+
+      var leituraHTML = corpoHTML
+        ? '<hr class="article__sep" /><span class="article__sep-label">Leitura completa</span>' +
+          '<div class="article__body">' + corpoHTML + '</div>'
+        : "";
+
+      /* ---- Link para o estudo original ---- */
       var link = (card.link || "").trim();
       var hasSource = !!link && link !== "#";
 
       var sourceHTML = hasSource
-        ? '<a class="article__source" href="' + esc(link) + '" target="_blank" rel="noopener">📚 Ler o estudo original →</a>'
-        : '<div class="article__soon">📄 O estudo original completo será disponibilizado em breve. ' +
-          'Abaixo está o resumo científico traduzido e comentado pela nossa curadoria.</div>';
+        ? '<a class="article__source" href="' + esc(link) + '" target="_blank" rel="noopener">📚 Abrir o estudo original →</a>'
+        : '<div class="article__nosource">Este conteúdo não tem estudo indexado correspondente — ' +
+          'é material produzido pela curadoria da plataforma.</div>';
+
+      /* ---- Nota de rodapé honesta sobre o que é este texto ---- */
+      var notaFonte = f
+        ? 'O texto acima é curadoria da plataforma, escrita a partir do resumo publicado do estudo. ' +
+          'Não é tradução literal nem reprodução do artigo: o conteúdo integral está no site do periódico, ' +
+          'pelo link acima.'
+        : 'Conteúdo produzido pela curadoria da plataforma. Não é artigo científico indexado.';
 
       root.innerHTML =
         '<article class="article">' +
           '<div class="article__top">' +
             '<span class="article__tag">' + esc(card.categoria) + '</span>' +
             '<span class="article__date">' + esc(card.data) + '</span>' +
+            '<span class="article__read">· ' + tempoLeitura(card) + '</span>' +
           '</div>' +
           '<h1 class="article__title">' + esc(card.title) + '</h1>' +
-          '<div class="article__evid">Nível de evidência ' + stars(card.evidencia) + '</div>' +
+
+          (card.evidencia
+            ? '<div class="article__evid">Nível de evidência ' + stars(card.evidencia) + '</div>'
+            : '') +
+
+          fichaHTML +
 
           '<p class="article__lead"><strong>Resumo em 30s:</strong> ' + esc(card.resumo) + '</p>' +
 
@@ -183,10 +299,12 @@
             '<p>' + esc(card.aplicar) + '</p>' +
           '</div>' +
 
+          leituraHTML +
+
           sourceHTML +
 
-          '<p class="article__foot">Feed Científico Inteligente · Resumo curado para nutricionistas. ' +
-          'Sempre avalie o contexto clínico individual de cada paciente.</p>' +
+          '<p class="article__foot">' + notaFonte + '<br /><br />' +
+          'Feed Científico Inteligente · Sempre avalie o contexto clínico individual de cada paciente.</p>' +
         '</article>';
     })();
   </script>
