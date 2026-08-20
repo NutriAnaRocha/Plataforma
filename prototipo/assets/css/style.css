@@ -201,6 +201,35 @@ a { color: inherit; }
 }
 .news-card__resumo { color: var(--texto-sutil); margin: 0; }
 
+/* Selo do card escolhido como destaque da semana */
+.news-card__badge {
+  align-self: flex-start;
+  background: var(--magenta); color: var(--branco);
+  font-size: var(--fs-caption); font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: var(--radius-chip);
+}
+
+/* Início do artigo: primeiras linhas com esmaecimento, convidando ao clique */
+.news-card__trecho {
+  position: relative;
+  padding-top: var(--sp-3);
+  border-top: 1px dashed var(--cinza-borda);
+}
+.news-card__trecho h4 {
+  font-size: var(--fs-caption); font-weight: 700; color: var(--vinho);
+  text-transform: uppercase; letter-spacing: .05em; margin: 0 0 6px;
+}
+.news-card__trecho p {
+  margin: 0; font-size: var(--fs-sm); line-height: 1.7; color: var(--texto);
+  max-height: 5.1em; overflow: hidden;
+}
+.news-card__trecho::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2.2em;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--branco));
+  pointer-events: none;
+}
+
 .note {
   display: flex;
   gap: var(--sp-3);
@@ -272,6 +301,18 @@ a { color: inherit; }
 }
 .highlight-week__title { font-size: var(--fs-h3); font-weight: 700; margin: 0 0 4px; }
 .highlight-week__txt { font-size: var(--fs-sm); color: var(--sobre-vinho-70); margin: 0; }
+/* Quando o destaque aponta para um artigo, a faixa inteira vira link */
+.highlight-week--link {
+  /* nao usar `inherit` aqui: herdaria o texto escuro do body e sumiria no petroleo */
+  color: var(--branco); text-decoration: none;
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+}
+.highlight-week--link:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg, var(--shadow-md)); }
+.highlight-week__cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: var(--sp-2); font-size: var(--fs-sm); font-weight: 700; color: var(--branco);
+}
+.highlight-week--link:hover .highlight-week__cta { gap: 10px; }
 
 /* ---- Modal ---- */
 .modal-overlay {
