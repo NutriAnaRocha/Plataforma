@@ -447,6 +447,7 @@
     }
     if (sec === "anamnese" && window.ConsentimentosView) window.ConsentimentosView.wire(p);
     if (sec === "anamnese" && window.AnamneseIA) window.AnamneseIA.wire(p, { toast: pacToast });
+    if (sec === "anamnese" && window.ConsultaAudio) window.ConsultaAudio.wire(p, { toast: pacToast });
     if (sec === "anamnese" && window.Questionarios) {
       window.Questionarios.wire(p, {
         toast: pacToast,
@@ -590,7 +591,11 @@
     // A conduta sugerida vem por último: ela lê tudo que está acima (anamnese,
     // questionários) e só faz sentido depois que a nutri passou os olhos neles.
     var ia = window.AnamneseIA ? window.AnamneseIA.render(p) : "";
-    return campoEditavel("Anamnese inicial", "anamnese", p.anamnese, "Nenhuma anamnese inicial registrada. Clique em “Adicionar” para escrever.") +
+    // O gravador vem primeiro porque é o começo do fluxo: gravar a consulta
+    // alimenta a anamnese, que alimenta a conduta lá embaixo.
+    var audio = window.ConsultaAudio ? window.ConsultaAudio.render(p) : "";
+    return audio +
+      campoEditavel("Anamnese inicial", "anamnese", p.anamnese, "Nenhuma anamnese inicial registrada. Clique em “Adicionar” para escrever.") +
       campoEditavel("Restrições & alergias", "restricoes", p.restricoes, "Sem restrições/alergias registradas.") +
       quest + consent + ia;
   }

@@ -65,6 +65,15 @@ const LIMITE_VISITANTE = 3;    // por dispositivo, por dia
 const LIMITE_LIBERADO = 15;    // paciente da Ana ou a própria nutri
 const LIMITE_GLOBAL = 150;     // teto do app inteiro por dia
 const LIMITE_CODIGO_DIA = 25;  // por pacote comprado, por dia (anti-vazamento)
+// Teto por ORIGEM da conexão, para quem não pagou. Existe porque o
+// 'dispositivo' é um uuid do localStorage escrito pelo próprio cliente:
+// girar um uuid novo a cada chamada zera o limite de 3, e um script faria
+// isso até queimar as 150 do dia — app morto para todo mundo, fatura paga
+// do mesmo jeito. É deliberadamente MUITO maior que o limite do
+// dispositivo: casa de família, escritório e o CGNAT das operadoras de
+// celular fazem muita gente sair pelo mesmo IP, e barrar gente de verdade
+// é pior que a fraude que se está evitando. Quem paga nunca passa por aqui.
+const LIMITE_IP_DIA = 25;
 // A assinatura NÃO tem teto por dia: uma compra de mercado é uma rajada (15
 // leituras numa tarde, nada por dez dias), e cortar no meio do corredor é
 // exatamente o momento errado. O teto é do MÊS, e a pessoa vê o saldo dele
@@ -478,6 +487,30 @@ function nomeUsavel(nome: string): boolean {
   return !/(pack|fardo|caixa com|display|leve mais|pague menos|c\/ ?\d{2,}|\d{2,} ?unidades|atacado)/i.test(nome);
 }
 
+/** Identifica a ORIGEM da chamada sem guardar o IP.
+ *
+ *  Para contar "quantas leituras vieram desta conexão hoje" não é preciso
+ *  saber qual é a conexão. Guardar o IP cru seria guardar dado pessoal
+ *  (LGPD) de gente que nem conta tem no app, e para nada — o hash conta
+ *  igual e não volta a ser IP.
+ *
+ *  Primeiro item do x-forwarded-for: é o que o cliente apresenta; os
+ *  seguintes são os proxies do caminho. Um cliente pode forjar esse
+ *  cabeçalho, mas quem faz isso está do outro lado do proxy da Supabase,
+ *  que reescreve a lista — e, no pior caso, o freio do dispositivo e o
+ *  global continuam de pé. */
+async function origemHash(req: Request): Promise<string | null> {
+  const bruto = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim()
+    || (req.headers.get("cf-connecting-ip") || "").trim();
+  if (!bruto) return null;
+  const pimenta = Deno.env.get("ROTULENS_IP_PEPPER") || "rotulens.origem.v1";
+  const dig = await crypto.subtle.digest(
+    "SHA-256", new TextEncoder().encode(pimenta + "|" + bruto),
+  );
+  return Array.from(new Uint8Array(dig))
+    .map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 32);
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "method_not_allowed" }, 405);
@@ -679,6 +712,28 @@ Deno.serve(async (req) => {
         error: "limite_codigo_dia",
         detail: `Esse código já leu ${LIMITE_CODIGO_DIA} rótulos hoje. Seus créditos ` +
           "continuam guardados — amanhã ele volta a funcionar. 🌸",
+      }, 429);
+    }
+  }
+
+  // O mesmo freio, uma camada abaixo: o dispositivo é escrito pelo cliente,
+  // a origem da conexão não. Só para quem não pagou — quem comprou já é
+  // segurada pelo teto do código e pelo de aparelhos, e uma assinante presa
+  // atrás do CGNAT da operadora dela não pode ficar sem o que pagou.
+  const ipHash = await origemHash(req);
+  if (!pagante && ipHash) {
+    const { count: usoOrigem } = await admin
+      .from("mercado_analises")
+      .select("id", { count: "exact", head: true })
+      .eq("ip_hash", ipHash)
+      .gte("criado_em", desde);
+    if ((usoOrigem || 0) >= LIMITE_IP_DIA) {
+      return json({
+        error: "limite_origem",
+        limite: LIMITE_IP_DIA,
+        detail: "Já saíram muitas leituras da sua conexão hoje (é comum em wi-fi " +
+          "compartilhado). Amanhã ela abre de novo — e quem assina não passa por " +
+          "esse limite. 🌸",
       }, 429);
     }
   }
@@ -947,6 +1002,7 @@ Deno.serve(async (req) => {
   const linha = {
     user_id: uid,
     dispositivo,
+    ip_hash: ipHash,
     codigo_credito: pagante ? codigo : null,
     produto: txt(out.produto, 180),
     marca: txt(out.marca, 120),

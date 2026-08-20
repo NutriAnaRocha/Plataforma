@@ -1,0 +1,186 @@
+/* ============================================================
+   GRAVADOR DA CONSULTA (.cau-*)
+   Mesma linguagem visual do card de IA da anamnese (.ia-*).
+   ============================================================ */
+
+.cau-card { border-left: 3px solid var(--petroleo); }
+
+.cau__tag {
+  font-size: var(--fs-caption, 0.74rem);
+  font-weight: 600;
+  color: var(--petroleo);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-chip);
+  padding: 0.15rem 0.6rem;
+  white-space: nowrap;
+}
+
+.cau__sub {
+  margin: var(--sp-2) 0 var(--sp-4);
+  font-size: var(--fs-sm, 0.85rem);
+  line-height: var(--lh-normal);
+  color: var(--texto-sutil);
+}
+
+.cau__hint {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-caption, 0.74rem);
+  color: var(--texto-sutil);
+}
+
+.cau__aviso {
+  margin: 0 0 var(--sp-4);
+  padding: var(--sp-3);
+  font-size: var(--fs-caption, 0.74rem);
+  line-height: var(--lh-normal);
+  color: var(--vinho-escuro);
+  background: var(--magenta-suave);
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- Consentimento ---------- */
+.cau__consent {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  margin-bottom: var(--sp-4);
+  padding: var(--sp-3);
+  font-size: var(--fs-sm, 0.85rem);
+  line-height: var(--lh-normal);
+  color: var(--texto);
+  background: var(--cinza-claro);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.cau__consent input {
+  flex: 0 0 auto;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-top: 0.15rem;
+  accent-color: var(--magenta);
+  cursor: pointer;
+}
+
+/* ---------- Ao vivo ---------- */
+.cau__ao-vivo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: center;
+  margin-bottom: var(--sp-4);
+}
+
+.cau__dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--magenta);
+  animation: cau-pulsa 1.2s ease-in-out infinite;
+}
+.cau__dot.is-off { background: var(--cinza-medio); animation: none; }
+
+@keyframes cau-pulsa { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+/* Quem pediu menos movimento não leva um ponto piscando na cara. */
+@media (prefers-reduced-motion: reduce) {
+  .cau__dot { animation: none; }
+}
+
+.cau__relogio {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.cau__estado {
+  font-size: var(--fs-caption, 0.74rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-sutil);
+}
+
+.cau__fila {
+  font-size: var(--fs-caption, 0.74rem);
+  color: var(--petroleo);
+}
+
+/* ---------- Ações ---------- */
+.cau__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+  margin-top: var(--sp-4);
+}
+
+/* ---------- Resultado ---------- */
+.cau__bloco { margin-bottom: var(--sp-4); }
+.cau__bloco h4 {
+  margin: 0 0 var(--sp-1);
+  font-size: var(--fs-caption, 0.74rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--magenta);
+}
+.cau__bloco p,
+.cau__bloco li {
+  font-size: var(--fs-sm, 0.85rem);
+  line-height: var(--lh-normal);
+  color: var(--texto);
+}
+.cau__bloco p { margin: 0; }
+.cau__bloco ul { margin: 0; padding-left: 1.1rem; }
+.cau__bloco li { margin-bottom: var(--sp-1); }
+
+.cau__bloco--duvida h4 { color: var(--vinho); }
+
+.cau__load,
+.cau__vazio,
+.cau__erro {
+  padding: var(--sp-4);
+  font-size: var(--fs-sm, 0.85rem);
+  line-height: var(--lh-normal);
+  text-align: center;
+  border-radius: var(--radius-sm);
+  color: var(--texto-sutil);
+  background: var(--cinza-claro);
+}
+.cau__erro {
+  color: var(--vinho-escuro);
+  background: var(--magenta-suave);
+  text-align: left;
+}
+
+/* ---------- Transcrição bruta ---------- */
+.cau__transcricao {
+  margin-top: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--cinza-claro);
+  border-radius: var(--radius-sm);
+}
+.cau__transcricao summary {
+  font-size: var(--fs-caption, 0.74rem);
+  font-weight: 600;
+  color: var(--texto-sutil);
+  cursor: pointer;
+}
+.cau__transcricao p {
+  margin: var(--sp-3) 0 0;
+  max-height: 16rem;
+  overflow-y: auto;
+  font-size: var(--fs-caption, 0.74rem);
+  line-height: var(--lh-normal);
+  color: var(--texto-sutil);
+}
+
+/* ---------- Telas estreitas ----------
+   No celular os botões viram bloco: "Encerrar e transcrever" não pode
+   ficar espremido em meia palavra no meio da consulta. */
+@media (max-width: 480px) {
+  .cau__acoes { flex-direction: column; align-items: stretch; }
+  .cau__acoes .btn { width: 100%; }
+  .cau__relogio { font-size: var(--fs-h3); }
+}

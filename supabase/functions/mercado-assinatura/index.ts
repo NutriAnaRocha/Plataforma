@@ -12,6 +12,14 @@
 //           porque o app tem um campo de código só e a pessoa não
 //           deveria precisar saber qual dos dois ela comprou.
 //
+//    { acao: "recuperar", email, dispositivo }
+//        -> devolve o código da compra feita com aquele e-mail. É o
+//           socorro de quem pagou e não recebeu (ou perdeu) o código:
+//           sem login, o e-mail do checkout é a única coisa que a
+//           compradora consegue repetir. As tentativas são contadas por
+//           aparelho na própria função do banco (migration 0073), senão
+//           o formulário viraria um oráculo para varrer e-mails.
+//
 //  MESMA DESCONFIANÇA DA mercado-creditos
 //    Os campos do pagamento chegam pela query string do navegador de
 //    alguém. Qualquer um pode inventar um transaction_nsu e pedir um
@@ -97,7 +105,7 @@ Deno.serve(async (req) => {
 
   let body: {
     acao?: string; transaction_nsu?: string; order_nsu?: string;
-    slug?: string; codigo?: string;
+    slug?: string; codigo?: string; email?: string; dispositivo?: string;
   };
   try {
     body = await req.json();
@@ -111,6 +119,56 @@ Deno.serve(async (req) => {
     if (!codigo) return json({ error: "codigo_ausente" }, 400);
     const { data } = await admin.rpc("mercado_acesso", { p_codigo: codigo });
     return json(data ?? { ok: false, motivo: "inexistente" });
+  }
+
+  // ---------- Socorro: o código pelo e-mail da compra ----------
+  // Só o servidor pergunta ao banco. A trava (5 tentativas por aparelho
+  // por dia) mora na função do banco, junto com o registro da tentativa —
+  // se fosse aqui, uma rajada de chamadas simultâneas passaria inteira
+  // antes de a primeira linha ser gravada.
+  if (body.acao === "recuperar") {
+    const email = String(body.email || "").trim().toLowerCase();
+    const dispositivo = String(body.dispositivo || "").trim();
+    if (!email || !dispositivo) return json({ error: "faltam_dados" }, 400);
+
+    const { data, error } = await admin.rpc("mercado_recuperar_codigo", {
+      p_email: email,
+      p_dispositivo: dispositivo,
+    });
+    if (error) {
+      return json({
+        error: "falha_na_busca",
+        detail: "Não consegui procurar agora. Tente de novo em alguns minutos — " +
+                "e, se preferir, fale com a Ana pelo WhatsApp. 🌸",
+      }, 503);
+    }
+
+    const r = (data ?? {}) as Record<string, unknown>;
+    if (r.ok === true) return json(r);
+
+    // As três respostas negativas dizem coisas diferentes para quem lê a
+    // tela, e nenhuma delas confirma se o e-mail existe ou não em outra
+    // compra — quem errou o e-mail vê a mesma frase de quem chutou.
+    if (r.motivo === "muitas_tentativas") {
+      return json({
+        error: "muitas_tentativas",
+        detail: "Você já tentou várias vezes hoje. Para não deixar ninguém " +
+                "adivinhando código dos outros, esse formulário descansa até " +
+                "amanhã — mas a Ana resolve na hora pelo WhatsApp. 🌸",
+      }, 429);
+    }
+    if (r.motivo === "email_invalido") {
+      return json({
+        error: "email_invalido",
+        detail: "Confira o e-mail: ele precisa ser o mesmo que você usou no pagamento.",
+      }, 400);
+    }
+    return json({
+      error: "nao_encontrado",
+      detail: "Não achei nenhuma compra com esse e-mail. Ele precisa ser o mesmo " +
+              "que você digitou no checkout — se foi outro, ou se a compra foi " +
+              "antes de agosto, mande o comprovante para a Ana que ela acha. 🌸",
+    }, 404);
   }
 
   // ---------- Resgate ----------
