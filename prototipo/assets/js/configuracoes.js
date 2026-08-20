@@ -138,6 +138,16 @@
         '<button class="btn btn--outline" type="button" data-action="exportar-dados">Exportar (JSON)</button>' +
       '</div>';
 
+    // Sair usa [data-logout], tratado pelo auth-guard.js: ele chama signOut()
+    // e manda para o index. Nada de ação própria aqui.
+    var sair =
+      '<div class="cfg-toggle-row">' +
+        '<div class="cfg-toggle-txt"><strong>Sair desta conta</strong>' +
+          '<span>Encerra a sessão neste dispositivo. Seus dados continuam salvos — ' +
+          'é só entrar de novo com o mesmo e-mail e senha.</span></div>' +
+        '<a class="btn btn--outline" href="index.html" data-logout>Sair</a>' +
+      '</div>';
+
     var perigo =
       '<div class="cfg-danger">' +
         '<div><strong>Excluir minha conta</strong><p class="cfg-hint">Remove permanentemente sua conta e TODOS os dados: perfil, pacientes, prontuários, consultas, financeiro e os acessos de portal dos seus pacientes. Esta ação não pode ser desfeita.</p></div>' +
@@ -149,6 +159,7 @@
       card("Senha", "Recomendamos trocar a cada 6 meses.", senha) +
       card("Segurança", "", duplo) +
       card("Meus dados (LGPD)", "Portabilidade e controle sobre os seus dados.", dados) +
+      card("Sessão", "", sair) +
       card("Zona de perigo", "", perigo);
   }
 

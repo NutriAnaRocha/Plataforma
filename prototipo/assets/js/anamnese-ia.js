@@ -190,7 +190,7 @@
       '<p class="ia-card__sub">' +
         (temTexto
           ? "A IA lê a anamnese, os questionários do portal e o prontuário, cruza com os seus protocolos da Biblioteca Clínica e propõe diagnóstico nutricional, conduta e metas."
-          : "Escreva a anamnese inicial (ou peça a anamnese do portal à paciente) para liberar a sugestão de conduta.") +
+          : "Para liberar a sugestão, é preciso ter o que ler: escreva a anamnese inicial aqui em cima, ou espere a paciente responder a anamnese pelo portal dela.") +
       "</p>" +
       '<div class="ia-cond__box" id="ia-cond-box"></div>' +
       "</section>";
