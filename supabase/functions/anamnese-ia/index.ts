@@ -109,7 +109,11 @@ Devolva APENAS um JSON válido, sem texto fora do JSON, no formato EXATO:
   "protocolos_usados": ["nome exato do protocolo do contexto que embasou a conduta"]
 }
 
-3 a 6 itens em "conduta", 2 a 4 em "metas". Itens concretos e aplicáveis, não genéricos.`;
+3 a 6 itens em "conduta", 2 a 4 em "metas". Itens concretos e aplicáveis, não genéricos.
+
+"protocolos_usados" é OBRIGATÓRIO sempre que você aproveitar qualquer coisa de um protocolo
+do contexto — copie o nome exatamente como veio em "### Protocolo: ". Só deixe a lista vazia
+se realmente nenhum protocolo influenciou a conduta.`;
 
 /* ---------- Normalização e casamento com a Biblioteca Clínica ----------
    Mesma técnica de prototipo/assets/js/ic-link.js: normaliza (sem acento,
@@ -153,7 +157,10 @@ function ranquear(protocolos: Protocolo[], texto: string): Protocolo[] {
       for (const s of p.sinais_sintomas || []) if (contem(tn, s)) score += 1;
       return { p, score };
     })
-    .filter((x) => x.score > 0)
+    // Score 2 é o piso de propósito: um único sinal genérico ("constipação",
+    // "fadiga") casa com meio mundo de protocolo. Exigir nome, sinônimo ou
+    // dois sintomas mantém só o que tem cara de ser o quadro.
+    .filter((x) => x.score >= 2)
     .sort((a, b) => b.score - a.score)
     .slice(0, MAX_PROTOCOLOS)
     .map((x) => x.p);
@@ -396,11 +403,11 @@ Deno.serve(async (req) => {
 
   // Só devolve protocolo que existe de verdade no contexto — se o modelo
   // citar um nome que não passamos, ele não sai daqui.
-  const nomesOk = protocolos.map((p) => p.nome);
+  const ref = (p: Protocolo) => ({ id: p.id, nome: p.nome, slug: p.slug });
   const usados = lista(out.protocolos_usados, 3, 120)
     .map((n) => protocolos.find((p) => norm(p.nome) === norm(n)))
     .filter(Boolean)
-    .map((p) => ({ id: p!.id, nome: p!.nome, slug: p!.slug }));
+    .map((p) => ref(p!));
 
   return json({
     ok: true,
@@ -412,7 +419,7 @@ Deno.serve(async (req) => {
     dados_faltantes: lista(out.dados_faltantes, 6, 200),
     sinais_alerta: str(out.sinais_alerta, 800),
     protocolos_usados: usados,
-    protocolos_no_contexto: nomesOk,
+    protocolos_consultados: protocolos.map(ref),
     modelo: MODEL,
   });
 });

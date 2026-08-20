@@ -205,12 +205,24 @@
   function renderConduta(d) {
     var box = document.getElementById("ia-cond-box");
     if (!box) return;
-    var prot = (d.protocolos_usados || []).length
-      ? '<div class="ia-cond__prot"><b>Protocolos usados:</b> ' +
-        d.protocolos_usados.map(function (x) {
-          return '<a href="protocolos.html?p=' + encodeURIComponent(x.slug) + '">' + esc(x.nome) + "</a>";
-        }).join(" · ") + "</div>"
-      : '<div class="ia-cond__prot ia-cond__prot--vazio">Nenhum protocolo da sua biblioteca casou com este quadro — a sugestão veio só dos dados da paciente.</div>';
+    // "Usados" é o que a IA declarou ter aproveitado; quando ela não declara,
+    // mostramos o que foi para o contexto — sem afirmar que embasou a conduta.
+    function links(l) {
+      return l.map(function (x) {
+        return '<a href="protocolos.html?p=' + encodeURIComponent(x.slug) + '">' + esc(x.nome) + "</a>";
+      }).join(" · ");
+    }
+    var usados = d.protocolos_usados || [];
+    var consultados = d.protocolos_consultados || [];
+    var prot;
+    if (usados.length) {
+      prot = '<div class="ia-cond__prot"><b>Protocolos usados:</b> ' + links(usados) + "</div>";
+    } else if (consultados.length) {
+      prot = '<div class="ia-cond__prot"><b>Protocolos consultados:</b> ' + links(consultados) +
+        ' <span class="ia-cond__prot--vazio">— a IA não disse qual pesou na conduta; confira.</span></div>';
+    } else {
+      prot = '<div class="ia-cond__prot ia-cond__prot--vazio">Nenhum protocolo da sua biblioteca casou com este quadro — a sugestão veio só dos dados da paciente.</div>';
+    }
 
     box.innerHTML =
       '<div class="ia-cond">' +

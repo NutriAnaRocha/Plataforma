@@ -335,9 +335,13 @@
     var box = el("ficha-main").querySelector('[data-campo-box="' + campo + '"]');
     if (!box) return;
     var val = p[campo] || "";
+    // Nos campos de prosa clínica entra o "✨ Revisar texto": a IA corrige o
+    // português e mostra o comparativo — só escreve aqui se a nutri aplicar.
+    var btnIA = (window.AnamneseIA && window.AnamneseIA.botaoRevisar(campo)) || "";
     box.innerHTML =
       '<textarea class="fedit" id="fedit-' + campo + '" rows="6" placeholder="Escreva aqui…">' + esc(val) + '</textarea>' +
       '<div class="fedit__actions">' +
+        btnIA +
         '<button class="btn btn--ghost btn--sm" type="button" data-cancel-campo="' + campo + '">Cancelar</button>' +
         '<button class="btn btn--primary btn--sm" type="button" data-save-campo="' + campo + '">Salvar</button>' +
       '</div>';
@@ -442,6 +446,7 @@
       });
     }
     if (sec === "anamnese" && window.ConsentimentosView) window.ConsentimentosView.wire(p);
+    if (sec === "anamnese" && window.AnamneseIA) window.AnamneseIA.wire(p, { toast: pacToast });
     if (sec === "anamnese" && window.Questionarios) {
       window.Questionarios.wire(p, {
         toast: pacToast,
@@ -582,9 +587,12 @@
     // aconteceu ali: o TCLE e o pedido do plano são dados no mesmo fluxo da
     // anamnese do portal. A seção se esconde sozinha quando não há o que mostrar.
     var consent = window.ConsentimentosView ? window.ConsentimentosView.render(p) : "";
+    // A conduta sugerida vem por último: ela lê tudo que está acima (anamnese,
+    // questionários) e só faz sentido depois que a nutri passou os olhos neles.
+    var ia = window.AnamneseIA ? window.AnamneseIA.render(p) : "";
     return campoEditavel("Anamnese inicial", "anamnese", p.anamnese, "Nenhuma anamnese inicial registrada. Clique em “Adicionar” para escrever.") +
       campoEditavel("Restrições & alergias", "restricoes", p.restricoes, "Sem restrições/alergias registradas.") +
-      quest + consent;
+      quest + consent + ia;
   }
 
   function secExames(p) {
