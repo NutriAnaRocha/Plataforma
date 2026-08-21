@@ -32,6 +32,15 @@
   }
 
   // ---- formulas <-> texto amigável ----
+  /* Texto da fórmula com a formatação da nutri (negrito, cor, sublinhado):
+     sanitizado, não escapado. Sem o editor carregado, escapa tudo. */
+  function fmt(v) {
+    return window.EditorFormulas ? window.EditorFormulas.sanitizar(v) : esc(v);
+  }
+  function semTags(v) {
+    return window.EditorFormulas ? window.EditorFormulas.texto(v) : String(v == null ? "" : v);
+  }
+
   function formulasToTexto(formulas) {
     return (formulas || []).map(function (f) {
       var linhas = ["# " + (f.titulo || "")];
@@ -152,16 +161,16 @@
   function detalhe(o) {
     var formulas = (o.formulas || []).map(function (f) {
       var comp = (f.componentes || []).map(function (c) {
-        return '<div class="fm-comp"><span class="fm-comp__a">' + esc(c.ativo) + "</span>" +
-          (c.dose ? '<span class="fm-comp__d">' + esc(c.dose) + "</span>" : "") +
-          (c.obs ? '<span class="fm-comp__o">' + esc(c.obs) + "</span>" : "") + "</div>";
+        return '<div class="fm-comp"><span class="fm-comp__a">' + fmt(c.ativo) + "</span>" +
+          (c.dose ? '<span class="fm-comp__d">' + fmt(c.dose) + "</span>" : "") +
+          (c.obs ? '<span class="fm-comp__o">' + fmt(c.obs) + "</span>" : "") + "</div>";
       }).join("");
       var rodape = [];
-      if (f.posologia) rodape.push("<b>Posologia:</b> " + esc(f.posologia));
-      if (f.duracao) rodape.push("<b>Duração:</b> " + esc(f.duracao));
-      if (f.via) rodape.push("<b>Via:</b> " + esc(f.via));
+      if (f.posologia) rodape.push("<b>Posologia:</b> " + fmt(f.posologia));
+      if (f.duracao) rodape.push("<b>Duração:</b> " + fmt(f.duracao));
+      if (f.via) rodape.push("<b>Via:</b> " + fmt(f.via));
       return '<div class="fm-formula">' +
-        (f.titulo ? '<div class="fm-formula__t">' + esc(f.titulo) + "</div>" : "") +
+        (f.titulo ? '<div class="fm-formula__t">' + fmt(f.titulo) + "</div>" : "") +
         '<div class="fm-comps">' + comp + "</div>" +
         (rodape.length ? '<div class="fm-formula__pos">' + rodape.join(" · ") + "</div>" : "") +
         "</div>";
@@ -216,13 +225,13 @@
     if (o.indicacao) l.push("Indicação: " + o.indicacao);
     (o.formulas || []).forEach(function (f) {
       l.push("");
-      if (f.titulo) l.push(f.titulo);
+      if (f.titulo) l.push(semTags(f.titulo));
       (f.componentes || []).forEach(function (c) {
-        l.push("• " + [c.ativo, c.dose, c.obs].filter(Boolean).join(" — "));
+        l.push("• " + [c.ativo, c.dose, c.obs].map(semTags).filter(Boolean).join(" — "));
       });
-      if (f.posologia) l.push("Posologia: " + f.posologia);
-      if (f.duracao) l.push("Duração: " + f.duracao);
-      if (f.via) l.push("Via: " + f.via);
+      if (f.posologia) l.push("Posologia: " + semTags(f.posologia));
+      if (f.duracao) l.push("Duração: " + semTags(f.duracao));
+      if (f.via) l.push("Via: " + semTags(f.via));
     });
     if (o.interacoes) { l.push(""); l.push("Cautelas: " + o.interacoes); }
     return l.join("\n");
@@ -238,6 +247,35 @@
     $(".bc-grid").classList.add("has-selection");
     el.scrollTop = 0;
     render();
+  }
+
+  var HINT_FORMULAS = "“# Título” abre uma fórmula; “- Ativo | dose | obs” para cada " +
+    "componente; Posologia:/Duração:/Via: nas linhas próprias. Selecione um trecho para " +
+    "deixar em <b>negrito</b>, sublinhado ou colorido.";
+
+  /* Campo de fórmulas com barra de formatação; sem o editor carregado,
+     volta a ser o textarea de sempre. */
+  function campoFormulas(o) {
+    if (!window.EditorFormulas) {
+      return '<div class="bc-sec"><div class="bc-sec__t">Formulações <span class="or-hint">' +
+        esc(HINT_FORMULAS.replace(/<\/?b>/g, "")) + '</span></div>' +
+        '<textarea name="formulas" rows="12">' + esc(formulasToTexto(o.formulas)) + "</textarea></div>";
+    }
+    return '<div class="bc-sec"><div class="bc-sec__t">Formulações</div>' +
+      window.EditorFormulas.campo({
+        id: "bc-formulas", rotulo: "Formulações", altura: 260, hint: HINT_FORMULAS,
+        valorHTML: window.EditorFormulas.paraEditor(o.formulas),
+        placeholder: "# Fitoterápico · - Passiflora | 200-400 mg/dia · Posologia: 1x à noite"
+      }) + "</div>";
+  }
+
+  /* Único caminho para abrir o formulário de edição: a barra de formatação
+     precisa ser fiada TODA vez que o form é pintado, e havia dois lugares
+     que pintavam (editar e criar nova) — só um fiava. */
+  function abrirEdicao(o) {
+    if (!o) return;
+    $("#bc-detail").innerHTML = formEdicao(o);
+    if (window.EditorFormulas) window.EditorFormulas.wire($("#bc-detail"));
   }
 
   function formEdicao(o) {
@@ -268,8 +306,7 @@
         campoNome +
         selCat +
         campo("Indicação", "indicacao", o.indicacao, 2) +
-        campo("Formulações", "formulas", formulasToTexto(o.formulas), 12,
-          "“# Título” abre uma fórmula; “- Ativo | dose | obs” para cada componente; Posologia:/Duração:/Via: nas linhas próprias.") +
+        campoFormulas(o) +
         campo("Observações", "observacoes", o.observacoes, 2) +
         campo("Interações e cautelas", "interacoes", o.interacoes, 3) +
         campo("Quando encaminhar", "quando_encaminhar", o.quando_encaminhar, 2) +
@@ -289,7 +326,11 @@
     var fd = new FormData(ev.target);
     var patch = {
       indicacao: (fd.get("indicacao") || "").trim() || null,
-      formulas: textoToFormulas(fd.get("formulas") || ""),
+      formulas: (function () {
+        var area = ev.target.querySelector(".ef__area");
+        return area && window.EditorFormulas ? window.EditorFormulas.ler(area)
+                                             : textoToFormulas(fd.get("formulas") || "");
+      })(),
       observacoes: (fd.get("observacoes") || "").trim() || null,
       interacoes: (fd.get("interacoes") || "").trim() || null,
       quando_encaminhar: (fd.get("quando_encaminhar") || "").trim() || null,
@@ -341,7 +382,7 @@
     if (ins.error) { alert("Não consegui criar: " + ins.error.message); return; }
     await carregar();
     abrirDetalhe(ins.data.id);
-    $("#bc-detail").innerHTML = formEdicao(todos.find(function (x) { return x.id === ins.data.id; }));
+    abrirEdicao(todos.find(function (x) { return x.id === ins.data.id; }));
   }
 
   async function copiar(o) {
@@ -371,7 +412,7 @@
     }
     if (ev.target.closest("#bc-editar")) {
       var o = todos.find(function (x) { return x.id === selecionado; });
-      if (o) $("#bc-detail").innerHTML = formEdicao(o);
+      abrirEdicao(o);
       return;
     }
     if (ev.target.closest("#bc-cancelar")) { abrirDetalhe(selecionado); return; }

@@ -1,0 +1,62 @@
+/* ============================================================
+   EDITOR DE FÓRMULAS — barra de formatação + área editável.
+   Usado na prescrição do paciente e no banco de formulações.
+   ============================================================ */
+.ef { display: flex; flex-direction: column; gap: 0; }
+
+.ef__barra {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  padding: 6px 8px;
+  background: var(--cinza-claro);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input) var(--radius-input) 0 0;
+  border-bottom: none;
+}
+.ef__b {
+  min-width: 30px; height: 30px; padding: 0 8px;
+  border: 1px solid transparent; border-radius: var(--radius-sm);
+  background: transparent; color: var(--texto); cursor: pointer;
+  font-family: var(--font-ui); font-size: var(--fs-sm); line-height: 1;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.ef__b:hover { background: var(--branco); border-color: var(--cinza-borda); }
+.ef__b.is-on { background: var(--vinho); border-color: var(--vinho); color: var(--branco); }
+.ef__b--n { font-weight: 900; }
+.ef__b--i { font-style: italic; font-family: Georgia, serif; }
+.ef__b--u { text-decoration: underline; }
+.ef__b--limpar { font-size: var(--fs-caption); font-weight: 700; color: var(--texto-sutil); }
+
+.ef__sep { width: 1px; height: 20px; background: var(--cinza-borda); margin: 0 4px; }
+
+.ef__cor {
+  width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+  background: var(--c); border: 2px solid var(--branco);
+  box-shadow: 0 0 0 1px var(--cinza-borda);
+  transition: transform .12s;
+}
+.ef__cor:hover { transform: scale(1.15); }
+
+.ef__area {
+  border: 1px solid var(--cinza-borda);
+  border-radius: 0 0 var(--radius-input) var(--radius-input);
+  background: var(--branco); color: var(--texto);
+  padding: var(--sp-3);
+  font-family: var(--font-ui); font-size: var(--fs-sm); line-height: 1.7;
+  /* Peso/estilo explícitos: o campo fica dentro de um <label>, que é
+     semibold. Herdando isso, o execCommand("bold") entendia que a seleção
+     JÁ estava em negrito e emitia font-weight:normal em vez de <b>. */
+  font-weight: 400; font-style: normal; text-decoration: none;
+  overflow-y: auto; max-height: 46vh;
+  white-space: pre-wrap; word-break: break-word;
+}
+.ef__area:focus { outline: none; border-color: var(--vinho); box-shadow: var(--ring-foco); }
+.ef__area:empty::before {
+  content: attr(data-ph); color: var(--texto-sutil); pointer-events: none;
+}
+.ef__hint { margin: var(--sp-2) 0 0; font-size: var(--fs-caption); color: var(--texto-sutil); line-height: 1.5; }
+
+@media (max-width: 560px) {
+  .ef__barra { gap: 3px; padding: 5px 6px; }
+  .ef__cor { width: 20px; height: 20px; }
+  .ef__b--limpar { padding: 0 6px; }
+}

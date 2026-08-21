@@ -189,6 +189,12 @@
 .op-card__t { font-weight: 700; color: var(--cinza-escuro, #2b2229); }
 .op-card__meta { font-size: 12px; color: var(--texto-sutil, #8a7a80); margin-top: 2px; }
 .op-card__acts { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; flex-shrink: 0; }
+/* No celular os 4 botoes da prescricao (Pausar/Editar/PDF/Excluir) nao
+   cabem lado a lado: flex-shrink:0 os empurrava para fora da tela. */
+@media (max-width: 620px) {
+  .op-card__head { flex-direction: column; }
+  .op-card__acts { flex-shrink: 1; justify-content: flex-start; width: 100%; }
+}
 /* Prescrição pausada: continua no prontuário e no PDF, só não conta como em uso. */
 .op-card--off { background: var(--cinza-fundo, #faf7f8); border-style: dashed; }
 .op-card--off .op-card__t, .op-card--off .op-bloco__t { color: var(--texto-sutil, #8a7a80); }
@@ -228,6 +234,10 @@
 .op-form { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
 .op-form label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600; color: var(--cinza-escuro, #2b2229); }
 .op-form input, .op-form textarea { font: inherit; font-weight: 400; padding: 9px 11px; border: 1px solid var(--cinza-borda, #e6dade); border-radius: 9px; }
+/* Campo que NAO pode virar <label>: o editor de formulas e contenteditable
+   e herdaria o peso semibold do label como estilo de digitacao. */
+.op-campo { display: flex; flex-direction: column; gap: 4px; }
+.op-campo__lbl { font-size: 13px; font-weight: 600; color: var(--cinza-escuro, #2b2229); }
 .op-form__acts { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
 
 /* ---------- Prescrições do paciente (componentes da fórmula) ---------- */

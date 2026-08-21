@@ -21,6 +21,14 @@
   function uid() { return "rx" + Date.now() + Math.floor(Math.random() * 1000); }
   function secWrap(t, inner) { return '<section class="fsec"><h2 class="fsec__title">' + esc(t) + "</h2>" + inner + "</section>"; }
 
+  /* O texto da fórmula pode trazer a formatação que a nutri aplicou
+     (negrito, cor, sublinhado). Passa pelo sanitizador do EditorFormulas
+     em vez de esc(): o que sai daqui vai para o card, para o PDF e, mais
+     tarde, para a tela do paciente. Sem o editor carregado, escapa tudo. */
+  function fmt(v) {
+    return window.EditorFormulas ? window.EditorFormulas.sanitizar(v) : esc(v);
+  }
+
   var CAT_LABEL = { fitoterapia: "Fitoterapia", suplementacao: "Suplementação", magistral: "Magistral", ortomolecular: "Ortomolecular", custom: "Minha" };
 
   // "# Título" abre uma fórmula; "- Ativo | dose | obs" para componentes;
@@ -63,15 +71,15 @@
   function formulasHTML(o) {
     return (o.formulas || []).map(function (f) {
       var comp = (f.componentes || []).map(function (c) {
-        return '<div class="rx-comp"><span class="rx-comp__a">' + esc(c.ativo) + "</span>" +
-          (c.dose ? '<span class="rx-comp__d">' + esc(c.dose) + "</span>" : "") +
-          (c.obs ? '<span class="rx-comp__o">' + esc(c.obs) + "</span>" : "") + "</div>";
+        return '<div class="rx-comp"><span class="rx-comp__a">' + fmt(c.ativo) + "</span>" +
+          (c.dose ? '<span class="rx-comp__d">' + fmt(c.dose) + "</span>" : "") +
+          (c.obs ? '<span class="rx-comp__o">' + fmt(c.obs) + "</span>" : "") + "</div>";
       }).join("");
       var rod = [];
-      if (f.posologia) rod.push("<b>Posologia:</b> " + esc(f.posologia));
-      if (f.duracao) rod.push("<b>Duração:</b> " + esc(f.duracao));
-      if (f.via) rod.push("<b>Via:</b> " + esc(f.via));
-      return '<div class="op-bloco">' + (f.titulo ? '<div class="op-bloco__t">' + esc(f.titulo) + "</div>" : "") +
+      if (f.posologia) rod.push("<b>Posologia:</b> " + fmt(f.posologia));
+      if (f.duracao) rod.push("<b>Duração:</b> " + fmt(f.duracao));
+      if (f.via) rod.push("<b>Via:</b> " + fmt(f.via));
+      return '<div class="op-bloco">' + (f.titulo ? '<div class="op-bloco__t">' + fmt(f.titulo) + "</div>" : "") +
         comp + (rod.length ? '<div class="rx-pos">' + rod.join(" · ") + "</div>" : "") + "</div>";
     }).join("");
   }
@@ -167,13 +175,13 @@
     var body = (o.indicacao ? "<p><b>Indicação:</b> " + esc(o.indicacao) + "</p>" : "") +
       (o.formulas || []).map(function (f) {
         var comp = (f.componentes || []).map(function (c) {
-          return "<li>" + esc([c.ativo, c.dose, c.obs].filter(Boolean).join(" — ")) + "</li>";
+          return "<li>" + [c.ativo, c.dose, c.obs].filter(Boolean).map(fmt).join(" — ") + "</li>";
         }).join("");
         var rod = [];
-        if (f.posologia) rod.push("Posologia: " + esc(f.posologia));
-        if (f.duracao) rod.push("Duração: " + esc(f.duracao));
-        if (f.via) rod.push("Via: " + esc(f.via));
-        return (f.titulo ? "<h2>" + esc(f.titulo) + "</h2>" : "") + "<ul>" + comp + "</ul>" +
+        if (f.posologia) rod.push("Posologia: " + fmt(f.posologia));
+        if (f.duracao) rod.push("Duração: " + fmt(f.duracao));
+        if (f.via) rod.push("Via: " + fmt(f.via));
+        return (f.titulo ? "<h2>" + fmt(f.titulo) + "</h2>" : "") + "<ul>" + comp + "</ul>" +
           (rod.length ? "<p>" + rod.join(" · ") + "</p>" : "");
       }).join("") +
       (o.interacoes ? '<div class="doc-note">⚠️ ' + esc(o.interacoes) + "</div>" : "");
@@ -234,6 +242,27 @@
      O mesmo formulário serve para criar e para corrigir: sem ele, errar a dose
      obrigava a excluir e escrever tudo de novo. Vindo do banco de formulações,
      editar aqui muda só a cópia do paciente — o banco fica intacto. */
+  var HINT_FORMULAS = "“# Título” abre uma fórmula; “- Ativo | dose | obs”; " +
+    "Posologia:/Duração:/Via: nas linhas próprias. Selecione um trecho para " +
+    "deixar em <b>negrito</b>, sublinhado ou colorido.";
+
+  /* Campo de fórmulas com a barra de formatação. Se o editor não tiver
+     carregado, cai no textarea de sempre — a prescrição não pode ficar
+     impossível de escrever por causa de um script que faltou. */
+  function campoFormulas(edit) {
+    var formulas = (edit && edit.formulas) || [];
+    if (!window.EditorFormulas) {
+      return '<span class="op-hint">' + HINT_FORMULAS.replace(/<\/?b>/g, "") + "</span>" +
+        '<textarea name="formulas" rows="9" placeholder="# Fitoterápico&#10;- Passiflora | 200-400 mg/dia&#10;Posologia: 1x à noite">' +
+        esc(edit ? formulasToTexto(formulas) : "") + "</textarea>";
+    }
+    return window.EditorFormulas.campo({
+      id: "rx-formulas", rotulo: "Fórmulas", altura: 190, hint: HINT_FORMULAS,
+      valorHTML: edit ? window.EditorFormulas.paraEditor(formulas) : "",
+      placeholder: "# Fitoterápico · - Passiflora | 200-400 mg/dia · Posologia: 1x à noite"
+    });
+  }
+
   function abrirCustom(edit) {
     var host = document.getElementById("ficha-main"); if (!host) return;
     var ov = document.createElement("div"); ov.className = "op-modal"; ov.id = "rx-modal";
@@ -243,14 +272,18 @@
       '<form id="rx-form" class="op-form">' +
         '<label>Título<input name="titulo" required placeholder="Ex.: Suporte para ansiedade" value="' + esc(edit && edit.titulo || "") + '" /></label>' +
         '<label>Indicação (opcional)<input name="indicacao" placeholder="Para quê" value="' + esc(edit && edit.indicacao || "") + '" /></label>' +
-        '<label>Fórmulas <span class="op-hint">“# Título” abre uma fórmula; “- Ativo | dose | obs”; Posologia:/Duração:/Via:.</span>' +
-          '<textarea name="formulas" rows="9" placeholder="# Fitoterápico&#10;- Passiflora | 200-400 mg/dia&#10;Posologia: 1x à noite">' +
-          esc(edit ? formulasToTexto(edit.formulas) : "") + "</textarea></label>" +
+        /* Fora do <label> de propósito: o label do formulário é semibold e o
+           Chrome herdava esse peso como estilo de digitação — tudo o que a
+           nutri escrevia já nascia dentro de <b>, e o botão de negrito
+           desligava em vez de ligar. */
+        '<div class="op-campo"><span class="op-campo__lbl">Fórmulas</span>' +
+          campoFormulas(edit) + "</div>" +
         '<label>Interações / cautelas (opcional)<input name="interacoes" placeholder="Ex.: potencializa sedativos" value="' + esc(edit && edit.interacoes || "") + '" /></label>' +
         '<div class="op-form__acts"><button class="btn btn--primary" type="submit">' + (edit ? "Salvar alterações" : "Registrar") + "</button>" +
           '<button class="btn btn--ghost" type="button" id="rx-modal-x2">Cancelar</button></div>' +
       "</form></div>";
     host.appendChild(ov);
+    if (window.EditorFormulas) window.EditorFormulas.wire(ov);
     var nome = ov.querySelector('[name="titulo"]'); if (nome) nome.focus();
 
     ov.addEventListener("click", function (e) {
@@ -260,9 +293,13 @@
       e.preventDefault();
       var fd = new FormData(e.target);
       var titulo = (fd.get("titulo") || "").trim(); if (!titulo) return;
+      var area = ov.querySelector(".ef__area");
+      var formulas = area && window.EditorFormulas
+        ? window.EditorFormulas.ler(area)
+        : textoToFormulas(fd.get("formulas") || "");
       var dados = {
         titulo: titulo,
-        indicacao: (fd.get("indicacao") || "").trim(), formulas: textoToFormulas(fd.get("formulas") || ""),
+        indicacao: (fd.get("indicacao") || "").trim(), formulas: formulas,
         interacoes: (fd.get("interacoes") || "").trim() || null
       };
       if (edit) atualizar(edit.id, dados, "Prescrição atualizada");
