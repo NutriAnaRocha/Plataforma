@@ -488,6 +488,7 @@
         '<p class="antro-obs" id="raiox-obs"></p>' +
       '</section>';
 
+    var hist = secHistorico();
     var fotos = secFotos(p);
 
     var result =
@@ -498,12 +499,20 @@
           resCard("Massa gorda", "res-mg") + resCard("Massa magra", "res-mm") +
         '</div>' +
         '<p class="antro-obs" id="res-obs"></p>' +
-        '<div class="cfg-actions" style="justify-content:flex-end;margin-top:var(--sp-4)">' +
+        '<div class="antro-salvar">' +
+          '<label class="antro-field"><span class="antro-field__lbl">Data da avaliação</span>' +
+            '<span class="antro-field__wrap"><input type="date" id="antro-data" ' +
+              'value="' + hojeISO() + '" max="' + hojeISO() + '" /></span></label>' +
+          '<label class="antro-field antro-salvar__obs"><span class="antro-field__lbl">Observação <small>(opcional)</small></span>' +
+            '<span class="antro-field__wrap"><input type="text" id="antro-obs-av" maxlength="180" ' +
+              'placeholder="ex.: retorno de 30 dias" /></span></label>' +
           '<button class="btn btn--primary" type="button" id="antro-salvar">Salvar avaliação</button>' +
         '</div>' +
+        '<p class="antro-obs">Cada avaliação salva vira um ponto na <strong>evolução</strong>. ' +
+          'Salvar de novo na mesma data corrige aquela avaliação em vez de duplicar.</p>' +
       '</section>';
 
-    return '<div class="antro" id="antro-root">' + topo + circ + dobras + bio + raiox + fotos + result + '</div>';
+    return '<div class="antro" id="antro-root">' + topo + circ + dobras + bio + raiox + hist + fotos + result + '</div>';
   }
   function resCard(lbl, id) {
     return '<div class="fmetric"><div class="fmetric__lbl">' + lbl + '</div>' +
@@ -543,7 +552,9 @@
     var fotos = ((p.antropometria || {}).fotos || []).slice().sort(function (a, b) {
       return String(b.dataISO || "").localeCompare(String(a.dataISO || ""));
     });
-    var hoje = new Date().toISOString().slice(0, 10);
+    // Data LOCAL: toISOString() e UTC, e depois das 21h no Brasil a foto
+    // nascia datada de amanha.
+    var hoje = hojeISO();
     var galeria = fotos.length
       ? '<div class="evo-grid" id="evo-grid">' + fotos.map(function (f) { return fotoCard(f); }).join("") + '</div>'
       : '<div class="evo-empty" id="evo-grid"><span class="evo-empty__ico">📸</span>' +
@@ -755,6 +766,167 @@
   }
 
   /* ---------- Fiação ---------- */
+  /* ============================================================
+     HISTÓRICO DE AVALIAÇÕES — a série no tempo.
+     A ficha guarda a avaliação CORRENTE em pacientes.antropometria
+     (é dela que o plano alimentar e os cálculos leem); a série inteira
+     mora em paciente_avaliacoes (migração 0076), via NutriAvaliacoes.
+     Aqui é só a leitura: gráfico de UMA métrica por vez + tabela com a
+     variação de uma avaliação para a outra.
+     ============================================================ */
+  var METRICAS = [
+    { key: "peso",       lbl: "Peso",        un: " kg", dec: 1 },
+    { key: "imc",        lbl: "IMC",         un: "",    dec: 1 },
+    { key: "gorduraPct", lbl: "% Gordura",   un: "%",   dec: 1 },
+    { key: "massaMagra", lbl: "Massa magra", un: " kg", dec: 1 },
+    { key: "cintura",    lbl: "Cintura",     un: " cm", dec: 1 },
+    { key: "quadril",    lbl: "Quadril",     un: " cm", dec: 1 }
+  ];
+
+  function hojeISO() {
+    var d = new Date(), z = function (n) { return (n < 10 ? "0" : "") + n; };
+    return d.getFullYear() + "-" + z(d.getMonth() + 1) + "-" + z(d.getDate());
+  }
+  function fmtDataBR(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    return m ? m[3] + "/" + m[2] + "/" + m[1] : "—";
+  }
+  function fmtDataCurta(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    return m ? m[3] + "/" + m[2] : "";
+  }
+  function fmtNum(v, dec) {
+    return v == null ? "—" : Number(v).toFixed(dec == null ? 1 : dec).replace(".", ",");
+  }
+  /* Variação entre duas avaliações. Sem cor de "bom/ruim": se perder peso
+     é ganho ou é perda depende do caso clínico — quem julga é a nutri. */
+  function fmtDelta(v, dec, un) {
+    if (v == null) return '<span class="antro-hist__delta">—</span>';
+    var zero = Math.abs(v) < 0.05;
+    var cls = zero ? "is-flat" : v > 0 ? "is-up" : "is-down";
+    var ico = zero ? "=" : v > 0 ? "▲" : "▼";
+    return '<span class="antro-hist__delta ' + cls + '">' + ico + " " +
+      fmtNum(Math.abs(v), dec) + (un || "") + '</span>';
+  }
+
+  /* Gráfico de linha de uma métrica. pts = [{ data, v }] em ordem
+     cronológica; o eixo Y ganha 15% de folga para a linha não encostar
+     na borda quando a variação é pequena (o caso comum: 2 kg em 3 meses). */
+  function evoChart(pts, m) {
+    var W = 640, H = 210, padL = 46, padR = 16, padT = 16, padB = 30;
+    var vals = pts.map(function (x) { return x.v; });
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    var span = (hi - lo) || Math.max(Math.abs(hi) * 0.08, 1);
+    lo -= span * 0.15; hi += span * 0.15; span = hi - lo;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    function X(i) { return pts.length === 1 ? padL + iw / 2 : padL + iw * i / (pts.length - 1); }
+    function Y(v) { return padT + ih * (1 - (v - lo) / span); }
+
+    var linha = pts.map(function (x, i) { return (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(x.v).toFixed(1); }).join(" ");
+    var area = "M" + X(0).toFixed(1) + " " + (padT + ih).toFixed(1) + " " +
+      pts.map(function (x, i) { return "L" + X(i).toFixed(1) + " " + Y(x.v).toFixed(1); }).join(" ") +
+      " L" + X(pts.length - 1).toFixed(1) + " " + (padT + ih).toFixed(1) + " Z";
+    var grade = [0, 0.5, 1].map(function (t) {
+      var v = lo + span * t, yy = Y(v);
+      return '<line class="evoc__grid" x1="' + padL + '" y1="' + yy.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + yy.toFixed(1) + '"/>' +
+        '<text class="evoc__ylbl" x="' + (padL - 8) + '" y="' + (yy + 3.5).toFixed(1) + '" text-anchor="end">' + fmtNum(v, m.dec) + '</text>';
+    }).join("");
+    // No máx. ~6 rótulos de data, sempre com o primeiro e o último.
+    var passo = Math.max(1, Math.ceil(pts.length / 6));
+    var xlbl = pts.map(function (x, i) {
+      if (i !== 0 && i !== pts.length - 1 && i % passo !== 0) return "";
+      return '<text class="evoc__xlbl" x="' + X(i).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmtDataCurta(x.data) + '</text>';
+    }).join("");
+    var dots = pts.map(function (x, i) {
+      return '<g class="evoc__pt' + (i === pts.length - 1 ? " is-last" : "") + '">' +
+        '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(x.v).toFixed(1) + '" r="' + (i === pts.length - 1 ? 5 : 3.5) + '"/>' +
+        '<title>' + fmtDataBR(x.data) + ": " + fmtNum(x.v, m.dec) + m.un + '</title></g>';
+    }).join("");
+
+    return '<div class="evoc"><svg viewBox="0 0 ' + W + " " + H + '" role="img" ' +
+        'aria-label="Evolução de ' + esc(m.lbl) + '">' + grade +
+      '<path class="evoc__area" d="' + area + '"/><path class="evoc__line" d="' + linha + '"/>' +
+      dots + xlbl + '</svg></div>';
+  }
+
+  function secHistorico() {
+    return '<section class="fsec antro-hist"><h2 class="fsec__title">Evolução das avaliações ' +
+        '<small class="antro-un-hint">cada avaliação salva vira um ponto</small></h2>' +
+      '<div id="antro-hist-body"><p class="antro-obs">Carregando…</p></div>' +
+    '</section>';
+  }
+
+  /* Corpo do histórico: seletor de métrica + gráfico + tabela.
+     `serie` vem em ordem cronológica (mais antiga primeiro). */
+  function histHTML(serie, metricaKey) {
+    if (!serie.length) {
+      return '<div class="evo-empty"><span class="evo-empty__ico">📈</span>' +
+        '<p>Nenhuma avaliação salva ainda. Preencha as medidas e clique em ' +
+        '<strong>Salvar avaliação</strong> — a partir da segunda, o gráfico mostra a evolução.</p></div>';
+    }
+    var disp = METRICAS.filter(function (m) {
+      return serie.some(function (a) { return a[m.key] != null; });
+    });
+    if (!disp.length) disp = [METRICAS[0]];
+    var m = disp.filter(function (x) { return x.key === metricaKey; })[0] || disp[0];
+
+    var chips = disp.map(function (x) {
+      return '<button type="button" class="antro-hist__chip' + (x.key === m.key ? " is-on" : "") +
+        '" data-hist-metrica="' + x.key + '">' + esc(x.lbl) + '</button>';
+    }).join("");
+
+    var pts = serie.filter(function (a) { return a[m.key] != null; })
+                   .map(function (a) { return { data: a.data, v: a[m.key] }; });
+    var grafico, resumo = "";
+    if (pts.length >= 2) {
+      grafico = evoChart(pts, m);
+      var dTot = +(pts[pts.length - 1].v - pts[0].v).toFixed(2);
+      resumo = '<p class="antro-hist__resumo">De ' + fmtDataBR(pts[0].data) + ' a ' + fmtDataBR(pts[pts.length - 1].data) +
+        ': <strong>' + fmtNum(pts[0].v, m.dec) + m.un + '</strong> → <strong>' + fmtNum(pts[pts.length - 1].v, m.dec) + m.un + '</strong> ' +
+        fmtDelta(dTot, m.dec, m.un) + '</p>';
+    } else {
+      grafico = '<p class="antro-obs">Só há uma avaliação com <strong>' + esc(m.lbl.toLowerCase()) +
+        '</strong>. O gráfico aparece a partir da segunda.</p>';
+    }
+
+    /* %G medido por dobras e %G estimado por circunferência não são a mesma
+       medida: a diferença entre eles pode passar de 5 pontos. Se a série
+       mistura os dois, a variação do gráfico pode ser só troca de método. */
+    if (m.key === "gorduraPct" && pts.length >= 2) {
+      var origens = {};
+      serie.forEach(function (a) { if (a.gorduraPct != null && a.gorduraOrigem) origens[a.gorduraOrigem] = 1; });
+      if (origens.dobras && origens.estimativa) {
+        resumo += '<p class="antro-hist__aviso">⚠️ Esta série mistura <strong>% de gordura por dobras</strong> ' +
+          'com a <strong>estimativa por circunferência</strong> (Raio X). São métodos diferentes — ' +
+          'parte da variação pode ser só a troca de método, não do corpo.</p>';
+      }
+    }
+
+    var desc = serie.slice().reverse();   // a tabela lê de cima (mais recente) para baixo
+    var linhas = desc.map(function (a, i) {
+      var ant = desc[i + 1];              // a avaliação cronologicamente anterior
+      var dPeso = (ant && a.peso != null && ant.peso != null) ? +(a.peso - ant.peso).toFixed(2) : null;
+      return '<tr>' +
+        '<td data-l="Data"><strong>' + fmtDataBR(a.data) + '</strong>' +
+          (a.observacao ? '<span class="antro-hist__obs">' + esc(a.observacao) + '</span>' : '') + '</td>' +
+        '<td data-l="Peso">' + (a.peso == null ? "—" : fmtNum(a.peso) + " kg") + '</td>' +
+        '<td data-l="Variação">' + fmtDelta(dPeso, 1, " kg") + '</td>' +
+        '<td data-l="IMC">' + fmtNum(a.imc) + '</td>' +
+        '<td data-l="% Gordura">' + (a.gorduraPct == null ? "—" : fmtNum(a.gorduraPct) + "%") + '</td>' +
+        '<td data-l="Cintura">' + (a.cintura == null ? "—" : fmtNum(a.cintura) + " cm") + '</td>' +
+        '<td class="antro-hist__acoes">' +
+          '<button type="button" class="btn btn--outline btn--sm" data-hist-ver="' + esc(a.id) + '">Abrir</button>' +
+          '<button type="button" class="antro-hist__del" data-hist-del="' + esc(a.id) + '" ' +
+            'title="Excluir esta avaliação" aria-label="Excluir a avaliação de ' + fmtDataBR(a.data) + '">✕</button>' +
+        '</td></tr>';
+    }).join("");
+
+    return '<div class="antro-hist__chips">' + chips + '</div>' + grafico + resumo +
+      '<div class="antro-hist__tw"><table class="antro-hist__tbl"><thead><tr>' +
+        '<th>Data</th><th>Peso</th><th>Variação</th><th>IMC</th><th>% Gordura</th><th>Cintura</th><th></th>' +
+      '</tr></thead><tbody>' + linhas + '</tbody></table></div>';
+  }
+
   function wire(p, opts) {
     opts = opts || {};
     var root = document.getElementById("antro-root");
@@ -895,7 +1067,7 @@
           id: fotoId,
           path: null,
           tipo: (root.querySelector("#evo-tipo") || {}).value || "frente",
-          dataISO: (dataInp && dataInp.value) || new Date().toISOString().slice(0, 10),
+          dataISO: (dataInp && dataInp.value) || hojeISO(),
           peso: pesoInp && pesoInp.value !== "" ? num(pesoInp.value) : null,
           obs: ((root.querySelector("#evo-obs") || {}).value || "").trim() || null
         };
@@ -960,17 +1132,116 @@
       if (alt) { alt.value = (est / 100).toFixed(2); recalc(); }
     });
 
+    /* ----- Histórico de avaliações ----- */
+    var serie = [];              // ordem cronológica (mais antiga primeiro)
+    var metricaHist = "peso";
+    var histBody = root.querySelector("#antro-hist-body");
+
+    function pintarHist() {
+      if (histBody) histBody.innerHTML = histHTML(serie, metricaHist);
+    }
+    function carregarHist() {
+      if (!histBody) return Promise.resolve();
+      if (!window.NutriAvaliacoes) { histBody.innerHTML = histHTML([], metricaHist); return Promise.resolve(); }
+      return window.NutriAvaliacoes.list(p.id).then(function (lista) {
+        serie = lista; pintarHist();
+      }).catch(function (e) {
+        histBody.innerHTML = '<p class="antro-obs">Não foi possível carregar o histórico. ' +
+          esc(e && e.message ? e.message : "") + '</p>';
+      });
+    }
+    carregarHist();
+
+    /* Preenche o formulário com uma avaliação antiga — para conferir ou
+       corrigir. Não grava nada: só salvando é que a correção vai ao banco. */
+    function aplicarSnapshot(a) {
+      a = a || {};
+      var c = a.circunferencias || {}, d = a.dobras || {}, b = a.bio || {};
+      root.querySelectorAll("[data-antro]").forEach(function (inp) {
+        var k = inp.getAttribute("data-antro"), v;
+        if (k.indexOf("circ:") === 0) v = c[k.slice(5)];
+        else if (k.indexOf("dobra:") === 0) v = d[k.slice(6)];
+        else if (k.indexOf("bio:") === 0) v = b[k.slice(4)];
+        else if (k === "sexo") v = a.sexo;
+        else if (k === "peso") v = a.peso;
+        else if (k === "altura") v = a.altura;
+        else if (k === "altura_joelho") v = a.alturaJoelho;
+        inp.value = (v == null ? "" : v);
+      });
+      recalc();
+    }
+
+    root.addEventListener("click", function (e) {
+      var chip = e.target.closest("[data-hist-metrica]");
+      if (chip) { metricaHist = chip.getAttribute("data-hist-metrica"); pintarHist(); return; }
+
+      var abrir = e.target.closest("[data-hist-ver]");
+      if (abrir) {
+        var idA = abrir.getAttribute("data-hist-ver");
+        var av = serie.filter(function (x) { return x.id === idA; })[0];
+        if (!av) return;
+        aplicarSnapshot(av.dados);
+        var inpD = root.querySelector("#antro-data"); if (inpD) inpD.value = av.data;
+        var inpO = root.querySelector("#antro-obs-av"); if (inpO) inpO.value = av.observacao || "";
+        var topo = root.querySelector(".antro-basic");
+        if (topo && topo.scrollIntoView) topo.scrollIntoView({ behavior: "smooth", block: "start" });
+        opts.toast && opts.toast("Medidas de " + fmtDataBR(av.data) + " no formulário. Salvar nesta data corrige essa avaliação.");
+        return;
+      }
+
+      var del = e.target.closest("[data-hist-del]");
+      if (del) {
+        var idD = del.getAttribute("data-hist-del");
+        var alvo = serie.filter(function (x) { return x.id === idD; })[0];
+        if (!alvo) return;
+        if (!window.confirm("Excluir a avaliação de " + fmtDataBR(alvo.data) + "? A linha do tempo perde este ponto.")) return;
+        del.disabled = true;
+        window.NutriAvaliacoes.remove(idD).then(function () {
+          opts.toast && opts.toast("Avaliação excluída");
+          return carregarHist();
+        }).catch(function (err) {
+          del.disabled = false;
+          opts.toast && opts.toast("Não foi possível excluir. " + (err && err.message ? err.message : ""), true);
+        });
+        return;
+      }
+    });
+
     var salvar = root.querySelector("#antro-salvar");
     if (salvar) salvar.addEventListener("click", function () {
       if (!window.NutriPacientes) { opts.toast && opts.toast("Banco indisponível.", true); return; }
+      var inpData = root.querySelector("#antro-data");
+      var dataAv = (inpData && inpData.value) || hojeISO();
+      var obsAv = (root.querySelector("#antro-obs-av") || {}).value || "";
+      var b = buildPatch();
+
+      /* Só a avaliação MAIS RECENTE da série vale como a atual da ficha —
+         é dela que o plano alimentar, os cálculos e o Raio X leem. Corrigir
+         uma avaliação antiga atualiza o histórico e não encosta no peso de hoje. */
+      var maisNova = serie.length ? serie[serie.length - 1].data : "";
+      var viraAtual = !maisNova || dataAv >= maisNova;
+
       salvar.disabled = true; salvar.textContent = "Salvando…";
-      var patch = buildPatch().patch;
-      window.NutriPacientes.update(p.id, patch).then(function (saved) {
-        opts.toast && opts.toast("Avaliação salva");
-        opts.onSaved && opts.onSaved(saved);
-      }).catch(function (e) {
+      function fim(msg, erro) {
         salvar.disabled = false; salvar.textContent = "Salvar avaliação";
-        opts.toast && opts.toast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
+        opts.toast && opts.toast(msg, !!erro);
+      }
+      var gravaHist = window.NutriAvaliacoes
+        ? window.NutriAvaliacoes.salvar(p.id, b.patch.antropometria, dataAv, obsAv)
+        : Promise.resolve(null);
+
+      gravaHist.then(function () {
+        if (!viraAtual) return null;
+        return window.NutriPacientes.update(p.id, b.patch).then(function (saved) {
+          opts.onSaved && opts.onSaved(saved);
+          return saved;
+        });
+      }).then(function () {
+        return carregarHist();
+      }).then(function () {
+        fim(viraAtual ? "Avaliação salva" : "Avaliação de " + fmtDataBR(dataAv) + " corrigida no histórico");
+      }).catch(function (e) {
+        fim("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
       });
     });
   }

@@ -296,3 +296,83 @@
   .evo-add__obs { grid-column: 1 / -1; }
   .evo-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ---------- Barra de salvar (data da avaliação + observação) ---------- */
+.antro-salvar {
+  display: grid;
+  grid-template-columns: 190px 1fr auto;
+  gap: var(--sp-3);
+  align-items: end;
+  margin-top: var(--sp-4);
+}
+.antro-salvar .btn { white-space: nowrap; }
+.antro-salvar .antro-field__lbl small { font-weight: 600; color: var(--texto-sutil); }
+
+/* ---------- Evolução das avaliações ---------- */
+.antro-hist__chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.antro-hist__chip {
+  border: 1px solid var(--cinza-borda); background: var(--branco); color: var(--texto);
+  border-radius: var(--radius-chip); padding: 6px 14px; cursor: pointer;
+  font-family: var(--font-ui); font-size: var(--fs-caption); font-weight: 700;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.antro-hist__chip:hover { border-color: var(--vinho); color: var(--vinho); }
+.antro-hist__chip.is-on { background: var(--vinho); border-color: var(--vinho); color: var(--branco); }
+
+.evoc { background: var(--branco); border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); padding: var(--sp-3); }
+.evoc svg { display: block; width: 100%; height: auto; }
+.evoc__grid { stroke: var(--cinza-borda); stroke-width: 1; }
+.evoc__ylbl, .evoc__xlbl { font-family: var(--font-ui); font-size: 11px; font-weight: 600; fill: var(--texto-sutil); }
+.evoc__area { fill: var(--vinho); opacity: .10; }
+.evoc__line { fill: none; stroke: var(--vinho); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.evoc__pt circle { fill: var(--branco); stroke: var(--vinho); stroke-width: 2.2; }
+.evoc__pt.is-last circle { fill: var(--magenta); stroke: var(--magenta); }
+
+.antro-hist__resumo { margin: var(--sp-3) 0 0; font-size: var(--fs-sm); color: var(--texto); }
+.antro-hist__aviso {
+  margin: var(--sp-2) 0 0; font-size: var(--fs-caption); line-height: 1.5;
+  color: var(--texto); background: var(--magenta-suave);
+  border-left: 3px solid var(--magenta); border-radius: var(--radius-sm);
+  padding: var(--sp-2) var(--sp-3);
+}
+.antro-hist__delta { font-weight: 800; font-size: var(--fs-sm); white-space: nowrap; }
+.antro-hist__delta.is-up { color: var(--magenta); }
+.antro-hist__delta.is-down { color: var(--petroleo-claro); }
+.antro-hist__delta.is-flat { color: var(--texto-sutil); }
+
+.antro-hist__tw { margin-top: var(--sp-4); overflow-x: auto; }
+.antro-hist__tbl { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+.antro-hist__tbl th {
+  text-align: left; font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .3px;
+  color: var(--texto-sutil); font-weight: 800; padding: 0 var(--sp-3) var(--sp-2);
+  border-bottom: 1px solid var(--cinza-borda); white-space: nowrap;
+}
+.antro-hist__tbl td { padding: var(--sp-3); border-bottom: 1px solid var(--cinza-borda); vertical-align: middle; }
+.antro-hist__tbl tr:last-child td { border-bottom: none; }
+.antro-hist__obs { display: block; font-size: 11px; color: var(--texto-sutil); font-weight: 600; margin-top: 2px; }
+.antro-hist__acoes { display: flex; gap: var(--sp-2); align-items: center; justify-content: flex-end; }
+.antro-hist__del {
+  border: 1px solid var(--cinza-borda); background: var(--branco); color: var(--texto-sutil);
+  width: 30px; height: 30px; border-radius: var(--radius-sm); cursor: pointer; flex: none;
+  font-size: 13px; line-height: 1; transition: background .15s, color .15s, border-color .15s;
+}
+.antro-hist__del:hover { background: var(--magenta); border-color: var(--magenta); color: var(--branco); }
+
+@media (max-width: 720px) {
+  .antro-salvar { grid-template-columns: 1fr; }
+  .antro-salvar .btn { width: 100%; }
+  /* A tabela vira cartão: cada célula com o rótulo na frente (data-l). */
+  .antro-hist__tw { overflow-x: visible; }
+  .antro-hist__tbl thead { display: none; }
+  .antro-hist__tbl, .antro-hist__tbl tbody, .antro-hist__tbl tr, .antro-hist__tbl td { display: block; width: 100%; }
+  .antro-hist__tbl tr {
+    border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+    padding: var(--sp-3); margin-bottom: var(--sp-3);
+  }
+  .antro-hist__tbl td { border: none; padding: 3px 0; display: flex; justify-content: space-between; gap: var(--sp-3); }
+  .antro-hist__tbl td[data-l]::before {
+    content: attr(data-l); font-size: var(--fs-caption); font-weight: 800;
+    color: var(--texto-sutil); text-transform: uppercase; letter-spacing: .3px;
+  }
+  .antro-hist__acoes { justify-content: flex-end; margin-top: var(--sp-2); }
+}
