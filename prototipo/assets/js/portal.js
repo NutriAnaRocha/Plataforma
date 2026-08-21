@@ -127,6 +127,8 @@
     el("pane-evolucao").innerHTML = renderEvolucao(p);
     hidratarFotosPortal(p);
     hidratarFotosRefeicao();
+    el("pane-formulas").innerHTML = window.ClinicoView ? window.ClinicoView.formulasHTML(p) : "";
+    el("pane-exames").innerHTML = window.ClinicoView ? window.ClinicoView.examesHTML(p) : "";
     el("pane-documentos").innerHTML = window.ArquivosView ? window.ArquivosView.portalHTML(ctx.documentos) : "";
     if (window.ArquivosView) window.ArquivosView.wire("pane-documentos");
     el("pane-consultas").innerHTML = renderConsultas(p);
@@ -309,6 +311,10 @@
       // Documentos também não é feature paga: a aba nasce quando existe
       // pelo menos um arquivo liberado para ela.
       else if (id === "documentos") on = !!(ctx.documentos && ctx.documentos.length);
+      /* Fórmulas e Exames também não são feature paga: a aba nasce quando a
+         nutri prescreve ou registra algo — e some se ela ocultar tudo. */
+      else if (id === "formulas") on = !!(window.ClinicoView && window.ClinicoView.temFormulas(p));
+      else if (id === "exames") on = !!(window.ClinicoView && window.ClinicoView.temExames(p));
       else if (id === "metas") on = temMetas;
       else if (id === "anamnese") on = temAnamnese(p);
       else if (id === "reavaliacao") on = temReavaliacao(p);

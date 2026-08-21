@@ -502,11 +502,32 @@
       } else if (x.tipo === "solicitacao") {
         det = '<span class="exhist__meta">' + (x.itens ? x.itens.length : 0) + ' exames</span>';
       }
-      return '<button class="exhist__item" type="button" data-exabrir="' + esc(x.id) + '">' +
-        '<span class="exhist__ico">' + ico + '</span>' +
-        '<span class="exhist__info"><span class="exhist__tit">' + esc(x.titulo || "Exame") + '</span>' +
-        '<span class="exhist__date">' + esc(fmtData(x.data)) + '</span></span>' + det +
-      '</button>';
+      /* Dois controles por linha, porque o paciente vê esta lista no app:
+           • "entregue" tira a solicitação da lista de exames a fazer dele;
+           • o olho esconde o item do app (a leitura da IA nunca aparece lá). */
+      var acoes = "";
+      if (x.tipo === "solicitacao") {
+        acoes += '<button class="exhist__act' + (x.entregue ? " is-on" : "") + '" type="button" ' +
+          'data-exentregue="' + esc(x.id) + '" ' +
+          'title="' + (x.entregue ? "Marcada como entregue — sai da lista de exames a fazer do paciente"
+                                  : "Marcar como entregue: sai da lista de exames a fazer do paciente") + '">' +
+          (x.entregue ? "✅ entregue" : "⏳ a fazer") + '</button>';
+      }
+      if (x.tipo !== "ia") {
+        acoes += '<button class="exhist__act' + (x.ocultoPaciente ? " is-off" : "") + '" type="button" ' +
+          'data-exolho="' + esc(x.id) + '" ' +
+          'title="' + (x.ocultoPaciente ? "Oculto no app do paciente — clique para mostrar"
+                                        : "Visível no app do paciente — clique para ocultar") + '" ' +
+          'aria-label="Visibilidade no app do paciente">' + (x.ocultoPaciente ? "🙈" : "👁️") + '</button>';
+      }
+      return '<div class="exhist__row">' +
+        '<button class="exhist__item" type="button" data-exabrir="' + esc(x.id) + '">' +
+          '<span class="exhist__ico">' + ico + '</span>' +
+          '<span class="exhist__info"><span class="exhist__tit">' + esc(x.titulo || "Exame") + '</span>' +
+          '<span class="exhist__date">' + esc(fmtData(x.data)) + '</span></span>' + det +
+        '</button>' +
+        (acoes ? '<div class="exhist__acts">' + acoes + '</div>' : "") +
+      '</div>';
     }).join("") + '</div>';
   }
 
@@ -748,6 +769,39 @@
         if (x) abrirDetalhe(x, p.sexo);
       });
     });
+    root.querySelectorAll("[data-exentregue]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        alternarItem(p, ctx, b.getAttribute("data-exentregue"), "entregue", b);
+      });
+    });
+    root.querySelectorAll("[data-exolho]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        alternarItem(p, ctx, b.getAttribute("data-exolho"), "ocultoPaciente", b);
+      });
+    });
+  }
+
+  /* Liga/desliga uma marca do item (entregue, ocultoPaciente) e grava. */
+  function alternarItem(p, ctx, id, campo, btn) {
+    if (!window.NutriPacientes) { (ctx.toast || function () {})("Banco indisponível.", true); return; }
+    var novo = null;
+    var lista = (p.exames || []).map(function (x) {
+      if (x.id !== id) return x;
+      novo = Object.assign({}, x); novo[campo] = !x[campo];
+      return novo;
+    });
+    if (!novo) return;
+    if (btn) btn.disabled = true;
+    window.NutriPacientes.update(p.id, Object.assign({}, p, { exames: lista })).then(function (saved) {
+      var msg = campo === "entregue"
+        ? (novo.entregue ? "Marcada como entregue" : "De volta para a lista de exames a fazer")
+        : (novo.ocultoPaciente ? "Oculto no app do paciente" : "Visível no app do paciente");
+      (ctx.toast || function () {})(msg);
+      if (ctx.onSaved) ctx.onSaved(saved);
+    }).catch(function (e) {
+      if (btn) btn.disabled = false;
+      (ctx.toast || function () {})("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
+    });
   }
 
   function abrirDetalhe(x, sexo) {
@@ -793,5 +847,8 @@
     });
   }
 
-  window.Exames = { render: render, wire: wire, MARC: MARC };
+  // refTexto/classificar saem daqui para o portal do paciente reaproveitar a
+  // MESMA régua de referência (portal-clinico.js) — sem segunda cópia.
+  window.Exames = { render: render, wire: wire, MARC: MARC,
+                    refTexto: refTexto, classificar: classificar };
 })();

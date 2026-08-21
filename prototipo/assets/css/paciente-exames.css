@@ -355,3 +355,23 @@
   .exsel-count { margin: 0 0 4px; text-align: center; }
   .extab { flex: 1; text-align: center; padding: 10px 6px; }
 }
+
+/* ---------- Historico: acoes por item (entregue / visivel no app) ---------- */
+.exhist__row { display: flex; align-items: stretch; gap: var(--sp-2); }
+.exhist__row .exhist__item { flex: 1; min-width: 0; }
+.exhist__acts { display: flex; align-items: center; gap: 6px; flex: none; }
+.exhist__act {
+  border: 1px solid var(--cinza-borda); background: var(--branco); color: var(--texto-sutil);
+  border-radius: var(--radius-sm); padding: 6px 10px; cursor: pointer; white-space: nowrap;
+  font-family: var(--font-ui); font-size: var(--fs-caption); font-weight: 700; line-height: 1;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.exhist__act:hover { border-color: var(--vinho); color: var(--vinho); }
+.exhist__act.is-on { background: var(--rosa-suave); border-color: var(--vinho-claro); color: var(--vinho); }
+.exhist__act.is-off { background: var(--cinza-claro); }
+.exhist__act:disabled { opacity: .5; cursor: default; }
+
+@media (max-width: 620px) {
+  .exhist__row { flex-direction: column; }
+  .exhist__acts { justify-content: flex-end; }
+}
