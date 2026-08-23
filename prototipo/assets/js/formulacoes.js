@@ -146,15 +146,24 @@
       return;
     }
 
+    /* A lixeira é irmã do cartão, não filha: <button> dentro de <button> é
+       HTML inválido e o clique não chegaria nela. Só as minhas ganham a
+       lixeira — as padrão do sistema não são da nutri para apagar. */
     $("#bc-list").innerHTML = lista.map(function (o) {
-      return '<button class="bc-item' + (selecionado === o.id ? " is-active" : "") +
+      return '<div class="bc-item-wrap">' +
+        '<button class="bc-item' + (selecionado === o.id ? " is-active" : "") +
         '" data-id="' + o.id + '" type="button">' +
         '<div class="bc-item__nome">' + (CAT_ICO[o.categoria] || "") + " " + esc(o.nome) +
           (o.editavel ? '<span class="bc-selo">minha</span>' : "") +
         "</div>" +
         '<div class="bc-item__meta"><span>' + esc(CAT_LABEL[o.categoria] || o.categoria) + "</span>" +
           '<span>' + (o.formulas || []).length + (o.formulas && o.formulas.length === 1 ? " fórmula" : " fórmulas") + "</span>" +
-        "</div></button>";
+        "</div></button>" +
+        (o.editavel
+          ? '<button class="bc-item__del" data-bc-del="' + o.id + '" type="button" ' +
+            'title="Excluir esta formulação" aria-label="Excluir a formulação ' + esc(semTags(o.nome)) + '">🗑️</button>'
+          : "") +
+        "</div>";
     }).join("");
   }
 
@@ -192,6 +201,10 @@
       '<div class="bc-d__acoes">' +
         '<button class="btn btn--ghost" id="fm-copiar" type="button">📋 Copiar</button>' +
         '<button class="btn btn--ghost" id="bc-editar" type="button">✏️ Editar</button>' +
+        (o.editavel
+          ? '<button class="btn btn--ghost bc-del" data-bc-del="' + o.id + '" type="button" ' +
+            'title="Excluir esta formulação">🗑️ Excluir</button>'
+          : "") +
       "</div></div>" +
 
       (o.indicacao ? '<div class="bc-sec"><div class="bc-sec__t"><span class="ico">🎯</span> Indicação</div><p>' +
@@ -235,6 +248,14 @@
     });
     if (o.interacoes) { l.push(""); l.push("Cautelas: " + o.interacoes); }
     return l.join("\n");
+  }
+
+  function fecharDetalhe() {
+    selecionado = null;
+    var el = $("#bc-detail");
+    if (el) el.classList.remove("is-open");
+    var g = $(".bc-grid");
+    if (g) g.classList.remove("has-selection");
   }
 
   function abrirDetalhe(id) {
@@ -385,6 +406,27 @@
     abrirEdicao(todos.find(function (x) { return x.id === ins.data.id; }));
   }
 
+  /* ---------- Excluir ----------
+     Só as minhas: a RLS (ic_formulacoes_delete_own) já barra o resto, mas
+     conferir aqui evita oferecer um botão que o banco vai recusar. Excluir
+     NÃO mexe nas prescrições já feitas: elas guardam a própria cópia da
+     fórmula na ficha da paciente — apagar do banco não reescreve prontuário. */
+  async function excluir(id) {
+    var o = todos.find(function (x) { return x.id === id; });
+    if (!o || !o.editavel) return;
+    var msg = 'Excluir a formulação "' + semTags(o.nome) + '" do seu banco?\n\n' +
+      "As prescrições já feitas para as pacientes continuam como estão. " +
+      "Esta ação não pode ser desfeita.";
+    if (!window.confirm(msg)) return;
+
+    db = db || (await window.NutriDBReady);
+    var del = await db.from("ic_formulacoes").delete().eq("id", id);
+    if (del.error) { alert("Não consegui excluir: " + del.error.message); return; }
+
+    if (selecionado === id) { selecionado = null; fecharDetalhe(); }
+    await carregar();
+  }
+
   async function copiar(o) {
     try {
       await navigator.clipboard.writeText(textoFormulacao(o));
@@ -417,10 +459,15 @@
     }
     if (ev.target.closest("#bc-cancelar")) { abrirDetalhe(selecionado); return; }
     if (ev.target.closest("#bc-voltar")) {
-      selecionado = null;
-      $("#bc-detail").classList.remove("is-open");
-      $(".bc-grid").classList.remove("has-selection");
+      fecharDetalhe();
       render();
+      return;
+    }
+
+    var del = ev.target.closest("[data-bc-del]");
+    if (del) {
+      ev.stopPropagation();          // não abrir o detalhe da que vai sumir
+      excluir(del.getAttribute("data-bc-del"));
       return;
     }
   });

@@ -6,7 +6,7 @@ window.CONFIG_DATA = {
   perfil: {
     nome: "Ana Luísa Rocha",
     crn: "CRN-3 12345",
-    email: "ana.luisa@anutti.com.br",
+    email: "ana.luisa@anutri.com.br",
     telefone: "(11) 98888-1234",
     cidade: "São Paulo, SP",
     bio: "Nutricionista clínica com foco em saúde da mulher e emagrecimento saudável. Atendimento humanizado, baseado em evidências.",

@@ -279,6 +279,21 @@
         '<div class="op-campo"><span class="op-campo__lbl">Fórmulas</span>' +
           campoFormulas(edit) + "</div>" +
         '<label>Interações / cautelas (opcional)<input name="interacoes" placeholder="Ex.: potencializa sedativos" value="' + esc(edit && edit.interacoes || "") + '" /></label>' +
+        /* Guardar no banco é opção, não efeito colateral: a maioria das
+           prescrições é ajuste para UMA paciente e encheria o banco de lixo.
+           A cópia é independente — mexer no banco depois não altera a
+           prescrição desta paciente, e vice-versa. */
+        '<div class="op-campo rx-banco">' +
+          '<label class="rx-banco__check"><input type="checkbox" name="ao_banco" id="rx-ao-banco" />' +
+            "<span>Salvar também no meu banco de formulações</span></label>" +
+          '<div class="rx-banco__cat" id="rx-banco-cat" hidden>' +
+            '<label>Categoria no banco<select name="banco_categoria">' +
+              '<option value="fitoterapia">🌿 Fitoterapia</option>' +
+              '<option value="suplementacao" selected>💊 Suplementação</option>' +
+              '<option value="magistral">⚗️ Magistral</option>' +
+              '<option value="ortomolecular">🧬 Ortomolecular</option>' +
+            "</select></label></div>" +
+        "</div>" +
         '<div class="op-form__acts"><button class="btn btn--primary" type="submit">' + (edit ? "Salvar alterações" : "Registrar") + "</button>" +
           '<button class="btn btn--ghost" type="button" id="rx-modal-x2">Cancelar</button></div>' +
       "</form></div>";
@@ -289,6 +304,14 @@
     ov.addEventListener("click", function (e) {
       if (e.target === ov || e.target.closest("#rx-modal-x") || e.target.closest("#rx-modal-x2")) ov.remove();
     });
+    // A categoria só interessa depois que ela decide guardar no banco.
+    var chk = ov.querySelector("#rx-ao-banco");
+    if (chk) {
+      chk.addEventListener("change", function () {
+        var cx = ov.querySelector("#rx-banco-cat");
+        if (cx) cx.hidden = !chk.checked;
+      });
+    }
     ov.addEventListener("submit", function (e) {
       e.preventDefault();
       var fd = new FormData(e.target);
@@ -304,7 +327,49 @@
       };
       if (edit) atualizar(edit.id, dados, "Prescrição atualizada");
       else attach(Object.assign({ id: uid(), origem_slug: null, categoria: "custom", data: hojeISO() }, dados));
+      if (fd.get("ao_banco")) salvarNoBanco(dados, fd.get("banco_categoria"));
       ov.remove();
+    });
+  }
+
+  /* ---------- Guardar no banco de formulações ----------
+     Nasce como formulação DA NUTRI (nutricionista_id = ela), igual à que
+     ela criaria em Formulações. O slug leva um carimbo de tempo porque é
+     único no banco inteiro e duas pacientes podem gerar o mesmo nome. */
+  function slugificar(s) {
+    return String(s || "formulacao")
+      .normalize("NFD").replace(/[̀-ͯ]/g, "")   // tira acento
+      .toLowerCase().replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "").slice(0, 40) || "formulacao";
+  }
+
+  function salvarNoBanco(dados, categoria) {
+    var CATS = { fitoterapia: 1, suplementacao: 1, magistral: 1, ortomolecular: 1 };
+    var cat = CATS[categoria] ? categoria : "suplementacao";
+    var nome = window.EditorFormulas ? window.EditorFormulas.texto(dados.titulo) : dados.titulo;
+
+    if (_ctx.toast) _ctx.toast("Guardando no seu banco…");
+    return window.NutriDBReady.then(function (db) {
+      return db.auth.getUser().then(function (sess) {
+        var uidNutri = sess && sess.data && sess.data.user && sess.data.user.id;
+        if (!uidNutri) throw new Error("Sessão expirada.");
+        return db.from("ic_formulacoes").insert({
+          nutricionista_id: uidNutri,
+          nome: nome,
+          slug: "minha-" + slugificar(nome) + "-" + Date.now().toString(36),
+          categoria: cat,
+          indicacao: dados.indicacao || "",
+          formulas: dados.formulas || [],
+          interacoes: dados.interacoes || null
+        });
+      });
+    }).then(function (r) {
+      if (r && r.error) throw r.error;
+      if (_ctx.toast) _ctx.toast("Guardada no seu banco de formulações 🧪");
+    }).catch(function (e) {
+      // A prescrição da paciente já foi registrada; só o banco falhou.
+      if (_ctx.toast) _ctx.toast("A prescrição foi registrada, mas não consegui guardar no banco. " +
+        (e && e.message ? e.message : ""), true);
     });
   }
 

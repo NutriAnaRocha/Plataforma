@@ -6,7 +6,7 @@
   "use strict";
 
   /* ▼▼▼ TROCAR O NOME DA PLATAFORMA AQUI (único lugar) ▼▼▼ */
-  var BRAND = "Anutti";
+  var BRAND = "Anutri";
   /* ▲▲▲ ----------------------------------------------- ▲▲▲ */
 
   document.addEventListener("DOMContentLoaded", function () {

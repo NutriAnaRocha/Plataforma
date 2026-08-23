@@ -237,6 +237,26 @@
 /* Campo que NAO pode virar <label>: o editor de formulas e contenteditable
    e herdaria o peso semibold do label como estilo de digitacao. */
 .op-campo { display: flex; flex-direction: column; gap: 4px; }
+
+/* Guardar a prescrição no banco de formulações (opcional) */
+.rx-banco {
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px dashed var(--cinza-borda);
+  border-radius: var(--radius-btn);
+  background: var(--cinza-fundo, #fafafa);
+}
+.rx-banco__check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400;          /* o semibold do label vazaria para o texto */
+  cursor: pointer;
+  margin: 0;
+}
+.rx-banco__check input { width: 16px; height: 16px; margin: 0; accent-color: var(--vinho); }
+.rx-banco__cat[hidden] { display: none; }
+.rx-banco__cat { padding-left: 24px; }
 .op-campo__lbl { font-size: 13px; font-weight: 600; color: var(--cinza-escuro, #2b2229); }
 .op-form__acts { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
 

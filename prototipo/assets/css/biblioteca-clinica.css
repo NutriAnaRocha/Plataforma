@@ -94,7 +94,36 @@
   padding-right: var(--sp-1);
 }
 
-/* ---------- Item da lista ---------- */
+/* ---------- Item da lista ----------
+   O cartão e a lixeira são irmãos (button dentro de button é inválido).
+   O wrap empilha os dois: a lixeira flutua na direita do cartão. */
+.bc-item-wrap { position: relative; }
+.bc-item-wrap .bc-item { padding-right: 46px; }
+
+.bc-item__del {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-2);
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;                       /* aparece no hover — não polui a lista */
+  transition: opacity var(--t-fast), background var(--t-fast);
+}
+.bc-item-wrap:hover .bc-item__del,
+.bc-item__del:focus-visible { opacity: 1; }
+.bc-item__del:hover { background: var(--rosa-suave); }
+
+/* No toque não existe hover: lá a lixeira fica sempre visível. */
+@media (hover: none) {
+  .bc-item__del { opacity: 1; }
+}
+
 .bc-item {
   text-align: left;
   font: inherit;
