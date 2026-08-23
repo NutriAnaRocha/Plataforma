@@ -16,7 +16,7 @@ Construído em HTML/CSS/JS puro — **sem build, sem instalação**.
 
 ## ✏️ Trocar o nome da plataforma (1 lugar)
 
-O nome da plataforma é `NutriLab`. Para trocar, edite **uma linha**:
+O nome da plataforma é `Anutti`. Para trocar, edite **uma linha**:
 
 - Arquivo: [`assets/js/app.js`](assets/js/app.js) → constante `BRAND` (logo no topo).
 

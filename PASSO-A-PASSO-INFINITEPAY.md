@@ -1,7 +1,7 @@
-# InfinitePay — assinatura do NutriLab
+# InfinitePay — assinatura da Anutti
 
 ## ✅ Já feito (em 26/07/2026)
-- Plano criado no InfinitePay: **NutriLab Profissional · R$ 49,90/mês** (assinatura mensal, cobrança dia 26).
+- Plano criado no InfinitePay: **Anutti Profissional · R$ 49,90/mês** (assinatura mensal, cobrança dia 26).
 - Link do checkout: `https://invoice.infinitepay.io/plans/analuisarocha/AOoThqZeRC`
 - Link já colado no paywall (`assinatura.html`) e preço atualizado para R$ 49,90.
 - Botão **"Assinar agora"** agora leva a nutri direto para o checkout do InfinitePay.

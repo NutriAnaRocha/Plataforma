@@ -52,11 +52,11 @@
             var pacote = {
               _meta: {
                 gerado_em: new Date().toISOString(),
-                plataforma: "NutriLab",
+                plataforma: "Anutti",
                 titular: { id: uid, email: email },
                 observacao: "Exportação de dados pessoais (LGPD, art. 18). " +
                   "A nutricionista é a controladora dos dados dos seus pacientes; " +
-                  "a NutriLab atua como operadora."
+                  "a Anutti atua como operadora."
               }
             };
             var totais = {};
@@ -65,7 +65,7 @@
               totais[r.nome] = r.dados.length;
             });
             var carimbo = new Date().toISOString().slice(0, 10);
-            baixarArquivo("nutrilab-meus-dados-" + carimbo + ".json",
+            baixarArquivo("anutti-meus-dados-" + carimbo + ".json",
               JSON.stringify(pacote, null, 2));
             return { totais: totais };
           });
