@@ -1,0 +1,141 @@
+/* ============================================================
+   Anutri — Importador de pacientes
+   Reaproveita .pf-overlay / .pf-modal / .pf-actions de pacientes.css.
+   ============================================================ */
+
+.imp-modal { max-width: 780px; }
+.imp-body { padding: var(--sp-5); }
+.imp-body .pf-msg { margin-bottom: var(--sp-4); }
+
+.imp-lead { margin: 0 0 var(--sp-4); font-size: var(--fs-sm); color: var(--texto-sutil); line-height: 1.55; }
+.imp-lead strong { color: var(--texto); }
+.imp-aviso { color: #B26A00; font-weight: 600; }
+
+/* ---------- Trilha de passos ---------- */
+.imp-steps {
+  display: flex; gap: var(--sp-2); list-style: none; margin: 0;
+  padding: var(--sp-3) var(--sp-5); border-bottom: 1px solid var(--cinza-borda);
+  overflow-x: auto;
+}
+.imp-step {
+  display: flex; align-items: center; gap: 7px; flex: 0 0 auto;
+  font-size: var(--fs-caption); font-weight: 600; color: var(--texto-sutil);
+  padding-right: var(--sp-3);
+}
+.imp-step + .imp-step { padding-left: var(--sp-3); border-left: 1px solid var(--cinza-borda); }
+.imp-step__n {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 21px; height: 21px; border-radius: 50%;
+  background: var(--cinza-borda); color: var(--texto-sutil); font-size: 11px;
+}
+.imp-step.is-now { color: var(--vinho); }
+.imp-step.is-now .imp-step__n { background: var(--vinho); color: #fff; }
+.imp-step.is-done .imp-step__n { background: #1B8A5A; color: #fff; }
+
+/* ---------- Passo 1: área de soltar o arquivo ---------- */
+.imp-drop {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: var(--sp-6) var(--sp-4); text-align: center; cursor: pointer;
+  border: 2px dashed var(--cinza-borda); border-radius: var(--radius-card);
+  background: var(--rosa-suave); transition: border-color .15s ease, background .15s ease;
+}
+.imp-drop:hover, .imp-drop:focus-visible, .imp-drop.is-over {
+  border-color: var(--vinho); background: rgba(122, 30, 60, 0.04); outline: none;
+}
+.imp-drop__ico { font-size: 1.9rem; line-height: 1; }
+.imp-drop strong { color: var(--texto); font-size: var(--fs-base); }
+.imp-drop__hint { font-size: var(--fs-caption); color: var(--texto-sutil); }
+
+/* ---------- Bloco recolhível de ajuda / listas ---------- */
+.imp-ajuda { margin-top: var(--sp-4); font-size: var(--fs-sm); }
+.imp-ajuda > summary {
+  cursor: pointer; font-weight: 600; color: var(--vinho);
+  padding: var(--sp-2) 0; list-style: revert;
+}
+.imp-ajuda p { margin: var(--sp-2) 0 0; color: var(--texto-sutil); line-height: 1.55; }
+
+.imp-lista {
+  margin: var(--sp-2) 0 0; padding-left: var(--sp-5);
+  max-height: 190px; overflow-y: auto;
+  font-size: var(--fs-sm); color: var(--texto-sutil); line-height: 1.6;
+}
+
+.imp-check {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  margin-top: var(--sp-3); font-size: var(--fs-sm); color: var(--texto);
+}
+.imp-check input { width: 17px; height: 17px; accent-color: var(--vinho); cursor: pointer; }
+
+/* ---------- Passo 2: mapeamento de colunas ---------- */
+.imp-map { display: flex; flex-direction: column; gap: var(--sp-3); }
+.imp-map__row {
+  display: grid; grid-template-columns: 190px 1fr; align-items: center; gap: var(--sp-4);
+}
+.imp-map__lbl { font-size: var(--fs-sm); font-weight: 600; color: var(--texto); }
+.imp-req {
+  display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--vinho); background: rgba(122, 30, 60, 0.09);
+  border-radius: 999px; padding: 1px 7px; vertical-align: 1px;
+}
+.imp-map__sel { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.imp-map__sel select {
+  width: 100%; padding: 9px 11px; font: inherit; color: var(--texto);
+  background: var(--branco); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-input); outline: none;
+}
+.imp-map__sel select:focus { border-color: var(--vinho); box-shadow: var(--ring-foco); }
+.imp-map__ex {
+  font-size: var(--fs-caption); color: var(--texto-sutil);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ---------- Passo 3: prévia ---------- */
+.imp-cards { display: flex; gap: var(--sp-3); margin-bottom: var(--sp-4); flex-wrap: wrap; }
+.imp-card {
+  flex: 1 1 120px; padding: var(--sp-3) var(--sp-4); text-align: center;
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+}
+.imp-card strong { display: block; font-size: 1.5rem; color: var(--texto); line-height: 1.2; }
+.imp-card span { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.imp-card--ok { border-color: rgba(27, 138, 90, .4); background: rgba(27, 138, 90, .06); }
+.imp-card--ok strong { color: #1B8A5A; }
+.imp-card--erro { border-color: rgba(178, 58, 58, .4); background: rgba(178, 58, 58, .06); }
+.imp-card--erro strong { color: #B23A3A; }
+
+.imp-tab-wrap { overflow-x: auto; border: 1px solid var(--cinza-borda); border-radius: var(--radius-card); }
+.imp-tab { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+.imp-tab th, .imp-tab td {
+  padding: 9px 12px; text-align: left; white-space: nowrap;
+  border-bottom: 1px solid var(--cinza-borda);
+}
+.imp-tab th {
+  font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .5px;
+  color: var(--vinho); background: var(--rosa-suave);
+}
+.imp-tab tbody tr:last-child td { border-bottom: none; }
+.imp-tab td { color: var(--texto-sutil); }
+.imp-tab td:first-child { color: var(--texto); font-weight: 600; }
+
+.imp-mais, .imp-vazio, .imp-nota {
+  margin: var(--sp-3) 0 0; font-size: var(--fs-sm); color: var(--texto-sutil);
+}
+.imp-nota { padding-top: var(--sp-3); border-top: 1px dashed var(--cinza-borda); }
+
+/* ---------- Passo 4: resultado ---------- */
+.imp-fim { text-align: center; padding: var(--sp-4) 0; }
+.imp-fim__ico { font-size: 2.2rem; line-height: 1; }
+.imp-fim h4 { margin: var(--sp-3) 0 var(--sp-2); font-size: var(--fs-h3); color: var(--vinho); }
+.imp-fim p { margin: 0; font-size: var(--fs-sm); color: var(--texto-sutil); }
+.imp-fim .imp-lista { text-align: left; margin-top: var(--sp-4); }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 640px) {
+  .imp-body { padding: var(--sp-4); }
+  .imp-steps { padding: var(--sp-3) var(--sp-4); }
+  .imp-step { font-size: 11px; }
+  .imp-map__row { grid-template-columns: 1fr; gap: 5px; }
+  .imp-cards { gap: var(--sp-2); }
+  .imp-card { flex: 1 1 90px; padding: var(--sp-3) var(--sp-2); }
+  .imp-card strong { font-size: 1.25rem; }
+  .imp-drop { padding: var(--sp-5) var(--sp-3); }
+}

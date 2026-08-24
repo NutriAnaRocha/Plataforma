@@ -1133,7 +1133,15 @@
   function initCrud() {
     var novo = el("btn-novo-pac");
     if (novo) novo.addEventListener("click", function () { openForm(null); });
+
+    var imp = el("btn-importar-pac");
+    if (imp) imp.addEventListener("click", function () {
+      if (window.NutriImportar) window.NutriImportar.abrir();
+    });
   }
+
+  // Deixa o importador recarregar a lista sem dar reload na página.
+  window.NutriPacientesTela = { recarregar: loadPatients };
 
   function seedExamples() {
     if (!window.NutriPacientes) return;

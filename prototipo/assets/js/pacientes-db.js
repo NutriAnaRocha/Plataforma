@@ -162,6 +162,18 @@
       });
     },
 
+    // Insert em lote (importação de outra plataforma). Devolve os criados.
+    // Um erro derruba o lote inteiro — quem chama reparte e tenta de novo.
+    createMany: function (lista) {
+      if (!lista || !lista.length) return Promise.resolve([]);
+      return client().then(function (c) {
+        return c.from("pacientes").insert(lista.map(toRow)).select("*");
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        return (res.data || []).map(fromRow);
+      });
+    },
+
     update: function (id, p) {
       return client().then(function (c) {
         return c.from("pacientes").update(toRow(p)).eq("id", id).select("*").single();
