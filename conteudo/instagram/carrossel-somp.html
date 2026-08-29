@@ -1,152 +1,88 @@
 <title>Carrossel SOMP</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merienda:wght@400;600;700;900&family=Montserrat:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@1,9..144,900,100&family=Montserrat:wght@400;500;600;700&family=Yellowtail&display=swap">
 <style>
   :root{
-    --petroleo:#0E4C5C;
-    --petroleo-escuro:#093642;
-    --petroleo-claro:#17758A;
-    --azul-suave:#EEF6F8;
-    --azul-claro:#9FCBD6;
-    --magenta:#840B55;
-    --magenta-claro:#A82670;
-    --magenta-suave:#FCEFF7;
-    --branco:#FFFFFF;
-    --cinza-escuro:#3C3C3C;
-    --cinza-medio:#8A8A8A;
-    --papel:#F2EFE8;
-    --display:"Merienda",Georgia,serif;
+    --creme-topo:#FCF6E9;
+    --creme-base:#F3E7D3;
+    --magenta:#7C1150;
+    --magenta-claro:#9B2168;
+    --texto:#54524F;
+    --display:"Fraunces",Georgia,serif;
     --ui:"Montserrat","Segoe UI",system-ui,sans-serif;
+    --assinatura:"Yellowtail",cursive;
   }
   *{box-sizing:border-box}
-  body{background:#093642;margin:0;padding:32px 16px 80px;font-family:var(--ui);color:var(--cinza-escuro)}
-
-  .intro{max-width:780px;margin:0 auto 36px;color:#BBD6DD;font-size:15px;line-height:1.6}
-  .intro h1{font-family:var(--display);font-size:34px;color:#fff;margin:0 0 10px;text-wrap:balance}
+  body{background:#2B1024;margin:0;padding:32px 16px 80px;font-family:var(--ui);color:var(--texto)}
+  .intro{max-width:780px;margin:0 auto 36px;color:#E8CEDD;font-size:15px;line-height:1.6}
+  .intro h1{font-family:var(--display);font-style:italic;font-size:36px;color:#FCF6E9;margin:0 0 10px}
   .intro p{margin:0 0 8px}
-  .intro code{background:rgba(255,255,255,.10);padding:2px 6px;border-radius:4px;font-size:13px}
+  .intro code{background:rgba(255,255,255,.12);padding:2px 6px;border-radius:4px;font-size:13px}
 
   .deck{display:flex;flex-direction:column;align-items:center;gap:44px}
   .slot{width:100%;max-width:1080px}
-  .tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7FAEB9;margin:0 0 8px;font-weight:600}
-  .frame{position:relative;width:100%;aspect-ratio:1/1;container-type:size;overflow:hidden;border-radius:2px;box-shadow:0 18px 44px rgba(0,0,0,.40)}
-  .card{position:absolute;inset:0;padding:8.5cqw;display:flex;flex-direction:column;background:var(--branco)}
+  .tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#C79BB6;margin:0 0 8px;font-weight:600}
+  .frame{position:relative;width:100%;aspect-ratio:1/1;container-type:size;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.45)}
 
-  .kicker{font-family:var(--ui);font-size:2.5cqw;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--magenta)}
-  .h{font-family:var(--display);font-weight:700;font-size:7.8cqw;line-height:1.12;margin:0;color:var(--petroleo);text-wrap:balance}
-  .h-sm{font-family:var(--display);font-weight:700;font-size:6cqw;line-height:1.18;margin:0;color:var(--petroleo);text-wrap:balance}
-  .p{font-size:3.7cqw;line-height:1.55;color:var(--cinza-escuro);margin:0;font-weight:400}
-  .p strong{color:var(--petroleo);font-weight:700}
-  .num{font-family:var(--display);font-size:11cqw;line-height:1;color:var(--azul-claro)}
-  .rule{height:.5cqw;width:11cqw;background:var(--magenta);border-radius:1cqw}
-  .stack{display:flex;flex-direction:column;gap:3.6cqw;height:100%}
-  .spacer{margin-top:auto}
-  .suave{background:var(--azul-suave)}
-  .petroleo{background:var(--petroleo);color:var(--branco)}
-  .petroleo .h,.petroleo .h-sm{color:var(--branco)}
-  .petroleo .p{color:#D5E7EC}
-  .petroleo .p strong{color:var(--branco)}
-  .petroleo .kicker{color:var(--azul-claro)}
-  .petroleo .rule{background:var(--azul-claro)}
+  .card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+        background:linear-gradient(180deg,var(--creme-topo) 0%,var(--creme-topo) 45%,var(--creme-base) 100%);
+        padding:8cqw 7cqw 0;text-align:center}
 
-  /* área reservada para a imagem gerada por IA */
-  .img-slot{position:relative;border-radius:4cqw;overflow:hidden;background:
-      linear-gradient(135deg,var(--azul-suave),#DCEAEE);
-      display:flex;align-items:center;justify-content:center;text-align:center}
-  .img-slot img{width:100%;height:100%;object-fit:cover;display:block}
-  .img-slot .ph{padding:4cqw;color:var(--petroleo);font-size:2.5cqw;line-height:1.5;font-weight:600;max-width:80%}
-  .img-slot .ph b{display:block;font-size:2.2cqw;letter-spacing:.16em;text-transform:uppercase;color:var(--magenta);margin-bottom:1.4cqw}
+  .titulo{font-family:var(--display);font-style:italic;font-weight:900;font-size:10.5cqw;line-height:1.02;
+          color:var(--magenta);margin:0;text-wrap:balance;letter-spacing:-.01em}
+  .titulo.menor{font-size:8.6cqw}
+  .sub{font-size:4cqw;line-height:1.4;color:var(--texto);margin:3.2cqw 0 0;font-weight:500;max-width:88%}
+  .sub strong{color:var(--magenta);font-weight:700}
+  .destaque{font-size:3.7cqw;line-height:1.45;color:var(--magenta);font-weight:700;margin:4cqw 0 0;max-width:88%}
 
-  /* ---------- CARD 1 · jornal ---------- */
-  .news{background:var(--papel);padding:0}
-  .news .grain{position:absolute;inset:0;opacity:.55;mix-blend-mode:multiply;
-    background:
-      radial-gradient(circle at 16% 20%, rgba(14,76,92,.12), transparent 44%),
-      radial-gradient(circle at 84% 78%, rgba(14,76,92,.10), transparent 46%),
-      repeating-linear-gradient(97deg, rgba(60,60,60,.07) 0 2px, transparent 2px 5px);}
-  .news .inner{position:absolute;inset:0;padding:6.5cqw 7cqw;display:flex;flex-direction:column}
-  .masthead{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:.32cqw solid var(--petroleo);padding-bottom:1.4cqw}
-  .masthead .name{font-family:var(--display);font-weight:900;font-size:4cqw;color:var(--petroleo)}
-  .masthead .meta{font-size:1.9cqw;letter-spacing:.16em;text-transform:uppercase;color:var(--petroleo-claro);font-weight:600}
-  .rules{border-top:.1cqw solid var(--petroleo);margin-top:.6cqw;opacity:.6}
-  .headline{font-family:var(--display);font-weight:900;font-size:8.2cqw;line-height:1.04;margin:4cqw 0 0;color:var(--petroleo)}
-  .strike{position:relative;display:inline-block}
-  .strike svg{position:absolute;left:-2%;top:6%;width:104%;height:92%;overflow:visible}
-  .correct{position:relative;margin:2.4cqw 0 0;align-self:flex-start}
-  .correct .word{font-family:var(--display);font-weight:900;font-size:12cqw;color:var(--magenta);line-height:1;display:block;padding:0 3.4cqw;letter-spacing:.02em}
-  .correct svg.ring{position:absolute;left:-7%;top:-20%;width:120%;height:140%;overflow:visible}
-  .arrow{position:absolute;right:-13cqw;top:-8cqw;width:15cqw;height:13cqw;overflow:visible}
-  .deck-line{font-family:var(--display);font-size:3.2cqw;color:var(--petroleo);margin:3cqw 0 0;max-width:80%;line-height:1.4}
-  .news .foto{margin-top:auto;height:26cqw;border-top:.1cqw solid rgba(14,76,92,.4);display:grid;grid-template-columns:1.15fr 1fr;gap:3cqw;padding-top:2.6cqw}
-  .news .foto .img-slot{border-radius:1.5cqw}
-  .colz span{display:block;height:.85cqw;background:var(--petroleo);opacity:.16;margin-bottom:1cqw;border-radius:.4cqw}
-  .colz span:nth-child(4n){width:70%}
-  .colz span:nth-child(3n){width:90%}
+  .caixa{background:var(--magenta);color:#FCF6E9;border-radius:3.4cqw;padding:4.4cqw 5cqw;margin:4.4cqw 0 0;
+         text-align:left;width:100%;box-shadow:0 1.2cqw 3cqw rgba(124,17,80,.22)}
+  .caixa li{font-size:3.8cqw;font-weight:600;line-height:1.5;margin-bottom:1.4cqw;list-style:none}
+  .caixa li:last-child{margin-bottom:0}
+  .caixa li::before{content:"• ";}
+  .caixa ul{margin:0;padding:0}
 
-  /* prato */
-  .plate-wrap{display:flex;gap:4.5cqw;align-items:center}
-  .plate{width:34cqw;height:34cqw;flex:none}
-  .legend{display:flex;flex-direction:column;gap:2.4cqw}
-  .leg{display:flex;gap:2.2cqw;align-items:flex-start}
-  .dot{width:2.4cqw;height:2.4cqw;border-radius:50%;margin-top:1cqw;flex:none}
-  .leg b{font-size:3.2cqw;font-weight:700;display:block;line-height:1.25;color:var(--petroleo)}
-  .leg em{font-style:normal;font-size:2.6cqw;color:var(--cinza-escuro);line-height:1.4;display:block}
+  .arte{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;padding:3cqw 0 12cqw}
+  .arte svg{max-height:100%;width:auto}
+  .ph{border:.35cqw dashed rgba(124,17,80,.35);border-radius:3cqw;padding:4cqw;max-width:78%;
+      font-size:2.5cqw;line-height:1.5;color:var(--magenta);font-weight:600;background:rgba(255,255,255,.45)}
+  .ph b{display:block;font-size:2.2cqw;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1.4cqw;color:var(--magenta-claro)}
 
-  .list{display:flex;flex-direction:column;gap:3cqw}
-  .item{display:grid;grid-template-columns:auto 1fr;gap:2.8cqw;align-items:start}
-  .item .ic{width:7.5cqw;height:7.5cqw;flex:none}
-  .item b{font-size:3.4cqw;font-weight:700;display:block;margin-bottom:.5cqw;color:var(--petroleo)}
-  .item span span{font-size:2.9cqw;color:var(--cinza-escuro);line-height:1.45;display:block;font-weight:400}
-  .cta-mark{font-family:var(--display);font-weight:900;color:var(--magenta)}
+  /* rodapé em onda com assinatura */
+  .onda{position:absolute;left:0;right:0;bottom:0;height:17cqw;pointer-events:none}
+  .onda svg{position:absolute;inset:0;width:100%;height:100%}
+  .assina{position:absolute;left:0;right:0;bottom:2.6cqw;text-align:center;
+          font-family:var(--assinatura);font-size:6.4cqw;color:#FCF6E9;line-height:1}
+  .assina.logo{bottom:2cqw;font-family:var(--ui)}
+  .assina.logo .nome{font-family:var(--assinatura);font-size:4.6cqw;display:block;line-height:1.1}
+  .assina.logo .cargo{font-size:2.4cqw;letter-spacing:.1em;font-weight:600;display:block}
+  .assina.logo .crn{font-size:1.7cqw;letter-spacing:.14em;opacity:.85;display:block;margin-top:.4cqw}
+
   @media (max-width:620px){.intro h1{font-size:26px}}
 </style>
 
 <div class="intro">
   <h1>Carrossel — Agora é SOMP, não SOP</h1>
-  <p>9 artes 1080×1080 na identidade da marca: <strong>Merienda</strong> + <strong>Montserrat</strong>, petróleo <code>#0E4C5C</code> e magenta <code>#840B55</code>.</p>
-  <p>As áreas em azul claro são os espaços reservados para as imagens geradas por IA — cada uma já traz o prompt sugerido. Para usar a imagem, substitua o bloco pelo <code>&lt;img&gt;</code> correspondente.</p>
+  <p>9 artes 1080×1080 no padrão do seu feed: fundo creme, títulos em itálico magenta, caixa magenta arredondada e rodapé em onda com a assinatura.</p>
+  <p>As molduras tracejadas são onde entram as imagens — cada uma traz o prompt no estilo dos seus posts (still life fotorrealista em fundo bege, ou ilustração em aquarela). É só trocar o bloco pela <code>&lt;img&gt;</code>.</p>
 </div>
 
 <div class="deck">
 
-  <!-- 1 -->
+  <!-- 1 · capa -->
   <div class="slot">
     <p class="tag">Card 1 · Capa</p>
-    <div class="frame"><div class="card news">
-      <div class="grain"></div>
-      <div class="inner">
-        <div class="masthead">
-          <div class="name">Ana Luísa Rocha</div>
-          <div class="meta">Edição revista · Saúde da mulher</div>
-        </div>
-        <div class="rules"></div>
-
-        <h2 class="headline">Síndrome dos Ovários
-          <span class="strike">POLICÍSTICOS
-            <svg viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M4 40 C 90 22, 190 46, 300 26 S 380 34, 396 22" fill="none" stroke="#840B55" stroke-width="9" stroke-linecap="round"/>
-              <path d="M10 48 C 120 34, 210 52, 330 32" fill="none" stroke="#840B55" stroke-width="5" stroke-linecap="round" opacity=".7"/>
-            </svg>
-          </span>
-        </h2>
-
-        <div class="correct">
-          <span class="word">SOMP</span>
-          <svg class="ring" viewBox="0 0 300 130" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M150 8 C 60 6, 12 34, 14 66 C 16 100, 78 122, 156 121 C 236 120, 290 98, 288 64 C 286 32, 232 10, 140 11" fill="none" stroke="#840B55" stroke-width="4.5" stroke-linecap="round"/>
-          </svg>
-          <svg class="arrow" viewBox="0 0 120 100" aria-hidden="true">
-            <path d="M112 88 C 96 44, 66 18, 20 12" fill="none" stroke="#840B55" stroke-width="5" stroke-linecap="round"/>
-            <path d="M20 12 l 26 4 M20 12 l 6 24" fill="none" stroke="#840B55" stroke-width="5" stroke-linecap="round"/>
-          </svg>
-        </div>
-
-        <p class="deck-line">A mudança de nome que muda o seu tratamento — e o seu prato.</p>
-
-        <div class="foto">
-          <div class="img-slot">
-            <div class="ph"><b>Imagem IA</b>Retrato realista de mulher jovem em consultório claro, luz natural suave, olhar sereno para a câmera, tons de azul petróleo — enquadramento horizontal, textura levemente impressa (meio-tom de jornal).</div>
-          </div>
-          <div class="colz"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="frame"><div class="card">
+      <h2 class="titulo">Agora é SOMP,<br>não mais SOP</h2>
+      <p class="sub">O nome mudou — e isso muda <strong>o seu tratamento</strong></p>
+      <div class="arte">
+        <div class="ph"><b>Imagem</b>Ilustração em aquarela suave, tons rosados e verdes pastel, de um útero com ovários cercado por flores e folhas delicadas — mesmo traço do post da candidíase, fundo creme.</div>
+      </div>
+      <div class="onda">
+        <svg viewBox="0 0 1080 190" preserveAspectRatio="none" aria-hidden="true"><path d="M0 62 C 210 6, 470 6, 700 40 C 860 64, 980 62, 1080 40 L1080 190 L0 190 Z" fill="#7C1150"/></svg>
+        <div class="assina logo">
+          <span class="nome">Ana Luisa Rocha</span>
+          <span class="cargo">Nutricionista</span>
+          <span class="crn">CRN 25100401</span>
         </div>
       </div>
     </div></div>
@@ -155,14 +91,16 @@
   <!-- 2 -->
   <div class="slot">
     <p class="tag">Card 2 · O problema</p>
-    <div class="frame"><div class="card suave">
-      <div class="stack">
-        <div class="kicker">Por que mudar</div>
-        <h2 class="h">Durante décadas chamamos de Síndrome dos Ovários Policísticos.</h2>
-        <div class="rule"></div>
-        <p class="p">O problema é que esse nome está errado em quase tudo — e o erro não ficou no papel. Ele foi parar na conduta.</p>
-        <div class="spacer"></div>
-        <p class="p"><strong>Três erros, três consequências.</strong> Arrasta →</p>
+    <div class="frame"><div class="card">
+      <h2 class="titulo menor">O nome estava errado</h2>
+      <p class="sub">Por décadas foi <strong>Síndrome dos Ovários Policísticos</strong>.</p>
+      <p class="destaque">E o erro não ficou no papel:<br>ele foi parar na sua conduta.</p>
+      <div class="arte">
+        <div class="ph"><b>Imagem</b>Still life fotorrealista: pedaço de papel bege com a palavra “policísticos” impressa e riscada à caneta, sobre mesa de madeira clara, luz suave lateral, fundo creme.</div>
+      </div>
+      <div class="onda">
+        <svg viewBox="0 0 1080 190" preserveAspectRatio="none" aria-hidden="true"><path d="M0 62 C 210 6, 470 6, 700 40 C 860 64, 980 62, 1080 40 L1080 190 L0 190 Z" fill="#7C1150"/></svg>
+        <div class="assina">Ana</div>
       </div>
     </div></div>
   </div>
@@ -171,14 +109,15 @@
   <div class="slot">
     <p class="tag">Card 3 · Erro 1</p>
     <div class="frame"><div class="card">
-      <div class="stack">
-        <div class="num">01</div>
-        <h2 class="h-sm">Não são cistos.</h2>
-        <div class="rule"></div>
-        <p class="p">O que aparece no ultrassom são <strong>folículos que pararam de amadurecer</strong> — não cistos. A palavra assustou gerações inteiras à toa.</p>
-        <div class="img-slot" style="flex:1;min-height:0">
-          <div class="ph"><b>Imagem IA</b>Close realista de uma tela de ultrassom em consultório, foco suave, luz azulada fria, mãos femininas segurando o exame impresso.</div>
-        </div>
+      <h2 class="titulo menor">Não são cistos</h2>
+      <p class="sub">O que aparece no ultrassom são <strong>folículos que pararam de amadurecer</strong>.</p>
+      <p class="destaque">A palavra “cisto” assustou gerações de mulheres à toa.</p>
+      <div class="arte">
+        <div class="ph"><b>Imagem</b>Ilustração em aquarela pastel de um ovário com pequenos folículos ao redor da borda, tons rosados e creme, traço delicado, fundo bege.</div>
+      </div>
+      <div class="onda">
+        <svg viewBox="0 0 1080 190" preserveAspectRatio="none" aria-hidden="true"><path d="M0 62 C 210 6, 470 6, 700 40 C 860 64, 980 62, 1080 40 L1080 190 L0 190 Z" fill="#7C1150"/></svg>
+        <div class="assina">Ana</div>
       </div>
     </div></div>
   </div>
@@ -186,26 +125,21 @@
   <!-- 4 -->
   <div class="slot">
     <p class="tag">Card 4 · Erro 2</p>
-    <div class="frame"><div class="card petroleo">
-      <div class="stack">
-        <div class="num" style="color:var(--azul-claro)">02</div>
-        <h2 class="h-sm">O problema não começa no ovário.</h2>
-        <p class="p">O ovário é onde a gente <strong>vê</strong> o sintoma. A raiz está no eixo metabólico: resistência à insulina, inflamação e excesso de androgênios.</p>
-        <div class="spacer"></div>
-        <svg viewBox="0 0 340 90" style="width:100%;height:19cqw" aria-hidden="true">
-          <g font-family="Montserrat, sans-serif" font-size="13" font-weight="600" fill="#EEF6F8" text-anchor="middle">
-            <rect x="4" y="26" width="92" height="38" rx="19" fill="none" stroke="#9FCBD6" stroke-width="2"/>
-            <text x="50" y="50">insulina alta</text>
-            <rect x="124" y="26" width="92" height="38" rx="19" fill="none" stroke="#9FCBD6" stroke-width="2"/>
-            <text x="170" y="50">androgênios</text>
-            <rect x="244" y="26" width="92" height="38" rx="19" fill="none" stroke="#9FCBD6" stroke-width="2"/>
-            <text x="290" y="50">ciclo parado</text>
-          </g>
-          <g stroke="#9FCBD6" stroke-width="2" fill="none" stroke-linecap="round">
-            <path d="M100 45 h16"/><path d="M110 40 l6 5 -6 5"/>
-            <path d="M220 45 h16"/><path d="M230 40 l6 5 -6 5"/>
-          </g>
-        </svg>
+    <div class="frame"><div class="card">
+      <h2 class="titulo menor">Não começa no ovário</h2>
+      <p class="sub">O ovário é onde você <strong>vê</strong> o sintoma. A raiz está no metabolismo.</p>
+      <div class="caixa"><ul>
+        <li>Resistência à insulina.</li>
+        <li>Inflamação de baixo grau.</li>
+        <li>Excesso de androgênios.</li>
+        <li>Ciclo que não fecha.</li>
+      </ul></div>
+      <div class="arte">
+        <div class="ph"><b>Imagem</b>Still life fotorrealista: glicosímetro, fita métrica e uma maçã sobre mesa clara, luz natural suave, fundo creme.</div>
+      </div>
+      <div class="onda">
+        <svg viewBox="0 0 1080 190" preserveAspectRatio="none" aria-hidden="true"><path d="M0 62 C 210 6, 470 6, 700 40 C 860 64, 980 62, 1080 40 L1080 190 L0 190 Z" fill="#7C1150"/></svg>
+        <div class="assina">Ana</div>
       </div>
     </div></div>
   </div>
@@ -214,14 +148,15 @@
   <div class="slot">
     <p class="tag">Card 5 · Erro 3</p>
     <div class="frame"><div class="card">
-      <div class="stack">
-        <div class="num">03</div>
-        <h2 class="h-sm">O nome atrasou o cuidado.</h2>
-        <div class="rule"></div>
-        <p class="p">Olhar só para o ovário fez muita mulher sair do consultório com uma receita de anticoncepcional e <strong>nenhuma palavra sobre glicemia, sono, alimentação e força.</strong></p>
-        <div class="img-slot" style="flex:1;min-height:0">
-          <div class="ph"><b>Imagem IA</b>Mulher sentada na borda da maca de consultório olhando para uma cartela de anticoncepcional na mão, expressão pensativa, luz natural de janela, paleta fria e serena.</div>
-        </div>
+      <h2 class="titulo menor">O nome atrasou o cuidado</h2>
+      <p class="sub">Olhar só para o ovário fez muita mulher sair do consultório com <strong>uma receita de anticoncepcional</strong>.</p>
+      <p class="destaque">E nenhuma palavra sobre glicemia, sono, alimentação e força.</p>
+      <div class="arte">
+        <div class="ph"><b>Imagem</b>Still life fotorrealista: cartela de anticoncepcional sobre um bloco de receituário e caneta, mesa de madeira clara, luz suave, fundo creme.</div>
+      </div>
+      <div class="onda">
+        <svg viewBox="0 0 1080 190" preserveAspectRatio="none" aria-hidden="true"><path d="M0 62 C 210 6, 470 6, 700 40 C 860 64, 980 62, 1080 40 L1080 190 L0 190 Z" fill="#7C1150"/></svg>
+        <div class="assina">Ana</div>
       </div>
     </div></div>
   </div>
@@ -229,17 +164,16 @@
   <!-- 6 -->
   <div class="slot">
     <p class="tag">Card 6 · O novo nome</p>
-    <div class="frame"><div class="card suave">
-      <div class="stack">
-        <div class="kicker">A correção</div>
-        <h2 class="h-sm">Por isso a discussão internacional caminha para um nome que descreve o que realmente acontece: uma síndrome metabólica e reprodutiva.</h2>
-        <div class="spacer"></div>
-        <div class="correct" style="align-self:center;margin-bottom:3cqw">
-          <span class="word" style="font-size:16cqw">SOMP</span>
-          <svg class="ring" viewBox="0 0 300 130" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M150 8 C 60 6, 12 34, 14 66 C 16 100, 78 122, 156 121 C 236 120, 290 98, 288 64 C 286 32, 232 10, 140 11" fill="none" stroke="#840B55" stroke-width="4.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+    <div class="frame"><div class="card">
+      <h2 class="titulo menor">Por que SOMP</h2>
+      <p class="sub">A discussão internacional caminha para um nome que descreve o que <strong>realmente acontece</strong>: uma síndrome metabólica e reprodutiva.</p>
+      <p class="destaque">Nome certo é diagnóstico no lugar certo — e tratamento na causa.</p>
+      <div class="arte">
+        <div class="ph"><b>Imagem</b>Still life fotorrealista: caderno aberto sobre mesa clara com a sigla “SOMP” escrita à mão em caneta magenta e circulada, flor branca em vaso pequeno ao lado, luz natural suave.</div>
+      </div>
+      <div class="onda">
+        <svg viewBox="0 0 1080 190" preserveAspectRatio="none" aria-hidden="true"><path d="M0 62 C 210 6, 470 6, 700 40 C 860 64, 980 62, 1080 40 L1080 190 L0 190 Z" fill="#7C1150"/></svg>
+        <div class="assina">Ana</div>
       </div>
     </div></div>
   </div>
@@ -247,15 +181,16 @@
   <!-- 7 -->
   <div class="slot">
     <p class="tag">Card 7 · A virada</p>
-    <div class="frame"><div class="card petroleo">
-      <div class="stack">
-        <div class="kicker">O que isso muda</div>
-        <h2 class="h">Se o centro é metabólico, o tratamento também é.</h2>
-        <div class="rule"></div>
-        <p class="p">A alimentação deixa de ser “dieta para emagrecer” e vira <strong>ferramenta hormonal</strong>: cada refeição é uma dose de informação para a sua insulina.</p>
-        <div class="img-slot" style="flex:1;min-height:0;background:rgba(255,255,255,.08)">
-          <div class="ph" style="color:#EEF6F8"><b style="color:#9FCBD6">Imagem IA</b>Mesa vista de cima com refeição real e colorida — folhas, grão-de-bico, salmão, abacate e azeite — louça clara, luz natural lateral, estética de fotografia gastronômica.</div>
-        </div>
+    <div class="frame"><div class="card">
+      <h2 class="titulo menor">A comida entra como remédio</h2>
+      <p class="sub">Se o centro é metabólico, o tratamento também é.</p>
+      <p class="destaque">Cada refeição é uma dose de informação para a sua insulina.</p>
+      <div class="arte">
+        <div class="ph"><b>Imagem</b>Still life fotorrealista visto de cima: prato claro com folhas, grão-de-bico, salmão, abacate e fio de azeite, mesa de madeira clara, luz natural lateral, fundo creme.</div>
+      </div>
+      <div class="onda">
+        <svg viewBox="0 0 1080 190" preserveAspectRatio="none" aria-hidden="true"><path d="M0 62 C 210 6, 470 6, 700 40 C 860 64, 980 62, 1080 40 L1080 190 L0 190 Z" fill="#7C1150"/></svg>
+        <div class="assina">Ana</div>
       </div>
     </div></div>
   </div>
@@ -264,53 +199,41 @@
   <div class="slot">
     <p class="tag">Card 8 · O prato</p>
     <div class="frame"><div class="card">
-      <div class="stack">
-        <div class="kicker">Prático</div>
-        <h2 class="h-sm">Como montar o prato</h2>
-        <div class="plate-wrap">
-          <svg class="plate" viewBox="0 0 200 200" aria-hidden="true">
-            <circle cx="100" cy="100" r="96" fill="none" stroke="#9FCBD6" stroke-width="3"/>
-            <circle cx="100" cy="100" r="84" fill="#EEF6F8"/>
-            <path d="M100 100 L100 16 A84 84 0 0 1 100 184 Z" fill="#0E4C5C"/>
-            <path d="M100 100 L100 184 A84 84 0 0 1 26.3 58 Z" fill="#840B55"/>
-            <path d="M100 100 L26.3 58 A84 84 0 0 1 100 16 Z" fill="#9FCBD6"/>
-            <circle cx="100" cy="100" r="84" fill="none" stroke="#9FCBD6" stroke-width="2"/>
-          </svg>
-          <div class="legend">
-            <div class="leg"><span class="dot" style="background:#0E4C5C"></span><span><b>Metade: vegetais e fibras</b><em>Folhas, legumes, leguminosas. É a fibra que segura o pico de insulina.</em></span></div>
-            <div class="leg"><span class="dot" style="background:#840B55"></span><span><b>Um quarto: proteína</b><em>Em todas as refeições — inclusive no café da manhã.</em></span></div>
-            <div class="leg"><span class="dot" style="background:#9FCBD6"></span><span><b>Um quarto: carboidrato</b><em>Ele entra, mas nunca sozinho. Sempre acompanhado.</em></span></div>
-          </div>
-        </div>
-        <div class="spacer"></div>
-        <p class="p"><strong>Não é cortar carboidrato.</strong> É nunca deixar ele sozinho no prato.</p>
+      <h2 class="titulo menor">O que entra no prato</h2>
+      <div class="caixa"><ul>
+        <li>Metade do prato em vegetais e fibras.</li>
+        <li>Proteína em todas as refeições.</li>
+        <li>Gordura boa: azeite, abacate, castanhas.</li>
+        <li>Carboidrato entra — mas nunca sozinho.</li>
+      </ul></div>
+      <div class="arte">
+        <div class="ph"><b>Imagem</b>Still life fotorrealista: pote de iogurte natural, ovos, folhas verdes, abacate e castanhas sobre mesa de madeira clara com pano de linho bege, luz suave — mesma composição dos seus posts.</div>
+      </div>
+      <div class="onda">
+        <svg viewBox="0 0 1080 190" preserveAspectRatio="none" aria-hidden="true"><path d="M0 62 C 210 6, 470 6, 700 40 C 860 64, 980 62, 1080 40 L1080 190 L0 190 Z" fill="#7C1150"/></svg>
+        <div class="assina">Ana</div>
       </div>
     </div></div>
   </div>
 
   <!-- 9 -->
   <div class="slot">
-    <p class="tag">Card 9 · Tripé + CTA</p>
-    <div class="frame"><div class="card suave">
-      <div class="stack">
-        <div class="kicker">O tripé metabólico</div>
-        <div class="list">
-          <div class="item">
-            <svg class="ic" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="#0E4C5C" stroke-width="2.4"/><path d="M13 22c4-9 10-9 14-2" fill="none" stroke="#840B55" stroke-width="2.4" stroke-linecap="round"/></svg>
-            <span><b>Gordura boa e anti-inflamatória</b><span>Azeite, abacate, castanhas e peixes gordos no dia a dia.</span></span>
-          </div>
-          <div class="item">
-            <svg class="ic" viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="15" width="9" height="10" rx="3" fill="none" stroke="#0E4C5C" stroke-width="2.4"/><rect x="27" y="15" width="9" height="10" rx="3" fill="none" stroke="#0E4C5C" stroke-width="2.4"/><path d="M13 20h14" stroke="#840B55" stroke-width="2.4"/></svg>
-            <span><b>Treino de força</b><span>Músculo é o maior destino da glicose — treinar melhora a sensibilidade à insulina.</span></span>
-          </div>
-          <div class="item">
-            <svg class="ic" viewBox="0 0 40 40" aria-hidden="true"><path d="M27 24a11 11 0 0 1-13-15 13 13 0 1 0 15 15z" fill="none" stroke="#0E4C5C" stroke-width="2.4" stroke-linejoin="round"/></svg>
-            <span><b>Sono e ritmo</b><span>Comer de dia, dormir de noite. Circadiano bagunçado piora a resistência à insulina.</span></span>
-          </div>
+    <p class="tag">Card 9 · CTA</p>
+    <div class="frame"><div class="card">
+      <h2 class="titulo menor">A parte que ninguém pula</h2>
+      <p class="sub">Comida <strong>não substitui</strong> o seu acompanhamento médico.</p>
+      <p class="destaque">Glicemia, hormônios, sono e treino precisam ser olhados juntos — e a nutrição é o que sustenta tudo isso.</p>
+      <p class="sub" style="margin-top:3.4cqw">Comenta <strong>SOMP</strong> que eu te mando o passo a passo de como montar o prato.</p>
+      <div class="arte">
+        <div class="ph"><b>Imagem</b>Still life fotorrealista: estetoscópio, caderno aberto com caneta e flor branca em vaso de vidro sobre mesa clara — mesma composição do seu card “A parte que ninguém pula”.</div>
+      </div>
+      <div class="onda">
+        <svg viewBox="0 0 1080 190" preserveAspectRatio="none" aria-hidden="true"><path d="M0 62 C 210 6, 470 6, 700 40 C 860 64, 980 62, 1080 40 L1080 190 L0 190 Z" fill="#7C1150"/></svg>
+        <div class="assina logo">
+          <span class="nome">Ana Luisa Rocha</span>
+          <span class="cargo">Nutricionista</span>
+          <span class="crn">CRN 25100401</span>
         </div>
-        <div class="spacer"></div>
-        <h2 class="h-sm">Trocar o nome não é detalhe.</h2>
-        <p class="p">Comenta <span class="cta-mark">SOMP</span> que eu te mando o passo a passo de como montar o prato.</p>
       </div>
     </div></div>
   </div>
