@@ -1,23 +1,24 @@
 # Post Instagram — RotuLens
 
-**Formato:** Carrossel de 4 cards (`cards-rotulens/card-1.png` a `card-4.png`)
+**Formato:** Carrossel de 5 cards (`cards-rotulens/card-1.png` a `card-5.png`)
 **Objetivo:** Apresentar o app e levar as pessoas a testar
+**Paleta:** RotuLens (azul #1E4A7B, verde #2E7D5B, fundo #F7FAFD) + faixa e assinatura da marca
 
 ---
 
 ## Legenda
 
-Você já parou no corredor do mercado tentando entender uma lista de ingredientes que parece fórmula de química? 🛒
+Você já ficou parada no corredor do mercado tentando entender uma lista de ingredientes que parece fórmula de química? 🛒
 
-Foi por isso que eu criei o **RotuLens**.
+Foi para isso que eu criei o **RotuLens**.
 
-Você fotografa o rótulo — a frente, a tabela e a lista de ingredientes — e ele te devolve a leitura do produto em linguagem de gente: o que aquilo é, o que cada ingrediente estranho realmente significa e quais são as trocas possíveis.
+Você fotografa o rótulo e ele te devolve a leitura do produto em linguagem de gente: o que é bom, o que pesa contra, o que cada ingrediente estranho significa — e, quando não vale a pena, quais marcas levar no lugar.
 
-E as trocas vêm por **alimento**, não por marca: a versão melhor do mesmo item, o mesmo papel na refeição com menos processamento, e a opção in natura.
+As marcas vêm de uma base real de produtos vendidos no Brasil, não da imaginação de uma inteligência artificial. E a sua foto não fica guardada: é lida e descartada.
 
-Duas coisas que eu fiz questão de garantir: as marcas citadas vêm de uma base real de produtos vendidos no Brasil, não da imaginação de uma inteligência artificial. E a sua foto não fica guardada em lugar nenhum — ela é lida e descartada.
+Tem também 106 receitas filtradas pelo tempo que você tem hoje, de 5 minutos a 2 horas, com lista de compras e as calorias e proteínas de cada porção.
 
-São 3 leituras por dia, de graça. Não precisa instalar nada nem criar conta.
+São 3 leituras por dia, de graça. Sem instalar nada e sem criar conta.
 
 👉 nutrianaluisarocha.com/rotulens
 
