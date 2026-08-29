@@ -1,0 +1,311 @@
+<title>Carrossel SOMP</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Caveat:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#EAE2D0;
+    --paper-dark:#DED4BE;
+    --ink:#191510;
+    --ink-soft:#4A4133;
+    --red:#C33228;
+    --olive:#3F5B3A;
+    --olive-soft:#6E8A5F;
+    --cream:#F7F2E6;
+    --serif:"Playfair Display",Georgia,"Times New Roman",serif;
+    --hand:"Caveat","Bradley Hand",cursive;
+    --sans:"Work Sans","Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{background:#221F1A;color:var(--ink);font-family:var(--sans);margin:0;padding:32px 16px 80px}
+
+  .intro{max-width:760px;margin:0 auto 36px;color:#CFC6B4;font-size:15px;line-height:1.6}
+  .intro h1{font-family:var(--serif);font-size:34px;color:#F7F2E6;margin:0 0 10px;text-wrap:balance}
+  .intro p{margin:0 0 8px}
+  .intro code{background:#332E27;padding:2px 6px;border-radius:3px;font-size:13px}
+
+  .deck{display:flex;flex-direction:column;align-items:center;gap:44px}
+  .slot{width:100%;max-width:1080px}
+  .tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9A907C;margin:0 0 8px;font-weight:600}
+  .frame{position:relative;width:100%;aspect-ratio:1/1;container-type:size;overflow:hidden;border-radius:2px;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+  .card{position:absolute;inset:0;padding:9cqw;display:flex;flex-direction:column;background:var(--cream);color:var(--ink)}
+  /* type scale in container units so cards export at any size */
+  .kicker{font-family:var(--sans);font-size:2.6cqw;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--olive)}
+  .h{font-family:var(--serif);font-size:8.4cqw;line-height:1.06;margin:0;text-wrap:balance}
+  .h-sm{font-family:var(--serif);font-size:6.4cqw;line-height:1.12;margin:0;text-wrap:balance}
+  .p{font-family:var(--sans);font-size:3.9cqw;line-height:1.5;color:var(--ink-soft);margin:0}
+  .p strong{color:var(--ink);font-weight:600}
+  .num{font-family:var(--serif);font-size:14cqw;line-height:1;color:var(--olive-soft);opacity:.55}
+
+  /* ---------- CARD 1 : jornal ---------- */
+  .news{background:var(--paper);padding:0}
+  .news .grain{position:absolute;inset:0;opacity:.5;mix-blend-mode:multiply;
+    background:
+      radial-gradient(circle at 18% 22%, rgba(120,100,60,.20), transparent 42%),
+      radial-gradient(circle at 82% 74%, rgba(120,100,60,.16), transparent 46%),
+      repeating-linear-gradient(97deg, rgba(150,130,90,.10) 0 2px, transparent 2px 5px);}
+  .news .inner{position:absolute;inset:0;padding:7cqw 7.5cqw;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:.35cqw solid var(--ink);padding-bottom:1.6cqw}
+  .masthead .name{font-family:var(--serif);font-weight:900;font-size:4.4cqw;letter-spacing:.02em}
+  .masthead .meta{font-family:var(--sans);font-size:2cqw;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+  .rules{border-top:.12cqw solid var(--ink);margin-top:.7cqw}
+  .headline{font-family:var(--serif);font-weight:900;font-size:9.6cqw;line-height:.98;margin:5cqw 0 0;letter-spacing:-.01em}
+  .strike{position:relative;display:inline-block}
+  .strike svg{position:absolute;left:-2%;top:8%;width:104%;height:90%;overflow:visible}
+  .correct{position:relative;margin:3cqw 0 0;align-self:flex-start}
+  .correct .word{font-family:var(--hand);font-weight:700;font-size:15cqw;color:var(--red);line-height:.9;display:block;padding:0 3cqw}
+  .correct svg.ring{position:absolute;left:-6%;top:-16%;width:118%;height:132%;overflow:visible}
+  .arrow{position:absolute;right:-14cqw;top:-9cqw;width:16cqw;height:14cqw;overflow:visible}
+  .columns{margin-top:auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:3cqw;border-top:.12cqw solid var(--ink);padding-top:2.4cqw}
+  .col span{display:block;height:.9cqw;background:var(--ink);opacity:.20;margin-bottom:1cqw;border-radius:.4cqw}
+  .col span:nth-child(4n){width:72%}
+  .col span:nth-child(3n){width:88%}
+  .deck-line{font-family:var(--serif);font-style:italic;font-size:3.6cqw;color:var(--ink);margin:3.4cqw 0 0;max-width:78%}
+
+  /* ---------- cards de conteúdo ---------- */
+  .stack{display:flex;flex-direction:column;gap:4cqw;height:100%}
+  .spacer{margin-top:auto}
+  .rule{height:.35cqw;background:var(--olive);width:12cqw;border-radius:1cqw}
+  .quiet{background:var(--paper)}
+  .dark{background:#20261E;color:#F2EFE4}
+  .dark .p{color:#C9CDBE}
+  .dark .p strong{color:#fff}
+  .dark .kicker{color:#A8C08F}
+
+  /* prato */
+  .plate-wrap{display:flex;gap:5cqw;align-items:center;margin-top:2cqw}
+  .plate{position:relative;width:36cqw;height:36cqw;flex:none}
+  .legend{display:flex;flex-direction:column;gap:2.6cqw}
+  .leg{display:flex;gap:2.2cqw;align-items:flex-start}
+  .dot{width:2.6cqw;height:2.6cqw;border-radius:50%;margin-top:1cqw;flex:none}
+  .leg b{font-family:var(--sans);font-size:3.4cqw;font-weight:600;display:block;line-height:1.2}
+  .leg em{font-style:normal;font-family:var(--sans);font-size:2.7cqw;color:var(--ink-soft);line-height:1.35;display:block}
+
+  .list{display:flex;flex-direction:column;gap:3.4cqw;margin-top:1cqw}
+  .item{display:grid;grid-template-columns:auto 1fr;gap:3cqw;align-items:start}
+  .item .ic{width:8cqw;height:8cqw;flex:none}
+  .item b{font-size:3.6cqw;font-weight:600;display:block;margin-bottom:.6cqw}
+  .item span{font-size:3cqw;color:var(--ink-soft);line-height:1.42;display:block}
+
+  .big-q{font-family:var(--serif);font-size:7.6cqw;line-height:1.1;margin:0}
+  .cta-mark{font-family:var(--hand);font-size:6.4cqw;color:var(--red);transform:rotate(-3deg);display:inline-block}
+  @media (max-width:620px){.intro h1{font-size:26px}}
+</style>
+
+<div class="intro">
+  <h1>Carrossel — Agora é SOMP, não SOP</h1>
+  <p>9 artes quadradas (1080×1080) prontas para o feed. Para exportar: dê zoom até a arte ocupar a tela e capture, ou abra esta página no navegador e use “Salvar como PDF” — cada card sai em uma página.</p>
+  <p>A legenda completa está em <code>post-somp-nao-sop.md</code>.</p>
+</div>
+
+<div class="deck">
+
+  <!-- 1 -->
+  <div class="slot">
+    <p class="tag">Card 1 · Capa</p>
+    <div class="frame"><div class="card news">
+      <div class="grain"></div>
+      <div class="inner">
+        <div class="masthead">
+          <div class="name">O Consultório</div>
+          <div class="meta">Edição revista &nbsp;·&nbsp; Saúde da Mulher</div>
+        </div>
+        <div class="rules"></div>
+
+        <h2 class="headline">Síndrome dos Ovários
+          <span class="strike">POLICÍSTICOS
+            <svg viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M4 40 C 90 22, 190 46, 300 26 S 380 34, 396 22" fill="none" stroke="#C33228" stroke-width="9" stroke-linecap="round"/>
+              <path d="M10 48 C 120 34, 210 52, 330 32" fill="none" stroke="#C33228" stroke-width="5" stroke-linecap="round" opacity=".75"/>
+            </svg>
+          </span>
+        </h2>
+
+        <div class="correct">
+          <span class="word">SOMP</span>
+          <svg class="ring" viewBox="0 0 300 130" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M150 8 C 60 6, 12 34, 14 66 C 16 100, 78 122, 156 121 C 236 120, 290 98, 288 64 C 286 32, 232 10, 140 11" fill="none" stroke="#C33228" stroke-width="4.5" stroke-linecap="round"/>
+          </svg>
+          <svg class="arrow" viewBox="0 0 120 100" aria-hidden="true">
+            <path d="M112 88 C 96 44, 66 18, 20 12" fill="none" stroke="#C33228" stroke-width="5" stroke-linecap="round"/>
+            <path d="M20 12 l 26 4 M20 12 l 6 24" fill="none" stroke="#C33228" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <p class="deck-line">A mudança de nome que muda o seu tratamento — e o seu prato.</p>
+
+        <div class="columns">
+          <div class="col"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="col"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="col"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 2 -->
+  <div class="slot">
+    <p class="tag">Card 2 · O problema</p>
+    <div class="frame"><div class="card quiet">
+      <div class="stack">
+        <div class="kicker">Por que mudar</div>
+        <h2 class="h">Durante décadas chamamos de <em>Síndrome dos Ovários Policísticos</em>.</h2>
+        <div class="rule"></div>
+        <p class="p">O problema é que esse nome está errado em quase tudo — e o erro não ficou no papel. Ele foi parar na conduta.</p>
+        <div class="spacer"></div>
+        <p class="p"><strong>Três erros, três consequências.</strong> Arrasta →</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 3 -->
+  <div class="slot">
+    <p class="tag">Card 3 · Erro 1</p>
+    <div class="frame"><div class="card">
+      <div class="stack">
+        <div class="num">01</div>
+        <h2 class="h-sm">Não são cistos.</h2>
+        <div class="rule"></div>
+        <p class="p">O que aparece no ultrassom são <strong>folículos que pararam de amadurecer</strong> — não cistos. A palavra assustou gerações inteiras à toa.</p>
+        <div class="spacer"></div>
+        <svg viewBox="0 0 320 120" style="width:100%;height:22cqw" aria-hidden="true">
+          <g fill="none" stroke="#6E8A5F" stroke-width="2.5">
+            <ellipse cx="160" cy="60" rx="140" ry="52"/>
+          </g>
+          <g fill="#6E8A5F" opacity=".55">
+            <circle cx="70" cy="52" r="9"/><circle cx="104" cy="80" r="8"/><circle cx="140" cy="42" r="9"/>
+            <circle cx="176" cy="76" r="8"/><circle cx="212" cy="48" r="9"/><circle cx="246" cy="74" r="8"/>
+            <circle cx="120" cy="60" r="6"/><circle cx="200" cy="62" r="6"/>
+          </g>
+        </svg>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 4 -->
+  <div class="slot">
+    <p class="tag">Card 4 · Erro 2</p>
+    <div class="frame"><div class="card dark">
+      <div class="stack">
+        <div class="num" style="color:#A8C08F;opacity:.5">02</div>
+        <h2 class="h-sm">O problema não começa no ovário.</h2>
+        <p class="p">O ovário é onde a gente <strong>vê</strong> o sintoma. A raiz está no eixo metabólico: resistência à insulina, inflamação e excesso de androgênios.</p>
+        <div class="spacer"></div>
+        <svg viewBox="0 0 340 90" style="width:100%;height:20cqw" aria-hidden="true">
+          <g font-family="Work Sans, sans-serif" font-size="13" fill="#C9CDBE" text-anchor="middle">
+            <rect x="4" y="26" width="92" height="38" rx="19" fill="none" stroke="#A8C08F" stroke-width="2"/>
+            <text x="50" y="50">insulina alta</text>
+            <rect x="124" y="26" width="92" height="38" rx="19" fill="none" stroke="#A8C08F" stroke-width="2"/>
+            <text x="170" y="50">androgênios</text>
+            <rect x="244" y="26" width="92" height="38" rx="19" fill="none" stroke="#A8C08F" stroke-width="2"/>
+            <text x="290" y="50">ciclo parado</text>
+          </g>
+          <g stroke="#A8C08F" stroke-width="2" fill="none" stroke-linecap="round">
+            <path d="M100 45 h16"/><path d="M110 40 l6 5 -6 5"/>
+            <path d="M220 45 h16"/><path d="M230 40 l6 5 -6 5"/>
+          </g>
+        </svg>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 5 -->
+  <div class="slot">
+    <p class="tag">Card 5 · Erro 3</p>
+    <div class="frame"><div class="card">
+      <div class="stack">
+        <div class="num">03</div>
+        <h2 class="h-sm">O nome atrasou o cuidado.</h2>
+        <div class="rule"></div>
+        <p class="p">Olhar só para o ovário fez muita mulher sair do consultório com uma receita de anticoncepcional e <strong>nenhuma palavra sobre glicemia, sono, alimentação e força.</strong></p>
+        <div class="spacer"></div>
+        <p class="p" style="font-family:var(--serif);font-style:italic;font-size:4.4cqw;color:var(--ink)">“Volta daqui a um ano.”</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 6 -->
+  <div class="slot">
+    <p class="tag">Card 6 · O novo nome</p>
+    <div class="frame"><div class="card quiet">
+      <div class="stack">
+        <div class="kicker">A correção</div>
+        <h2 class="h-sm">Por isso a discussão internacional caminha para um nome que descreve o que realmente acontece: uma síndrome <em>metabólica e reprodutiva</em>.</h2>
+        <div class="spacer"></div>
+        <div class="correct" style="align-self:center;margin-bottom:2cqw">
+          <span class="word" style="font-size:18cqw">SOMP</span>
+          <svg class="ring" viewBox="0 0 300 130" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M150 8 C 60 6, 12 34, 14 66 C 16 100, 78 122, 156 121 C 236 120, 290 98, 288 64 C 286 32, 232 10, 140 11" fill="none" stroke="#C33228" stroke-width="4.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 7 -->
+  <div class="slot">
+    <p class="tag">Card 7 · A virada</p>
+    <div class="frame"><div class="card dark">
+      <div class="stack">
+        <div class="kicker">O que isso muda</div>
+        <h2 class="h">Se o centro é metabólico, o tratamento também é.</h2>
+        <div class="spacer"></div>
+        <p class="p">A alimentação deixa de ser “dieta para emagrecer” e vira <strong>ferramenta hormonal</strong>: cada refeição é uma dose de informação para a sua insulina.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 8 -->
+  <div class="slot">
+    <p class="tag">Card 8 · O prato</p>
+    <div class="frame"><div class="card">
+      <div class="stack">
+        <div class="kicker">Prático</div>
+        <h2 class="h-sm">Como montar o prato</h2>
+        <div class="plate-wrap">
+          <svg class="plate" viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="96" fill="none" stroke="#C9BFA6" stroke-width="3"/>
+            <circle cx="100" cy="100" r="84" fill="#F7F2E6"/>
+            <path d="M100 100 L100 16 A84 84 0 0 1 100 184 Z" fill="#6E8A5F" opacity=".85"/>
+            <path d="M100 100 L100 184 A84 84 0 0 1 26.3 58 Z" fill="#B8894A" opacity=".8"/>
+            <path d="M100 100 L26.3 58 A84 84 0 0 1 100 16 Z" fill="#C4A63C" opacity=".8"/>
+            <circle cx="100" cy="100" r="84" fill="none" stroke="#C9BFA6" stroke-width="2"/>
+          </svg>
+          <div class="legend">
+            <div class="leg"><span class="dot" style="background:#6E8A5F"></span><span><b>Metade: vegetais e fibras</b><em>Folhas, legumes, leguminosas. É a fibra que segura o pico de insulina.</em></span></div>
+            <div class="leg"><span class="dot" style="background:#B8894A"></span><span><b>Um quarto: proteína</b><em>Em todas as refeições — inclusive no café da manhã.</em></span></div>
+            <div class="leg"><span class="dot" style="background:#C4A63C"></span><span><b>Um quarto: carboidrato</b><em>Ele entra, mas nunca sozinho. Sempre acompanhado.</em></span></div>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <p class="p"><strong>Não é cortar carboidrato.</strong> É nunca deixar ele sozinho no prato.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 9 -->
+  <div class="slot">
+    <p class="tag">Card 9 · Além do prato + CTA</p>
+    <div class="frame"><div class="card quiet">
+      <div class="stack">
+        <div class="kicker">O tripé metabólico</div>
+        <div class="list">
+          <div class="item">
+            <svg class="ic" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="#3F5B3A" stroke-width="2.4"/><path d="M13 22c4-9 10-9 14-2" fill="none" stroke="#3F5B3A" stroke-width="2.4" stroke-linecap="round"/></svg>
+            <span><b>Gordura boa e anti-inflamatória</b><span>Azeite, abacate, castanhas e peixes gordos no dia a dia.</span></span>
+          </div>
+          <div class="item">
+            <svg class="ic" viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="15" width="9" height="10" rx="3" fill="none" stroke="#3F5B3A" stroke-width="2.4"/><rect x="27" y="15" width="9" height="10" rx="3" fill="none" stroke="#3F5B3A" stroke-width="2.4"/><path d="M13 20h14" stroke="#3F5B3A" stroke-width="2.4"/></svg>
+            <span><b>Treino de força</b><span>Músculo é o maior destino da glicose. Treinar melhora a sensibilidade à insulina.</span></span>
+          </div>
+          <div class="item">
+            <svg class="ic" viewBox="0 0 40 40" aria-hidden="true"><path d="M27 24a11 11 0 0 1-13-15 13 13 0 1 0 15 15z" fill="none" stroke="#3F5B3A" stroke-width="2.4" stroke-linejoin="round"/></svg>
+            <span><b>Sono e ritmo</b><span>Comer de dia, dormir de noite. Circadiano bagunçado piora a resistência à insulina.</span></span>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <p class="big-q">Trocar o nome não é detalhe.</p>
+        <p class="p">Comenta <span class="cta-mark">SOMP</span> que eu te mando o passo a passo de como montar o prato.</p>
+      </div>
+    </div></div>
+  </div>
+
+</div>
