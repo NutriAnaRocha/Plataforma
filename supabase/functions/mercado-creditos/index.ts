@@ -1,7 +1,7 @@
 // ============================================================
 //  mercado-creditos — resgate e consulta do pacote de leituras
 //
-//  O app "No mercado com a Nutri Ana" é grátis com limite diário.
+//  O RotuLens é grátis com limite diário.
 //  Quem quer mais compra um pacote de leituras pelo InfinitePay.
 //  Esta função faz duas coisas, e nenhuma delas confia no cliente:
 //

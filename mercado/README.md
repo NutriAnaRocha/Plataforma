@@ -1,4 +1,4 @@
-# No mercado com a Nutri Ana
+# RotuLens (no mercado com a Nutri Ana)
 
 App gratuito e instalável em que a pessoa fotografa o rótulo de um produto no
 supermercado e recebe, na hora: a leitura da tabela, a explicação dos

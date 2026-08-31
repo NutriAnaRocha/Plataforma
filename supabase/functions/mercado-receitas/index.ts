@@ -1,5 +1,5 @@
 // ============================================================
-//  mercado-receitas — o acervo do app "No mercado com a Nutri Ana"
+//  mercado-receitas — o acervo de receitas do RotuLens
 //
 //  { acao: "lista", categoria?, tempo?, busca?, dispositivo?, codigo? }
 //      -> os CARTÕES: título, chamada, tempo, rendimento, kcal e

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Receitas do app "No mercado com a Nutri Ana" — a FONTE do acervo.
+Receitas do RotuLens — a FONTE do acervo.
 
 COMO LER UM INGREDIENTE
     ("2 ovos", 100, 489)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-IMPORTADOR OPEN FOOD FACTS -> base local do app "No mercado com a Nutri Ana".
+IMPORTADOR OPEN FOOD FACTS -> base local do RotuLens.
 
 POR QUE ESPELHAR EM VEZ DE CONSULTAR AO VIVO:
 a API de BUSCA da Open Food Facts limita a ~10 requisicoes por minuto e devolve
