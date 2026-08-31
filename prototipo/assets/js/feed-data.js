@@ -18,8 +18,8 @@ window.FEED_DATA = {
   /* Resumo da rodada atual */
   semana: {
     eyebrow: "Atualização da Semana",
-    title: "7 estudos reais que mexem na sua conduta",
-    texto: "Creatina na saúde da mulher, manutenção de peso pós-tirzepatida (SURMOUNT-4), cepas de probiótico na SII, a virada da Cochrane sobre vitamina D na gestação, inositol na SOP pela diretriz internacional, proteína na DRC e mindfulness na compulsão. Cada card abre a leitura completa com o link do estudo original."
+    title: "9 estudos reais que chegam à sua conduta",
+    texto: "Telessaúde nutricional em doença cardiovascular, vitamina D na TPM, o ranking de proteína/creatina/ômega-3 para atletas, o programa Mind-Eat contra a alimentação emocional, probióticos que não mudam o TDAH, o que 19 meta-análises dizem sobre multivitamínico, a massa magra que ainda cai sob GLP-1, orientação remota de amamentação e o que a dieta realmente muda na função renal do paciente obeso sem DRC. Cada card abre a leitura completa com o link do estudo original."
   },
 
   /* Categorias (chips do feed) */
@@ -32,322 +32,414 @@ window.FEED_DATA = {
   cards: [
     /* ------------------------------------------------------------------ */
     {
-      id: "creatina-mulheres",
-      categoria: "Esportiva",
-      areas: ["Esportiva", "Saúde da Mulher"],
-      data: "2025",
-      title: "Creatina na saúde da mulher: do ciclo menstrual à menopausa",
-      resumo: "Revisão do JISSN reúne o que já se sabe sobre creatina em mulheres — força, composição corporal, humor e cognição — e mostra onde a evidência ainda é fina.",
-      mudou: "A creatina deixa de ser assunto só de atleta: há sinal de benefício ao longo da vida da mulher, mas os dados na perimenopausa e na gestação ainda são iniciais.",
-      aplicar: "3–5 g/dia é a dose usual e segura, e o efeito aparece quando ela vem junto de treino de força — não isolada.",
+      id: "nutricao-remota-cardiovascular",
+      categoria: "Clínica",
+      areas: ["Clínica", "Funcional"],
+      data: "13 ago 2026",
+      title: "Nutrição por telessaúde em doença cardiovascular: o que a revisão sistemática mostra",
+      resumo: "Revisão sistemática reúne os ensaios clínicos randomizados sobre intervenções nutricionais remotas — com ou sem componente de atividade física — em adultos com doença cardiovascular, olhando qualidade da dieta, marcadores bioquímicos e desfechos clínicos.",
+      mudou: "Reforça a telessaúde nutricional como via viável de reabilitação cardiovascular de longo prazo, mas os próprios autores dizem que a literatura ainda não permite conclusões definitivas sobre o tamanho do efeito.",
+      aplicar: "Considere o acompanhamento nutricional remoto para pacientes cardiopatas com barreira de acesso — geográfica ou de vulnerabilidade social —, mas calibre a expectativa: a evidência ainda é heterogênea demais para prometer resultado específico.",
       evidencia: 3,
-      link: "https://doi.org/10.1080/15502783.2025.2502094",
+      link: "https://doi.org/10.3390/healthcare14162523",
       fonte: {
-        autores: "Smith-Ryan e cols.",
-        revista: "Journal of the International Society of Sports Nutrition",
-        ano: "2025",
-        desenho: "Revisão narrativa",
-        amostra: "Síntese de estudos históricos e recentes em mulheres",
-        doi: "10.1080/15502783.2025.2502094",
-        pubmed: "40371844",
-        acesso: "Acesso aberto (texto completo livre)"
+        autores: "Equipe do Laboratório de Nutrição Clínica e Dietética e do Laboratório de Fisiologia do Exercício Clínico, Universidade de Thessaly (Grécia)",
+        revista: "Healthcare (MDPI)",
+        ano: "2026",
+        desenho: "Revisão sistemática de ensaios clínicos randomizados (sem meta-análise agrupada)",
+        amostra: "Ensaios em adultos com doença cardiovascular; número exato de estudos incluídos não especificado nos resumos indexados disponíveis nesta curadoria",
+        doi: "10.3390/healthcare14162523",
+        pubmed: "",
+        acesso: "Acesso aberto (MDPI)"
       },
       leitura: [
         {
           h: "Por que esta revisão existe",
-          p: "A pesquisa com creatina foi construída majoritariamente em homens. Mulheres têm diferenças fisiológicas relevantes — flutuação hormonal no ciclo menstrual, gestação e menopausa — e essas variações afetam o metabolismo da creatina. Os autores fazem um apanhado histórico do que foi estudado em mulheres, o que os estudos antigos deixaram passar e onde a evidência está hoje."
+          p: "A reabilitação cardiovascular de longo prazo depende de mudança sustentada de hábito alimentar, mas grande parte dos pacientes tem acesso limitado a acompanhamento presencial contínuo — por distância, mobilidade reduzida ou vulnerabilidade social. A telessaúde nutricional vem sendo testada como alternativa, e esta revisão reúne o que os ensaios clínicos randomizados publicados até agora mostram sobre o tema, isolando o componente nutricional do componente de atividade física quando possível."
         },
         {
           h: "Como o estudo foi feito",
-          p: "É uma revisão narrativa, não uma meta-análise: os autores selecionam e discutem a literatura, sem cálculo de efeito combinado. Isso significa que ela serve para organizar o campo e apontar direções — não para estabelecer tamanho de efeito. Vale ler com esse peso."
+          p: "É uma revisão sistemática de ensaios clínicos randomizados — não uma meta-análise com efeito combinado. Os autores buscaram estudos que testassem intervenção nutricional remota, com ou sem atividade física associada, em adultos com doença cardiovascular, olhando desfechos como biomarcadores bioquímicos, índices cardiovasculares, parâmetros antropométricos, capacidade de exercício, adesão à dieta mediterrânea, qualidade de vida, reinternação e óbito."
         },
         {
           h: "O que os autores encontraram",
-          p: "Os estudos iniciais mostraram benefício de creatina no desempenho de exercício em mulheres, mas quase sempre ignoraram a fase do ciclo menstrual. A pesquisa mais recente passou a controlar essa variável. O conjunto aponta efeito positivo sobre força muscular, desempenho e composição corporal, sobretudo quando a suplementação é combinada com treino resistido. Há ainda sinal de melhora de humor e função cognitiva, com possível alívio de sintomas depressivos. Evidência emergente sugere benefício na gestação e na pós-menopausa."
+          p: "As intervenções nutricionais remotas — por telefone, aplicativo, videochamada ou mensagem — associaram-se a melhora significativa na qualidade da dieta e a mudanças favoráveis nos níveis de atividade física dos participantes. Os autores descrevem a telessaúde como abordagem promissora e viável para o manejo de longo prazo de doenças cardiovasculares crônicas, sobretudo por ampliar o acesso ao cuidado em regiões remotas ou para pacientes com vulnerabilidade social."
         },
         {
-          h: "Onde a evidência é fraca",
-          p: "Os dados em mulheres na perimenopausa continuam limitados. Os próprios autores listam como agenda de pesquisa: otimizar as estratégias de dose para mulheres, entender implicações de longo prazo e explorar o uso na gestação e na perimenopausa. Ou seja: entusiasmo com creatina fora do esporte é legítimo, mas ainda não tem o mesmo lastro que tem no contexto de performance."
+          h: "O limite que os próprios autores apontam",
+          p: "Por ser síntese qualitativa e não meta-análise, a revisão não estima o tamanho do efeito nem separa com precisão o que vem da nutrição e o que vem da atividade física quando os dois estão combinados. Os autores são explícitos: a literatura atual ainda não permite conclusões definitivas, e são necessários ensaios maiores, com protocolos padronizados, desfechos consistentes e seguimento mais longo."
         },
         {
           h: "Na prática do consultório",
-          p: "Para pacientes que treinam força, a conduta é bem sustentada: 3–5 g/dia de monoidratado, uso contínuo, sem necessidade de saturação. Para pacientes na peri e pós-menopausa interessadas em massa magra, cognição ou humor, a conversa é de decisão compartilhada — explique que o sinal é promissor mas ainda não é definitivo, e amarre a suplementação ao treino de força, que é o que sustenta o efeito. Registre no prontuário a indicação e a dose, conforme a Resolução CFN nº 656/2020."
+          p: "Use a telessaúde como ferramenta real de ampliação de acesso — especialmente para paciente cardiopata que mora longe, tem mobilidade reduzida ou já abandonou acompanhamento presencial —, mas não venda como equivalente comprovado à consulta presencial. Estruture a modalidade remota com a mesma disciplina de metas e reavaliação que usaria presencialmente, e priorize os desfechos que a revisão aponta como respondendo melhor: qualidade global da dieta e nível de atividade física, não apenas peso."
         }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "tirzepatida-manutencao",
-      categoria: "Obesidade",
-      areas: ["Clínica", "Funcional"],
-      data: "2024",
-      title: "SURMOUNT-4: o que acontece quando a tirzepatida é retirada",
-      resumo: "Ensaio publicado no JAMA: quem parou a medicação reganhou peso (+14,0%) enquanto quem continuou seguiu perdendo (−5,5%) nas mesmas 52 semanas.",
-      mudou: "O reganho após a suspensão é a regra, não a exceção. O acompanhamento nutricional deixa de ser acessório e vira a peça que sustenta o resultado a longo prazo.",
-      aplicar: "Se a paciente pretende desmamar da medicação em algum momento, comece a construir o protocolo de transição e preservação de massa magra desde o início — não no mês da suspensão.",
-      evidencia: 5,
-      link: "https://doi.org/10.1001/jama.2023.24945",
+      id: "vitamina-d-tpm",
+      categoria: "Saúde da Mulher",
+      areas: ["Saúde da Mulher", "Funcional"],
+      data: "22 jun 2026",
+      title: "Vitamina D na TPM: meta-análise recente sugere alívio, mas o campo ainda é inconsistente",
+      resumo: "Meta-análise de 5 ECRs (436 mulheres) sugere que a vitamina D pode reduzir a gravidade global dos sintomas da TPM, principalmente físicos e depressivos, frente a placebo ou cuidado padrão.",
+      mudou: "Soma-se a um campo historicamente inconsistente: nem todo ensaio sobre vitamina D e TPM mostra benefício, e esta meta-análise não resolve a controvérsia — apenas aponta um sinal a favor, com poucos estudos.",
+      aplicar: "Dosar 25(OH)D em paciente com TPM significativa e tratar deficiência confirmada é conduta já sustentada por outros motivos; trate a suplementação como possível adjuvante nos sintomas de TPM, não como conduta central comprovada.",
+      evidencia: 3,
+      link: "https://doi.org/10.3390/jcm15124828",
       fonte: {
-        autores: "Aronne e cols. (grupo SURMOUNT-4)",
-        revista: "JAMA",
-        ano: "2024",
-        desenho: "Ensaio clínico randomizado de retirada (fase 3, duplo-cego, controlado por placebo)",
-        amostra: "783 adultos com obesidade no período aberto; 670 randomizados, em 70 centros de 4 países",
-        doi: "10.1001/jama.2023.24945",
-        pubmed: "38078870",
-        acesso: "Resumo livre no site do JAMA; texto completo por assinatura"
+        autores: "Zainab A. e cols.",
+        revista: "Journal of Clinical Medicine (MDPI)",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
+        amostra: "5 ECRs, 436 participantes",
+        doi: "10.3390/jcm15124828",
+        pubmed: "",
+        acesso: "Acesso aberto (MDPI)"
+      },
+      leitura: [
+        {
+          h: "O problema que a meta-análise ataca",
+          p: "A síndrome pré-menstrual afeta significativamente a qualidade de vida de muitas mulheres, e os tratamentos farmacológicos padrão esbarram em efeitos adversos ou contraindicações. A vitamina D é candidata a adjuvante há anos, mas os ensaios clínicos publicados até aqui deram resultados inconsistentes — alguns mostrando melhora clara, outros nenhuma diferença frente a placebo. Esta meta-análise tenta juntar o que existe de ECR e checar se há sinal consistente."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Busca em PubMed, Web of Science, Scopus, Google Scholar e CENTRAL até janeiro de 2026, incluindo apenas ensaios clínicos randomizados que comparassem vitamina D a controle passivo (placebo ou cuidado padrão) em mulheres com TPM. O desfecho primário foi a variação no escore total de gravidade da TPM; desfechos secundários incluíram depressão, ansiedade, sintomas físicos, desejo por comida (craving) e retenção hídrica."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "Cinco ensaios, 436 participantes. A vitamina D associou-se a redução da gravidade total dos sintomas de TPM em comparação ao controle passivo, com sinal mais consistente para sintomas físicos e depressivos. A suplementação foi bem tolerada, sem eventos adversos relevantes relatados nos estudos incluídos."
+        },
+        {
+          h: "Por que isso não fecha a questão",
+          p: "Cinco estudos é uma base pequena, e a própria literatura sobre vitamina D e TPM que motivou esta revisão é descrita como inconsistente — ensaios anteriores, fora desta meta-análise, não encontraram benefício sobre placebo. Isso não invalida o achado, mas pede cautela: é sinal preliminar, não confirmação robusta, e mais ensaios amplos e bem controlados são necessários antes de tratar isso como conduta estabelecida."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Se a paciente com TPM tem deficiência de vitamina D documentada, corrigir a deficiência já se justifica por motivos ósseos e metabólicos independentemente do efeito sobre TPM — e o possível ganho nos sintomas é bônus, não a razão principal da prescrição. Para paciente com TPM significativa e vitamina D normal, apresente a suplementação como opção de baixo risco e evidência ainda preliminar, sem prometer alívio garantido, e mantenha o manejo padrão (estilo de vida, sono, atividade física, e encaminhamento quando os sintomas forem incapacitantes) como base do cuidado."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "proteina-creatina-omega3-atletas",
+      categoria: "Esportiva",
+      areas: ["Esportiva"],
+      data: "13 mar 2026",
+      title: "Proteína, creatina ou ômega-3: qual suplemento serve para qual objetivo do atleta",
+      resumo: "Meta-análise em rede com 35 ECRs e 1.211 atletas treinados compara os três suplementos mais usados no esporte e ranqueia qual se destaca em força, resistência e recuperação.",
+      mudou: "Acaba com a lógica de 'suplemento único para tudo': cada um tem o desfecho onde realmente se destaca, e combinar as indicações com o objetivo do atleta rende mais do que escolher um suplemento genérico.",
+      aplicar: "Priorize creatina quando o objetivo for força máxima, proteína quando for desempenho de resistência, e ômega-3 quando o foco for recuperação — e comunique isso com clareza ao atleta que pergunta 'qual suplemento eu tomo'.",
+      evidencia: 4,
+      link: "https://doi.org/10.3390/nu18060909",
+      fonte: {
+        autores: "Wang Z., Qin G., Kim B.-M.",
+        revista: "Nutrients (MDPI)",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise em rede de ensaios clínicos randomizados",
+        amostra: "35 ECRs, 1.211 participantes em treinamento estruturado há pelo menos 6 meses",
+        doi: "10.3390/nu18060909",
+        pubmed: "41901084",
+        acesso: "Acesso aberto (MDPI)"
+      },
+      leitura: [
+        {
+          h: "Por que comparar os três",
+          p: "Proteína, creatina e ômega-3 são os suplementos mais estudados e mais usados no esporte, mas raramente são comparados diretamente entre si — a maior parte da literatura testa cada um isoladamente contra placebo. Esta é uma meta-análise em rede, desenho que permite comparar indiretamente intervenções que nunca foram testadas lado a lado, usando placebo como ponte estatística."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Busca em MEDLINE, Embase, Cochrane CENTRAL, Web of Science, SPORTDiscus e Scopus por ensaios clínicos randomizados que testassem suplementação de proteína, creatina ou ômega-3 em pessoas com pelo menos 6 meses de treinamento estruturado. Os desfechos avaliados foram força muscular, desempenho de resistência e recuperação pós-exercício. O ranqueamento entre suplementos foi calculado por SUCRA (probabilidade de ser a melhor opção para aquele desfecho)."
+        },
+        {
+          h: "O que cada suplemento entregou melhor",
+          p: "A creatina teve o melhor desempenho para força muscular (diferença média padronizada de 0,46; IC 95% 0,29–0,63; SUCRA 82,4%). A proteína se destacou para desempenho de resistência. O ômega-3 se destacou para desfechos de recuperação pós-exercício. Ou seja: os três suplementos são úteis, mas cada um tem o terreno onde a evidência é mais forte — e não são intercambiáveis."
+        },
+        {
+          h: "O que isso não resolve",
+          p: "Meta-análise em rede é comparação indireta, mais frágil que ensaios cabeça a cabeça — os autores não substituem a necessidade de mais estudos comparando os três suplementos dentro do mesmo desenho. A amostra (35 ECRs, 1.211 participantes) também mistura diferentes modalidades esportivas e protocolos de dose, o que limita a precisão da recomendação individual."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Use o objetivo do atleta para guiar a escolha, não o modismo do momento: força e potência pedem creatina (3–5 g/dia); resistência aeróbia se beneficia mais de proteína bem distribuída ao longo do dia; recuperação entre sessões intensas é onde o ômega-3 mostra o sinal mais forte. Nada impede combinar os três quando o objetivo do atleta cobre mais de uma dessas frentes — a meta-análise não testou a combinação, mas também não há motivo fisiológico para achar que eles competem entre si."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "mind-eat-programa",
+      categoria: "Comportamental",
+      areas: ["Comportamental", "Estética"],
+      data: "21 mai 2026",
+      title: "Programa Mind-Eat supera educação em alimentação intuitiva no comer consciente — mas não no peso",
+      resumo: "ECR unicêntrico com 46 adultos com sobrepeso/obesidade: o programa Mind-Eat (mindfulness estruturado) superou a educação em alimentação intuitiva no comer consciente e na alimentação emocional/externa, sem diferença em peso corporal.",
+      mudou: "Reforça que 'melhorar a relação com a comida' e 'perder peso' são desfechos diferentes — um programa pode ganhar no primeiro sem ganhar no segundo, e isso não é fracasso da intervenção.",
+      aplicar: "Ofereça o Mind-Eat (ou programa equivalente de mindfulness estruturado) quando o objetivo da paciente for reduzir alimentação emocional e externa, mas não prometa perda de peso como consequência automática — trate como desfechos separados na meta terapêutica.",
+      evidencia: 3,
+      link: "https://doi.org/10.1186/s12966-026-01931-y",
+      fonte: {
+        autores: "Van Beekum M. e cols.",
+        revista: "International Journal of Behavioral Nutrition and Physical Activity (IJBNPA)",
+        ano: "2026",
+        desenho: "Ensaio clínico randomizado, unicêntrico",
+        amostra: "66 adultos randomizados; 56 com avaliação basal; 46 na análise por intenção de tratar modificada",
+        doi: "10.1186/s12966-026-01931-y",
+        pubmed: "42163359",
+        acesso: "Acesso aberto"
       },
       leitura: [
         {
           h: "A pergunta do estudo",
-          p: "Já se sabia que a tirzepatida produz perda de peso expressiva. O que não se sabia era o que sustenta esse resultado: o remédio precisa continuar, ou a perda se mantém sozinha depois? O SURMOUNT-4 foi desenhado exatamente para responder isso."
+          p: "Programas de educação em alimentação intuitiva são o tratamento usual em muitos serviços para sobrepeso e obesidade, mas intervenções estruturadas de mindfulness (como o programa Mind-Eat) vêm sendo propostas como alternativa mais intensiva. Este ensaio comparou os dois diretamente, cabeça a cabeça, em vez de comparar mindfulness contra lista de espera — o que é uma escolha metodológica mais exigente."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Adultos com IMC ≥ 30, ou ≥ 27 com complicação relacionada ao peso (diabetes excluído), receberam tirzepatida subcutânea semanal na dose máxima tolerada (10 ou 15 mg) por 36 semanas, em regime aberto, com orientação de dieta e atividade física. Na semana 36, os 670 participantes que chegaram ao fim foram sorteados 1:1 para continuar a tirzepatida (335) ou trocar por placebo (335) durante mais 52 semanas, em duplo-cego. O desfecho primário foi a variação percentual média de peso entre a semana 36 e a semana 88."
+          p: "Sessenta e seis adultos com sobrepeso ou obesidade foram randomizados 1:1 entre o programa Mind-Eat — oito sessões experienciais semanais mais uma sessão de seguimento — e o programa padrão do serviço, de educação terapêutica baseada em alimentação intuitiva. Cinquenta e seis completaram a avaliação basal, e 46 entraram na análise por intenção de tratar modificada. Os desfechos incluíram escores de comer consciente, alimentação intuitiva, alimentação emocional e externa, restrição cognitiva, mindfulness traço, bem-estar psicológico, atividade física e peso corporal."
         },
         {
-          h: "Os números",
-          p: "As 36 semanas iniciais produziram perda média de 20,9% do peso. Da semana 36 à 88, quem continuou com tirzepatida perdeu mais 5,5%; quem foi para o placebo ganhou 14,0% — diferença de 19,4 pontos percentuais (IC 95% −21,2 a −17,7; p < 0,001). Manteve pelo menos 80% do peso perdido: 89,5% do grupo tirzepatida contra 16,6% do placebo. No balanço das 88 semanas, a redução total foi de 25,3% com tirzepatida e 9,9% com placebo. Os eventos adversos mais comuns foram gastrointestinais, em geral leves a moderados, mais frequentes com a medicação."
+          h: "O que apareceu de diferença",
+          p: "Houve interação Grupo × Tempo significativa nos escores de comer consciente, favorecendo o grupo Mind-Eat, mantida tanto logo após a intervenção quanto no seguimento. O grupo Mind-Eat também teve ganhos maiores em alimentação intuitiva, redução de alimentação emocional e externa, e aumento de mindfulness traço. Não houve diferença significativa entre os grupos para restrição cognitiva, bem-estar psicológico, nível de atividade física ou peso corporal."
         },
         {
-          h: "O que isso não responde",
-          p: "A média de idade era 48 anos e 71% eram mulheres — a amostra não é universal. O estudo excluiu pessoas com diabetes. E, principalmente: ele mostra o que acontece com a retirada abrupta dentro de um ensaio, não testou um protocolo nutricional estruturado de transição. O reganho de 14% é o cenário sem estratégia de desmame — que é justamente onde a nutrição entra."
+          h: "O que isso não mostra",
+          p: "É um ensaio unicêntrico com amostra pequena (46 na análise final) — generalização para outros contextos e populações pede replicação. E o resultado mais importante para a prática clínica é justamente o que não mudou: nenhum dos dois programas alterou o peso corporal no período estudado, o que separa claramente 'melhora comportamental' de 'perda de peso' como desfechos distintos."
         },
         {
           h: "Na prática do consultório",
-          p: "Duas conversas mudam de lugar. A primeira é de expectativa: a paciente precisa saber, desde a primeira consulta, que interromper sem plano tende a devolver boa parte do peso. A segunda é de composição corporal: perdas rápidas de 20% ou mais cobram massa magra, e a janela de retirada é o pior momento para chegar sarcopênica. Ancore o acompanhamento em proteína adequada, treino resistido e monitoramento de composição corporal — não só de peso. Se houver desmame previsto, escalone: reduza a dose e aumente a densidade do acompanhamento no mesmo período."
+          p: "Para pacientes com alimentação emocional e externa como queixa central — não peso isolado —, o Mind-Eat (ou estrutura equivalente de mindfulness com sessões seriadas e prática guiada) tem evidência real de ganho superior à educação padrão em alimentação intuitiva. Mas alinhe a expectativa: o dado não sustenta prometer perda de peso como resultado da intervenção comportamental. Se a meta da paciente inclui peso, trate como objetivo paralelo, com estratégia nutricional própria, não como consequência automática do trabalho comportamental."
         }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "probioticos-sii",
+      id: "probioticos-tdah",
       categoria: "Microbiota",
-      areas: ["Clínica", "Funcional"],
-      data: "2023",
-      title: "Qual cepa de probiótico para qual sintoma na SII",
-      resumo: "Meta-análise em rede com 81 ensaios e 9.253 participantes ranqueia as cepas por desfecho — dor, distensão, qualidade de vida e forma das fezes.",
-      mudou: "Prescrever 'um probiótico' não é conduta. O efeito é cepa-específico e desfecho-específico: a cepa que melhora dor não é a mesma que melhora a forma das fezes.",
-      aplicar: "Escolha a cepa pelo sintoma dominante da paciente e pelo subtipo de SII, e reavalie em 4–8 semanas antes de manter ou trocar.",
+      areas: ["Pediatria", "Comportamental"],
+      data: "17 jul 2026",
+      title: "Probióticos no TDAH: meta-análise não encontra benefício nos sintomas-núcleo",
+      resumo: "Meta-análise de 9 ECRs (482 crianças e adolescentes) não encontra benefício claro do probiótico sobre os sintomas centrais do TDAH, embora haja sinal exploratório para desfechos emocionais-comportamentais mais amplos.",
+      mudou: "Esfria a narrativa do eixo intestino-cérebro como solução para TDAH: a evidência direta de ECR, ainda que limitada, não sustenta prescrever probiótico com a expectativa de melhorar atenção ou hiperatividade.",
+      aplicar: "Não ofereça probiótico como intervenção para os sintomas centrais do TDAH; se a família já usa por outro motivo (ex.: sintomas gastrointestinais), não há problema em manter, mas não venda como tratamento do quadro comportamental principal.",
       evidencia: 4,
-      link: "https://doi.org/10.3390/nu15173856",
+      link: "https://doi.org/10.3390/nu18142357",
       fonte: {
-        autores: "Xie e cols.",
-        revista: "Nutrients",
-        ano: "2023",
-        desenho: "Revisão sistemática com meta-análise em rede",
-        amostra: "81 ensaios clínicos randomizados, 9.253 participantes adultos com SII",
-        doi: "10.3390/nu15173856",
-        pubmed: "37686889",
-        acesso: "Acesso aberto (texto completo livre)"
+        autores: "Yan Y. e cols.",
+        revista: "Nutrients (MDPI)",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
+        amostra: "9 ECRs, 482 crianças e adolescentes com diagnóstico de TDAH (critérios DSM)",
+        doi: "10.3390/nu18142357",
+        pubmed: "42514426",
+        acesso: "Acesso aberto (MDPI)"
       },
       leitura: [
         {
-          h: "O problema que o estudo ataca",
-          p: "A eficácia dos probióticos na síndrome do intestino irritável sempre foi controversa, e parte da confusão vem de tratar 'probiótico' como uma coisa só. Ensaios diferentes usaram cepas diferentes, mediram desfechos diferentes e chegaram a conclusões conflitantes. Esta é a primeira síntese a ranquear a eficácia cepa a cepa, separada por desfecho."
+          h: "Por que essa pergunta importa",
+          p: "A hipótese de que a disbiose intestinal contribui para o TDAH, via eixo intestino-cérebro, ganhou popularidade nos últimos anos, e probióticos passaram a ser oferecidos como adjuvante — inclusive fora de prescrição médica. Esta meta-análise reúne os ensaios clínicos randomizados existentes para checar se essa promessa se sustenta em evidência direta, e não apenas em plausibilidade biológica."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Busca na literatura até junho de 2023, incluindo apenas ensaios clínicos randomizados em adultos com SII. A meta-análise em rede permite comparar indiretamente cepas que nunca foram testadas uma contra a outra, usando o placebo como ponte. O ranqueamento é expresso em SUCRA — quanto mais perto de 100%, maior a probabilidade daquela cepa ser a melhor para aquele desfecho específico."
-        },
-        {
-          h: "Os resultados por desfecho",
-          p: "Gravidade global dos sintomas (IBS-SSS): quatro cepas isoladas e cinco misturas superaram o placebo, com Lactobacillus acidophilus DDS-1 em primeiro (SUCRA 92,9%). Qualidade de vida: uma mistura com cinco probióticos ficou em primeiro (SUCRA 100%). Dor abdominal: Bacillus coagulans MTCC 5856 (96,9%) e Bacillus coagulans Unique IS2 (92,6%) entre os mais eficazes. Distensão abdominal: três cepas isoladas e duas misturas foram eficazes. SII com predomínio de diarreia — frequência evacuatória: quatro cepas e uma mistura superaram o placebo; forma das fezes (escala de Bristol): Bacillus coagulans MTCC 5856 (99,6%) e Saccharomyces cerevisiae CNCM I-3856 (89,7%) na frente."
-        },
-        {
-          h: "As ressalvas",
-          p: "Comparação indireta em rede é menos robusta que comparação cabeça a cabeça — os próprios autores dizem que novos estudos são necessários para confirmar o ranking. Além disso, apenas algumas cepas mostraram efeito para desfechos específicos: a maioria dos produtos de prateleira não tem cepa identificada nem dose testada. E identificação de cepa é literal: DDS-1 e MTCC 5856 são códigos de linhagem, não sinônimos de 'Lactobacillus' ou 'Bacillus'."
-        },
-        {
-          h: "Na prática do consultório",
-          p: "Comece pelo sintoma que mais incomoda a paciente. Dor e distensão dominantes apontam para Bacillus coagulans com cepa identificada; SII-D com fezes desmanchadas apontam para B. coagulans MTCC 5856 ou S. cerevisiae CNCM I-3856; queixa difusa de qualidade de vida favorece as misturas multicepas. Na hora de indicar o produto, exija o código da cepa no rótulo — sem ele, não há como saber se é a linhagem estudada. Marque reavaliação em 4 a 8 semanas: sem resposta, troque a cepa em vez de aumentar a dose."
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "vitd-gestacao",
-      categoria: "Materno Infantil",
-      areas: ["Saúde da Mulher", "Fertilidade", "Pediatria"],
-      data: "2024",
-      title: "Cochrane revisa vitamina D na gestação — e a base de evidência encolhe",
-      resumo: "A atualização de 2024 retirou 21 estudos por problemas de confiabilidade. Sobraram 10, e a certeza da evidência caiu para baixa ou muito baixa.",
-      mudou: "Inverte o discurso: a suplementação universal de vitamina D no pré-natal não tem hoje o respaldo que se supunha para pré-eclâmpsia, DMG ou prematuridade.",
-      aplicar: "Dosar 25(OH)D e individualizar quem tem deficiência real, em vez de suplementar toda gestante por protocolo.",
-      evidencia: 3,
-      link: "https://doi.org/10.1002/14651858.CD008873.pub5",
-      fonte: {
-        autores: "Palacios e cols.",
-        revista: "Cochrane Database of Systematic Reviews",
-        ano: "2024",
-        desenho: "Revisão sistemática Cochrane com meta-análise e avaliação GRADE",
-        amostra: "10 estudos incluídos; na comparação principal, 8 estudos com 2.313 gestantes",
-        doi: "10.1002/14651858.CD008873.pub5",
-        pubmed: "39077939",
-        acesso: "Resumo livre na Cochrane Library; texto completo pode exigir acesso institucional"
-      },
-      leitura: [
-        {
-          h: "O que mudou nesta atualização",
-          p: "A versão anterior desta revisão incluía 30 estudos. Nesta atualização, os autores aplicaram uma ferramenta de avaliação de confiabilidade (trustworthiness) baseada em critérios pré-definidos de integridade científica. O resultado foi drástico: 20 estudos foram movidos para 'aguardando classificação', um foi excluído e um novo foi incluído — restaram 10. Retirar esses ensaios rebaixou a certeza da evidência para baixa ou muito baixa, por limitações de desenho, inconsistência entre estudos e imprecisão."
-        },
-        {
-          h: "Vitamina D isolada vs. placebo ou nenhuma intervenção",
-          p: "Oito estudos, 2.313 gestantes. Quatro foram julgados de baixo risco de viés na maioria dos domínios; quatro, de risco alto ou incerto. A evidência é muito incerta quanto ao efeito sobre pré-eclâmpsia (RR 0,53; IC 95% 0,21–1,33; 1 estudo, 165 mulheres), diabetes gestacional (RR 0,53; IC 0,03–8,28; 1 estudo, 165 mulheres), parto prematuro antes de 37 semanas (RR 0,76; IC 0,25–2,33; 3 estudos, 1.368 mulheres), síndrome nefrítica e hipercalcemia. Os intervalos de confiança são largos demais para sustentar conduta."
-        },
-        {
-          h: "Onde houve sinal",
-          p: "A suplementação pode reduzir o risco de hemorragia pós-parto grave (RR 0,68; IC 0,51–0,91; evidência de baixa certeza) — mas apenas um estudo, com 1.134 mulheres, reportou esse desfecho. E pode reduzir o risco de baixo peso ao nascer (RR 0,69; IC 0,44–1,08; 3 estudos, 371 bebês; baixa certeza), com a ressalva explícita dos autores de que o limite superior do intervalo não permite descartar aumento de risco. As combinações com cálcio, ou com cálcio e outros micronutrientes, produziram evidência muito incerta em todos os desfechos avaliados."
-        },
-        {
-          h: "Como ler isso sem exagerar para nenhum lado",
-          p: "Baixa certeza não é o mesmo que ausência de efeito: significa que os estudos existentes não permitem concluir. A vitamina D continua sendo um nutriente essencial e a deficiência documentada continua sendo condição a tratar. O que esta revisão derruba é o argumento de suplementar toda gestante à base de desfechos obstétricos, porque a evidência que sustentava esse argumento em grande parte não sobreviveu ao crivo de confiabilidade."
-        },
-        {
-          h: "Na prática do consultório",
-          p: "Mantenha a dosagem de 25(OH)D no início do pré-natal e trate a deficiência confirmada — isso não está em discussão. O que muda é a conversa com a gestante sem deficiência: não prometa redução de pré-eclâmpsia, diabetes gestacional ou prematuridade, porque a evidência atual não sustenta a promessa. Alinhe a conduta ao protocolo do serviço e ao acompanhamento obstétrico, e reavalie o status ao longo da gestação em vez de fixar dose no primeiro trimestre e esquecer."
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "sop-inositol",
-      categoria: "Saúde da Mulher",
-      areas: ["Saúde da Mulher", "Fertilidade", "Funcional"],
-      data: "2024",
-      title: "Inositol na SOP: o que a diretriz internacional de 2023 realmente encontrou",
-      resumo: "Meta-análise encomendada para embasar a diretriz internacional da SOP: 30 ensaios, 2.230 participantes — e uma conclusão mais modesta do que o mercado vende.",
-      mudou: "Inositol não é primeira linha consolidada. Há benefício possível em alguns marcadores metabólicos, mas a evidência global é limitada e inconclusiva.",
-      aplicar: "Decisão compartilhada: apresente o inositol como opção com evidência incerta e melhor tolerância gastrointestinal que a metformina, não como certeza.",
-      evidencia: 3,
-      link: "https://doi.org/10.1210/clinem/dgad762",
-      fonte: {
-        autores: "Fitz e cols.",
-        revista: "The Journal of Clinical Endocrinology and Metabolism (JCEM)",
-        ano: "2024",
-        desenho: "Revisão sistemática com meta-análise, produzida para a atualização de 2023 das diretrizes internacionais baseadas em evidência para SOP",
-        amostra: "30 ensaios, 2.230 participantes (1.093 intervenção, 1.137 controle); 19 estudos agrupados em meta-análise",
-        doi: "10.1210/clinem/dgad762",
-        pubmed: "38163998",
-        acesso: "Resumo livre; texto completo por assinatura"
-      },
-      leitura: [
-        {
-          h: "Por que este trabalho pesa",
-          p: "Não é mais uma meta-análise avulsa: foi conduzida especificamente para informar a atualização de 2023 das diretrizes internacionais baseadas em evidência para SOP. É o documento que os autores da diretriz usaram para decidir o que recomendar sobre inositol — o que o torna a referência mais próxima do consenso atual."
-        },
-        {
-          h: "Como o estudo foi feito",
-          p: "Busca em Medline, PsycInfo, EMBASE, All EBM e CINAHL, do início das bases até agosto de 2022. Foram extraídos desfechos hormonais, metabólicos, lipídicos, psicológicos, antropométricos, reprodutivos e eventos adversos, por um revisor com verificação independente por um segundo. Treze comparações foram avaliadas, três delas com dados agrupados em meta-análise."
+          p: "Busca em PubMed, Embase, Cochrane CENTRAL, Web of Science, PsycINFO e EBSCO, da criação das bases até outubro de 2025, incluindo ECRs em crianças e adolescentes (menores de 18 anos) com TDAH diagnosticado por critérios DSM. As intervenções duraram de 8 a 12 semanas. Os autores avaliaram tanto desfechos diretamente ligados ao TDAH quanto desfechos emocionais-comportamentais mais amplos, relatados pelos pais."
         },
         {
           h: "O que foi encontrado",
-          p: "A evidência sugere benefício do mio-inositol ou do D-quiro-inositol (DCI) em algumas medidas metabólicas, e benefício potencial do DCI sobre a ovulação — mas o inositol pode não ter efeito sobre os demais desfechos. Na comparação com metformina: a metformina pode melhorar mais a relação cintura-quadril e o hirsutismo; provavelmente não há diferença nos desfechos reprodutivos; e a evidência sobre IMC é muito incerta. O mio-inositol provavelmente causa menos eventos adversos gastrointestinais que a metformina, e os eventos são tipicamente leves e autolimitados."
+          p: "Nove ensaios, 482 participantes. Na síntese exploratória de desfechos relacionados ao TDAH, a suplementação probiótica não mostrou benefício claro (diferença média padronizada de −0,25; IC 95% −0,57 a 0,07; p = 0,131) — ou seja, a evidência atual de ECRs de curta duração não sustenta efeito sobre os sintomas centrais do TDAH. Achados exploratórios sugerem potencial de melhora em desfechos emocionais-comportamentais mais amplos relatados pelos pais, mas esse sinal é preliminar."
         },
         {
-          h: "A conclusão que o mercado costuma omitir",
-          p: "As palavras dos autores são explícitas: a evidência que sustenta o uso do inositol no manejo da SOP é limitada e inconclusiva. A recomendação é que profissional e paciente considerem essa incerteza junto com valores e preferências individuais, em decisão compartilhada. Isso é bem diferente de 'adjuvante de primeira linha', que é como o suplemento costuma ser apresentado."
+          h: "Por que não fechar a porta de vez",
+          p: "Nove ECRs é uma base pequena, com cepas, doses e durações heterogêneas, e o próprio desenho de 8 a 12 semanas pode ser curto demais para captar um efeito real, se ele existir. O sinal exploratório em desfechos emocionais-comportamentais mantém a linha de pesquisa aberta, mas ainda não é evidência suficiente para indicar probiótico com esse fim específico."
         },
         {
           h: "Na prática do consultório",
-          p: "O inositol continua sendo uma opção defensável, sobretudo para a paciente que não tolerou metformina — o perfil gastrointestinal é melhor. Mas a conversa precisa ser honesta: efeito provável em alguns marcadores metabólicos, possível efeito ovulatório com o DCI, e incerteza no resto. A base da conduta na SOP com perfil insulínico alterado segue sendo alimentar e comportamental — padrão de baixa carga glicêmica, atividade física e manejo de peso quando indicado. O inositol entra como adjuvante, com meta clara e prazo de reavaliação, não como o centro do tratamento."
+          p: "Para a família que chega perguntando se probiótico 'ajuda no TDAH', a resposta honesta hoje é que a evidência direta de ensaio clínico não mostra esse benefício nos sintomas centrais. Isso não significa desqualificar a saúde intestinal da criança por outros motivos legítimos — só significa não prometer melhora de atenção ou hiperatividade como resultado da suplementação. O tratamento com evidência estabelecida para TDAH continua sendo o manejo comportamental e, quando indicado, farmacológico, conduzido pela equipe responsável."
         }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "renal-proteina",
-      categoria: "Clínica",
-      areas: ["Renal", "Clínica"],
-      data: "2025",
-      title: "Dieta hipoproteica na DRC: evidência, controvérsias e como aplicar",
-      resumo: "Revisão no Journal of Internal Medicine organiza a briga: excesso de proteína agride o rim, restrição excessiva consome músculo — e o alvo é individual.",
-      mudou: "Sai a meta fixa em g/kg para todo mundo; entra a decisão por estágio da DRC, idade, estado nutricional e complicações.",
-      aplicar: "Antes de definir a meta proteica, avalie estado nutricional e massa muscular — restringir uma paciente já sarcopênica piora o prognóstico.",
-      evidencia: 3,
-      link: "https://doi.org/10.1111/joim.20117",
-      fonte: {
-        autores: "Mafra e cols.",
-        revista: "Journal of Internal Medicine",
-        ano: "2025",
-        desenho: "Revisão narrativa com orientações práticas",
-        amostra: "Síntese da literatura sobre ingestão proteica na DRC não dialítica",
-        doi: "10.1111/joim.20117",
-        pubmed: "40739997",
-        acesso: "Resumo livre; texto completo por assinatura"
-      },
-      leitura: [
-        {
-          h: "A controvérsia",
-          p: "O benefício da dieta hipoproteica em pacientes com função renal alterada permanece controverso. Os autores começam reconhecendo o motivo: estudos de ingestão alimentar são intrinsecamente complexos e carregam vieses que precisam ser compreendidos e controlados. Por isso a evidência nessa área continua limitada e disputada — o que não significa que não haja o que fazer."
-        },
-        {
-          h: "O que está bem estabelecido",
-          p: "Existe literatura abundante ligando ingestão proteica excessiva nesses pacientes a problemas cardiovasculares, estresse oxidativo, hiperfosfatemia, doença mineral óssea, acidose metabólica, inflamação e disbiose intestinal — um conjunto que contribui tanto para o dano renal quanto para desordens sistêmicas concomitantes. O excesso de proteína também leva a acúmulo de produtos nitrogenados, sobrecarregando a função renal."
-        },
-        {
-          h: "O outro lado do risco",
-          p: "Restringir demais é igualmente perigoso: consumo proteico excessivamente restritivo leva à perda de massa muscular, o que pode piorar desfechos clínicos e o prognóstico da paciente. Os autores insistem que a dieta hipoproteica continua sendo uma recomendação valiosa na DRC não dialítica — desde que idade, estado nutricional e complicações da doença sejam cuidadosamente considerados."
-        },
-        {
-          h: "O que a revisão não entrega",
-          p: "Por ser uma revisão narrativa, ela não estabelece faixas numéricas com força de meta-análise nem substitui as diretrizes nefrológicas (KDIGO, KDOQI) na definição de valores por estágio. O valor dela está em nomear os dois riscos simultâneos e defender uma estratégia individualizada e monitorada — não em fixar números."
-        },
-        {
-          h: "Na prática do consultório",
-          p: "Antes de escrever a meta proteica, faça a avaliação nutricional completa: massa muscular, força de preensão, histórico de perda de peso, exames de fósforo e bicarbonato. Em paciente idosa ou com sinais de desnutrição, restringir proteína sem estratégia de preservação muscular é trocar um risco por outro. Combine a meta com energia adequada — restrição proteica sem energia suficiente vira catabolismo — e monitore TFG, estado nutricional e marcadores metabólicos em intervalos definidos. E deixe registrado no prontuário o raciocínio que levou àquela meta, porque ela vai precisar ser revista conforme a doença evolui."
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "compulsao-mindful",
-      categoria: "Comportamental",
-      areas: ["Comportamental", "Estética"],
-      data: "2025",
-      title: "Mindfulness na compulsão alimentar: forte contra nada, empatado contra terapia",
-      resumo: "Atualização de 10 anos com 54 estudos: efeito médio-grande contra controles sem intervenção psicológica, e efeito desprezível contra outras psicoterapias ativas.",
-      mudou: "A pergunta certa deixa de ser 'mindfulness funciona?' e passa a ser 'mindfulness funciona melhor que a psicoterapia que a paciente já poderia estar fazendo?' — e aí o ganho some.",
-      aplicar: "Ótimo recurso para quem não está em acompanhamento psicológico nenhum; não é motivo para substituir uma terapia em andamento.",
+      id: "multivitaminico-revisao",
+      categoria: "Suplementação",
+      areas: ["Clínica", "Funcional"],
+      data: "25 nov 2025",
+      title: "O que 19 meta-análises dizem (e não dizem) sobre multivitamínico",
+      resumo: "Revisão rápida reúne 19 meta-análises sobre uso de multivitamínico/mineral, com mais de 5,5 milhões de participantes: há benefício em alguns desfechos específicos, nenhum em mortalidade geral.",
+      mudou: "Desloca a pergunta de 'multivitamínico funciona?' para 'funciona para quê': o efeito aparece em cognição, infecção e pressão arterial nos ECRs, mas some quando o desfecho é mortalidade por todas as causas — recomendação ampla e genérica perde sustento.",
+      aplicar: "Troque a indicação-padrão de multivitamínico 'para todo mundo' por indicação dirigida ao desfecho que a paciente de fato precisa (cognição, prevenção de infecção, controle pressórico), e não prometa efeito sobre longevidade ou mortalidade geral.",
       evidencia: 4,
-      link: "https://doi.org/10.1007/s10865-025-00550-5",
+      link: "https://doi.org/10.1016/j.arr.2025.102965",
       fonte: {
-        autores: "Liu e cols.",
-        revista: "Journal of Behavioral Medicine",
-        ano: "2025",
-        desenho: "Revisão sistemática com meta-análise (atualização de 10 anos da revisão de Godfrey, Gallo & Afari, 2015)",
-        amostra: "54 estudos incluídos (contra 19 na revisão original)",
-        doi: "10.1007/s10865-025-00550-5",
-        pubmed: "39979674",
-        acesso: "Resumo livre; texto completo por assinatura"
+        autores: "Wang W., Wazny V.K., Mahadzir M.D.A., Maier A.B.",
+        revista: "Ageing Research Reviews",
+        ano: "2026",
+        desenho: "Revisão rápida (rapid review) de meta-análises publicadas",
+        amostra: "19 meta-análises elegíveis (2000–2025), mais de 5,5 milhões de participantes ao todo, incluindo mais de 333 mil gestações e cerca de 905 mil crianças expostas à suplementação materna",
+        doi: "10.1016/j.arr.2025.102965",
+        pubmed: "41308839",
+        acesso: "Acesso aberto"
       },
       leitura: [
         {
-          h: "O que foi atualizado",
-          p: "Intervenções baseadas em mindfulness (MBIs) ganharam popularidade no tratamento da compulsão alimentar, e revisões anteriores encontraram efeitos de médio-grande a grande. Como a literatura cresceu rápido, os autores refizeram a revisão de Godfrey, Gallo e Afari (2015) dez anos depois. O salto de volume é evidente: 19 estudos elegíveis então, 54 agora."
+          h: "Por que uma revisão de revisões",
+          p: "Multivitamínico e mineral (MVM) é o suplemento mais usado no mundo, e a literatura sobre ele é gigantesca e fragmentada — meta-análises isoladas respondem perguntas isoladas, cada uma sobre um desfecho e uma população. Esta revisão rápida reúne 19 meta-análises publicadas entre 2000 e 2025 para dar um panorama do que, de fato, tem sustento consistente e do que não tem."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Busca em PubMed, PsycINFO e Web of Science com termos que cobriam compulsão alimentar, comer excessivo, episódios bulímicos objetivos, terapia de aceitação e compromisso (ACT), terapia comportamental dialética (DBT), mindfulness, meditação e mindful eating. A meta-análise de efeitos aleatórios calculou tamanhos de efeito entre grupos, separando dois tipos de comparação — e é aí que está o achado principal."
+          p: "É uma 'rapid review' — revisão sistemática com metodologia acelerada, que reúne meta-análises já publicadas em vez de ensaios primários individuais. As 19 meta-análises incluídas somam mais de 5,5 milhões de participantes, cobrindo desde uso geral em adultos até suplementação materna na gestação (mais de 333 mil gestações) e seus efeitos em crianças expostas (quase 905 mil crianças)."
         },
         {
-          h: "Os dois resultados que precisam ser lidos juntos",
-          p: "Contra controles sem intervenção psicológica (lista de espera, cuidado usual), as MBIs tiveram efeito médio-grande: g de Hedges médio de −0,65 ao fim do tratamento e −0,71 no seguimento. Contra controles psicológicos ativos — ou seja, outra psicoterapia de verdade — o efeito foi desprezível: −0,05 ao fim do tratamento e +0,13 no seguimento. Entre as MBIs, a DBT foi a que reuniu mais estudos com efeitos grandes. Intervenções que miravam diretamente a compulsão tiveram efeitos maiores do que aquelas em que a compulsão era desfecho secundário."
+          h: "Onde há sinal de benefício",
+          p: "Ensaios clínicos randomizados mostraram benefício de MVM em cognição/memória (sobretudo em idosos), redução de sintomas psicológicos e melhora de desfechos de infecção e de pressão arterial. Estudos observacionais sugeriram associação com menor risco de câncer e doença cardíaca, mas de forma inconsistente entre os estudos. Na gestação, a suplementação materna com MVM associou-se a redução de risco de câncer pediátrico em análises incluídas."
         },
         {
-          h: "O que os autores pedem a seguir",
-          p: "Mais ensaios randomizados comparando MBIs com outras intervenções psicológicas, meta-análises que separem os tipos de MBI e os alvos da intervenção, e seguimentos mais longos. Os estudos novos incluídos nesta revisão foram mais internacionais, focaram mais em participantes com sobrepeso ou obesidade e envolveram mais componentes de autoajuda e tecnologia — o que também abre a questão de dose e adesão."
+          h: "Onde o sinal desaparece — ou vira alerta",
+          p: "Não houve efeito de MVM sobre mortalidade por todas as causas, sobre desfechos de covid-19 nem sobre acuidade visual. Em um dos desfechos avaliados, houve sinal de risco aumentado de progressão de degeneração macular relacionada à idade. Ou seja: a recomendação de multivitamínico 'para viver mais' ou 'para a visão' especificamente não encontra sustento nesta síntese — o benefício é pontual, não universal."
         },
         {
           h: "Na prática do consultório",
-          p: "Para a paciente com compulsão que não está em acompanhamento psicológico algum, oferecer práticas estruturadas de mindful eating é uma intervenção com evidência real de benefício — e cabe dentro do escopo do nutricionista quando aplicada ao comportamento alimentar. Para a paciente que já faz terapia, o dado diz o oposto do senso comum: não há ganho em trocar. O caminho útil é integrar, alinhando com quem acompanha. E prefira protocolos que mirem a compulsão diretamente, com prática guiada e regular, em vez de orientações genéricas de 'comer com atenção' — a diferença de efeito entre as duas coisas apareceu na meta-análise."
+          p: "Abandone a prescrição genérica de MVM 'para prevenção' sem alvo definido. Use como ferramenta dirigida: idoso com queixa cognitiva, paciente com infecções de repetição, ou controle pressórico como parte do plano, são cenários com algum sustento em ECR. Gestante e MVM seguem tema à parte — a suplementação pré-natal tem indicação própria e não deve ser confundida com esta análise de uso geral. E não prometa longevidade ou proteção de mortalidade geral como justificativa da indicação — a evidência atual não sustenta essa promessa específica."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "glp1-massa-muscular",
+      categoria: "Obesidade",
+      areas: ["Clínica", "Funcional"],
+      data: "19 jun 2026",
+      title: "GLP-1 e massa muscular: o que a meta-análise mostra sobre o que se perde junto com o peso",
+      resumo: "Meta-análise de 7 ECRs (821 pacientes) mostra que, sob GLP-1 em dose para obesidade, a massa magra passa a representar proporção maior do peso total — mas a quantidade absoluta de massa magra ainda cai.",
+      mudou: "Confirma com dado agregado o que a prática já suspeitava: a perda de peso com GLP-1 é majoritariamente de gordura, mas não é só de gordura — ainda há perda real de massa magra em quilos, que pede estratégia de preservação muscular.",
+      aplicar: "Estruture proteína adequada e treino de força desde o início do tratamento com GLP-1, não como reação tardia à perda de massa magra — a meta-análise reforça que a queda absoluta de massa magra é real, mesmo quando a composição relativa melhora.",
+      evidencia: 4,
+      link: "https://doi.org/10.1038/s41366-026-02118-y",
+      fonte: {
+        autores: "Laverde L.P., Muñoz-Velandia O.M., Alfonso D. e cols.",
+        revista: "International Journal of Obesity (Nature)",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
+        amostra: "7 ECRs, 821 pacientes com obesidade tratados com agonista do receptor de GLP-1 em dose de manejo de obesidade, vs. placebo",
+        doi: "10.1038/s41366-026-02118-y",
+        pubmed: "",
+        acesso: "Não confirmado nesta curadoria (Nature Portfolio costuma ser por assinatura)"
+      },
+      leitura: [
+        {
+          h: "A pergunta por trás do estudo",
+          p: "Agonistas do receptor de GLP-1 em dose para obesidade produzem perda de peso expressiva, e uma preocupação recorrente na prática é quanto dessa perda é gordura e quanto é músculo. Esta meta-análise reúne os ensaios clínicos randomizados que mediram composição corporal para responder isso com dado agregado, em vez de estudo isolado."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Busca em PubMed, Embase e LILACS (literatura latino-americana e caribenha) até março de 2025, incluindo ensaios clínicos randomizados comparando agonistas de GLP-1 em dose de manejo de obesidade contra placebo, em adultos com obesidade. Foram incluídos 7 estudos, com 821 pacientes ao todo, avaliando desfechos de massa magra em termos absolutos e relativos."
+        },
+        {
+          h: "O achado que parece contraditório — mas não é",
+          p: "A massa magra como proporção do peso corporal total aumentou (+1,81 pontos percentuais; IC 95% 1,10–2,52; p < 0,00001) — porque a perda de peso é majoritariamente de gordura, então o que resta do corpo tem proporcionalmente mais músculo. Mas em termos absolutos, a massa magra caiu (−1,74 kg; IC 95% −3,04 a −0,45), e o percentual de massa magra também caiu (−3,06%; IC 95% −5,10 a −1,02). As duas coisas são verdadeiras ao mesmo tempo: a composição relativa melhora, mas o músculo perdido em quilos é real."
+        },
+        {
+          h: "O que a meta-análise não resolve",
+          p: "Sete estudos e 821 pacientes é uma base modesta para um tema com tanta variação de dose, duração de tratamento e composição corporal basal entre os participantes. A meta-análise também não testa se uma estratégia associada de proteína e treino de força muda esse resultado — ela descreve o que acontece sem intervenção nutricional estruturada, não avalia a mitigação."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Não deixe a melhora da proporção relativa de massa magra esconder a perda absoluta: o paciente ainda está perdendo massa muscular em quilos, e isso importa especialmente em paciente idoso, com massa magra já reduzida, ou em perda de peso rápida e intensa. Estruture ingestão proteica adequada e treino resistido como parte do protocolo desde a primeira consulta com o paciente em uso de GLP-1 — não espere sinais de sarcopenia para agir, porque a meta-análise mostra que a perda de massa magra acompanha o tratamento, não é exceção."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "amamentacao-remota",
+      categoria: "Materno Infantil",
+      areas: ["Materno Infantil", "Pediatria"],
+      data: "01 mai 2026",
+      title: "Orientação remota de amamentação: meta-análise reúne 30 ECRs e reforça o ganho, principalmente onde falta suporte presencial",
+      resumo: "Meta-análise com 30 ensaios clínicos randomizados e 8.389 lactentes encontra melhora nas taxas de amamentação e no desenvolvimento físico neonatal com orientação remota — telefone, mensagem de texto ou aplicativo —, com efeito mais forte em regiões de menor acesso a suporte presencial.",
+      mudou: "Consolida, com base ampla de ECRs, que orientação de amamentação a distância não é 'segunda opção' — é estratégia com evidência própria, particularmente valiosa onde o suporte presencial é escasso.",
+      aplicar: "Ofereça e estruture canal remoto de suporte à amamentação (mensagem, telefone, aplicativo) como parte do acompanhamento pós-parto, principalmente para a paciente com barreira de acesso ao retorno presencial nas primeiras semanas.",
+      evidencia: 4,
+      link: "https://doi.org/10.3389/fpubh.2026.1696927",
+      fonte: {
+        autores: "Hu M., Sang S., Pei H., Han X., Wei Q., Wei L., Qi J., Li J.",
+        revista: "Frontiers in Public Health",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
+        amostra: "30 ECRs, 8.389 lactentes",
+        doi: "10.3389/fpubh.2026.1696927",
+        pubmed: "",
+        acesso: "Acesso aberto (Frontiers)"
+      },
+      leitura: [
+        {
+          h: "O problema que a meta-análise ataca",
+          p: "O suporte presencial à amamentação nas primeiras semanas pós-parto nem sempre está disponível — por distância, falta de profissional na região ou barreira de acesso da própria puérpera. Orientação remota (telefone, mensagem de texto, aplicativos) vem sendo testada como alternativa ou complemento, e esta meta-análise reúne o conjunto mais recente de ensaios clínicos randomizados sobre o tema."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Busca em PubMed, Embase e Cochrane Library até novembro de 2024, incluindo ensaios clínicos randomizados que testassem orientação remota de amamentação — por telefone, SMS ou aplicativo — contra cuidado usual. Foram incluídos 30 estudos, somando 8.389 lactentes, avaliando taxas de amamentação e desfechos de saúde neonatal."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "A orientação remota associou-se a melhora significativa nas taxas de amamentação e no desenvolvimento físico dos recém-nascidos, em comparação ao cuidado usual. O efeito foi mais forte em regiões menos desenvolvidas, com menor acesso a suporte presencial estruturado — sugerindo que a orientação remota funciona, em parte, preenchendo uma lacuna de acesso que já existia."
+        },
+        {
+          h: "O que vale ponderar",
+          p: "Uma meta-análise que reúne estudos de contextos tão diferentes — desde regiões com forte rede de suporte à amamentação até regiões com pouquíssimo acesso — tende a mostrar maior heterogeneidade entre os resultados individuais, o que pode diluir a precisão de uma estimativa única de efeito. O achado de que o benefício é maior onde o suporte presencial é mais escasso é coerente com isso: a orientação remota parece ganhar mais força exatamente onde substitui uma lacuna real, não onde compete com um suporte já robusto."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Estruture um canal remoto real de suporte à amamentação — não apenas 'me manda mensagem se tiver dúvida', mas um protocolo com contatos programados nas primeiras semanas, sobretudo para a puérpera que mora longe, tem dificuldade de deslocamento ou está fora do período coberto pelas consultas presenciais. Priorize esse investimento justamente nos casos de menor acesso a suporte presencial — é onde a evidência mostra o maior ganho."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "dieta-funcao-renal-obesidade",
+      categoria: "Clínica",
+      areas: ["Renal", "Clínica"],
+      data: "29 jun 2026",
+      title: "Dieta e função renal na obesidade sem DRC: meta-análise não encontra efeito médio sobre a TFG",
+      resumo: "Meta-análise de 18 ECRs (1.438 participantes) em adultos obesos sem doença renal crônica não encontra efeito significativo geral de intervenções dietéticas sobre a taxa de filtração glomerular — mas o resultado muda conforme o método usado para medir a TFG.",
+      mudou: "Reduz a expectativa de que qualquer intervenção dietética para emagrecimento 'protege o rim' de forma mensurável na função renal, pelo menos no curto prazo estudado — o efeito depende de como (e não apenas se) a função renal foi avaliada.",
+      aplicar: "Não prometa melhora de função renal como benefício automático da dieta para emagrecimento em paciente obeso sem DRC; mantenha a indicação da dieta pelos benefícios metabólicos e de peso já estabelecidos, sem acrescentar a função renal como argumento extra sem base.",
+      evidencia: 4,
+      link: "https://doi.org/10.3389/fnut.2026.1836822",
+      fonte: {
+        autores: "Su W., Gou H., Yuan L., Luan Y., Wang Y., Song X., Xiong Y.",
+        revista: "Frontiers in Nutrition",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
+        amostra: "18 ECRs, 1.438 participantes adultos com obesidade, sem doença renal crônica",
+        doi: "10.3389/fnut.2026.1836822",
+        pubmed: "",
+        acesso: "Acesso aberto (Frontiers)"
+      },
+      leitura: [
+        {
+          h: "Por que avaliar função renal em obeso sem DRC",
+          p: "Obesidade é fator de risco reconhecido para o desenvolvimento futuro de doença renal, e é comum supor que qualquer intervenção dietética para emagrecimento também 'protege' a função renal, mesmo antes de haver dano estabelecido. Esta meta-análise testa essa suposição diretamente, olhando o efeito de intervenções dietéticas sobre a taxa de filtração glomerular (TFG) em adultos obesos que ainda não têm doença renal crônica."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Busca em PubMed, Web of Science, Embase e Cochrane Library por ensaios clínicos randomizados que testassem intervenção dietética em adultos com obesidade, sem DRC, medindo função renal. Meta-análises de efeitos aleatórios calcularam a diferença média padronizada (SMD), com análise de subgrupo pelo método usado para avaliar a TFG — estimada (eGFR, por fórmula) ou medida diretamente (mGFR)."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "No total, 18 ensaios e 1.438 participantes. A intervenção dietética não mostrou efeito significativo geral sobre a TFG (SMD = 0,06; IC 95% −0,20 a 0,32; p = 0,642). Mas a análise de subgrupo revelou diferença relevante conforme o método de avaliação: a TFG estimada (eGFR) aumentou significativamente com a dieta, enquanto a TFG medida diretamente (mGFR) teve redução não significativa — diferença entre os subgrupos estatisticamente relevante (p = 0,0005). Não houve efeito significativo sobre a taxa de excreção urinária de albumina."
+        },
+        {
+          h: "Por que o método de medida muda a conclusão",
+          p: "eGFR é calculada por fórmula a partir de creatinina e outras variáveis que mudam com a perda de peso (como massa muscular), o que pode inflar artificialmente a TFG estimada durante emagrecimento, sem refletir mudança real na filtração. mGFR mede diretamente, e é o padrão mais confiável — e foi essa medida que não mostrou melhora (com tendência a piora não significativa). Isso é um alerta prático: usar apenas eGFR para 'provar' benefício renal de uma dieta pode estar medindo o efeito da perda de massa muscular, não da função renal em si."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Continue indicando dieta para emagrecimento em paciente obeso pelos motivos já bem estabelecidos — metabólicos, cardiovasculares, funcionais —, mas não acrescente 'protege o rim' como argumento extra nesse público sem DRC: a evidência agregada não sustenta isso no curto prazo, e o sinal mais confiável (mGFR) nem aponta melhora. Se o objetivo for realmente monitorar função renal durante emagrecimento intenso, prefira ou combine com medida direta em vez de confiar isoladamente na TFG estimada por fórmula."
         }
       ]
     },
