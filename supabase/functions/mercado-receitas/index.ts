@@ -24,6 +24,9 @@
 //    rótulo, que chama a OpenAI) e quem faz isso não ia assinar mesmo.
 //
 //  verify_jwt = false: o app funciona sem conta, como o resto dele.
+//  Quando VEM um token e ele é da nutri, o acervo abre inteiro sem
+//  código — ver mercado_e_nutri (migração 0078). Paciente não entra
+//  por essa porta: o acervo é produto pago.
 // ============================================================
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -62,6 +65,30 @@ async function assinaturaAtiva(admin: any, codigo: string) {
   if (!codigo || !/^[A-Z0-9-]{6,16}$/.test(codigo)) return false;
   const { data } = await admin.rpc("mercado_assinatura_valida", { p_codigo: codigo });
   return data === true;
+}
+
+/** A nutri dona do app entra sem código.
+ *
+ *  Ela é quem escreve as receitas: pedir que carregue um código de
+ *  assinatura para reler o próprio acervo é atrito sem razão, e código
+ *  se perde ao trocar de celular. O token é OPCIONAL, como no resto do
+ *  app — sem ele nada muda, e um token vencido cai para visitante em vez
+ *  de virar erro na cara de quem só queria uma receita. */
+async function nutriLogada(admin: any, authHeader: string) {
+  const token = (authHeader || "").replace(/^Bearer\s+/i, "").trim();
+  // Sem sessão o app manda a própria chave anônima no Authorization.
+  // Perguntar quem é ela custaria uma ida ao /auth em TODA chamada de
+  // quem usa o app sem conta — que é quase todo mundo.
+  if (!token || token === Deno.env.get("SUPABASE_ANON_KEY")) return false;
+  try {
+    const { data } = await admin.auth.getUser(token);
+    const uid = data?.user?.id;
+    if (!uid) return false;
+    const { data: ok } = await admin.rpc("mercado_e_nutri", { p_uid: uid });
+    return ok === true;
+  } catch {
+    return false;
+  }
 }
 
 Deno.serve(async (req) => {
@@ -119,7 +146,8 @@ Deno.serve(async (req) => {
     // Quais destas ela já pode abrir sem gastar nada.
     let liberadas: string[] = [];
     let usadas = 0;
-    const assina = await assinaturaAtiva(admin, codigo);
+    const assina = await assinaturaAtiva(admin, codigo) ||
+      await nutriLogada(admin, req.headers.get("Authorization") || "");
     if (!assina && dispositivo) {
       const { data: v } = await admin
         .from("mercado_receitas_vistas")
@@ -154,8 +182,9 @@ Deno.serve(async (req) => {
     if (error) return json({ error: "falha_na_busca", tecnico: error.message }, 500);
     if (!receita) return json({ error: "receita_nao_encontrada" }, 404);
 
-    // 1) Assinante entra direto.
-    if (await assinaturaAtiva(admin, codigo)) {
+    // 1) Assinante — ou a própria nutri — entra direto.
+    if (await assinaturaAtiva(admin, codigo) ||
+        await nutriLogada(admin, req.headers.get("Authorization") || "")) {
       return json({ ok: true, receita, assinante: true });
     }
 
