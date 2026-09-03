@@ -1,132 +1,114 @@
-# Roteiro do vídeo do RotuLens
+# Roteiro do vídeo do RotuLens — versão caseira
 
-Vídeo vertical de 60 a 75 segundos, para publicar e impulsionar com tráfego pago.
-Tudo em ordem: o que separar antes, o que falar, o que mostrar na tela, o que
-escrever na legenda e o que fazer depois de publicar.
+Vídeo vertical de **35 segundos**, gravado na cozinha de casa, com um produto que
+já está na despensa. Dá para gravar, editar e publicar na mesma tarde.
 
 > Versão para ler no celular durante a gravação:
 > https://claude.ai/code/artifact/e95e4299-01ac-4180-ba8f-8d5cd21b97c5
 
 ---
 
-## 1. O que é esse vídeo
+## 1. Como esse vídeo é montado
 
-Você grava **duas coisas separadas** e junta na edição:
+Duas gravações que viram uma:
 
-- **A tela do celular** — a gravação de tela mostrando o app funcionando.
-- **Você** — segurando o produto e mexendo no celular.
+- **A tela do celular** — a gravação de tela mostrando o app lendo o rótulo.
+- **Você** — na bancada, com o produto na mão e o celular na outra.
 
-Na edição, a tela do celular fica por cima do vídeo de você. Sua voz narra o
+Na edição, a tela do celular entra por cima do vídeo de você. Sua voz narra o
 tempo todo.
 
-**Grave a tela primeiro, a fala depois.** A tela é a parte que precisa ficar
-bonita e não dá para fingir: o app leva alguns segundos para ler o rótulo. Grave
-uma leitura inteira, sem parar, e acelere a espera na edição.
+**Grave a tela primeiro, você depois.** Assim, na hora de gravar a sua parte,
+você já sabe quanto tempo cada coisa leva e consegue fazer os mesmos movimentos
+com a mão.
 
 ---
 
-## 2. Antes de ligar a câmera
+## 2. Preparando a cozinha
 
-**Escolha dois produtos:**
+**O lugar**
 
-- **O produto "surpresa"** — conhecido e que *parece* saudável: barra de cereal,
-  biscoito integral, granola, iogurte de fruta, suco de caixinha. O vídeo vive
-  dessa surpresa; refrigerante não surpreende ninguém.
-- **O produto aprovado** — um que o app diz que é boa escolha. Você vai mostrar
-  os dois.
+- **De frente para a janela**, com a luz batendo no rosto — nunca com a janela
+  atrás. Luz de dia resolve o vídeo inteiro.
+- Bancada limpa, com uma ou duas coisas só ao fundo: uma fruteira, uma planta.
+  Cozinha vazia demais fica fria, cheia demais rouba a atenção.
+- Celular apoiado em pé, na altura do peito, a um braço de distância. Uma pilha
+  de livros resolve.
+- Grave na **câmera de trás**, se der — a imagem é bem melhor que a da frente.
 
-**Teste os dois no app antes de gravar.** No produto surpresa, confira se as três
-marcas alternativas realmente apareceram na tela — é a melhor cena do vídeo e ela
-só existe se o app tiver entregado.
+**O som.** Cozinha tem eco. Feche a janela se a rua estiver barulhenta e fique
+longe da geladeira, que zumbe baixinho e aparece na gravação. Se tiver fone com
+microfone, use: resolve mais que qualquer outra coisa.
 
-**Prepare o celular:** app instalado na tela inicial com o ícone à vista, modo
-não perturbe ligado, brilho no máximo (foto de rótulo escura falha), bateria
-acima de 50% e a tela limpa — ela aparece em close.
+**O produto.** Pegue um que já está na sua despensa e que parece saudável: barra
+de cereal, biscoito integral, granola, iogurte de fruta, suco de caixinha. Melhor
+ainda se for algo que você realmente compra — dá para dizer isso, e a honestidade
+aparece.
+
+**Teste no app antes de gravar.** Faça a leitura uma vez e confira se as marcas
+alternativas apareceram na tela. É a melhor cena do vídeo e ela só existe se o
+app tiver entregado.
+
+**O celular que aparece na tela:** app já instalado na tela inicial com o ícone à
+vista, modo não perturbe ligado, brilho no máximo e a tela limpa — ela aparece em
+close.
 
 ---
 
 ## 3. O roteiro, cena a cena
 
-### 0:00 – 0:03 · O gancho
+### 0:00 – 0:04 · O gancho
 
-Você no mercado (ou na bancada da cozinha) segurando o produto e virando a
-embalagem para o lado da tabela nutricional. **Nada de tela ainda.**
+Você na bancada, segurando o produto e virando a embalagem para o lado da tabela.
+**Nada de tela ainda.**
 
-> Esse aqui se vende como opção saudável. Vou te mostrar o que tem escrito atrás.
+> Esse aqui está na minha despensa e se vende como opção saudável. Olha o que tem
+> escrito atrás.
 
-Comece já falando: sem "oi, gente", sem apresentação. Os três primeiros segundos
-são os únicos que o anúncio paga de verdade.
+Comece já falando — sem "oi, gente", sem apresentação. Os primeiros segundos
+decidem se a pessoa fica.
 
-### 0:03 – 0:12 · O problema
+### 0:04 – 0:11 · A foto
 
-Close na lista de ingredientes, o dedo correndo a linha, a letra miúda. Cortes
-rápidos, ainda sem o app.
+A tela do celular entra aqui pela primeira vez. Você abre o app **pelo ícone na
+tela inicial** e fotografa a tabela e a lista de ingredientes.
 
-> Lista de ingredientes com trinta nomes, metade que ninguém sabe o que é. Você
-> não tem que decorar isso. Nem eu decoro.
-
-### 0:12 – 0:20 · O app entra
-
-A tela do celular aparece pela primeira vez. Você abre o RotuLens **pelo ícone na
-tela inicial**, e o app já abre na câmera.
-
-> Então eu montei o RotuLens. Você fotografa o rótulo — e ele te explica.
+> Eu fiz um aplicativo pra isso. Fotografa a tabela, fotografa os ingredientes —
+> e ele te explica.
 
 Mostre o ícone na tela inicial antes de abrir: é esse pedacinho que responde "mas
-onde eu baixo?" sem você precisar falar.
+onde eu baixo?" sem você precisar falar. E acelere a espera do app na edição.
 
-### 0:20 – 0:33 · A leitura acontecendo
+### 0:11 – 0:20 · O que o app respondeu
 
-Você fotografa a tabela nutricional e a lista de ingredientes. O app processa
-(acelere essa espera na edição). O resultado aparece e você rola a tela devagar.
+O resultado aparece e você rola a tela devagar. **Mostre só duas coisas** — o
+vídeo é curto e não cabe tudo:
 
-> Foto da tabela, foto dos ingredientes. Pronto. Ele lê o produto em português de
-> gente: o que pesa contra, o que tem de bom, e o que é cada nome esquisito
-> daquela lista.
+1. O **veredito** do produto, no topo.
+2. **Um** ingrediente explicado — escolha o de nome mais esquisito e deixe parado
+   dois segundos, dando tempo de ler.
 
-Mostre nesta ordem — é a ordem em que o app entrega:
+> Em português de gente: o que pesa contra, o que tem de bom, e o que é cada nome
+> esquisito daquela lista.
 
-1. O **veredito** do produto: boa, atenção ou evitar.
-2. O **resumo** — uma ou duas frases dizendo o que o produto é de verdade.
-3. Os **alertas**, do que mais pesa para o que menos pesa.
-4. Os **ingredientes explicados**. Pare em um nome bem esquisito e deixe a
-   explicação legível por dois segundos inteiros — é o pedaço que faz a pessoa
-   querer o app.
+### 0:20 – 0:28 · O que levar no lugar
 
-### 0:33 – 0:45 · O que levar no lugar
+Você rola até as trocas e as marcas sugeridas.
 
-Você rola até os caminhos de troca e as marcas sugeridas.
-
-> E aí vem a parte que importa: ele não te deixa de mãos vazias no corredor. Diz
-> o que levar no lugar — uma versão melhor do mesmo produto, uma opção menos
-> processada e o alimento de verdade. E quando o produto não é boa escolha, ele
-> te mostra marcas de verdade que estão na prateleira.
+> E ele não te deixa de mãos vazias: diz o que levar no lugar, e quando o produto
+> não é boa escolha, mostra marcas de verdade que estão na prateleira.
 
 **Esta é a cena que vende o app.** Todo mundo critica ultraprocessado; quase
-ninguém diz o que comprar. Se o vídeo ficar longo, corte qualquer outra coisa
+ninguém diz o que comprar. Se precisar cortar tempo, corte qualquer outra coisa
 antes desta.
 
-### 0:45 – 0:52 · A quebra de objeção
-
-Corte rápido para a segunda leitura — a do produto que o app **aprova**,
-mostrando o veredito bom.
-
-> E não é para dizer que tudo é veneno. Olha esse aqui: passou. Sua foto não fica
-> guardada em lugar nenhum, e as marcas não são chute — saem de uma base de
-> produtos de verdade, não da cabeça de uma inteligência artificial.
-
-Isso responde de uma vez as três desconfianças mais comuns: "nutricionista só
-sabe proibir", "onde vai parar minha foto" e "isso aí é chute de robô".
-
-### 0:52 – 1:05 · O convite
+### 0:28 – 0:35 · O convite
 
 Você de volta ao quadro, celular na mão, tela do app visível ao lado do rosto.
 Aponta para cima (bio) e para baixo (comentários).
 
-> Não está em loja de aplicativo. Abre pelo navegador, no link da bio, e dá para
-> instalar na tela do celular igual app. Se preferir, comenta ROTULO aqui embaixo
-> que eu te mando o link no direct. Dá pra usar hoje, de graça, na sua próxima
-> compra.
+> É de graça e não está em loja de aplicativo: abre pelo navegador, no link da
+> bio. Ou comenta ROTULO aqui embaixo que eu te mando.
 
 Fale a palavra-chave **e** mostre ela escrita na tela ao mesmo tempo.
 
@@ -134,36 +116,25 @@ Fale a palavra-chave **e** mostre ela escrita na tela ao mesmo tempo.
 
 ## 4. Só a fala, para ler na hora
 
-Cerca de 55 segundos em ritmo de conversa.
+Cerca de 30 segundos em ritmo de conversa.
 
-> Esse aqui se vende como opção saudável. Vou te mostrar o que tem escrito atrás.
+> Esse aqui está na minha despensa e se vende como opção saudável. Olha o que tem
+> escrito atrás.
 >
-> Lista de ingredientes com trinta nomes, metade que ninguém sabe o que é. Você
-> não tem que decorar isso. Nem eu decoro.
+> Eu fiz um aplicativo pra isso. Fotografa a tabela, fotografa os ingredientes —
+> e ele te explica.
 >
-> Então eu montei o RotuLens. Você fotografa o rótulo — e ele te explica.
+> Em português de gente: o que pesa contra, o que tem de bom, e o que é cada nome
+> esquisito daquela lista.
 >
-> Foto da tabela, foto dos ingredientes. Pronto. Ele lê o produto em português de
-> gente: o que pesa contra, o que tem de bom, e o que é cada nome esquisito
-> daquela lista.
+> E ele não te deixa de mãos vazias: diz o que levar no lugar, e quando o produto
+> não é boa escolha, mostra marcas de verdade que estão na prateleira.
 >
-> E aí vem a parte que importa: ele não te deixa de mãos vazias no corredor. Diz
-> o que levar no lugar — uma versão melhor do mesmo produto, uma opção menos
-> processada e o alimento de verdade. E quando o produto não é boa escolha, ele
-> te mostra marcas de verdade que estão na prateleira.
->
-> E não é para dizer que tudo é veneno. Olha esse aqui: passou. Sua foto não fica
-> guardada em lugar nenhum, e as marcas não são chute — saem de uma base de
-> produtos de verdade, não da cabeça de uma inteligência artificial.
->
-> Não está em loja de aplicativo. Abre pelo navegador, no link da bio, e dá para
-> instalar na tela do celular igual app. Se preferir, comenta ROTULO aqui embaixo
-> que eu te mando o link no direct. Dá pra usar hoje, de graça, na sua próxima
-> compra.
+> É de graça e não está em loja de aplicativo: abre pelo navegador, no link da
+> bio. Ou comenta ROTULO aqui embaixo que eu te mando.
 
-**Se travar, não recomece do começo** — refaça só o parágrafo; os cortes já estão
-previstos. E se o vídeo pronto passar de 70 segundos, o trecho a encurtar é o
-segundo parágrafo, nunca o das trocas.
+**Se travar, não recomece do começo** — refaça só o parágrafo. Como cada um vira
+uma cena, o corte já está previsto e ninguém percebe a emenda.
 
 ---
 
@@ -174,12 +145,10 @@ Um de cada vez, nunca dois ao mesmo tempo.
 | Quando | Texto | Como |
 |---|---|---|
 | 0:01 | O que a embalagem não conta | Grande, no centro |
-| 0:07 | xarope de glicose · maltodextrina · INS 471 | Pequeno, sobre a lista |
-| 0:14 | RotuLens | Só o nome, com o ícone |
-| 0:38 | sempre 3 marcas · nunca só uma | Sobre as marcas na tela |
-| 0:48 | a foto não é guardada | Discreto, embaixo |
-| 0:56 | link na bio | Em cima |
-| 0:59 | comenta ROTULO | Embaixo, junto com a fala |
+| 0:06 | RotuLens | Só o nome, com o ícone |
+| 0:23 | sempre 3 marcas · nunca só uma | Sobre as marcas na tela |
+| 0:29 | link na bio | Em cima |
+| 0:32 | comenta ROTULO | Embaixo, junto com a fala |
 
 **Legenda escrita no vídeo inteiro** — a maior parte assiste sem som. Letra
 grossa, bem contrastada, e nunca na parte de baixo da tela, onde o Instagram
@@ -191,8 +160,9 @@ coloca os botões.
 
 **Legenda do post**
 
-> Fotografa o rótulo, o RotuLens te explica — e ainda te diz **o que levar no
-> lugar**, com marcas que existem na prateleira.
+> Peguei um produto da minha própria despensa. Fotografa o rótulo, o RotuLens te
+> explica — e ainda te diz **o que levar no lugar**, com marcas que existem na
+> prateleira.
 >
 > Não está em loja de aplicativo ainda: abre pelo navegador e instala na tela do
 > celular. Link na bio 🔗
@@ -232,17 +202,11 @@ comentário da palavra-chave já vem sozinho do post normal.
 **Botão:** "Saiba mais". Nunca "Instalar agora": o app não está em loja, e a
 promessa quebrada no clique derruba o resultado e reprova o anúncio.
 
-**Texto do anúncio — versão A**
+**Texto do anúncio**
 
-> Você compra "integral", "light", "fit" — e não tem como conferir ali no
-> corredor. O RotuLens lê o rótulo por você: fotografa, e ele te explica o que o
-> produto é de verdade e o que levar no lugar. Grátis, direto no navegador.
-
-**Texto do anúncio — versão B**
-
-> Uma nutricionista no seu bolso, no corredor do mercado. Foto do rótulo, leitura
-> em português de gente, e pelo menos 3 marcas para levar no lugar. Sem baixar de
-> loja nenhuma.
+> Você compra "integral", "light", "fit" — e não tem como conferir. O RotuLens lê
+> o rótulo por você: fotografa, e ele te explica o que o produto é de verdade e o
+> que levar no lugar. Grátis, direto no navegador.
 
 **Títulos para testar**
 
@@ -254,15 +218,15 @@ promessa quebrada no clique derruba o resultado e reprova o anúncio.
 supermercado, leitura de rótulo, maternidade. Comece amplo — nesse anúncio quem
 carrega o resultado é o vídeo, não a segmentação.
 
-**Como testar sem gastar à toa:** grave o vídeo uma vez e regrave só os 3
-primeiros segundos, quatro vezes, com as frases abaixo. Rode as quatro versões
-juntas com pouco dinheiro por dia, por 3 ou 4 dias, e só então coloque a verba na
-que sobreviveu.
+**O teste barato:** como você já está em casa e com tudo montado, regrave só os
+4 primeiros segundos, três vezes, com as frases abaixo. Leva cinco minutos e é o
+que mais muda resultado em anúncio. Rode as três juntas com pouco dinheiro por
+dia, por 3 ou 4 dias, e depois concentre a verba na que sobreviver.
 
-1. Esse aqui se vende como opção saudável. Vou te mostrar o que tem atrás.
+1. Esse aqui está na minha despensa e se vende como opção saudável. Olha o que
+   tem atrás.
 2. Você compra isso achando que é integral. Deixa eu te mostrar uma coisa.
-3. Nutricionista no mercado com você: fotografa o rótulo e eu te explico.
-4. Não decora lista de ingrediente. Faz isso aqui. *(já com o app na mão)*
+3. Não decora lista de ingrediente. Faz isso aqui. *(já com o app na mão)*
 
 ---
 
@@ -272,10 +236,10 @@ que sobreviveu.
   rótulo (Res. CFN 856/2026). Uma linha na legenda resolve; não precisa entrar na
   fala.
 - **Nada de promessa de emagrecimento ou de saúde**, nem na fala, nem na legenda,
-  nem no anúncio. Além da questão do conselho, é o tipo de promessa que reprova
-  criativo nas plataformas de anúncio.
-- **Não fale mal de marca pelo nome.** Borre ou deixe fora do quadro a marca do
-  produto criticado. As únicas marcas na tela são as que o app sugeriu.
+  nem no anúncio. É também o tipo de promessa que reprova criativo nas
+  plataformas de anúncio.
+- **Não fale mal de marca pelo nome.** Vire a embalagem, tampe com a mão ou deixe
+  fora do quadro. As únicas marcas na tela são as que o app sugeriu.
 - **Não invente número.** Se citar um valor da tabela na fala, ele precisa ser o
   que está aparecendo na tela naquele momento.
 
@@ -284,24 +248,22 @@ que sobreviveu.
 ## 9. Checklist
 
 **Antes de gravar**
-- [ ] Produto "surpresa" escolhido e testado no app (as três marcas apareceram)
-- [ ] Produto aprovado escolhido e testado (veredito bom na tela)
-- [ ] App instalado na tela inicial, ícone à vista
-- [ ] Não perturbe ligado, bateria acima de 50%, brilho no máximo
-- [ ] Tela do celular limpa
+- [ ] Produto escolhido na despensa e testado no app (as marcas apareceram)
+- [ ] Bancada arrumada, você de frente para a janela
+- [ ] Celular apoiado em pé, na altura do peito
+- [ ] Não perturbe ligado, brilho no máximo, tela limpa
+- [ ] App na tela inicial, com o ícone à vista
 
 **Gravando**
-- [ ] Tela: leitura completa do produto surpresa, sem cortar
-- [ ] Tela: leitura completa do produto aprovado
-- [ ] Você mexendo no celular, com os mesmos movimentos da tela
-- [ ] Close da lista de ingredientes
-- [ ] Fala completa, com áudio limpo
-- [ ] Os quatro ganchos, gravados separadamente
+- [ ] Tela: a leitura inteira, sem parar no meio
+- [ ] Você com o produto e o celular, fazendo os mesmos movimentos
+- [ ] A fala completa, com áudio limpo
+- [ ] Os três ganchos, gravados separadamente
 
 **Editando**
 - [ ] Espera do app acelerada
 - [ ] Legendas conferidas palavra por palavra
-- [ ] Marca do produto criticado borrada ou fora do quadro
+- [ ] Marca do produto criticado fora do quadro ou tampada
 - [ ] Aviso de orientação geral na legenda
 - [ ] Exportado em vertical, sem nada na área dos botões do Instagram
 
