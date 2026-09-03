@@ -1,7 +1,8 @@
 # Roteiro do vídeo do RotuLens — versão caseira
 
-Vídeo vertical de **35 segundos**, gravado na cozinha de casa, com um produto que
-já está na despensa. Dá para gravar, editar e publicar na mesma tarde.
+Vídeo vertical de **37 segundos**, gravado na cozinha de casa, com dois produtos
+que já estão na despensa. Tom de conversa, do jeito que você contaria para uma
+amiga. Dá para gravar, editar e publicar na mesma tarde.
 
 > Versão para ler no celular durante a gravação:
 > https://claude.ai/code/artifact/e95e4299-01ac-4180-ba8f-8d5cd21b97c5
@@ -13,7 +14,7 @@ já está na despensa. Dá para gravar, editar e publicar na mesma tarde.
 Duas gravações que viram uma:
 
 - **A tela do celular** — a gravação de tela mostrando o app lendo o rótulo.
-- **Você** — na bancada, com o produto na mão e o celular na outra.
+- **Você** — na bancada, com os dois produtos na mão e o celular por perto.
 
 Na edição, a tela do celular entra por cima do vídeo de você. Sua voz narra o
 tempo todo.
@@ -40,10 +41,11 @@ com a mão.
 longe da geladeira, que zumbe baixinho e aparece na gravação. Se tiver fone com
 microfone, use: resolve mais que qualquer outra coisa.
 
-**O produto.** Pegue um que já está na sua despensa e que parece saudável: barra
-de cereal, biscoito integral, granola, iogurte de fruta, suco de caixinha. Melhor
-ainda se for algo que você realmente compra — dá para dizer isso, e a honestidade
-aparece.
+**Os produtos.** Pegue **dois produtos parecidos** que já estão na sua despensa —
+duas granolas, dois biscoitos, dois iogurtes. São eles que criam a dúvida da
+primeira frase: um em cada mão, você olhando de um para o outro. Depois, leia no
+app **o que parece mais saudável**: a surpresa é maior quando cai justo o que a
+pessoa apostaria.
 
 **Teste no app antes de gravar.** Faça a leitura uma vez e confira se as marcas
 alternativas apareceram na tela. É a melhor cena do vídeo e ela só existe se o
@@ -57,29 +59,30 @@ close.
 
 ## 3. O roteiro, cena a cena
 
-### 0:00 – 0:04 · O gancho
+### 0:00 – 0:06 · O gancho
 
-Você na bancada, segurando o produto e virando a embalagem para o lado da tabela.
-**Nada de tela ainda.**
+Você na bancada, com um produto em cada mão, olhando de um para o outro — o gesto
+de quem está em dúvida no corredor. **Nada de tela ainda.**
 
-> Esse aqui está na minha despensa e se vende como opção saudável. Olha o que tem
-> escrito atrás.
+> Sabe quando você está no mercado com dois produtos na mão, sem saber qual é o
+> mais saudável? Eu fiz um aplicativo pra isso.
 
-Comece já falando — sem "oi, gente", sem apresentação. Os primeiros segundos
-decidem se a pessoa fica.
+**A pergunta é o gancho.** Quem já viveu essa dúvida no corredor para de rolar
+ali, porque você descreveu a cena dela. Comece já falando — sem "oi, gente", sem
+apresentação — e diga que o aplicativo é seu já na primeira frase.
 
-### 0:04 – 0:11 · A foto
+### 0:06 – 0:13 · A foto
 
 A tela do celular entra aqui pela primeira vez. Você abre o app **pelo ícone na
 tela inicial** e fotografa a tabela e a lista de ingredientes.
 
-> Eu fiz um aplicativo pra isso. Fotografa a tabela, fotografa os ingredientes —
-> e ele te explica.
+> Você fotografa o rótulo ali mesmo, na frente da prateleira. A tabela e a lista
+> de ingredientes. Pronto.
 
 Mostre o ícone na tela inicial antes de abrir: é esse pedacinho que responde "mas
 onde eu baixo?" sem você precisar falar. E acelere a espera do app na edição.
 
-### 0:11 – 0:20 · O que o app respondeu
+### 0:13 – 0:21 · O que o app respondeu
 
 O resultado aparece e você rola a tela devagar. **Mostre só duas coisas** — o
 vídeo é curto e não cabe tudo:
@@ -88,21 +91,21 @@ vídeo é curto e não cabe tudo:
 2. **Um** ingrediente explicado — escolha o de nome mais esquisito e deixe parado
    dois segundos, dando tempo de ler.
 
-> Em português de gente: o que pesa contra, o que tem de bom, e o que é cada nome
-> esquisito daquela lista.
+> E ele te responde em português de gente: o que esse produto é de verdade, e o
+> que significa aquele nome esquisito que ninguém sabe o que é.
 
-### 0:20 – 0:28 · O que levar no lugar
+### 0:21 – 0:29 · O que levar no lugar
 
 Você rola até as trocas e as marcas sugeridas.
 
-> E ele não te deixa de mãos vazias: diz o que levar no lugar, e quando o produto
-> não é boa escolha, mostra marcas de verdade que estão na prateleira.
+> E sabe o pior, que é largar o produto e continuar sem saber o que levar? Ele te
+> diz o que pegar no lugar — com marcas de verdade, que estão ali na prateleira.
 
 **Esta é a cena que vende o app.** Todo mundo critica ultraprocessado; quase
 ninguém diz o que comprar. Se precisar cortar tempo, corte qualquer outra coisa
 antes desta.
 
-### 0:28 – 0:35 · O convite
+### 0:29 – 0:37 · O convite
 
 Você de volta ao quadro, celular na mão, tela do app visível ao lado do rosto.
 Aponta para cima (bio) e para baixo (comentários).
@@ -116,19 +119,19 @@ Fale a palavra-chave **e** mostre ela escrita na tela ao mesmo tempo.
 
 ## 4. Só a fala, para ler na hora
 
-Cerca de 30 segundos em ritmo de conversa.
+Cerca de 32 segundos em ritmo de conversa.
 
-> Esse aqui está na minha despensa e se vende como opção saudável. Olha o que tem
-> escrito atrás.
+> Sabe quando você está no mercado com dois produtos na mão, sem saber qual é o
+> mais saudável? Eu fiz um aplicativo pra isso.
 >
-> Eu fiz um aplicativo pra isso. Fotografa a tabela, fotografa os ingredientes —
-> e ele te explica.
+> Você fotografa o rótulo ali mesmo, na frente da prateleira. A tabela e a lista
+> de ingredientes. Pronto.
 >
-> Em português de gente: o que pesa contra, o que tem de bom, e o que é cada nome
-> esquisito daquela lista.
+> E ele te responde em português de gente: o que esse produto é de verdade, e o
+> que significa aquele nome esquisito que ninguém sabe o que é.
 >
-> E ele não te deixa de mãos vazias: diz o que levar no lugar, e quando o produto
-> não é boa escolha, mostra marcas de verdade que estão na prateleira.
+> E sabe o pior, que é largar o produto e continuar sem saber o que levar? Ele te
+> diz o que pegar no lugar — com marcas de verdade, que estão ali na prateleira.
 >
 > É de graça e não está em loja de aplicativo: abre pelo navegador, no link da
 > bio. Ou comenta ROTULO aqui embaixo que eu te mando.
@@ -144,11 +147,11 @@ Um de cada vez, nunca dois ao mesmo tempo.
 
 | Quando | Texto | Como |
 |---|---|---|
-| 0:01 | O que a embalagem não conta | Grande, no centro |
-| 0:06 | RotuLens | Só o nome, com o ícone |
-| 0:23 | sempre 3 marcas · nunca só uma | Sobre as marcas na tela |
-| 0:29 | link na bio | Em cima |
-| 0:32 | comenta ROTULO | Embaixo, junto com a fala |
+| 0:02 | Qual desses é o mais saudável? | Grande, no centro |
+| 0:07 | RotuLens | Só o nome, com o ícone |
+| 0:25 | sempre 3 marcas · nunca só uma | Sobre as marcas na tela |
+| 0:31 | link na bio | Em cima |
+| 0:34 | comenta ROTULO | Embaixo, junto com a fala |
 
 **Legenda escrita no vídeo inteiro** — a maior parte assiste sem som. Letra
 grossa, bem contrastada, e nunca na parte de baixo da tela, onde o Instagram
@@ -160,9 +163,9 @@ coloca os botões.
 
 **Legenda do post**
 
-> Peguei um produto da minha própria despensa. Fotografa o rótulo, o RotuLens te
-> explica — e ainda te diz **o que levar no lugar**, com marcas que existem na
-> prateleira.
+> Sabe quando você fica com dois produtos na mão sem saber qual é o mais
+> saudável? Eu fiz um aplicativo pra isso. Fotografa o rótulo, ele te explica — e
+> ainda te diz **o que levar no lugar**, com marcas que existem na prateleira.
 >
 > Não está em loja de aplicativo ainda: abre pelo navegador e instala na tela do
 > celular. Link na bio 🔗
@@ -204,13 +207,14 @@ promessa quebrada no clique derruba o resultado e reprova o anúncio.
 
 **Texto do anúncio**
 
-> Você compra "integral", "light", "fit" — e não tem como conferir. O RotuLens lê
-> o rótulo por você: fotografa, e ele te explica o que o produto é de verdade e o
-> que levar no lugar. Grátis, direto no navegador.
+> Sabe quando você está com dois produtos na mão, sem saber qual é o mais
+> saudável? Uma nutricionista fez um aplicativo pra isso. Fotografa o rótulo e ele
+> te explica o que o produto é de verdade — e o que levar no lugar. Grátis, direto
+> no navegador.
 
 **Títulos para testar**
 
-- Fotografe o rótulo. Entenda na hora.
+- Qual desses é o mais saudável?
 - O que levar no lugar, com marca e tudo
 - Leitura de rótulo grátis, sem baixar nada
 
@@ -223,10 +227,11 @@ carrega o resultado é o vídeo, não a segmentação.
 que mais muda resultado em anúncio. Rode as três juntas com pouco dinheiro por
 dia, por 3 ou 4 dias, e depois concentre a verba na que sobreviver.
 
-1. Esse aqui está na minha despensa e se vende como opção saudável. Olha o que
-   tem atrás.
-2. Você compra isso achando que é integral. Deixa eu te mostrar uma coisa.
-3. Não decora lista de ingrediente. Faz isso aqui. *(já com o app na mão)*
+1. Sabe quando você está no mercado com dois produtos na mão, sem saber qual é o
+   mais saudável? Eu fiz um aplicativo pra isso.
+2. Sabe aquela dúvida na frente da prateleira? Eu resolvi a minha assim.
+3. Sabe quando você vira a embalagem e não entende nada do que está escrito? Faz
+   isso aqui.
 
 ---
 
@@ -248,7 +253,7 @@ dia, por 3 ou 4 dias, e depois concentre a verba na que sobreviver.
 ## 9. Checklist
 
 **Antes de gravar**
-- [ ] Produto escolhido na despensa e testado no app (as marcas apareceram)
+- [ ] Os dois produtos escolhidos, e o principal já testado no app (as marcas apareceram)
 - [ ] Bancada arrumada, você de frente para a janela
 - [ ] Celular apoiado em pé, na altura do peito
 - [ ] Não perturbe ligado, brilho no máximo, tela limpa
@@ -256,7 +261,7 @@ dia, por 3 ou 4 dias, e depois concentre a verba na que sobreviver.
 
 **Gravando**
 - [ ] Tela: a leitura inteira, sem parar no meio
-- [ ] Você com o produto e o celular, fazendo os mesmos movimentos
+- [ ] Você com os dois produtos na mão, e depois com o celular, fazendo os mesmos movimentos da tela
 - [ ] A fala completa, com áudio limpo
 - [ ] Os três ganchos, gravados separadamente
 
