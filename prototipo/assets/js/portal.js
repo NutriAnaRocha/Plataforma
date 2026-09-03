@@ -44,7 +44,7 @@
     if (!paciente) { showNoData(); return; }
     ctx.paciente = paciente;
     return window.NutriPacientes.getAdesao(paciente.id)
-      .then(function (marcas) { ctx.marcas = marcas || {}; })
+      .then(function (marcas) { ctx.marcas = virarODia(marcas || {}); })
       .catch(function () { ctx.marcas = {}; })
       .then(function () { return carregarAssinatura(paciente); })
       .then(function () { return carregarReceitas(paciente); })
@@ -460,8 +460,8 @@
         head = '<div class="pcard pcard--head"><h2>' + esc(plano.titulo || "Plano alimentar") + '</h2>' +
           (plano.atualizadoEm ? '<span class="pcard__meta">Atualizado em ' + esc(plano.atualizadoEm) + '</span>' : '') +
           '<div class="plano-adesao"><div class="plano-adesao__bar"><span id="adesao-fill" style="width:' + pct + '%"></span></div>' +
-            '<span class="plano-adesao__pct" id="adesao-pct">' + pct + '% seguido</span></div>' +
-          '<p class="pcard__hint">Marque o que você seguiu — sua nutricionista acompanha sua adesão por aqui.</p></div>';
+            '<span class="plano-adesao__pct" id="adesao-pct">' + pct + '% seguido hoje</span></div>' +
+          '<p class="pcard__hint">Marque o que você seguiu <strong>hoje</strong> — a lista zera todo dia, e o que você marcou fica no seu histórico para a sua nutricionista acompanhar dia a dia.</p></div>';
       } else {
         head = '<div class="pcard pcard--head"><h2>' + esc(plano.titulo || "Plano alimentar") + '</h2>' +
           (plano.atualizadoEm ? '<span class="pcard__meta">Atualizado em ' + esc(plano.atualizadoEm) + '</span>' : '') +
@@ -512,6 +512,35 @@
   // Marcação do plano sincronizada no banco (tabela plano_adesao, gravada pelo
   // próprio paciente via RLS). A nutri só lê. Salvamento é debounced.
   function checkGet(key) { return ctx.marcas[key] === true; }
+
+  /* O dia começa em branco: na primeira abertura de cada dia, o que estava
+     marcado vai para o histórico (marcas.__hist) e as caixas zeram. É o que
+     permite à nutri ver o acompanhamento dia a dia, e não um acumulado.
+     Em preview a nutri não grava — a virada fica só na tela. */
+  var _virouAgora = false;
+  function virarODia(marcas) {
+    _virouAgora = false;
+    if (!window.AdesaoDia) return marcas;
+    var r = window.AdesaoDia.virar(marcas);
+    _virouAgora = r.mudou;
+    if (r.mudou && ctx.mode !== "preview" && ctx.paciente) {
+      window.NutriPacientes.setAdesao(ctx.paciente.id, r.marcas).catch(function () {});
+    }
+    return r.marcas;
+  }
+
+  /* Página aberta desde ontem: redesenha plano, treino e metas para as
+     caixas aparecerem vazias, como o dia novo pede. */
+  function redesenharPainelDoDia() {
+    var p = ctx.paciente; if (!p) return;
+    var plano = el("pane-plano");
+    if (plano) { plano.innerHTML = renderPlano(p); hidratarFotosPortal(p); hidratarFotosRefeicao(); }
+    var treino = el("pane-treino");
+    if (treino && window.TreinoView) treino.innerHTML = window.TreinoView.portalHTML(p, ctx.marcas, ctx.mode === "preview");
+    var metas = el("pane-metas");
+    if (metas && window.MetasView) metas.innerHTML = window.MetasView.portalHTML(p, ctx.marcas, ctx.mode === "preview");
+    refreshAdesaoUI();
+  }
   var saveTimer = null;
   function salvarMarcas() {
     if (ctx.mode === "preview") return; // nutri em preview não grava (e RLS bloquearia)
@@ -521,6 +550,10 @@
     }, 500);
   }
   function checkSet(key, val) {
+    // Aba aberta desde ontem: vira o dia antes de gravar, senão a marcação
+    // de hoje entraria no balde do dia passado.
+    ctx.marcas = virarODia(ctx.marcas);
+    if (_virouAgora) { redesenharPainelDoDia(); return; } // era marcação de ontem: dia novo entra em branco
     if (val) ctx.marcas[key] = true; else delete ctx.marcas[key];
     salvarMarcas();
   }
@@ -550,7 +583,7 @@
     var pct = adesaoPct(ctx.paciente);
     var fill = el("adesao-fill"), lbl = el("adesao-pct");
     if (fill) fill.style.width = pct + "%";
-    if (lbl) lbl.textContent = pct + "% seguido";
+    if (lbl) lbl.textContent = pct + "% seguido hoje";
   }
 
   /* ---------- Evolução ---------- */

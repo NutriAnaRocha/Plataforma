@@ -1143,10 +1143,54 @@
           '</div></div>' +
         (plano.objetivo ? '<p class="pl-res__obj">🎯 ' + esc(plano.objetivo) + '</p>' : '') +
         totaisBarHTML(t, pc, plano.metaKcal) +
+        adesaoDiariaHTML(plano) +
         '<div class="pl-res__meals">' + meals + '</div>' +
       '</section>' +
       (window.ListaCompras ? window.ListaCompras.htmlNutri(plano, comprasCombinadas(plano)) : "");
   }
+  /* Adesão dia a dia: o portal zera as caixas todo dia e guarda o que foi
+     marcado em marcas.__hist. Aqui isso vira a régua dos últimos 14 dias —
+     é o que mostra se a paciente está seguindo de verdade ao longo da
+     semana, e não um número acumulado que só cresce. */
+  var DIAS_REGUA = 14;
+  function adesaoDiariaHTML(plano) {
+    if (!plano.publicado || !window.AdesaoDia || !_marcasPac) return "";
+    var refs = (plano.refeicoes || []).filter(function (r) { return !ehAlternativa(r); });
+    var total = refs.reduce(function (a, r) { return a + ((r.itens || []).length); }, 0);
+    if (!total) return "";
+    // Chaves ri:ii são contadas sobre TODAS as refeições (é como o portal marca).
+    var idx = [];
+    (plano.refeicoes || []).forEach(function (r, ri) {
+      if (ehAlternativa(r)) return;
+      (r.itens || []).forEach(function (_it, ii) { idx.push(ri + ":" + ii); });
+    });
+
+    var dias = window.AdesaoDia.ultimosDias(_marcasPac, DIAS_REGUA);
+    var comMarca = 0, somaPct = 0;
+    var barras = dias.map(function (d) {
+      var feitos = idx.reduce(function (a, k) { return a + (d.marcas[k] === true ? 1 : 0); }, 0);
+      var pct = Math.round(feitos * 100 / total);
+      if (feitos) comMarca++;
+      somaPct += pct;
+      var cls = pct >= 70 ? " is-alta" : pct >= 40 ? " is-media" : pct > 0 ? " is-baixa" : " is-zero";
+      return '<div class="pl-adia__col" title="' + esc(fmtDia(d.dia)) + ' · ' + pct + '% (' + feitos + '/' + total + ')">' +
+          '<div class="pl-adia__bar' + cls + '" style="height:' + Math.max(pct, 3) + '%"></div>' +
+          '<span class="pl-adia__d">' + esc(d.dia.slice(8)) + '</span>' +
+        '</div>';
+    }).join("");
+    var media = Math.round(somaPct / dias.length);
+    return '<div class="pl-adia">' +
+      '<div class="pl-adia__head"><strong>Adesão dia a dia</strong>' +
+        '<span>últimos ' + DIAS_REGUA + ' dias · média ' + media + '% · marcou em ' + comMarca + ' de ' + DIAS_REGUA + ' dias</span></div>' +
+      '<div class="pl-adia__grid">' + barras + '</div>' +
+      '<p class="pl-hint">O quadro do paciente zera todo dia; cada coluna é o que ele marcou naquele dia.</p>' +
+    '</div>';
+  }
+  function fmtDia(iso) {
+    var p = String(iso).split("-");
+    return p.length === 3 ? p[2] + "/" + p[1] : iso;
+  }
+
   function qtdLabel(it, c) {
     if (it.medida === "grama") return c.gramas + " g";
     return num(it.qtd) + " " + it.medida + " (" + c.gramas + " g)";
@@ -1430,9 +1474,10 @@
     _marcasPac = null;
     window.NutriPacientes.getAdesao(_p.id).then(function (m) {
       if (!_p || _marcasPacId !== _p.id) return; // a ficha mudou no meio do caminho
-      var antes = JSON.stringify(editsPaciente());
       _marcasPac = m || {};
-      if (JSON.stringify(editsPaciente()) !== antes && root() && libDe(_p).length) mostrarPainel();
+      // Redesenha sempre: além da lista de compras, o painel agora mostra a
+      // régua de adesão dia a dia, que só existe depois destas marcas.
+      if (root() && libDe(_p).length) mostrarPainel();
     }).catch(function () {});
   }
 

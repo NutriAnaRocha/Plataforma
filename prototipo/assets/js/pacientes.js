@@ -774,14 +774,26 @@
   }
 
   // Adesão REAL: % de itens do plano que o paciente marcou (tabela plano_adesao).
-  // Devolve { pct, feitos, total } ou null quando não há plano com itens.
+  // O portal zera as caixas todo dia e arquiva o dia em marcas.__hist, então
+  // aqui o número que vale é a MÉDIA dos últimos 7 dias — um "hoje" sozinho
+  // seria sempre baixo de manhã e não diria nada sobre o acompanhamento.
+  // Devolve { pct, hoje, feitos, total, dias } ou null quando não há plano com itens.
+  var DIAS_MEDIA = 7;
   function realAdesao(p, marcas) {
     var refs = (p.plano && p.plano.refeicoes) || [];
     var total = refs.reduce(function (s, r) { return s + ((r.itens || []).length); }, 0);
     if (!total) return null;
-    var feitos = 0;
-    refs.forEach(function (r, ri) { (r.itens || []).forEach(function (_it, ii) { if ((marcas || {})[ri + ":" + ii] === true) feitos++; }); });
-    return { pct: Math.round(feitos * 100 / total), feitos: feitos, total: total };
+    function feitosEm(m) {
+      var n = 0;
+      refs.forEach(function (r, ri) { (r.itens || []).forEach(function (_it, ii) { if ((m || {})[ri + ":" + ii] === true) n++; }); });
+      return n;
+    }
+    var hojeFeitos = feitosEm(window.AdesaoDia ? window.AdesaoDia.marcasDoDia(marcas) : marcas);
+    var hojePct = Math.round(hojeFeitos * 100 / total);
+    if (!window.AdesaoDia) return { pct: hojePct, hoje: hojePct, feitos: hojeFeitos, total: total, dias: 1 };
+    var dias = window.AdesaoDia.ultimosDias(marcas || {}, DIAS_MEDIA);
+    var soma = dias.reduce(function (a, d) { return a + feitosEm(d.marcas) * 100 / total; }, 0);
+    return { pct: Math.round(soma / dias.length), hoje: hojePct, feitos: hojeFeitos, total: total, dias: dias.length };
   }
 
   // Substitui o número manual pela adesão real na FICHA quando existe plano publicado.
@@ -794,7 +806,8 @@
       if (val) val.textContent = info.pct;
       if (hintEl) {
         var cls = info.pct >= 70 ? "delta--up" : info.pct >= 50 ? "delta--neutro" : "delta--down";
-        hintEl.outerHTML = '<span id="adesao-hint"><span class="delta ' + cls + '">' + info.feitos + '/' + info.total + ' itens · marcado pelo paciente</span></span>';
+        hintEl.outerHTML = '<span id="adesao-hint"><span class="delta ' + cls + '">média de ' + info.dias +
+          ' dias · hoje ' + info.hoje + '% (' + info.feitos + '/' + info.total + ')</span></span>';
       }
     }).catch(function () { /* silencioso: mantém o valor manual */ });
   }
@@ -813,7 +826,8 @@
             cell = row.querySelector(".pcell-adesao");
         if (fill) { fill.style.width = info.pct + "%"; fill.classList.toggle("is-low", info.pct < 50); }
         if (val) val.textContent = info.pct + "%";
-        if (cell) cell.title = info.feitos + "/" + info.total + " itens marcados pelo paciente";
+        if (cell) cell.title = "Média dos últimos " + info.dias + " dias · hoje " +
+          info.hoje + "% (" + info.feitos + "/" + info.total + " itens marcados)";
       });
     }).catch(function () { /* silencioso: mantém o valor manual */ });
   }

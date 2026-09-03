@@ -10,7 +10,7 @@
    ============================================================ */
 "use strict";
 
-var CACHE = "nutri-portal-v4";
+var CACHE = "nutri-portal-v5";
 
 /* Toda ida à rede feita AQUI ignora o cache HTTP do navegador.
    Sem isto o stale-while-revalidate era uma armadilha: a Hostinger manda
@@ -39,6 +39,7 @@ var SHELL = [
   "assets/js/lista-compras.js",
   "assets/js/treino-paciente.js",
   "assets/js/metas-paciente.js",
+  "assets/js/adesao-dia.js",
   "assets/js/portal.js",
   "assets/js/app.js",
   "assets/js/pwa.js",

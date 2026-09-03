@@ -378,3 +378,15 @@
 .pl-rasc__item:last-child { margin-bottom: 0; }
 .pl-rasc__item b { display: block; font-size: var(--fs-sm); color: var(--vinho); }
 .pl-rasc__item p { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--texto-sutil); }
+
+/* ---- Adesão dia a dia (o portal zera as marcações todo dia) ---- */
+.pl-adia { margin: var(--sp-4) 0; }
+.pl-adia__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-2); justify-content: space-between; }
+.pl-adia__head span { font-size: var(--fs-xs); color: var(--txt-2); }
+.pl-adia__grid { display: flex; align-items: flex-end; gap: 4px; height: 84px; margin-top: var(--sp-2); }
+.pl-adia__col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.pl-adia__bar { width: 100%; max-width: 22px; border-radius: 4px 4px 0 0; background: var(--verde, #2E7D6B); }
+.pl-adia__bar.is-media { background: #C9A227; }
+.pl-adia__bar.is-baixa { background: #C0554F; }
+.pl-adia__bar.is-zero  { background: var(--linha, #E4DEDE); }
+.pl-adia__d { font-size: 10px; color: var(--txt-3, var(--txt-2)); margin-top: 4px; }
