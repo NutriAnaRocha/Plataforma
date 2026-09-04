@@ -55,6 +55,12 @@ app tiver entregado.
 vista, modo não perturbe ligado, brilho no máximo e a tela limpa — ela aparece em
 close.
 
+**Para gravar o tutorial de primeiro acesso.** O app agora explica sozinho o que
+fotografar, com setas, na primeira vez que alguém abre. Isso rende uma cena boa —
+e dá para reabrir quantas vezes precisar, sem apagar nada: abra o app com
+`?tutorial=1` no fim do endereço. Para trazer o botão "Instalar app" na hora,
+`RotuLensInstalar.forcar()`.
+
 ---
 
 ## 3. O roteiro, cena a cena
