@@ -22,6 +22,10 @@ partindo de `conteudo/instagram/_modelo-post.html`. Salvar o post novo em
   (`filter:brightness(0) invert(1)`), pequena, no canto inferior esquerdo, dentro da faixa.
   **A capa não leva assinatura nem faixa.**
 
+## Formato
+
+Feed vertical **1080×1350** (4:5) — ocupa mais tela no feed.
+
 ## Estrutura padrão do carrossel
 
 Máximo de 4 a 5 cards — ela prefere post curto e escaneável.
@@ -46,7 +50,7 @@ Máximo de 4 a 5 cards — ela prefere post curto e escaneável.
 ## Exportar em PNG
 
 Renderizar os cards com Playwright (Chromium em `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`),
-fotografando cada `.frame` em 1080×1080. Incluir `<meta charset="utf-8">` na cópia usada para
+fotografando cada `.frame` em 1080×1350 (feed vertical, `aspect-ratio:1080/1350`). Incluir `<meta charset="utf-8">` na cópia usada para
 renderizar, senão os acentos saem quebrados. **Conferir cada PNG depois de qualquer mudança de
 layout** — alterar altura de imagem reposiciona as marcações em vermelho.
 

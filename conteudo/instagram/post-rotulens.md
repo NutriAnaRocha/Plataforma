@@ -1,6 +1,6 @@
 # Post Instagram — RotuLens
 
-**Formato:** Carrossel de 8 cards (`cards-rotulens/card-1.png` a `card-8.png`)
+**Formato:** Carrossel de 8 cards em 1080×1350 (feed vertical) (`cards-rotulens/card-1.png` a `card-8.png`)
 **Objetivo:** Apresentar o app e levar as pessoas a testar
 **Paleta:** RotuLens (azul #1E4A7B, verde #2E7D5B, fundo #F7FAFD) + faixa e assinatura da marca
 
