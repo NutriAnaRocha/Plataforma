@@ -12,7 +12,8 @@ partindo de `conteudo/instagram/_modelo-post.html`. Salvar o post novo em
 ## Identidade visual (não improvisar)
 
 - **Fundo:** degradê creme `#FCF6E9` → `#F5EADA`.
-- **Título:** Fraunces itálico 900, magenta `#7C1150`, quebrando em 2 linhas.
+- **Título:** Merienda 900 (fonte da marca, em `prototipo/assets/img/fonts/Merienda-VariableFont_wght.ttf`,
+  embutida no HTML como @font-face base64), magenta `#7C1150`, quebrando em 2 linhas.
 - **Texto:** Montserrat, cinza `#54524F`, com os termos-chave em magenta e negrito.
 - **Caixa de tópicos:** retângulo magenta arredondado, texto creme, para listas práticas.
 - **Faixa inferior:** onda magenta baixa (`height:9.5cqw`), só acabamento — nunca deve
@@ -41,6 +42,13 @@ Máximo de 4 a 5 cards — ela prefere post curto e escaneável.
   (ex.: menos pico de insulina → menos estímulo androgênico).
 - Nunca prometer cura; reforçar acompanhamento profissional.
 - Entregar também a legenda pronta com hashtags, em arquivo `.md` ao lado.
+
+## Exportar em PNG
+
+Renderizar os cards com Playwright (Chromium em `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`),
+fotografando cada `.frame` em 1080×1080. Incluir `<meta charset="utf-8">` na cópia usada para
+renderizar, senão os acentos saem quebrados. **Conferir cada PNG depois de qualquer mudança de
+layout** — alterar altura de imagem reposiciona as marcações em vermelho.
 
 ## Imagens
 
