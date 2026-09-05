@@ -24,19 +24,13 @@
 
 ## Legenda do post no feed
 
-Você já ficou parada no corredor do mercado tentando entender uma lista de ingredientes que parece fórmula de química? 🛒
+Ler rótulo no corredor do mercado não deveria ser prova de química. 🛒
 
-Foi para isso que eu criei o **RotuLens**.
+Foi para isso que eu criei o **RotuLens**: você fotografa o rótulo e ele te devolve o que aquilo é em linguagem de gente — o que é bom, o que pesa contra e, se não valer a pena, quais marcas levar no lugar.
 
-Você fotografa o rótulo e ele te devolve a leitura do produto em linguagem de gente: o que é bom, o que pesa contra, o que cada ingrediente estranho significa — e, quando não vale a pena, quais marcas levar no lugar.
+As marcas vêm de uma base real de produtos vendidos no Brasil. E a sua foto não fica guardada: é lida e descartada.
 
-As marcas vêm de uma base real de produtos vendidos no Brasil, não da imaginação de uma inteligência artificial. E a sua foto não fica guardada: é lida e descartada.
-
-Dá para comparar duas marcas lado a lado por 100 g, e o que você leu vira item da lista de mercado — que fica só no seu aparelho e funciona sem sinal.
-
-Tem também 106 receitas filtradas pelo tempo que você tem hoje, de 5 minutos a 2 horas, com lista de compras e as calorias e proteínas de cada porção.
-
-São 3 leituras por dia, de graça. Sem instalar nada e sem criar conta.
+3 leituras por dia, de graça. Sem instalar nada e sem criar conta.
 
 👉 nutrianaluisarocha.com/rotulens
 
