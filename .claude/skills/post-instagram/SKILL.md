@@ -19,7 +19,8 @@ partindo de `conteudo/instagram/_modelo-post.html`. Salvar o post novo em
 - **Faixa inferior:** onda magenta baixa (`height:9.5cqw`), só acabamento — nunca deve
   encostar no texto (o card usa `padding-bottom:17cqw`).
 - **Assinatura:** `conteudo/instagram/img/ana-logo.png` em **branco**
-  (`filter:brightness(0) invert(1)`), pequena, no canto inferior esquerdo, dentro da faixa.
+  (`filter:brightness(0) invert(1)`), pequena, dentro da faixa em onda, posicionada onde a onda tem maior amplitude
+  (`left:20cqw`, um pouco à esquerda do centro).
   **A capa não leva assinatura nem faixa.**
 
 ## Formato
