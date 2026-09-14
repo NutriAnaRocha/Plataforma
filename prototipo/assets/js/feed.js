@@ -268,14 +268,22 @@
     state.index = (i + state.cards.length) % state.cards.length;
     showActive();
     if (fromUser) restartTimer();
+    // card anterior era mais longo: traz o topo do novo de volta à tela
+    if (fromUser && telaPequena.matches && els.viewport.getBoundingClientRect().top < 0) {
+      els.viewport.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 
   function nextSlide() { goTo(state.index + 1); }
   function prevSlide() { goTo(state.index - 1); }
 
+  // No celular o card tem a altura do texto: trocar sozinho no meio da
+  // leitura faz a página pular. Lá a troca é só por toque/deslize.
+  var telaPequena = window.matchMedia("(max-width: 980px)");
+
   function restartTimer() {
     clearInterval(state.timer);
-    if (state.cards.length > 1) {
+    if (state.cards.length > 1 && !telaPequena.matches) {
       state.timer = setInterval(nextSlide, INTERVAL_MS);
     }
     showActive();
@@ -302,6 +310,20 @@
     // Pausa ao passar o mouse sobre o viewport
     els.viewport.addEventListener("mouseenter", function () { clearInterval(state.timer); });
     els.viewport.addEventListener("mouseleave", function () { restartTimer(); });
+
+    // Deslizar para o lado troca de card (só gesto claramente horizontal)
+    var toque = null;
+    els.viewport.addEventListener("touchstart", function (e) {
+      toque = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }, { passive: true });
+    els.viewport.addEventListener("touchend", function (e) {
+      if (!toque) return;
+      var dx = e.changedTouches[0].clientX - toque.x;
+      var dy = e.changedTouches[0].clientY - toque.y;
+      toque = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) goTo(state.index + (dx < 0 ? 1 : -1), true);
+    }, { passive: true });
+    telaPequena.addEventListener("change", restartTimer);
   }
 
   // API pública para o app reordenar após salvar a personalização
