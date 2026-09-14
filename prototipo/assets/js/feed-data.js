@@ -18,8 +18,8 @@ window.FEED_DATA = {
   /* Resumo da rodada atual */
   semana: {
     eyebrow: "Atualização da Semana",
-    title: "7 estudos reais que mexem na sua conduta",
-    texto: "Creatina na saúde da mulher, manutenção de peso pós-tirzepatida (SURMOUNT-4), cepas de probiótico na SII, a virada da Cochrane sobre vitamina D na gestação, inositol na SOP pela diretriz internacional, proteína na DRC e mindfulness na compulsão. Cada card abre a leitura completa com o link do estudo original."
+    title: "9 estudos reais que mexem na sua conduta",
+    texto: "Jejum 16/8 com efeito lipídico diferente por sexo, terapia combinada (dieta + metformina + inositol) na SOP, creatina sustentando massa magra e cognição na meia-idade mesmo sem treino associado, o limite real do mindful eating sobre a fome, probióticos no eixo intestino-cérebro, vitamina D e marcadores cardiometabólicos, a maior comparação já feita entre fármacos para obesidade, nutrição estruturada no pré-natal e o teto da dieta isolada sobre o ângulo de fase na diálise. Cada card abre a leitura completa com o link do estudo original."
   },
 
   /* Categorias (chips do feed) */
@@ -32,322 +32,414 @@ window.FEED_DATA = {
   cards: [
     /* ------------------------------------------------------------------ */
     {
-      id: "creatina-mulheres",
-      categoria: "Esportiva",
-      areas: ["Esportiva", "Saúde da Mulher"],
-      data: "2025",
-      title: "Creatina na saúde da mulher: do ciclo menstrual à menopausa",
-      resumo: "Revisão do JISSN reúne o que já se sabe sobre creatina em mulheres — força, composição corporal, humor e cognição — e mostra onde a evidência ainda é fina.",
-      mudou: "A creatina deixa de ser assunto só de atleta: há sinal de benefício ao longo da vida da mulher, mas os dados na perimenopausa e na gestação ainda são iniciais.",
-      aplicar: "3–5 g/dia é a dose usual e segura, e o efeito aparece quando ela vem junto de treino de força — não isolada.",
-      evidencia: 3,
-      link: "https://doi.org/10.1080/15502783.2025.2502094",
-      fonte: {
-        autores: "Smith-Ryan e cols.",
-        revista: "Journal of the International Society of Sports Nutrition",
-        ano: "2025",
-        desenho: "Revisão narrativa",
-        amostra: "Síntese de estudos históricos e recentes em mulheres",
-        doi: "10.1080/15502783.2025.2502094",
-        pubmed: "40371844",
-        acesso: "Acesso aberto (texto completo livre)"
-      },
-      leitura: [
-        {
-          h: "Por que esta revisão existe",
-          p: "A pesquisa com creatina foi construída majoritariamente em homens. Mulheres têm diferenças fisiológicas relevantes — flutuação hormonal no ciclo menstrual, gestação e menopausa — e essas variações afetam o metabolismo da creatina. Os autores fazem um apanhado histórico do que foi estudado em mulheres, o que os estudos antigos deixaram passar e onde a evidência está hoje."
-        },
-        {
-          h: "Como o estudo foi feito",
-          p: "É uma revisão narrativa, não uma meta-análise: os autores selecionam e discutem a literatura, sem cálculo de efeito combinado. Isso significa que ela serve para organizar o campo e apontar direções — não para estabelecer tamanho de efeito. Vale ler com esse peso."
-        },
-        {
-          h: "O que os autores encontraram",
-          p: "Os estudos iniciais mostraram benefício de creatina no desempenho de exercício em mulheres, mas quase sempre ignoraram a fase do ciclo menstrual. A pesquisa mais recente passou a controlar essa variável. O conjunto aponta efeito positivo sobre força muscular, desempenho e composição corporal, sobretudo quando a suplementação é combinada com treino resistido. Há ainda sinal de melhora de humor e função cognitiva, com possível alívio de sintomas depressivos. Evidência emergente sugere benefício na gestação e na pós-menopausa."
-        },
-        {
-          h: "Onde a evidência é fraca",
-          p: "Os dados em mulheres na perimenopausa continuam limitados. Os próprios autores listam como agenda de pesquisa: otimizar as estratégias de dose para mulheres, entender implicações de longo prazo e explorar o uso na gestação e na perimenopausa. Ou seja: entusiasmo com creatina fora do esporte é legítimo, mas ainda não tem o mesmo lastro que tem no contexto de performance."
-        },
-        {
-          h: "Na prática do consultório",
-          p: "Para pacientes que treinam força, a conduta é bem sustentada: 3–5 g/dia de monoidratado, uso contínuo, sem necessidade de saturação. Para pacientes na peri e pós-menopausa interessadas em massa magra, cognição ou humor, a conversa é de decisão compartilhada — explique que o sinal é promissor mas ainda não é definitivo, e amarre a suplementação ao treino de força, que é o que sustenta o efeito. Registre no prontuário a indicação e a dose, conforme a Resolução CFN nº 656/2020."
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "tirzepatida-manutencao",
-      categoria: "Obesidade",
+      id: "jejum-16-8-glicemia-lipidos",
+      categoria: "Clínica",
       areas: ["Clínica", "Funcional"],
-      data: "2024",
-      title: "SURMOUNT-4: o que acontece quando a tirzepatida é retirada",
-      resumo: "Ensaio publicado no JAMA: quem parou a medicação reganhou peso (+14,0%) enquanto quem continuou seguiu perdendo (−5,5%) nas mesmas 52 semanas.",
-      mudou: "O reganho após a suspensão é a regra, não a exceção. O acompanhamento nutricional deixa de ser acessório e vira a peça que sustenta o resultado a longo prazo.",
-      aplicar: "Se a paciente pretende desmamar da medicação em algum momento, comece a construir o protocolo de transição e preservação de massa magra desde o início — não no mês da suspensão.",
+      data: "2026",
+      title: "Meta-análise de 23 ensaios mostra que o jejum 16/8 melhora glicemia, mas o efeito no perfil lipídico depende do sexo",
+      resumo: "Revisão sistemática com meta-análise de 23 ECRs (cerca de 1.280 adultos) mostrou que o jejum intermitente 16/8 reduz discretamente glicemia de jejum, HOMA-IR e insulina, com melhora de HbA1c só nos estudos com mais de 6 meses de duração.",
+      mudou: "Os efeitos cardiometabólicos do 16/8 são reais, porém modestos, e os ganhos em LDL e triglicerídeos só apareceram em subgrupos de homens ou de maior atividade física — o que pede cautela ao generalizar o benefício lipídico para qualquer paciente.",
+      aplicar: "Ao indicar o 16/8 para controle glicêmico, calibre a expectativa (efeito pequeno a moderado), sustente a adesão por mais de 6 meses antes de avaliar impacto em HbA1c, e acompanhe o perfil lipídico de forma individual, sem presumir os mesmos ganhos em todos os pacientes.",
       evidencia: 5,
-      link: "https://doi.org/10.1001/jama.2023.24945",
+      link: "https://doi.org/10.1093/nutrit/nuaf206",
       fonte: {
-        autores: "Aronne e cols. (grupo SURMOUNT-4)",
-        revista: "JAMA",
-        ano: "2024",
-        desenho: "Ensaio clínico randomizado de retirada (fase 3, duplo-cego, controlado por placebo)",
-        amostra: "783 adultos com obesidade no período aberto; 670 randomizados, em 70 centros de 4 países",
-        doi: "10.1001/jama.2023.24945",
-        pubmed: "38078870",
-        acesso: "Resumo livre no site do JAMA; texto completo por assinatura"
+        autores: "Wong e cols.",
+        revista: "Nutrition Reviews",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
+        amostra: "23 ECRs, cerca de 1.280 adultos",
+        doi: "10.1093/nutrit/nuaf206",
+        pubmed: "41351878",
+        acesso: "Acesso aberto (texto completo livre)"
       },
       leitura: [
         {
           h: "A pergunta do estudo",
-          p: "Já se sabia que a tirzepatida produz perda de peso expressiva. O que não se sabia era o que sustenta esse resultado: o remédio precisa continuar, ou a perda se mantém sozinha depois? O SURMOUNT-4 foi desenhado exatamente para responder isso."
+          p: "O jejum intermitente no formato time-restricted eating de 16 horas de jejum e 8 de alimentação (16/8) é um dos protocolos mais prescritos na prática clínica, mas revisões anteriores misturavam diferentes janelas de alimentação e populações. Os autores isolaram especificamente o efeito do 16/8 sobre glicemia e perfil lipídico em adultos, comparando com dieta controle sem restrição de horário."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Adultos com IMC ≥ 30, ou ≥ 27 com complicação relacionada ao peso (diabetes excluído), receberam tirzepatida subcutânea semanal na dose máxima tolerada (10 ou 15 mg) por 36 semanas, em regime aberto, com orientação de dieta e atividade física. Na semana 36, os 670 participantes que chegaram ao fim foram sorteados 1:1 para continuar a tirzepatida (335) ou trocar por placebo (335) durante mais 52 semanas, em duplo-cego. O desfecho primário foi a variação percentual média de peso entre a semana 36 e a semana 88."
+          p: "Buscas em PubMed, MEDLINE, Cochrane Library, Scopus e Web of Science identificaram ensaios clínicos randomizados comparando 16/8 com dieta controle. Foram incluídos 23 ECRs (cerca de 1.280 participantes), com extração de glicemia de jejum, insulina, HOMA-IR, HbA1c e perfil lipídico, além de análises de subgrupo por sexo, duração da intervenção e nível de atividade física."
         },
         {
-          h: "Os números",
-          p: "As 36 semanas iniciais produziram perda média de 20,9% do peso. Da semana 36 à 88, quem continuou com tirzepatida perdeu mais 5,5%; quem foi para o placebo ganhou 14,0% — diferença de 19,4 pontos percentuais (IC 95% −21,2 a −17,7; p < 0,001). Manteve pelo menos 80% do peso perdido: 89,5% do grupo tirzepatida contra 16,6% do placebo. No balanço das 88 semanas, a redução total foi de 25,3% com tirzepatida e 9,9% com placebo. Os eventos adversos mais comuns foram gastrointestinais, em geral leves a moderados, mais frequentes com a medicação."
+          h: "O que foi encontrado",
+          p: "O 16/8 reduziu discretamente glicemia de jejum, HOMA-IR e insulina. A HbA1c só melhorou de forma significativa nos estudos com duração superior a 6 meses. No perfil lipídico, houve aumento discreto de HDL em toda a amostra, enquanto reduções de LDL e triglicerídeos apareceram apenas nos estudos com participantes exclusivamente homens ou com maior nível de atividade física."
         },
         {
           h: "O que isso não responde",
-          p: "A média de idade era 48 anos e 71% eram mulheres — a amostra não é universal. O estudo excluiu pessoas com diabetes. E, principalmente: ele mostra o que acontece com a retirada abrupta dentro de um ensaio, não testou um protocolo nutricional estruturado de transição. O reganho de 14% é o cenário sem estratégia de desmame — que é justamente onde a nutrição entra."
+          p: "Os tamanhos de efeito são pequenos e a heterogeneidade entre os estudos originais — populações, duração, adesão — é relevante. A ausência de benefício lipídico consistente em mulheres e em estudos curtos limita a generalização, e o desenho não separa se os efeitos vêm da restrição de horário em si ou da redução calórica espontânea que costuma acompanhar o protocolo."
         },
         {
           h: "Na prática do consultório",
-          p: "Duas conversas mudam de lugar. A primeira é de expectativa: a paciente precisa saber, desde a primeira consulta, que interromper sem plano tende a devolver boa parte do peso. A segunda é de composição corporal: perdas rápidas de 20% ou mais cobram massa magra, e a janela de retirada é o pior momento para chegar sarcopênica. Ancore o acompanhamento em proteína adequada, treino resistido e monitoramento de composição corporal — não só de peso. Se houver desmame previsto, escalone: reduza a dose e aumente a densidade do acompanhamento no mesmo período."
+          p: "O 16/8 pode ser uma ferramenta adicional para controle glicêmico, mas não deve ser vendido como solução para dislipidemia de forma indiscriminada, sobretudo em pacientes mulheres, onde a evidência de benefício lipídico é mais fraca. Reforce que ganhos em HbA1c tendem a aparecer só após meses de adesão consistente, o que sustenta acompanhamento prolongado antes de julgar o protocolo ineficaz."
         }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "probioticos-sii",
-      categoria: "Microbiota",
-      areas: ["Clínica", "Funcional"],
-      data: "2023",
-      title: "Qual cepa de probiótico para qual sintoma na SII",
-      resumo: "Meta-análise em rede com 81 ensaios e 9.253 participantes ranqueia as cepas por desfecho — dor, distensão, qualidade de vida e forma das fezes.",
-      mudou: "Prescrever 'um probiótico' não é conduta. O efeito é cepa-específico e desfecho-específico: a cepa que melhora dor não é a mesma que melhora a forma das fezes.",
-      aplicar: "Escolha a cepa pelo sintoma dominante da paciente e pelo subtipo de SII, e reavalie em 4–8 semanas antes de manter ou trocar.",
+      id: "sop-terapia-combinada-dieta-metformina-inositol",
+      categoria: "Saúde da Mulher",
+      areas: ["Saúde da Mulher", "Fertilidade", "Funcional"],
+      data: "2026",
+      title: "Combinar dieta hipocalórica com metformina e inositol supera as terapias isoladas na SOP",
+      resumo: "Ensaio clínico randomizado de 4 braços com 192 mulheres com SOP mostrou que a combinação de dieta hipocalórica, metformina e inositol reduziu mais a resistência à insulina e o IMC, e regularizou o ciclo menstrual em 85% das participantes, contra 73% no grupo de dieta isolada.",
+      mudou: "A dieta isolada superou o inositol isolado e ficou próxima da metformina isolada na regularização menstrual, reforçando que a intervenção nutricional não é coadjuvante na SOP, mas um pilar terapêutico com peso comparável ao farmacológico.",
+      aplicar: "Use esse achado para justificar dieta hipocalórica estruturada como primeira linha na SOP, e para discutir com a equipe médica a associação com metformina e/ou inositol nos casos sem resposta satisfatória após cerca de 12 semanas de dieta bem conduzida.",
       evidencia: 4,
-      link: "https://doi.org/10.3390/nu15173856",
+      link: "https://doi.org/10.1111/cen.70188",
       fonte: {
-        autores: "Xie e cols.",
-        revista: "Nutrients",
-        ano: "2023",
-        desenho: "Revisão sistemática com meta-análise em rede",
-        amostra: "81 ensaios clínicos randomizados, 9.253 participantes adultos com SII",
-        doi: "10.3390/nu15173856",
-        pubmed: "37686889",
+        autores: "Irfan e cols.",
+        revista: "Clinical Endocrinology",
+        ano: "2026",
+        desenho: "Ensaio clínico randomizado, 4 braços",
+        amostra: "192 mulheres de 18-35 anos com SOP (critérios de Rotterdam), randomizadas em 4 grupos: metformina, inositol, dieta hipocalórica ou terapia combinada",
+        doi: "10.1111/cen.70188",
+        pubmed: "42517336",
         acesso: "Acesso aberto (texto completo livre)"
       },
       leitura: [
         {
-          h: "O problema que o estudo ataca",
-          p: "A eficácia dos probióticos na síndrome do intestino irritável sempre foi controversa, e parte da confusão vem de tratar 'probiótico' como uma coisa só. Ensaios diferentes usaram cepas diferentes, mediram desfechos diferentes e chegaram a conclusões conflitantes. Esta é a primeira síntese a ranquear a eficácia cepa a cepa, separada por desfecho."
+          h: "A pergunta do estudo",
+          p: "A síndrome dos ovários policísticos combina resistência à insulina, hiperandrogenismo e disfunção ovulatória, e costuma ser tratada com uma mistura de fármacos e mudança de estilo de vida. O estudo comparou, de forma controlada, se tratar com metformina, inositol e dieta ao mesmo tempo traz ganho real sobre usar cada abordagem isoladamente."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Busca na literatura até junho de 2023, incluindo apenas ensaios clínicos randomizados em adultos com SII. A meta-análise em rede permite comparar indiretamente cepas que nunca foram testadas uma contra a outra, usando o placebo como ponte. O ranqueamento é expresso em SUCRA — quanto mais perto de 100%, maior a probabilidade daquela cepa ser a melhor para aquele desfecho específico."
-        },
-        {
-          h: "Os resultados por desfecho",
-          p: "Gravidade global dos sintomas (IBS-SSS): quatro cepas isoladas e cinco misturas superaram o placebo, com Lactobacillus acidophilus DDS-1 em primeiro (SUCRA 92,9%). Qualidade de vida: uma mistura com cinco probióticos ficou em primeiro (SUCRA 100%). Dor abdominal: Bacillus coagulans MTCC 5856 (96,9%) e Bacillus coagulans Unique IS2 (92,6%) entre os mais eficazes. Distensão abdominal: três cepas isoladas e duas misturas foram eficazes. SII com predomínio de diarreia — frequência evacuatória: quatro cepas e uma mistura superaram o placebo; forma das fezes (escala de Bristol): Bacillus coagulans MTCC 5856 (99,6%) e Saccharomyces cerevisiae CNCM I-3856 (89,7%) na frente."
-        },
-        {
-          h: "As ressalvas",
-          p: "Comparação indireta em rede é menos robusta que comparação cabeça a cabeça — os próprios autores dizem que novos estudos são necessários para confirmar o ranking. Além disso, apenas algumas cepas mostraram efeito para desfechos específicos: a maioria dos produtos de prateleira não tem cepa identificada nem dose testada. E identificação de cepa é literal: DDS-1 e MTCC 5856 são códigos de linhagem, não sinônimos de 'Lactobacillus' ou 'Bacillus'."
-        },
-        {
-          h: "Na prática do consultório",
-          p: "Comece pelo sintoma que mais incomoda a paciente. Dor e distensão dominantes apontam para Bacillus coagulans com cepa identificada; SII-D com fezes desmanchadas apontam para B. coagulans MTCC 5856 ou S. cerevisiae CNCM I-3856; queixa difusa de qualidade de vida favorece as misturas multicepas. Na hora de indicar o produto, exija o código da cepa no rótulo — sem ele, não há como saber se é a linhagem estudada. Marque reavaliação em 4 a 8 semanas: sem resposta, troque a cepa em vez de aumentar a dose."
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "vitd-gestacao",
-      categoria: "Materno Infantil",
-      areas: ["Saúde da Mulher", "Fertilidade", "Pediatria"],
-      data: "2024",
-      title: "Cochrane revisa vitamina D na gestação — e a base de evidência encolhe",
-      resumo: "A atualização de 2024 retirou 21 estudos por problemas de confiabilidade. Sobraram 10, e a certeza da evidência caiu para baixa ou muito baixa.",
-      mudou: "Inverte o discurso: a suplementação universal de vitamina D no pré-natal não tem hoje o respaldo que se supunha para pré-eclâmpsia, DMG ou prematuridade.",
-      aplicar: "Dosar 25(OH)D e individualizar quem tem deficiência real, em vez de suplementar toda gestante por protocolo.",
-      evidencia: 3,
-      link: "https://doi.org/10.1002/14651858.CD008873.pub5",
-      fonte: {
-        autores: "Palacios e cols.",
-        revista: "Cochrane Database of Systematic Reviews",
-        ano: "2024",
-        desenho: "Revisão sistemática Cochrane com meta-análise e avaliação GRADE",
-        amostra: "10 estudos incluídos; na comparação principal, 8 estudos com 2.313 gestantes",
-        doi: "10.1002/14651858.CD008873.pub5",
-        pubmed: "39077939",
-        acesso: "Resumo livre na Cochrane Library; texto completo pode exigir acesso institucional"
-      },
-      leitura: [
-        {
-          h: "O que mudou nesta atualização",
-          p: "A versão anterior desta revisão incluía 30 estudos. Nesta atualização, os autores aplicaram uma ferramenta de avaliação de confiabilidade (trustworthiness) baseada em critérios pré-definidos de integridade científica. O resultado foi drástico: 20 estudos foram movidos para 'aguardando classificação', um foi excluído e um novo foi incluído — restaram 10. Retirar esses ensaios rebaixou a certeza da evidência para baixa ou muito baixa, por limitações de desenho, inconsistência entre estudos e imprecisão."
-        },
-        {
-          h: "Vitamina D isolada vs. placebo ou nenhuma intervenção",
-          p: "Oito estudos, 2.313 gestantes. Quatro foram julgados de baixo risco de viés na maioria dos domínios; quatro, de risco alto ou incerto. A evidência é muito incerta quanto ao efeito sobre pré-eclâmpsia (RR 0,53; IC 95% 0,21–1,33; 1 estudo, 165 mulheres), diabetes gestacional (RR 0,53; IC 0,03–8,28; 1 estudo, 165 mulheres), parto prematuro antes de 37 semanas (RR 0,76; IC 0,25–2,33; 3 estudos, 1.368 mulheres), síndrome nefrítica e hipercalcemia. Os intervalos de confiança são largos demais para sustentar conduta."
-        },
-        {
-          h: "Onde houve sinal",
-          p: "A suplementação pode reduzir o risco de hemorragia pós-parto grave (RR 0,68; IC 0,51–0,91; evidência de baixa certeza) — mas apenas um estudo, com 1.134 mulheres, reportou esse desfecho. E pode reduzir o risco de baixo peso ao nascer (RR 0,69; IC 0,44–1,08; 3 estudos, 371 bebês; baixa certeza), com a ressalva explícita dos autores de que o limite superior do intervalo não permite descartar aumento de risco. As combinações com cálcio, ou com cálcio e outros micronutrientes, produziram evidência muito incerta em todos os desfechos avaliados."
-        },
-        {
-          h: "Como ler isso sem exagerar para nenhum lado",
-          p: "Baixa certeza não é o mesmo que ausência de efeito: significa que os estudos existentes não permitem concluir. A vitamina D continua sendo um nutriente essencial e a deficiência documentada continua sendo condição a tratar. O que esta revisão derruba é o argumento de suplementar toda gestante à base de desfechos obstétricos, porque a evidência que sustentava esse argumento em grande parte não sobreviveu ao crivo de confiabilidade."
-        },
-        {
-          h: "Na prática do consultório",
-          p: "Mantenha a dosagem de 25(OH)D no início do pré-natal e trate a deficiência confirmada — isso não está em discussão. O que muda é a conversa com a gestante sem deficiência: não prometa redução de pré-eclâmpsia, diabetes gestacional ou prematuridade, porque a evidência atual não sustenta a promessa. Alinhe a conduta ao protocolo do serviço e ao acompanhamento obstétrico, e reavalie o status ao longo da gestação em vez de fixar dose no primeiro trimestre e esquecer."
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "sop-inositol",
-      categoria: "Saúde da Mulher",
-      areas: ["Saúde da Mulher", "Fertilidade", "Funcional"],
-      data: "2024",
-      title: "Inositol na SOP: o que a diretriz internacional de 2023 realmente encontrou",
-      resumo: "Meta-análise encomendada para embasar a diretriz internacional da SOP: 30 ensaios, 2.230 participantes — e uma conclusão mais modesta do que o mercado vende.",
-      mudou: "Inositol não é primeira linha consolidada. Há benefício possível em alguns marcadores metabólicos, mas a evidência global é limitada e inconclusiva.",
-      aplicar: "Decisão compartilhada: apresente o inositol como opção com evidência incerta e melhor tolerância gastrointestinal que a metformina, não como certeza.",
-      evidencia: 3,
-      link: "https://doi.org/10.1210/clinem/dgad762",
-      fonte: {
-        autores: "Fitz e cols.",
-        revista: "The Journal of Clinical Endocrinology and Metabolism (JCEM)",
-        ano: "2024",
-        desenho: "Revisão sistemática com meta-análise, produzida para a atualização de 2023 das diretrizes internacionais baseadas em evidência para SOP",
-        amostra: "30 ensaios, 2.230 participantes (1.093 intervenção, 1.137 controle); 19 estudos agrupados em meta-análise",
-        doi: "10.1210/clinem/dgad762",
-        pubmed: "38163998",
-        acesso: "Resumo livre; texto completo por assinatura"
-      },
-      leitura: [
-        {
-          h: "Por que este trabalho pesa",
-          p: "Não é mais uma meta-análise avulsa: foi conduzida especificamente para informar a atualização de 2023 das diretrizes internacionais baseadas em evidência para SOP. É o documento que os autores da diretriz usaram para decidir o que recomendar sobre inositol — o que o torna a referência mais próxima do consenso atual."
-        },
-        {
-          h: "Como o estudo foi feito",
-          p: "Busca em Medline, PsycInfo, EMBASE, All EBM e CINAHL, do início das bases até agosto de 2022. Foram extraídos desfechos hormonais, metabólicos, lipídicos, psicológicos, antropométricos, reprodutivos e eventos adversos, por um revisor com verificação independente por um segundo. Treze comparações foram avaliadas, três delas com dados agrupados em meta-análise."
+          p: "Ensaio clínico randomizado de 12 semanas com 192 mulheres de 18 a 35 anos diagnosticadas pelos critérios de Rotterdam, alocadas em quatro braços: metformina (1.500-2.000 mg/dia), inositol (myo-inositol 2 g + D-chiro-inositol 50 mg, 2x/dia), dieta com restrição calórica (1.200-1.500 kcal/dia) ou terapia combinada com os três. Foram avaliados HOMA-IR, IMC e regularização do ciclo menstrual, entre outros desfechos endócrinos."
         },
         {
           h: "O que foi encontrado",
-          p: "A evidência sugere benefício do mio-inositol ou do D-quiro-inositol (DCI) em algumas medidas metabólicas, e benefício potencial do DCI sobre a ovulação — mas o inositol pode não ter efeito sobre os demais desfechos. Na comparação com metformina: a metformina pode melhorar mais a relação cintura-quadril e o hirsutismo; provavelmente não há diferença nos desfechos reprodutivos; e a evidência sobre IMC é muito incerta. O mio-inositol provavelmente causa menos eventos adversos gastrointestinais que a metformina, e os eventos são tipicamente leves e autolimitados."
+          p: "A terapia combinada teve a maior redução de HOMA-IR e de IMC. A regularização do ciclo menstrual ocorreu em 85,4% das mulheres no grupo combinado, 72,9% no grupo de dieta isolada, 64,6% no grupo de inositol isolado e 39,6% no grupo de metformina isolada."
         },
         {
-          h: "A conclusão que o mercado costuma omitir",
-          p: "As palavras dos autores são explícitas: a evidência que sustenta o uso do inositol no manejo da SOP é limitada e inconclusiva. A recomendação é que profissional e paciente considerem essa incerteza junto com valores e preferências individuais, em decisão compartilhada. Isso é bem diferente de 'adjuvante de primeira linha', que é como o suplemento costuma ser apresentado."
+          h: "O que isso não responde",
+          p: "O estudo tem apenas 12 semanas, curto para desfechos reprodutivos definitivos como taxa de gravidez, e não há braço placebo puro — todos os grupos receberam alguma intervenção ativa, o que dificulta isolar o efeito específico de cada componente. A adesão à dieta foi provavelmente autorrelatada, viés comum nesse desenho."
         },
         {
           h: "Na prática do consultório",
-          p: "O inositol continua sendo uma opção defensável, sobretudo para a paciente que não tolerou metformina — o perfil gastrointestinal é melhor. Mas a conversa precisa ser honesta: efeito provável em alguns marcadores metabólicos, possível efeito ovulatório com o DCI, e incerteza no resto. A base da conduta na SOP com perfil insulínico alterado segue sendo alimentar e comportamental — padrão de baixa carga glicêmica, atividade física e manejo de peso quando indicado. O inositol entra como adjuvante, com meta clara e prazo de reavaliação, não como o centro do tratamento."
+          p: "O achado de que a dieta isolada supera o inositol isolado na regularização menstrual é argumento forte para priorizar a intervenção nutricional estruturada desde o início do tratamento de SOP, não como medida complementar. Sem resposta metabólica ou reprodutiva satisfatória após cerca de 12 semanas de dieta bem conduzida, este estudo dá respaldo para discutir com o médico assistente a associação com metformina e/ou inositol."
         }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "renal-proteina",
-      categoria: "Clínica",
-      areas: ["Renal", "Clínica"],
-      data: "2025",
-      title: "Dieta hipoproteica na DRC: evidência, controvérsias e como aplicar",
-      resumo: "Revisão no Journal of Internal Medicine organiza a briga: excesso de proteína agride o rim, restrição excessiva consome músculo — e o alvo é individual.",
-      mudou: "Sai a meta fixa em g/kg para todo mundo; entra a decisão por estágio da DRC, idade, estado nutricional e complicações.",
-      aplicar: "Antes de definir a meta proteica, avalie estado nutricional e massa muscular — restringir uma paciente já sarcopênica piora o prognóstico.",
-      evidencia: 3,
-      link: "https://doi.org/10.1111/joim.20117",
-      fonte: {
-        autores: "Mafra e cols.",
-        revista: "Journal of Internal Medicine",
-        ano: "2025",
-        desenho: "Revisão narrativa com orientações práticas",
-        amostra: "Síntese da literatura sobre ingestão proteica na DRC não dialítica",
-        doi: "10.1111/joim.20117",
-        pubmed: "40739997",
-        acesso: "Resumo livre; texto completo por assinatura"
-      },
-      leitura: [
-        {
-          h: "A controvérsia",
-          p: "O benefício da dieta hipoproteica em pacientes com função renal alterada permanece controverso. Os autores começam reconhecendo o motivo: estudos de ingestão alimentar são intrinsecamente complexos e carregam vieses que precisam ser compreendidos e controlados. Por isso a evidência nessa área continua limitada e disputada — o que não significa que não haja o que fazer."
-        },
-        {
-          h: "O que está bem estabelecido",
-          p: "Existe literatura abundante ligando ingestão proteica excessiva nesses pacientes a problemas cardiovasculares, estresse oxidativo, hiperfosfatemia, doença mineral óssea, acidose metabólica, inflamação e disbiose intestinal — um conjunto que contribui tanto para o dano renal quanto para desordens sistêmicas concomitantes. O excesso de proteína também leva a acúmulo de produtos nitrogenados, sobrecarregando a função renal."
-        },
-        {
-          h: "O outro lado do risco",
-          p: "Restringir demais é igualmente perigoso: consumo proteico excessivamente restritivo leva à perda de massa muscular, o que pode piorar desfechos clínicos e o prognóstico da paciente. Os autores insistem que a dieta hipoproteica continua sendo uma recomendação valiosa na DRC não dialítica — desde que idade, estado nutricional e complicações da doença sejam cuidadosamente considerados."
-        },
-        {
-          h: "O que a revisão não entrega",
-          p: "Por ser uma revisão narrativa, ela não estabelece faixas numéricas com força de meta-análise nem substitui as diretrizes nefrológicas (KDIGO, KDOQI) na definição de valores por estágio. O valor dela está em nomear os dois riscos simultâneos e defender uma estratégia individualizada e monitorada — não em fixar números."
-        },
-        {
-          h: "Na prática do consultório",
-          p: "Antes de escrever a meta proteica, faça a avaliação nutricional completa: massa muscular, força de preensão, histórico de perda de peso, exames de fósforo e bicarbonato. Em paciente idosa ou com sinais de desnutrição, restringir proteína sem estratégia de preservação muscular é trocar um risco por outro. Combine a meta com energia adequada — restrição proteica sem energia suficiente vira catabolismo — e monitore TFG, estado nutricional e marcadores metabólicos em intervalos definidos. E deixe registrado no prontuário o raciocínio que levou àquela meta, porque ela vai precisar ser revista conforme a doença evolui."
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "compulsao-mindful",
-      categoria: "Comportamental",
-      areas: ["Comportamental", "Estética"],
-      data: "2025",
-      title: "Mindfulness na compulsão alimentar: forte contra nada, empatado contra terapia",
-      resumo: "Atualização de 10 anos com 54 estudos: efeito médio-grande contra controles sem intervenção psicológica, e efeito desprezível contra outras psicoterapias ativas.",
-      mudou: "A pergunta certa deixa de ser 'mindfulness funciona?' e passa a ser 'mindfulness funciona melhor que a psicoterapia que a paciente já poderia estar fazendo?' — e aí o ganho some.",
-      aplicar: "Ótimo recurso para quem não está em acompanhamento psicológico nenhum; não é motivo para substituir uma terapia em andamento.",
+      id: "creatina-massa-magra-cognicao-meia-idade",
+      categoria: "Esportiva",
+      areas: ["Esportiva", "Funcional"],
+      data: "2026",
+      title: "Creatina aumenta massa magra e cognição em adultos de meia-idade mesmo sem programa de exercício",
+      resumo: "Ensaio clínico randomizado e duplo-cego com 64 adultos de 45 a 65 anos mostrou que a creatina monoidratada aumentou massa magra, força e memória mesmo sem exercício associado, e reduziu ainda mais o percentual de gordura quando combinada a treino e dieta de emagrecimento.",
+      mudou: "A creatina deixa de ser vista como suplemento útil só para quem treina: mesmo em adultos sedentários, trouxe ganhos mensuráveis de massa magra, força e cognição em 12 semanas.",
+      aplicar: "Considere a suplementação de creatina monoidratada como estratégia de prevenção de sarcopenia e suporte cognitivo em pacientes de meia-idade e idosos, inclusive nos ainda não engajados em exercício, sem deixar de estimular a associação com treino e dieta para potencializar a redução de gordura corporal.",
       evidencia: 4,
-      link: "https://doi.org/10.1007/s10865-025-00550-5",
+      link: "https://doi.org/10.1080/15502783.2026.2716273",
       fonte: {
-        autores: "Liu e cols.",
-        revista: "Journal of Behavioral Medicine",
-        ano: "2025",
-        desenho: "Revisão sistemática com meta-análise (atualização de 10 anos da revisão de Godfrey, Gallo & Afari, 2015)",
-        amostra: "54 estudos incluídos (contra 19 na revisão original)",
-        doi: "10.1007/s10865-025-00550-5",
-        pubmed: "39979674",
-        acesso: "Resumo livre; texto completo por assinatura"
+        autores: "Chun e cols.",
+        revista: "Journal of the International Society of Sports Nutrition",
+        ano: "2026",
+        desenho: "Ensaio clínico randomizado, duplo-cego, controlado por placebo",
+        amostra: "73 adultos sedentários randomizados (45-65 anos); 64 completaram os 12 semanas, com e sem programa associado de exercício e dieta de emagrecimento",
+        doi: "10.1080/15502783.2026.2716273",
+        pubmed: "42578920",
+        acesso: "Acesso aberto (texto completo livre)"
       },
       leitura: [
         {
-          h: "O que foi atualizado",
-          p: "Intervenções baseadas em mindfulness (MBIs) ganharam popularidade no tratamento da compulsão alimentar, e revisões anteriores encontraram efeitos de médio-grande a grande. Como a literatura cresceu rápido, os autores refizeram a revisão de Godfrey, Gallo e Afari (2015) dez anos depois. O salto de volume é evidente: 19 estudos elegíveis então, 54 agora."
+          h: "Por que este estudo importa",
+          p: "Creatina é um dos suplementos mais estudados em atletas, mas seu papel em adultos de meia-idade e idosos sedentários — população em risco de sarcopenia e declínio cognitivo — é menos explorado, sobretudo sem programa de exercício associado. O estudo testou o que a creatina faz sozinha e o que acrescenta quando combinada a exercício e dieta de emagrecimento."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Busca em PubMed, PsycINFO e Web of Science com termos que cobriam compulsão alimentar, comer excessivo, episódios bulímicos objetivos, terapia de aceitação e compromisso (ACT), terapia comportamental dialética (DBT), mindfulness, meditação e mindful eating. A meta-análise de efeitos aleatórios calculou tamanhos de efeito entre grupos, separando dois tipos de comparação — e é aí que está o achado principal."
+          p: "73 adultos sedentários e saudáveis, de 45 a 65 anos, foram randomizados de forma duplo-cega para receber placebo ou creatina monoidratada, em dois contextos: sem intervenção de exercício/dieta, ou com programa de exercício associado a dieta de emagrecimento. 64 completaram as 12 semanas. Foram avaliados composição corporal, força, resistência muscular, cognição/memória e marcadores sanguíneos de saúde."
         },
         {
-          h: "Os dois resultados que precisam ser lidos juntos",
-          p: "Contra controles sem intervenção psicológica (lista de espera, cuidado usual), as MBIs tiveram efeito médio-grande: g de Hedges médio de −0,65 ao fim do tratamento e −0,71 no seguimento. Contra controles psicológicos ativos — ou seja, outra psicoterapia de verdade — o efeito foi desprezível: −0,05 ao fim do tratamento e +0,13 no seguimento. Entre as MBIs, a DBT foi a que reuniu mais estudos com efeitos grandes. Intervenções que miravam diretamente a compulsão tiveram efeitos maiores do que aquelas em que a compulsão era desfecho secundário."
+          h: "O que foi encontrado",
+          p: "Mesmo sem exercício ou dieta associados, a creatina aumentou massa magra, força e resistência muscular, além de promover mudanças favoráveis em marcadores lipídicos selecionados, HbA1c e cognição/memória, frente ao placebo. Combinada a exercício e dieta de emagrecimento, levou a ganhos semelhantes de massa magra, força e cognição, com o adicional de maior redução do percentual de gordura corporal. A suplementação foi bem tolerada, sem sinais de dano renal."
         },
         {
-          h: "O que os autores pedem a seguir",
-          p: "Mais ensaios randomizados comparando MBIs com outras intervenções psicológicas, meta-análises que separem os tipos de MBI e os alvos da intervenção, e seguimentos mais longos. Os estudos novos incluídos nesta revisão foram mais internacionais, focaram mais em participantes com sobrepeso ou obesidade e envolveram mais componentes de autoajuda e tecnologia — o que também abre a questão de dose e adesão."
+          h: "Limitações",
+          p: "A amostra é pequena e moderada (64 completers) para um desenho com múltiplos subgrupos, o que reduz o poder estatístico para comparações mais finas. Doze semanas é curto para desfechos de longo prazo como densidade óssea ou quedas, e a população estudada era saudável e sedentária, o que limita extrapolar para idosos frágeis, sarcopênicos graves ou com comorbidades renais e cardiovasculares."
         },
         {
           h: "Na prática do consultório",
-          p: "Para a paciente com compulsão que não está em acompanhamento psicológico algum, oferecer práticas estruturadas de mindful eating é uma intervenção com evidência real de benefício — e cabe dentro do escopo do nutricionista quando aplicada ao comportamento alimentar. Para a paciente que já faz terapia, o dado diz o oposto do senso comum: não há ganho em trocar. O caminho útil é integrar, alinhando com quem acompanha. E prefira protocolos que mirem a compulsão diretamente, com prática guiada e regular, em vez de orientações genéricas de 'comer com atenção' — a diferença de efeito entre as duas coisas apareceu na meta-análise."
+          p: "Para pacientes de meia-idade e idosos com baixa adesão a exercício, este estudo dá respaldo para discutir a suplementação de creatina monoidratada como suporte à massa magra e à cognição, sem esperar que o paciente inicie treino primeiro. Deixe claro que o maior ganho em composição corporal (redução de gordura) só apareceu combinada a exercício e dieta — a creatina entra como complemento, não substituto, da mudança de estilo de vida."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "mindful-eating-ingestao-alimentar",
+      categoria: "Comportamental",
+      areas: ["Comportamental", "Estética"],
+      data: "2026",
+      title: "Mindful eating reduz a quantidade de comida ingerida, mas não muda a fome, mostra a maior meta-análise do tema",
+      resumo: "A maior revisão já feita sobre o assunto (41 artigos, com meta-análises de 46 estudos sobre ingestão e 11 sobre apetite) mostra que mindfulness e mindful eating reduzem de forma consistente a quantidade de comida consumida em ambiente controlado, mas não alteram fome ou saciedade percebidas.",
+      mudou: "O efeito do mindful eating parece ser comportamental — comer menos e mais devagar — e não uma mudança real na fisiologia do apetite, o que reajusta a expectativa clínica sobre a técnica.",
+      aplicar: "Use mindful eating como ferramenta para reduzir volume e velocidade da refeição, sem apresentá-lo ao paciente como método capaz de 'desligar' a fome ou controlar a saciedade biológica.",
+      evidencia: 5,
+      link: "https://pubmed.ncbi.nlm.nih.gov/42341365/",
+      fonte: {
+        autores: "Ahmadyar e cols.",
+        revista: "Clinical Psychology Review",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de estudos experimentais controlados",
+        amostra: "41 artigos incluídos; meta-análises com 46 estudos sobre ingestão alimentar e 11 sobre apetite, em adultos e crianças",
+        doi: "10.1016/j.cpr.2026.102780",
+        pubmed: "42341365",
+        acesso: "Resumo livre; texto completo por assinatura"
+      },
+      leitura: [
+        {
+          h: "Por que este estudo importa",
+          p: "Mindfulness e mindful eating são cada vez mais recomendados em consultório como estratégia para 'comer com mais consciência', mas faltava uma síntese robusta separando o que a técnica realmente muda: o quanto se come, ou a própria sensação de fome. Esta é a primeira revisão a reunir e quantificar separadamente esses dois desfechos."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Busca em cinco bases (PsycINFO, MEDLINE, EMBASE, Web of Science e Scopus) por estudos experimentais que manipulassem mindfulness, mindful eating ou intuitive eating, com grupo controle e medida objetiva de ingestão alimentar e/ou apetite. Foram incluídos 41 artigos, com meta-análises separadas para ingestão de comida (46 comparações) e para apetite/fome-saciedade (11 comparações)."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "Houve redução estatisticamente significativa, porém pequena, na quantidade de comida ingerida, com efeitos maiores em estudos de laboratório do que em contextos mais naturalísticos. Para apetite (fome e saciedade autorreferidas), não houve efeito estatisticamente significativo."
+        },
+        {
+          h: "Limitações",
+          p: "A maioria dos estudos foi conduzida em laboratório, de curta duração e com amostras não clínicas — os autores destacam que os achados podem não se generalizar para populações clínicas (obesidade, transtornos alimentares) nem para o dia a dia fora do laboratório. O efeito é pequeno e a heterogeneidade entre protocolos de intervenção é alta."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Vale manter o mindful eating no arsenal para reduzir porções e desacelerar a refeição, mas sem vendê-lo como controle da fome fisiológica — isso calibra a expectativa do paciente e evita frustração quando a fome continua presente mesmo praticando a técnica."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "probioticos-humor-sono-eixo-intestino-cerebro",
+      categoria: "Microbiota",
+      areas: ["Clínica", "Funcional"],
+      data: "2026",
+      title: "Revisão com 20 ECRs reforça o papel dos probióticos sobre humor, ansiedade e sono pelo eixo intestino-cérebro",
+      resumo: "Revisão sistemática de 20 ensaios clínicos randomizados (quase 1.900 participantes) encontrou associação entre suplementação de probióticos e melhora de sintomas depressivos, ansiedade, qualidade do sono, humor e cognição; os efeitos sobre cortisol e estresse percebido foram inconsistentes entre os estudos.",
+      mudou: "Amplia a base de evidência de que a modulação da microbiota por probióticos pode refletir em desfechos mensuráveis de saúde mental, além dos efeitos gastrointestinais clássicos.",
+      aplicar: "Discuta probióticos como estratégia complementar — nunca substitutiva de tratamento psicológico ou psiquiátrico — em pacientes com queixas leves de humor, ansiedade ou sono associadas a sintomas digestivos, monitorando resposta individual e sem prometer efeito sobre estresse ou cortisol.",
+      evidencia: 5,
+      link: "https://pubmed.ncbi.nlm.nih.gov/42694318/",
+      fonte: {
+        autores: "Das e cols.",
+        revista: "Annals of Neurosciences",
+        ano: "2026",
+        desenho: "Revisão sistemática de ensaios clínicos randomizados",
+        amostra: "20 ECRs, 1.916 participantes, intervenções de 4 a 12 semanas",
+        doi: "10.1177/09727531261478458",
+        pubmed: "42694318",
+        acesso: "Acesso aberto (texto completo livre)"
+      },
+      leitura: [
+        {
+          h: "A pergunta do estudo",
+          p: "O interesse por 'psicobióticos' cresceu muito nos últimos anos, mas os achados sobre probióticos e saúde mental ainda são dispersos entre desfechos diferentes — humor, ansiedade, sono, cognição, estresse. Esta revisão reuniu ensaios randomizados recentes para mapear, desfecho por desfecho, onde a evidência é mais consistente."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Revisão sistemática de ensaios clínicos randomizados avaliando suplementação de probióticos e seu impacto sobre depressão, ansiedade, humor, cognição, qualidade do sono, estresse/cortisol e composição da microbiota intestinal. Foram incluídos 20 ECRs, 1.916 participantes, com duração de intervenção entre 4 e 12 semanas."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "No conjunto dos estudos, os probióticos foram associados a melhoras em sintomas depressivos, ansiedade, qualidade do sono, humor, cognição, qualidade de vida e em populações microbianas intestinais benéficas. Os resultados sobre cortisol e marcadores de estresse foram inconsistentes entre os estudos incluídos."
+        },
+        {
+          h: "Limitações",
+          p: "É uma revisão sistemática qualitativa, sem meta-análise formal de tamanho de efeito agrupado, com cepas, doses e populações heterogêneas entre os 20 estudos, além de uma parcela relevante com alto risco de viés. Isso limita concluir qual cepa, dose ou duração funciona melhor, e para qual perfil de paciente."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Dá respaldo para conversar sobre probióticos como coadjuvante em pacientes com queixas leves de humor, ansiedade ou sono associadas a sintomas digestivos — mas a heterogeneidade dos estudos ainda impede recomendar uma cepa ou dose padrão; a escolha do produto e o acompanhamento da resposta clínica seguem individualizados."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "vitamina-d-fatores-risco-cardiometabolico",
+      categoria: "Suplementação",
+      areas: ["Clínica", "Funcional"],
+      data: "2026",
+      title: "Vitamina D melhora discretamente LDL, pressão e glicemia em meta-análise com 45 ECRs",
+      resumo: "Meta-análise reunindo 45 ensaios clínicos randomizados encontrou reduções pequenas, porém estatisticamente significativas, em LDL, pressão sistólica, glicemia de jejum e HbA1c com a suplementação de vitamina D, com efeitos que variam conforme idade e nível basal de 25(OH)D.",
+      mudou: "Confirma que o benefício cardiometabólico da vitamina D existe, mas é modesto e heterogêneo — maior em pacientes com 55 anos ou mais para pressão e LDL, e em quem tem deficiência basal para glicemia/HbA1c — não um efeito uniforme para qualquer paciente suplementado.",
+      aplicar: "Reserve a suplementação de vitamina D principalmente para corrigir deficiência documentada, sem apresentá-la como estratégia isolada relevante para LDL, pressão ou glicemia, e calibre a expectativa conforme idade e status basal do paciente.",
+      evidencia: 5,
+      link: "https://pubmed.ncbi.nlm.nih.gov/42521227/",
+      fonte: {
+        autores: "Abumweis e cols.",
+        revista: "Asia Pacific Journal of Clinical Nutrition",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
+        amostra: "45 ECRs (triagem inicial de mais de 14.000 registros), adultos, vitamina D oral vs. placebo",
+        doi: "10.6133/apjcn.202608_35(4).0007",
+        pubmed: "42521227",
+        acesso: "Resumo livre; texto completo por assinatura"
+      },
+      leitura: [
+        {
+          h: "Por que este estudo importa",
+          p: "A vitamina D é um dos suplementos mais prescritos no consultório, e seu papel em desfechos cardiometabólicos segue debatido, com estudos anteriores mostrando resultados inconsistentes. Esta meta-análise tentou esclarecer se — e para quem — a suplementação realmente melhora esses marcadores."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Revisão sistemática de ensaios clínicos randomizados comparando vitamina D oral com placebo em adultos, avaliando efeitos sobre perfil lipídico, pressão arterial e parâmetros glicêmicos, e testando se idade e nível basal de vitamina D modificavam esses efeitos. 45 ECRs foram incluídos após triagem de mais de 14 mil registros."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "A suplementação reduziu significativamente LDL, pressão sistólica, glicemia de jejum e HbA1c. Em subgrupos, a redução de pressão sistólica e LDL foi maior em participantes com 55 anos ou mais, enquanto a redução de glicemia de jejum foi maior em menores de 55 anos; efeitos favoráveis sobre glicemia e HbA1c foram mais evidentes em quem tinha vitamina D basal abaixo de 50 nmol/L."
+        },
+        {
+          h: "Limitações",
+          p: "Os próprios autores classificam os efeitos como modestos e de significância clínica incerta — reduções desse tamanho isoladamente dificilmente mudam risco cardiovascular de forma relevante. Há heterogeneidade grande entre os 45 estudos em dose, duração e população, e a meta-análise de marcadores substitutos não permite concluir sobre desfechos duros como infarto ou AVC."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Continua fazendo sentido dosar e corrigir deficiência de vitamina D quando indicado, mas evite vender a suplementação como estratégia de impacto relevante isolado sobre LDL, pressão ou glicemia — o efeito é pequeno, mais provável em pacientes mais velhos ou com deficiência basal, e deve ser tratado como coadjuvante, não substituto de mudanças de estilo de vida ou medicação quando indicada."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "obesidade-farmacos-qualidade-vida",
+      categoria: "Obesidade",
+      areas: ["Clínica", "Funcional"],
+      data: "2026",
+      title: "Maior comparação já feita entre fármacos para obesidade mostra que perder peso não garante mais qualidade de vida nem saúde cardiovascular",
+      resumo: "Revisão sistemática com meta-análise em rede reuniu 262 ensaios clínicos e quase 100 mil participantes: tirzepatida, CagriSema e mazdutide lideram a perda de peso em 1 ano (13-15%), mas a maioria dos fármacos não melhora qualidade de vida de forma clinicamente relevante, e poucos reduzem eventos cardiovasculares.",
+      mudou: "A escolha do fármaco para obesidade não pode se basear só no percentual de perda de peso — benefícios em qualidade de vida, mortalidade e eventos cardiovasculares variam muito entre as moléculas e nem sempre acompanham o resultado na balança.",
+      aplicar: "Ao discutir metas com o paciente em uso de medicação para obesidade, explique que mais perda de peso costuma vir com mais efeitos colaterais e perda de massa magra, e reforce o acompanhamento nutricional de composição corporal e função — não só o número da balança.",
+      evidencia: 5,
+      link: "https://doi.org/10.1136/bmj-2026-372161",
+      fonte: {
+        autores: "Nong e cols.",
+        revista: "The BMJ",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise em rede (network meta-analysis) de ensaios clínicos randomizados",
+        amostra: "262 ECRs, 99.791 participantes, 19 medicamentos para obesidade, seguimento de 12 a 172 semanas",
+        doi: "10.1136/bmj-2026-372161",
+        pubmed: "",
+        acesso: "Acesso aberto (texto completo livre)"
+      },
+      leitura: [
+        {
+          h: "A pergunta do estudo",
+          p: "Com tantos medicamentos novos para obesidade (agonistas de GLP-1, GIP, combinações e agentes orais), faltava uma comparação abrangente que fosse além do percentual de peso perdido e olhasse também para qualidade de vida, mortalidade, eventos cardiovasculares e efeitos adversos. Esse foi o objetivo desta revisão."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Foram reunidos 262 ensaios clínicos randomizados (99.791 participantes, idade média 49 anos, 63% mulheres, IMC médio 35) comparando 19 medicamentos disponíveis ou em fase avançada de desenvolvimento contra mudança de estilo de vida, placebo ou entre si, com seguimento de 12 a 172 semanas. A meta-análise em rede avaliou peso, qualidade de vida, mortalidade, eventos cardiovasculares maiores e descontinuação por efeitos adversos, com certeza da evidência pelo sistema GRADE."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "Em 1 ano, comparados a mudança de estilo de vida isolada, os maiores percentuais de perda de peso foram com tirzepatida (-14,9%), CagriSema (-14,8%), mazdutide, semaglutida oral (-10,9%), orforglipron (-9,9%), semaglutida subcutânea (-9,8%) e fentermina-topiramato (-8,1%). Apesar disso, nenhum medicamento melhorou a qualidade de vida além da diferença mínima clinicamente importante. A semaglutida subcutânea foi o único fármaco associado a redução de mortalidade por todas as causas e de infarto do miocárdio, resultado fortemente influenciado por estudos em populações de alto risco cardiovascular. Mais perda de peso veio acompanhada de mais efeitos adversos gastrointestinais, fadiga e perda de massa magra."
+        },
+        {
+          h: "Limitações",
+          p: "É uma meta-análise em rede, método robusto mas dependente da comparabilidade indireta entre estudos com populações e durações diferentes; o seguimento de 1 ano não permite conclusões de muito longo prazo, e boa parte do benefício cardiovascular vem de poucos ensaios desenhados especificamente para esse desfecho, não generalizável a todos os pacientes com obesidade."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Ao acompanhar pacientes em farmacoterapia para obesidade, amplie a conversa para além do peso: monitore sintomas gastrointestinais, ingestão proteica e sinais de perda de massa magra, e converse abertamente sobre expectativas de qualidade de vida — o estudo sugere que ela não melhora automaticamente com a perda de peso induzida por fármacos, o que mantém a intervenção nutricional e comportamental essencial para sustentar bem-estar e massa magra durante o tratamento."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "materno-infantil-intervencoes-nutricionais-gestacao",
+      categoria: "Materno Infantil",
+      areas: ["Saúde da Mulher", "Fertilidade", "Pediatria"],
+      data: "2026",
+      title: "Meta-análise de 23 ensaios confirma: intervenções nutricionais estruturadas na gestação reduzem baixo peso ao nascer, prematuridade e diabetes gestacional",
+      resumo: "Revisão sistemática com meta-análise de ensaios clínicos randomizados mostrou que programas de nutrição na gestação — aconselhamento, suplementação e fornecimento de alimentos — aumentam o peso ao nascer dentro da faixa saudável e reduzem os riscos de baixo peso ao nascer, pequeno para idade gestacional, prematuridade e diabetes gestacional.",
+      mudou: "Nutrição na gestação ganha reforço de evidência como intervenção clínica estruturada — não apenas orientação genérica — capaz de impactar desfechos duros como prematuridade e diabetes gestacional, sobretudo quando combina aconselhamento personalizado, múltiplas sessões e fornecimento de alimentos.",
+      aplicar: "Priorize programas de acompanhamento nutricional na gestação com aconselhamento individualizado e pelo menos 4 sessões ao longo do pré-natal, incluindo quando possível fornecimento de alimentos ou suplementos, já que esse formato mostrou efeitos mais consistentes que orientações pontuais.",
+      evidencia: 5,
+      link: "https://doi.org/10.1111/jmwh.70172",
+      fonte: {
+        autores: "Sabuncular e cols.",
+        revista: "Journal of Midwifery & Women's Health",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
+        amostra: "23 ECRs, 9.389 gestantes",
+        doi: "10.1111/jmwh.70172",
+        pubmed: "42598865",
+        acesso: "Resumo livre; texto completo por assinatura"
+      },
+      leitura: [
+        {
+          h: "Por que este estudo importa",
+          p: "A nutrição na gestação é reconhecida como determinante de desfechos maternos e neonatais, mas grande parte da evidência anterior vem de estudos observacionais ou de suplementação isolada de micronutrientes. Este estudo sintetizou apenas ensaios clínicos randomizados que testaram intervenções nutricionais mais amplas — aconselhamento, suplementação e fornecimento de alimentos — durante a gravidez."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Foram incluídos 23 ensaios clínicos randomizados, totalizando 9.389 gestantes, avaliando o efeito de diferentes formatos de intervenção nutricional sobre desfechos maternos e neonatais, com análise de subgrupos por tipo e intensidade da intervenção — personalizada vs. genérica, número de sessões, com ou sem fornecimento de alimentos."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "As intervenções nutricionais aumentaram o peso ao nascer dentro de faixas saudáveis e reduziram os riscos de baixo peso ao nascer, pequeno para idade gestacional, prematuridade e diabetes gestacional. Os efeitos foram mais robustos para aconselhamento personalizado, programas com 4 ou mais sessões e intervenções que incluíam fornecimento direto de alimentos, frente a orientações pontuais ou genéricas."
+        },
+        {
+          h: "O que isso não responde",
+          p: "O material disponível não detalha os tamanhos de efeito para cada desfecho nem a heterogeneidade entre os 23 estudos, que provavelmente usaram populações, protocolos e definições de desfecho variados — isso limita saber 'quanto' cada tipo de intervenção reduz o risco. Também não fica claro se os efeitos se mantêm em contextos de alta renda com boa cobertura de pré-natal, já que parte da literatura de nutrição gestacional vem de países de baixa e média renda."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Use esse estudo como respaldo para defender, dentro da equipe de pré-natal, um acompanhamento nutricional estruturado e não apenas orientações genéricas de 'alimentação saudável': planeje ao menos 4 encontros ao longo da gestação, individualize o plano conforme a realidade da paciente e, havendo insegurança alimentar, considere articular fornecimento de alimentos ou encaminhamento a programas de suporte."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "renal-dieta-angulo-fase-dialise",
+      categoria: "Clínica",
+      areas: ["Renal", "Clínica"],
+      data: "2026",
+      title: "Revisão mostra que a dieta isolada não melhora o ângulo de fase em pacientes em diálise",
+      resumo: "Meta-análise de 14 estudos (9 ensaios clínicos randomizados, 969 pacientes) não encontrou efeito significativo das intervenções dietéticas sobre o ângulo de fase — marcador de saúde celular e estado nutricional — em pacientes com doença renal crônica em diálise.",
+      mudou: "Um resultado negativo, mas útil: dieta isolada, sem associação a exercício ou suplementação proteico-calórica mais intensiva, pode não ser suficiente para melhorar marcadores de composição corporal celular como o ângulo de fase em quem já está em diálise.",
+      aplicar: "Não prometa que o ajuste dietético isolado vai melhorar o ângulo de fase ou a massa celular do paciente em diálise em curto prazo; use esse indicador junto com outros (força de preensão, albumina, avaliação subjetiva global) e, quando a meta for reserva funcional e celular, discuta com a equipe associar a dieta a exercício e suplementação.",
+      evidencia: 4,
+      link: "https://doi.org/10.1093/nutrit/nuag113",
+      fonte: {
+        autores: "Frizzas e cols.",
+        revista: "Nutrition Reviews",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de estudos controlados (majoritariamente ECRs)",
+        amostra: "14 estudos (9 ECRs), 969 pacientes com doença renal crônica em diálise",
+        doi: "10.1093/nutrit/nuag113",
+        pubmed: "42562782",
+        acesso: "Resumo livre; texto completo por assinatura"
+      },
+      leitura: [
+        {
+          h: "Por que este estudo importa",
+          p: "O ângulo de fase, obtido por bioimpedância elétrica, é um marcador associado a desnutrição e pior prognóstico em diversas condições, incluindo a doença renal crônica em diálise — população em que a desnutrição proteico-calórica é prevalente e clinicamente relevante. Havia evidência de que intervenções nutricionais melhoram o ângulo de fase em oncologia e medicina esportiva, mas faltava uma síntese específica para pacientes renais em diálise."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Revisão sistemática com meta-análise reunindo 14 estudos controlados (9 ECRs), 969 pacientes adultos com doença renal crônica em diálise submetidos a intervenções dietéticas comparadas a grupo controle, com o ângulo de fase como desfecho de interesse."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "A meta-análise não encontrou influência estatisticamente significativa das intervenções dietéticas sobre os valores de ângulo de fase nos pacientes em diálise. Apesar da plausibilidade biológica e de achados positivos em outras populações, a dieta isolada não se mostrou suficiente para alterar esse marcador nesta população, ao menos com a evidência disponível."
+        },
+        {
+          h: "Limitações",
+          p: "Os autores destacam o número reduzido de ensaios clínicos randomizados disponíveis e risco de viés importante entre os estudos incluídos, o que limita a confiança no resultado negativo — pode ser ausência real de efeito, mas também pode refletir estudos pequenos, intervenções heterogêneas ou tempo de seguimento insuficiente. Pedem explicitamente ensaios de melhor qualidade metodológica para confirmar ou refutar o achado."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Continue orientando a dieta desses pacientes com base nas metas já estabelecidas de proteína, energia, sódio, potássio e fósforo — este estudo não invalida a terapia nutricional na diálise, mas indica que não se deve prometer que o ajuste dietético isolado vai, por si só, melhorar o ângulo de fase ou a massa celular corporal em curto prazo; se esse for um objetivo específico do plano de cuidado, discuta com a equipe a combinação com exercício supervisionado e suplementação mais intensiva."
         }
       ]
     },
