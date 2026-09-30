@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seja indicada na NutriPlat</title>
+  <meta name="description" content="Prontuário, planos alimentares, portal do paciente e um perfil público que traz paciente novo. Crie seu perfil na NutriPlat e apareça na busca." />
+  <meta name="theme-color" content="#1C5B57" />
+  <link rel="canonical" href="https://app.nutrianaluisarocha.com/seja-indicada" />
+  <link rel="icon" href="assets/img/logo-mark.png" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="NutriPlat" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:title" content="Seja indicada na NutriPlat" />
+  <meta property="og:description" content="A plataforma completa para nutricionistas — e um perfil público que traz paciente novo." />
+  <meta property="og:url" content="https://app.nutrianaluisarocha.com/seja-indicada" />
+  <meta property="og:image" content="https://app.nutrianaluisarocha.com/assets/img/og-nutri.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/tokens.css?v=ad4420de" />
+  <link rel="stylesheet" href="assets/css/diretorio.css?v=677d8495" />
+</head>
+<body class="pub">
+
+<header class="pub-nav">
+  <div class="wrap">
+    <a class="pub-nav__marca" href="/encontre-sua-nutri">
+      <img src="assets/img/logo-mark.png" alt="" /> NutriPlat
+    </a>
+    <nav class="pub-nav__links">
+      <a href="/encontre-sua-nutri">Encontrar nutri</a>
+      <a href="/seja-indicada">Sou nutricionista</a>
+      <a class="btn btn--contorno" href="/">Entrar</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Seu consultório organizado — e um perfil que traz paciente novo</h1>
+    <p>A NutriPlat reúne prontuário, antropometria, planos alimentares, protocolos e o portal do seu
+       paciente num lugar só. E coloca você na busca que pacientes usam para encontrar
+       nutricionista por especialidade, cidade e modalidade.</p>
+    <a class="btn btn--primario" href="#cadastro" data-ir-cadastro>Quero meu perfil na NutriPlat</a>
+  </div>
+</section>
+
+<section class="secao">
+  <div class="wrap">
+    <h2>O que você recebe</h2>
+    <p class="sub">Tudo o que a consulta pede, sem juntar cinco ferramentas diferentes.</p>
+    <div class="cards">
+      <div class="card"><div class="card__nome">Prontuário completo</div>
+        <p class="card__bio" style="-webkit-line-clamp:6">Anamnese, antropometria com dobras, exames, evolução, arquivos e financeiro do paciente — com histórico de cada consulta.</p></div>
+      <div class="card"><div class="card__nome">Planos alimentares</div>
+        <p class="card__bio" style="-webkit-line-clamp:6">Editor com a tabela TACO, cálculo de energia e macros, múltiplos planos por paciente e PDF com a sua identidade visual.</p></div>
+      <div class="card"><div class="card__nome">Portal do paciente</div>
+        <p class="card__bio" style="-webkit-line-clamp:6">Ele instala na tela inicial do celular e vê plano, treino, metas, lista de compras e o diário do prato. Você acompanha de perto.</p></div>
+      <div class="card"><div class="card__nome">Inteligência clínica</div>
+        <p class="card__bio" style="-webkit-line-clamp:6">Protocolos, condutas e apoio de IA na anamnese e nas orientações — sempre com a sua revisão antes de ir para o paciente.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="secao secao--alt">
+  <div class="wrap">
+    <h2>Planos</h2>
+    <p class="sub">Um plano só: o consultório inteiro, com o seu perfil na vitrine incluso.
+       Mensal ou anual — o acesso libera assim que o pagamento é confirmado.</p>
+
+    <!-- Os cartões e o seletor de ciclo são desenhados por cadastro-nutri.js:
+         o preço de cada ciclo está lá, num lugar só. -->
+    <div id="planos"></div>
+
+    <p class="nota" style="margin-top:var(--sp-5);color:var(--texto-sutil);font-size:var(--fs-caption);max-width:70ch">
+      O perfil aparece na busca enquanto a assinatura estiver ativa. Não existe posição paga nem ranking
+      de qualidade, e a vitrine não substitui a conferência do registro profissional — todo perfil passa
+      por análise do CRN antes de entrar na busca (CFN 856/2026).
+    </p>
+  </div>
+</section>
+
+<section class="secao" id="cadastro">
+  <div class="wrap">
+    <h2>Criar meu cadastro</h2>
+    <p class="sub">Cinco passos. A conta é criada na hora; o perfil na vitrine sai depois da
+       conferência do seu CRN — em até 7 dias.</p>
+    <div class="cn-form" id="cadastro-form"></div>
+  </div>
+</section>
+
+<footer class="pub-rodape">
+  <div class="wrap">
+    <div>
+      <strong style="font-family:var(--font-display);font-weight:900;color:var(--branco)">NutriPlat</strong>
+      <p class="nota" style="margin-top:var(--sp-2)">
+        Plataforma de gestão para nutricionistas e vitrine de profissionais com registro ativo no CRN.
+      </p>
+    </div>
+    <div>
+      <p><a href="/encontre-sua-nutri">Encontrar nutricionista</a></p>
+      <p><a href="/privacidade">Privacidade</a></p>
+      <p><a href="/termos">Termos de uso</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/foto-upload.js?v=a2e21454"></script>
+<script src="assets/js/cadastro-nutri.js?v=97e3e967"></script>
+</body>
+</html>

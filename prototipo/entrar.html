@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NutriPlat · Plataforma para Nutricionistas</title>
+
+  <!-- ============================================================
+       Página-espelho do login, feita para o COMPARTILHAMENTO.
+       O index.html tem a prévia do PORTAL DO PACIENTE ("Meu
+       Acompanhamento") — certa para o paciente e errada para a nutri.
+       Como o WhatsApp lê as meta tags do endereço que recebe, e a query
+       string não muda a prévia, a única saída é um endereço próprio.
+       /entrar carrega estas meta tags, o robô do WhatsApp monta o card
+       da plataforma, e a pessoa cai no login normal em /.
+       ============================================================ -->
+  <meta name="description" content="NutriPlat — a plataforma para nutricionistas: prontuário, planos alimentares, antropometria, protocolos e o portal do paciente num lugar só." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="NutriPlat" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:title" content="NutriPlat · Plataforma para Nutricionistas" />
+  <meta property="og:description" content="Prontuário, planos alimentares, antropometria, protocolos e o portal do seu paciente — tudo num lugar só. Entre com o e-mail e a senha que você recebeu." />
+  <meta property="og:url" content="https://app.nutrianaluisarocha.com/entrar" />
+  <meta property="og:image" content="https://app.nutrianaluisarocha.com/assets/img/og-nutri.png" />
+  <meta property="og:image:secure_url" content="https://app.nutrianaluisarocha.com/assets/img/og-nutri.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="NutriPlat — plataforma para nutricionistas" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NutriPlat · Plataforma para Nutricionistas" />
+  <meta name="twitter:description" content="Prontuário, planos alimentares, antropometria, protocolos e o portal do seu paciente — tudo num lugar só." />
+  <meta name="twitter:image" content="https://app.nutrianaluisarocha.com/assets/img/og-nutri.png" />
+
+  <!-- Buscador não deve indexar o espelho e concorrer com o login. -->
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://app.nutrianaluisarocha.com/" />
+
+  <!-- O robô do WhatsApp não executa JS, então lê as meta tags acima antes
+       de qualquer redirecionamento. Quem abre no navegador vai direto pro
+       login: replace() para não prender a pessoa no botão "voltar". -->
+  <script>location.replace("/");</script>
+  <meta http-equiv="refresh" content="0; url=/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..800&display=swap" rel="stylesheet" />
+  <style>
+    body { margin: 0; min-height: 100vh; display: flex; align-items: center;
+           justify-content: center; background: #1C5B57; color: #fff;
+           font-family: Figtree, system-ui, sans-serif; text-align: center;
+           padding: 24px; }
+    a { color: #A9D3CE; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <!-- Só aparece se o JS e o refresh falharem. -->
+  <p>Levando você para a NutriPlat… <a href="/">Entrar agora</a></p>
+</body>
+</html>

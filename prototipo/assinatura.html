@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Assinatura · Anutri</title>
+  <title>Assinatura · NutriPlat</title>
   <meta name="robots" content="noindex" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/tokens.css?v=e7f9d01b" />
-  <link rel="stylesheet" href="assets/css/style.css?v=3cca70f7" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/tokens.css?v=ad4420de" />
+  <link rel="stylesheet" href="assets/css/style.css?v=d7d917c5" />
   <style>
     .asdoc { min-height: 100vh; background: var(--cinza-claro); font-family: var(--font-ui); color: var(--texto); }
     .astop { background: var(--vinho); color: #fff; padding: var(--sp-4) var(--sp-5); }
@@ -17,7 +17,7 @@
     .aslogo { display: inline-flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
     .aslogo img { width: 30px; height: 30px; object-fit: contain; }
     .aslogo__w { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; }
-    .aslink { color: rgba(255,255,255,.85); text-decoration: none; font-size: var(--fs-sm); font-weight: 600; }
+    .aslink { color: rgba(255,255,255,.85); text-decoration: none; font-size: var(--fs-sm); font-weight: 600; display: inline-block; padding: 5px 2px; }
     .aslink:hover { color: #fff; text-decoration: underline; }
     .aswrap { max-width: 760px; margin: 0 auto; padding: var(--sp-6) var(--sp-5) var(--sp-8); }
 
@@ -40,7 +40,7 @@
     .asfeat li { position: relative; padding-left: 28px; font-size: var(--fs-body); }
     .asfeat li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--vinho); font-weight: 800; }
     .asfoot-note { font-size: var(--fs-caption); color: var(--texto-sutil); margin-top: 16px; text-align: center; }
-    .asfoot-note a { color: var(--vinho); }
+    .asfoot-note a { color: var(--vinho); display: inline-block; padding: 5px 0; }
     .as-fill { background: #fdeaf5; border-bottom: 1px dashed var(--vinho-claro); padding: 0 4px; color: var(--vinho-escuro); font-weight: 600; }
   </style>
 </head>
@@ -50,7 +50,7 @@
       <div class="astop__in">
         <a class="aslogo" href="dashboard.html">
           <img src="assets/img/logo-mark.png" alt="" />
-          <span class="aslogo__w">Anutri</span>
+          <span class="aslogo__w">NutriPlat</span>
         </a>
         <a class="aslink" href="#" data-logout>Sair</a>
       </div>
@@ -65,11 +65,14 @@
       <div class="ascard">
         <div class="ascard__head">
           <p class="ascard__eyebrow">Plano</p>
-          <div class="ascard__nome">Anutri Profissional</div>
-          <div class="ascard__preco">R$ 49,90<small>/mês</small></div>
+          <div class="ascard__nome">NutriPlat</div>
+          <div class="ascard__preco" id="preco-mensal">R$ 39,95<small>/mês</small></div>
+          <p id="preco-nota" style="margin:6px 0 0;opacity:.9">50% off nas 3 primeiras mensalidades, depois R$ 79,90/mês</p>
         </div>
         <div class="ascard__body">
           <ul class="asfeat">
+            <li>15 dias grátis para testar tudo (a vitrine libera com a assinatura)</li>
+            <li>Perfil em Encontre sua nutri enquanto a assinatura estiver ativa</li>
             <li>Pacientes e prontuário eletrônico completo</li>
             <li>Planos alimentares, prescrições e orientações com a sua identidade</li>
             <li>Agenda com Google Meet e portal do paciente (app instalável)</li>
@@ -89,24 +92,175 @@
     </main>
   </div>
 
-  <script src="assets/js/supabase-client.js?v=5dec5cdd"></script>
-  <script src="assets/js/auth-guard.js?v=2e5950de"></script>
+  <script src="assets/js/supabase-client.js?v=6b9d6888"></script>
+  <script src="assets/js/auth-guard.js?v=1c7519c5"></script>
   <script>
     (function () {
       "use strict";
-      // Link de checkout da assinatura (a definir com o provedor de pagamento
-      // recorrente). Enquanto não houver, o botão avisa em vez de levar a lugar nenhum.
-      var LINK_ASSINATURA = "https://invoice.infinitepay.io/plans/analuisarocha/AOoThqZeRC";
+      // Tabela de 0097: 15 dias grátis (sem vitrine), R$ 39,95 nas 3 primeiras
+      // mensalidades (4 para quem veio por cupom), depois R$ 79,90;
+      // semestral R$ 419,40; anual R$ 719. O link é criado NA HORA pela nutriplat-pagamento, com o id
+      // da conta dentro — é assim que o pagamento libera o acesso sozinho e
+      // lança a comissão de quem indicou. O preço cobrado quem decide é o
+      // servidor; o que está aqui é só a vitrine.
+      var FN = "nutriplat-pagamento";
+      var perfil = { indicada: false, pagamentos: 0, ciclo: "mensal" };
+      var ultimoBilling = null;
+      // ?renovar=1 vem do e-mail de renovação e da barra dentro do app:
+      // abre direto o pagamento do ciclo que ela já usa (migração 0099).
+      var pedidoRenovar = new URLSearchParams(window.location.search).get("renovar") === "1";
+
       var btn = document.getElementById("btn-assinar");
-      if (btn) {
-        if (LINK_ASSINATURA) { btn.href = LINK_ASSINATURA; }
-        else {
-          btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            alert("O link de assinatura ainda será configurado com o provedor de pagamento.");
-          });
-        }
+      function botaoCiclo(texto) {
+        var a = document.createElement("a");
+        a.className = "btn btn--outline btn--block btn--lg";
+        a.style.marginTop = "10px";
+        a.href = "#";
+        a.textContent = texto;
+        return a;
       }
+      var btnSemestral = botaoCiclo("Semestral: R$ 419,40 (R$ 69,90/mês)");
+      var btnAnual = botaoCiclo("Anual: R$ 719 (R$ 59,92/mês)");
+      if (btn) {
+        btn.removeAttribute("target");
+        btn.insertAdjacentElement("afterend", btnSemestral);
+        btnSemestral.insertAdjacentElement("afterend", btnAnual);
+      }
+
+      var cupomBox = document.createElement("div");
+      cupomBox.style.cssText = "margin-top:16px;display:none";
+      cupomBox.innerHTML =
+        '<label for="as-cupom" style="font-size:var(--fs-caption);font-weight:600">Tem cupom de indicação?</label>' +
+        '<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">' +
+          '<input id="as-cupom" class="field__input" maxlength="20" autocapitalize="characters" style="flex:1;min-width:140px" />' +
+          '<button type="button" class="btn btn--outline" id="as-cupom-ok">Aplicar</button>' +
+        "</div>" +
+        '<p id="as-cupom-msg" style="font-size:var(--fs-caption);margin:6px 0 0"></p>';
+      btnAnual.insertAdjacentElement("afterend", cupomBox);
+
+      function pagar(ciclo, a) {
+        return function (e) {
+          e.preventDefault();
+          if (a.dataset.busy) return;
+          var texto = a.textContent;
+          a.dataset.busy = "1";
+          a.textContent = "Abrindo o pagamento…";
+          window.NutriDBReady.then(function (c) {
+            return c.functions.invoke(FN, { body: { acao: "link", ciclo: ciclo } });
+          }).then(function (r) {
+            var url = r && r.data && r.data.url;
+            if (!url) throw new Error("sem link");
+            window.location.href = url;
+          }).catch(function () {
+            delete a.dataset.busy;
+            a.textContent = texto;
+            alert("Não consegui abrir o pagamento agora. Tente de novo em instantes ou fale com nutrianalrocha@gmail.com.");
+          });
+        };
+      }
+      if (btn) btn.onclick = pagar("mensal", btn);
+      btnSemestral.onclick = pagar("semestral", btnSemestral);
+      btnAnual.onclick = pagar("anual", btnAnual);
+
+      function precos(b) {
+        var pagos = b ? (b.pagamentos || 0) : perfil.pagamentos;
+        var mesesEntrada = 3;
+        var entrada = pagos < mesesEntrada;
+        var preco = document.getElementById("preco-mensal");
+        var nota = document.getElementById("preco-nota");
+        if (entrada) {
+          preco.innerHTML = "R$ 39,95<small>/mês</small>";
+          nota.textContent = "50% off nas " + mesesEntrada + " primeiras mensalidades, depois R$ 79,90/mês";
+        } else {
+          preco.innerHTML = "R$ 79,90<small>/mês</small>";
+          nota.textContent = "ou economize no semestral e no anual";
+        }
+        if (btn) btn.textContent = pagos > 0 ? "Pagar a mensalidade" : "Assinar agora";
+        cupomBox.style.display = !perfil.indicada && pagos === 0 ? "" : "none";
+      }
+      precos(null);
+
+      function carregarPerfil() {
+        window.NutriDBReady.then(function (c) {
+          return c.auth.getUser().then(function (u) {
+            var id = u && u.data && u.data.user && u.data.user.id;
+            if (!id) return null;
+            return c.from("profiles").select("indicada_por,assinatura_pagamentos,plano_ciclo").eq("id", id).maybeSingle();
+          });
+        }).then(function (r) {
+          if (r && r.data) {
+            perfil.indicada = !!r.data.indicada_por;
+            perfil.pagamentos = r.data.assinatura_pagamentos || 0;
+            perfil.ciclo = r.data.plano_ciclo || "mensal";
+            precos(ultimoBilling);
+          }
+          autoRenovar();
+        }).catch(function () { autoRenovar(); /* sem perfil: cai no mensal */ });
+      }
+
+      // Abre o checkout sozinha só quando a nutri PEDIU (clicou em renovar).
+      function autoRenovar() {
+        if (!pedidoRenovar) return;
+        pedidoRenovar = false;
+        var alvo = perfil.ciclo === "anual" ? btnAnual : perfil.ciclo === "semestral" ? btnSemestral : btn;
+        if (!alvo) return;
+        pagar(perfil.ciclo === "anual" ? "anual" : perfil.ciclo === "semestral" ? "semestral" : "mensal", alvo)(
+          { preventDefault: function () {} }
+        );
+      }
+      carregarPerfil();
+
+      document.getElementById("as-cupom-ok").addEventListener("click", function () {
+        var inp = document.getElementById("as-cupom");
+        var msg = document.getElementById("as-cupom-msg");
+        var cupom = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+        if (!cupom) { msg.textContent = "Digite o cupom."; return; }
+        msg.textContent = "Conferindo…";
+        window.NutriDBReady.then(function (c) {
+          return c.rpc("aplicar_cupom", { p_cupom: cupom });
+        }).then(function (r) {
+          var d = r && r.data;
+          if (d && d.ok) {
+            msg.textContent = "Cupom aplicado: indicação registrada.";
+            carregarPerfil();
+            return;
+          }
+          var m = d && d.motivo;
+          msg.textContent = m === "cupom_invalido" ? "Não encontrei esse cupom. Confira com quem indicou."
+            : m === "proprio_cupom" ? "Esse é o seu próprio cupom — ele serve para as colegas que você indicar."
+            : m === "ja_assinante" ? "O cupom vale só antes do primeiro pagamento."
+            : m === "ja_indicada" ? "Sua conta já tem uma indicação registrada."
+            : "Não consegui aplicar agora. Tente de novo.";
+        }).catch(function () { msg.textContent = "Não consegui aplicar agora. Tente de novo."; });
+      });
+
+      // Volta do checkout: a InfinitePay manda os dados do pagamento na URL.
+      // O servidor confere contra a API deles; o webhook faz o mesmo em
+      // paralelo, e quem chegar depois recebe "já registrado".
+      (function confirmarDaURL() {
+        var q = new URLSearchParams(window.location.search);
+        var nsu = q.get("transaction_nsu"), slug = q.get("slug");
+        if (!nsu || !slug) return;
+        try { window.history.replaceState({}, "", window.location.pathname); } catch (e) {}
+        var banner = document.getElementById("banner");
+        banner.style.display = "";
+        banner.className = "asbanner asbanner--trial";
+        document.getElementById("banner-title").textContent = "Confirmando o seu pagamento…";
+        document.getElementById("banner-sub").textContent = "Leva só alguns segundos.";
+        fetch("https://btsqrpxzlkmucrfvsytl.supabase.co/functions/v1/" + FN, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ acao: "confirmar", transaction_nsu: nsu, slug: slug, order_nsu: q.get("order_nsu") || "" })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d && d.ok) { window.location.reload(); return; }
+          document.getElementById("banner-title").textContent = "Recebemos o seu retorno do pagamento";
+          document.getElementById("banner-sub").textContent =
+            "A confirmação ainda não chegou. Recarregue esta página em alguns minutos — se o acesso não liberar, fale com nutrianalrocha@gmail.com.";
+        }).catch(function () {
+          document.getElementById("banner-sub").textContent =
+            "Sem conexão agora. Seu pagamento está seguro: recarregue esta página em alguns minutos.";
+        });
+      })();
 
       function fmtData(ts) {
         try { return new Date(ts).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }); }
@@ -117,17 +271,32 @@
         var banner = document.getElementById("banner");
         var title = document.getElementById("banner-title");
         var sub = document.getElementById("banner-sub");
+        ultimoBilling = b;
+        precos(b);
         if (!banner) return;
         banner.style.display = "";
-        if (b.motivo === "trial") {
+        if (b.motivo === "pendente") {
           banner.className = "asbanner asbanner--trial";
-          title.innerHTML = 'Você está no período de teste — <span class="asdias">' +
-            b.diasRestantes + (b.diasRestantes === 1 ? " dia" : " dias") + " restante" + (b.diasRestantes === 1 ? "" : "s") + "</span>";
-          sub.textContent = "Seu acesso completo vai até " + fmtData(b.ate) + ". Assine para continuar sem interrupção.";
+          title.textContent = "Falta só o pagamento";
+          sub.textContent = "Sua conta está criada. Assine abaixo para liberar a plataforma e o seu perfil na vitrine.";
+        } else if (b.motivo === "trial") {
+          banner.className = "asbanner asbanner--trial";
+          title.innerHTML = b.diasRestantes <= 0
+            ? 'Seu período de teste termina <span class="asdias">hoje</span>'
+            : 'Você está no período de teste — <span class="asdias">' +
+              b.diasRestantes + (b.diasRestantes === 1 ? " dia restante" : " dias restantes") + "</span>";
+          sub.textContent = "Seu teste grátis vai até " + fmtData(b.ate) + ". Seu perfil só aparece em Encontre sua nutri depois da assinatura. " +
+            "Se assinar agora, os dias grátis que faltam continuam valendo.";
         } else if (b.motivo === "trial_expirado") {
           banner.className = "asbanner asbanner--bloqueado";
           title.textContent = "Seu período de teste terminou";
           sub.textContent = "Assine o plano abaixo para voltar a acessar a plataforma.";
+        } else if (b.motivo === "carencia") {
+          banner.className = "asbanner asbanner--bloqueado";
+          title.textContent = "Sua assinatura venceu em " + fmtData(b.ate);
+          sub.textContent = b.diasCarencia > 1
+            ? "Você ainda tem " + b.diasCarencia + " dias de acesso liberado. Renove abaixo para não perder a vitrine."
+            : "Hoje é o último dia de acesso. Seus dados ficam guardados e voltam assim que você renovar.";
         } else if (b.motivo === "vencida") {
           banner.className = "asbanner asbanner--bloqueado";
           title.textContent = "Sua assinatura venceu";

@@ -12,9 +12,14 @@ cliente esta esperando.
   python scripts/rotulens.py uso [--dias 14]
       Quantas leituras por dia, quanto custou (estimado) e quem gastou.
 
+  python scripts/rotulens.py achar --recibo https://recibo.infinitepay.io/<nsu>
   python scripts/rotulens.py achar --email pessoa@email.com
   python scripts/rotulens.py achar --codigo ABCD-1234
-      Acha o acesso de alguem que escreveu pedindo socorro.
+      Acha o acesso de alguem que escreveu pedindo socorro. O recibo e a
+      chave boa: e o comprovante que a compradora tem no e-mail ou no
+      print, e e o mesmo que a tela "ja paguei e nao recebi" pede. O
+      e-mail so acha as compras lancadas a mao -- o POST da InfinitePay
+      nao manda e-mail nenhum.
 
   python scripts/rotulens.py novo --meses 1 [--email pessoa@email.com]
                                   [--motivo "brinde da live"]
@@ -35,6 +40,7 @@ import argparse
 import io
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -103,6 +109,23 @@ def novo_codigo():
     return s
 
 
+def nsu_do_recibo(txt):
+    """Do que a compradora colar, sobra o nsu. Mesma regra da RPC
+    mercado_socorro_codigo (migration 0075): link inteiro, so o nsu,
+    caixa alta, espaco sobrando e o "?utm" que o app de e-mail grudou
+    tem de cair todos no mesmo lugar. Se o suporte normalizasse
+    diferente da tela, a Ana veria uma coisa e a cliente outra."""
+    txt = (txt or "").strip()
+    m = re.search(r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
+                  r"[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", txt)
+    if m:
+        return m.group(0).lower()
+    # Nao era uuid: pode ser um formato de nsu que ainda nao vimos. Fica
+    # o ultimo pedaco do caminho, sem query string nem ancora.
+    nsu = txt.split("?")[0].split("#")[0].rsplit("/", 1)[-1].strip().lower()
+    return nsu if re.match(r"^[a-z0-9._-]{8,64}$", nsu) else None
+
+
 def tabela(linhas, colunas):
     """Imprime alinhado. Sem dependencia externa: isto roda no PC da Ana."""
     if not linhas:
@@ -166,7 +189,58 @@ def cmd_achar(a):
         print()
         return
 
-    cod = a.codigo.strip().upper()
+    if a.recibo:
+        nsu = nsu_do_recibo(a.recibo)
+        if not nsu:
+            raise SystemExit(
+                "Isso nao parece um recibo. Esperado o link "
+                "https://recibo.infinitepay.io/<nsu> ou so o nsu.")
+        print("\nnsu lido do recibo: %s" % nsu)
+        print("\nOnde esse recibo aparece\n")
+        # As quatro trilhas, como na RPC: mercado_pagamentos so existe
+        # desde a 0073, e quem comprou antes tem o nsu em uma das outras.
+        linhas = sql("""
+          select origem, criado_em::date::text as dia,
+                 coalesce(codigo, '-') as codigo, detalhe
+            from (
+              select 'pagamento'::text as origem, criado_em, codigo,
+                     coalesce(status, '-') as detalhe
+                from mercado_pagamentos
+               where lower(transaction_nsu) = %(n)s
+                  or lower(coalesce(receipt_url, '')) like '%%' || %(n)s
+              union all
+              select 'assinatura', criado_em, codigo, coalesce(plano, '-')
+                from mercado_assinaturas
+               where lower(transaction_nsu) = %(n)s
+              union all
+              select 'renovacao', criado_em, codigo, coalesce(plano, '-')
+                from mercado_assinatura_pagamentos
+               where lower(transaction_nsu) = %(n)s
+              union all
+              select 'creditos', criado_em, codigo, '-'
+                from mercado_creditos
+               where lower(transaction_nsu) = %(n)s
+            ) t
+           order by criado_em desc
+        """ % {"n": esc(nsu)})
+        tabela(linhas, ["origem", "dia", "codigo", "detalhe"])
+        if not linhas:
+            print("\n  Nenhuma compra com esse recibo. Conferir se o link e da")
+            print("  InfinitePay e se e do pagamento certo. 'pagamentos --dias 60'")
+            print("  mostra tudo que o webhook recebeu.\n")
+            return
+        cod = linhas[0]["codigo"]
+        if cod == "-":
+            print("\n  A compra existe, mas ficou sem codigo: a entrega falhou.")
+            print("  Emitir na mao com 'novo --meses N --motivo ...'.\n")
+            return
+        mostrar_codigo(cod)
+        return
+
+    mostrar_codigo(a.codigo.strip().upper())
+
+
+def mostrar_codigo(cod):
     print("\nAssinatura\n")
     tabela(sql("""
       select codigo, plano, expira_em::date::text as vence,
@@ -222,7 +296,7 @@ def cmd_novo(a):
     print("\n  Mensagem pronta para enviar:\n")
     print("  Seu acesso ao RotuLens esta liberado! 🌸")
     print("  Codigo: %s" % cod)
-    print("  Abra nutrianaluisarocha.com/mercado/, va em Conta e digite o codigo.\n")
+    print("  Abra nutrianaluisarocha.com/rotulens/, va em Conta e digite o codigo.\n")
 
 
 def cmd_renovar(a):
@@ -260,7 +334,8 @@ sub = p.add_subparsers(dest="cmd", required=True)
 
 s = sub.add_parser("uso"); s.add_argument("--dias", type=int, default=14); s.set_defaults(f=cmd_uso)
 s = sub.add_parser("achar")
-s.add_argument("--email"); s.add_argument("--codigo"); s.set_defaults(f=cmd_achar)
+s.add_argument("--recibo"); s.add_argument("--email"); s.add_argument("--codigo")
+s.set_defaults(f=cmd_achar)
 s = sub.add_parser("novo")
 s.add_argument("--meses", type=int, required=True)
 s.add_argument("--email"); s.add_argument("--motivo"); s.set_defaults(f=cmd_novo)
@@ -271,6 +346,6 @@ s = sub.add_parser("pagamentos"); s.add_argument("--dias", type=int, default=30)
 s.set_defaults(f=cmd_pagamentos)
 
 a = p.parse_args()
-if a.cmd == "achar" and not (a.email or a.codigo):
-    raise SystemExit("achar precisa de --email ou --codigo")
+if a.cmd == "achar" and not (a.recibo or a.email or a.codigo):
+    raise SystemExit("achar precisa de --recibo, --email ou --codigo")
 a.f(a)

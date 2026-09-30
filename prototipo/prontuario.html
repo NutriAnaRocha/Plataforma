@@ -1,141 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
   <title data-brand-title>Prontuário</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="assets/css/tokens.css?v=e7f9d01b" />
-  <link rel="stylesheet" href="assets/css/style.css?v=3cca70f7" />
-  <link rel="stylesheet" href="assets/css/dashboard.css?v=57971dfc" />
-  <link rel="stylesheet" href="assets/css/pacientes.css?v=6591f56e" />
-  <link rel="stylesheet" href="assets/css/prontuario.css?v=a8967602" />
-  <link rel="stylesheet" href="assets/css/calculos.css?v=7e0d500a" />
+  <!--
+    A tela /prontuario foi absorvida pela ficha do paciente (pacientes.html?id=…).
+    Ela lia a coluna `pacientes.prontuario`, que o fluxo atual não escreve mais —
+    todo paciente real abria com as 15 abas vazias, enquanto a ficha tinha os dados.
+    Este arquivo só reencaminha; a versão antiga está em ../_legado/.
+  -->
+  <script>
+  (function () {
+    // Módulo da tela antiga → seção equivalente na ficha.
+    var MAPA = {
+      anamnese: "anamnese", diario: "prato", quest: "anamnese", exames: "exames",
+      antro: "antropometria", calc: "calculos", plano: "plano", metas: "metas",
+      orient: "orientacoes", manip: "prescricoes", anexos: "arquivos",
+      evolucao: "prontuario", chat: "comunicacao", docs: "arquivos", fin: "financeiro"
+    };
+    var id  = new URLSearchParams(location.search).get("id");
+    var mod = (location.hash || "").replace(/^#/, "");
+    var url = "pacientes.html";
+    if (id) {
+      url += "?id=" + encodeURIComponent(id);
+      if (MAPA[mod]) url += "&sec=" + MAPA[mod];
+    }
+    location.replace(url);
+  })();
+  </script>
 </head>
 <body>
-  <div class="app" id="app">
-
-    <!-- ================= SIDEBAR ================= -->
-    <aside class="sidebar">
-      <div class="sidebar__logo">
-        <span class="sidebar__mark"><img src="assets/img/logo-mark.png" alt="" /></span>
-        <span class="sidebar__word" data-brand>Anutri</span>
-      </div>
-
-      <nav class="menu" aria-label="Menu principal">
-        <a href="dashboard.html"><span class="ico">📊</span> Dashboard</a>
-        <a href="pacientes.html"><span class="ico">👥</span> Pacientes</a>
-        <a href="agenda.html"><span class="ico">📅</span> Agenda</a>
-        <a href="prontuario.html" class="is-active"><span class="ico">📋</span> Prontuários</a>
-        <a href="prescricoes.html"><span class="ico">🥗</span> Prescrições</a>
-        <a href="exames.html"><span class="ico">🧪</span> Exames</a>
-
-        <p class="menu__label">Inteligência Clínica</p>
-        <a href="favoritos.html"><span class="ico">⭐</span> Meus Favoritos</a>
-        <a href="biblioteca-clinica.html"><span class="ico">🔬</span> Biblioteca Clínica</a>
-        <a href="protocolos.html"><span class="ico">📑</span> Protocolos</a>
-        <a href="orientacoes.html"><span class="ico">📄</span> Orientações</a>
-        <a href="receitas.html"><span class="ico">🍳</span> Receitas</a>
-        <a href="formulacoes.html"><span class="ico">⚗️</span> Formulações</a>
-
-        <p class="menu__label">Gestão</p>
-        <a href="comunidade.html"><span class="ico">💬</span> Comunidade</a>
-        <a href="financeiro.html"><span class="ico">💰</span> Financeiro</a>
-        <a href="relatorios.html"><span class="ico">📈</span> Relatórios</a>
-
-        <p class="menu__label">Sistema</p>
-        <a href="perfil-profissional.html"><span class="ico">🎨</span> Perfil Profissional</a>
-        <a href="whatsapp.html"><span class="ico">&#128241;</span> WhatsApp</a>
-        <a href="ia.html"><span class="ico">🤖</span> IA Assistente</a>
-        <a href="configuracoes.html"><span class="ico">⚙️</span> Configurações</a>
-      </nav>
-
-      <div class="sidebar__user">
-        <span class="avatar avatar--sm avatar--rosa" id="side-user-av">AL</span>
-        <div class="sidebar__user-info">
-          <div class="sidebar__user-name" id="side-user-name">Ana Luísa</div>
-          <div class="sidebar__user-crn" id="side-user-crn">CRN-3 12345</div>
-        </div>
-      </div>
-    </aside>
-    <div class="scrim" id="scrim"></div>
-
-    <!-- ================= CONTEÚDO ================= -->
-    <div class="content">
-
-      <!-- Topbar -->
-      <header class="topbar">
-        <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
-        <div class="topbar__hello">
-          <h1>Prontuário</h1>
-          <p>Centro de inteligência clínica do paciente</p>
-        </div>
-        <a class="icon-btn" href="pacientes.html" title="Voltar para pacientes" aria-label="Voltar" style="margin-left:auto">↩</a>
-        <span class="avatar" id="user-avatar">AL</span>
-      </header>
-
-      <!-- Canvas -->
-      <main class="canvas">
-
-        <a class="back-link" href="pacientes.html">‹ Voltar para pacientes</a>
-
-        <!-- Cabeçalho do paciente -->
-        <section class="card pc-head" id="pc-head"></section>
-
-        <!-- Menu de módulos + painel -->
-        <div class="pront">
-          <nav class="modrail" id="modrail" aria-label="Módulos do prontuário"></nav>
-          <section class="modpane" id="modulo"></section>
-        </div>
-
-      </main>
-    </div>
-  </div>
-
-  <!-- ================= NÚTRI AI (assistente flutuante) ================= -->
-  <button class="ai-fab" id="ai-fab" type="button">
-    <span class="ai-fab__ico">🤖</span> Nútri AI
-  </button>
-
-  <section class="ai-panel" id="ai-panel" role="dialog" aria-label="Assistente Nútri AI">
-    <header class="ai-panel__head">
-      <span class="ai-panel__avatar">🤖</span>
-      <div class="ai-panel__id">
-        <div class="ai-panel__name">Nútri AI</div>
-        <div class="ai-panel__status">Analisando este prontuário · online</div>
-      </div>
-      <button class="ai-panel__close" id="ai-close" type="button" aria-label="Fechar">✕</button>
-    </header>
-
-    <div class="ai-thread" id="ai-thread">
-      <div class="msg msg--ai">
-        Estou com este prontuário aberto. Posso interpretar exames, sugerir condutas,
-        resumir a evolução e ajudar no plano alimentar. Por onde começamos?
-      </div>
-    </div>
-
-    <div class="ai-suggest" id="ai-suggest"></div>
-
-    <div class="ai-input">
-      <input type="text" id="ai-text" placeholder="Pergunte ao Nútri AI…" aria-label="Mensagem" />
-      <button class="ai-input__send" id="ai-send" type="button" aria-label="Enviar">➤</button>
-    </div>
-  </section>
-
-  <!-- Scripts -->
-  <script src="assets/js/supabase-client.js?v=5dec5cdd"></script>
-  <script src="assets/js/auth-guard.js?v=2e5950de"></script>
-  <script src="assets/js/pacientes-db.js?v=d1dd6dbc"></script>
-  <script src="assets/js/calculos.js?v=63897edc"></script>
-  <script src="assets/js/prontuario-data.js?v=01837379"></script>
-  <script src="assets/js/nome-alimento.js?v=5caaff64"></script>
-  <script src="assets/js/prontuario.js?v=74ab4086"></script>
-  <script src="assets/js/perfil-db.js?v=4861c7ef"></script>
-  <script src="assets/js/sidebar-user.js?v=168ca49c"></script>
-  <script src="assets/js/app.js?v=2fe09b12"></script>
+  <p style="font-family:system-ui,sans-serif;padding:24px">
+    O prontuário agora fica dentro da ficha do paciente.
+    <a href="pacientes.html">Ir para Pacientes</a>
+  </p>
 </body>
 </html>

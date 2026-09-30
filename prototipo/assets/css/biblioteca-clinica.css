@@ -168,7 +168,7 @@
 
 /* selo "meu" para conteúdo editado/criado pela nutri */
 .bc-selo {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: .4px;
   text-transform: uppercase;
@@ -221,7 +221,10 @@
   color: var(--texto-sutil);
   margin-top: 4px;
 }
-.bc-d__acoes { display: flex; gap: var(--sp-2); flex: none; }
+/* flex-wrap porque a estrela (Favoritar) é INJETADA aqui pelo favoritos.js:
+   no celular a linha passa a ter Copiar + Editar + Excluir + Favoritar, e sem
+   quebrar a estrela ficava espremida ou fora da tela. */
+.bc-d__acoes { display: flex; flex-wrap: wrap; gap: var(--sp-2); flex: none; }
 
 /* faixas de referência lado a lado */
 .bc-refs {
@@ -508,7 +511,7 @@
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: .5px;

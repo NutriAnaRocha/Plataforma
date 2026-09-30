@@ -16,7 +16,7 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
     });
   }
-  function hojeISO() { return new Date().toISOString().slice(0, 10); }
+  function hojeISO() { return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
   function fmtData(iso) { var m = /(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || "")); return m ? m[3] + "/" + m[2] + "/" + m[1] : (iso || ""); }
   function uid() { return "rx" + Date.now() + Math.floor(Math.random() * 1000); }
   function secWrap(t, inner) { return '<section class="fsec"><h2 class="fsec__title">' + esc(t) + "</h2>" + inner + "</section>"; }
@@ -279,14 +279,18 @@
         '<div class="op-campo"><span class="op-campo__lbl">Fórmulas</span>' +
           campoFormulas(edit) + "</div>" +
         '<label>Interações / cautelas (opcional)<input name="interacoes" placeholder="Ex.: potencializa sedativos" value="' + esc(edit && edit.interacoes || "") + '" /></label>' +
-        /* Guardar no banco é opção, não efeito colateral: a maioria das
-           prescrições é ajuste para UMA paciente e encheria o banco de lixo.
+        /* Fórmula NOVA já nasce guardada no banco: escrever uma fórmula do
+           zero é trabalho demais para ela viver só na ficha de uma paciente
+           — e depender de lembrar do check fazia a fórmula "sumir". Ao
+           EDITAR uma prescrição existente o check nasce desligado: corrigir
+           uma dose não é criar fórmula nova, e marcaria o banco de cópias.
            A cópia é independente — mexer no banco depois não altera a
            prescrição desta paciente, e vice-versa. */
         '<div class="op-campo rx-banco">' +
-          '<label class="rx-banco__check"><input type="checkbox" name="ao_banco" id="rx-ao-banco" />' +
+          '<label class="rx-banco__check"><input type="checkbox" name="ao_banco" id="rx-ao-banco"' +
+            (edit ? "" : " checked") + " />" +
             "<span>Salvar também no meu banco de formulações</span></label>" +
-          '<div class="rx-banco__cat" id="rx-banco-cat" hidden>' +
+          '<div class="rx-banco__cat" id="rx-banco-cat"' + (edit ? " hidden" : "") + ">" +
             '<label>Categoria no banco<select name="banco_categoria">' +
               '<option value="fitoterapia">🌿 Fitoterapia</option>' +
               '<option value="suplementacao" selected>💊 Suplementação</option>' +

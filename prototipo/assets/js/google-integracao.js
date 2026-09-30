@@ -40,14 +40,16 @@
       });
     },
 
-    /* Desconecta: apaga a própria linha de conta e do cofre (RLS de delete). */
+    /* Desconecta: a edge function revoga o token no Google e apaga a conexão
+       (o front nunca vê o refresh_token). */
     disconnect: function () {
       if (!window.NutriDBReady) return Promise.resolve();
       return client().then(function (c) {
-        return Promise.all([
-          c.from("google_secret").delete().neq("nutricionista_id", "00000000-0000-0000-0000-000000000000"),
-          c.from("google_conta").delete().neq("nutricionista_id", "00000000-0000-0000-0000-000000000000")
-        ]);
+        return c.functions.invoke("google-disconnect", { body: {} });
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        if (res.data && res.data.error) throw new Error(res.data.error);
+        return res.data || {};
       });
     },
 

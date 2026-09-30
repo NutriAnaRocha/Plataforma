@@ -129,7 +129,7 @@
 }
 .notif__title { font-weight: 700; color: var(--cinza-escuro); font-size: var(--fs-body); }
 .notif__clear {
-  background: none; border: none; cursor: pointer; padding: 0;
+  background: none; border: none; cursor: pointer; padding: 5px 0;
   color: var(--vinho); font: inherit; font-size: var(--fs-caption); font-weight: 600;
 }
 .notif__clear:hover { text-decoration: underline; }
@@ -141,7 +141,7 @@
 }
 .notif__item:last-child { border-bottom: none; }
 .notif__item:hover { background: var(--rosa-suave); }
-.notif__item.is-unread { background: rgba(14, 76, 92, 0.045); }
+.notif__item.is-unread { background: rgba(28, 91, 87, 0.045); }
 .notif__ico { font-size: 1.15rem; line-height: 1.3; flex: none; }
 .notif__body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .notif__txt { font-size: var(--fs-sm); line-height: 1.4; color: var(--texto); }
@@ -163,7 +163,8 @@
 .card__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-5) var(--sp-5) var(--sp-3); }
 .card__title { font-size: var(--fs-h3); font-weight: 700; margin: 0; color: var(--cinza-escuro); }
 .card__sub { font-size: var(--fs-caption); color: var(--texto-sutil); margin: 2px 0 0; font-weight: 600; }
-.card__link { font-size: var(--fs-sm); font-weight: 700; color: var(--vinho); text-decoration: none; }
+.card__link { font-size: var(--fs-sm); font-weight: 700; color: var(--vinho); text-decoration: none;
+  display: inline-block; padding: 5px 0; }
 .card__link:hover { text-decoration: underline; }
 .card__body { padding: var(--sp-3) var(--sp-5) var(--sp-5); }
 
@@ -176,6 +177,10 @@
   transition: transform var(--t-fast), box-shadow var(--t-fast);
 }
 .stat:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+/* O card virou <a> (dashboard.js): herda a cor e perde o sublinhado, para
+   continuar com a mesma cara — só que agora abrindo a tela correspondente. */
+.stat--link { text-decoration: none; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.stat--link:focus-visible { outline: 2px solid var(--rosa); outline-offset: 2px; }
 .stat__ico {
   width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; font-size: 1.3rem;
 }
@@ -207,7 +212,7 @@
 .appt__hora { font-weight: 800; font-size: var(--fs-sm); color: var(--cinza-escuro); text-align: center; }
 .appt__hora span { display: block; font-size: 0.62rem; color: var(--texto-sutil); font-weight: 700; letter-spacing: 0.5px; }
 .appt__who { display: flex; align-items: center; gap: var(--sp-3); min-width: 0; }
-.avatar--sm { width: 36px; height: 36px; font-size: 0.72rem; }
+.avatar--sm { width: 36px; height: 36px; font-size: 0.78rem; }
 .avatar--rosa { background: var(--rosa); color: var(--vinho); }
 .appt__nome { font-weight: 700; font-size: var(--fs-sm); color: var(--cinza-escuro); line-height: 1.2; }
 .appt__meta { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
@@ -395,3 +400,13 @@
 .dash-bar__top span:last-child { color: var(--texto-sutil); font-weight: 500; }
 .bar__fill.is-good { background: linear-gradient(90deg, #3FB27F, #2E9E6B); }
 .bar__fill.is-low { background: linear-gradient(90deg, #E59512, #C0392B); }
+
+/* O painel de notificacoes ancorava no sino (right: 0) e, em 390px, 151 dos
+   333px caiam fora da tela pela esquerda: metade das notificacoes invisivel.
+   Tirando o position do .notif, o absolute passa a se ancorar na .topbar
+   (sticky), entao o painel nasce logo abaixo dela e ocupa a janela inteira.
+   Medido em 390px, 20/09/2026. */
+@media (max-width: 560px) {
+  .notif { position: static; }
+  .notif__panel { left: 16px; right: 16px; width: auto; max-width: none; }
+}

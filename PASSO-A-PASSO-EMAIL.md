@@ -1,57 +1,118 @@
-# E-mail próprio (SMTP) — para os e-mails da plataforma saírem em português
+# E-mail próprio (Resend) — para os e-mails da NutriPlat saírem de verdade
 
-## O problema
-O primeiro e-mail que uma compradora recebe é o convite para criar a senha. Hoje ele chega
-no padrão do Supabase, **em inglês** ("You've been invited"), sem a nossa cara.
+Atualizado em 18/09/2026. A versão antiga deste arquivo dizia que faltava comprar domínio —
+**o domínio já existe**: `nutrianaluisarocha.com` (Hostinger), com o app em
+`app.nutrianaluisarocha.com`.
 
-Tentei traduzir e o Supabase recusou, com esta mensagem:
+## O que depende disso
+
+**1. Aviso de renovação.** A renovação assistida está no ar (a InfinitePay não cobra sozinha,
+então a plataforma avisa 5 dias antes e dá 3 dias de carência). Só que **o e-mail não sai**:
+sem provedor, a edge function `nutriplat-renovacao` grava cada aviso com canal
+`sem_provedor`, `ok=false`, e o card "Avisos de renovação" em Admin mostra
+"Os e-mails não estão saindo".
+
+**2. E-mails de autenticação em português.** No plano gratuito o Supabase recusa template
+customizado enquanto o projeto usa o e-mail embutido:
 
 > Email template modification is not available for free tier projects using the default
-> email provider. Please upgrade your plan or configure a custom SMTP provider.
+> email provider.
 
-Ou seja: **enquanto o projeto usar o serviço de e-mail embutido do Supabase, não dá para
-mudar o texto.** E esse serviço embutido é limitado de propósito (é para teste, não para
-venda) — a compradora pode simplesmente não receber o convite.
+Com SMTP próprio, os três e-mails (convite, redefinir senha, confirmar e-mail) passam a sair
+no texto da Ana — `configurar_email.py` faz as duas coisas numa tacada.
 
-Os dois problemas — texto em inglês e entrega não confiável — se resolvem com a mesma
-coisa: **SMTP próprio**.
+**3. Convite de nutri** (`criar-conta-nutri`) usa os mesmos dois secrets.
 
-## O que falta (é seu, precisa de cartão e do seu e-mail)
+## Estado do DNS (conferido em 18/09/2026)
 
-### 1. Comprar o domínio
-No [registro.br](https://registro.br) — algo como `analuisarocha.com.br`, ~R$40/ano.
-Esse domínio serve para três coisas de uma vez: o e-mail da plataforma, um endereço de site
-decente no lugar de `nutrianarocha.github.io`, e a marca quando a plataforma abrir para
-outras nutris.
+O domínio está limpo do lado de e-mail — **não há MX nem SPF**, então os registros do Resend
+entram sem conflito com nada:
 
-> Por que não dá sem domínio: o Resend só envia de domínio verificado — o endereço de teste
-> dele (`onboarding@resend.dev`) só entrega no e-mail da dona da conta. E enviar "em nome do
-> Gmail" por outro serviço faz o e-mail cair em spam, porque o Gmail não autoriza isso.
+| Tipo | Existe hoje |
+|---|---|
+| NS | `ns1.dns-parking.com`, `ns2.dns-parking.com` (Hostinger) |
+| MX | nenhum |
+| TXT | só o `google-site-verification` do Search Console |
 
-### 2. Criar a conta no Resend
-[resend.com](https://resend.com) — grátis até 3.000 e-mails/mês, folgado para o começo.
-Em **Domains → Add Domain**, coloque o domínio comprado. O Resend mostra ~3 registros
-(SPF, DKIM, DMARC) para colar no painel do registro.br. Se travar aqui, me chame que eu faço.
+Ao publicar os registros do Resend: **só adicionar**. Não mexer nos A, no CNAME `app` nem no
+TXT do Google.
 
-### 3. Criar a chave e me mandar
-Em **API Keys → Create API Key**. Guarde o valor (começa com `re_`) — ele só aparece uma vez.
+## Feito em 18/09/2026
 
-## O que eu faço quando você me passar isso
-Um comando só, que liga o SMTP e traduz os três e-mails na mesma tacada:
+- **Conta no Resend criada** (login com o Google da Ana, `nutrianalrocha@gmail.com`).
+  Plano gratuito: 3.000 e-mails/mês, 100/dia — sobra muito para avisos de renovação.
+- **Domínio `nutrianaluisarocha.com` adicionado**, região São Paulo (`sa-east-1`),
+  tracking de clique e abertura desligado (reescreve link e insere pixel; piora entrega).
+  Id do domínio no Resend: `9440a0ce-b86d-474c-a364-805cde473aaf`.
+- **API key criada**: nome `NutriPlat renovacao`, permissão *Sending access*.
 
-```bash
-python configurar_email.py --host smtp.resend.com --port 465 \
-    --user resend --pass re_SUACHAVE --de contato@seudominio.com.br
+- **DNS publicado e domínio Verified** (18/09). Registros abaixo, para referência.
+- **Secrets gravados** e **teste ponta a ponta feito**: conta QA vencendo em 5 dias, a
+  function devolveu `enviados:1, falhas:0`, `renovacao_avisos` ficou com `canal='email',
+  ok=true` e o Resend marcou **Delivered**. Conta QA apagada.
+  Reproduzir com `python teste_renovacao_qa.py`.
+
+- **SMTP do Supabase ligado** (18/09, mesma chave): `smtp.resend.com:465`, usuário `resend`,
+  remetente `NutriPlat <contato@nutrianaluisarocha.com>`, `rate_limit_email_sent = 100`.
+  Os três templates de autenticação passaram a sair em português.
+  Conferido de ponta a ponta: conta QA criada, `POST /auth/v1/recover` devolveu 200 e o
+  e-mail chegou na **caixa de entrada** do Gmail (não no spam) como
+  "NutriPlat — Redefinir a sua senha", em português, sem alerta de spoofing. QA apagada
+  pelo id, e o endpoint de login seguiu respondendo `invalid_credentials` a senha errada.
+
+**Está tudo no ar.** A `criar-conta-nutri` não dependia disso — ela já monta o e-mail em
+português e chama a API do Resend direto. Quem passou a sair em português são os convites
+dos webhooks (`infinitepay-webhook`, `assinatura-webhook`, `programa-webhook`, todos via
+`inviteUserByEmail`) e o "esqueci a senha" do app.
+
+## Registros publicados (referência)
+
+### 1. Zona DNS da Hostinger
+hPanel → Domínios → `nutrianaluisarocha.com` → DNS → Manage DNS records → Add Record.
+**Só adicionar.** Não mexer nos dois ALIAS (`@` e `app`) nem no TXT do Google.
+
+| Tipo | Nome | Valor | TTL |
+|---|---|---|---|
+| TXT | `resend._domainkey` | `p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC9fRsNfg+rfpIdu3vvP/ScMwZhMq9DNqT/PY8UULNaNthxdh90NKYh0+mpCbrL9vbvsNo2QNOtH8J2z2z92ixwShPWJvIwrJ9pMOa45Qi5ykax4S041JVevHBjDUl2e7PLoFPNeAJHjsDZBGjJf5fASyjx1mcjcbaFxM0m3stlXwIDAQAB` | Auto |
+| CNAME | `rsend` | `rsend-sae1.forge.rmta.net` | 3600 |
+| CNAME | `send` | `send.forge.rmta.net` | 3600 |
+| TXT | `_dmarc` | `v=DMARC1; p=none;` | Auto |
+
+O DKIM é chave **pública** — pode ficar escrito aqui sem risco.
+
+**Não publicar** o quarto bloco que o Resend mostra, o *Enable Receiving*
+(`MX @ → inbound-smtp.sa-east-1.amazonaws.com`, prioridade 10): ele serve para o domínio
+**receber** e-mail pelo Resend e tomaria o MX do domínio inteiro. A NutriPlat só precisa
+enviar. Se um dia a Ana quiser caixa de entrada no domínio, essa decisão se revisita.
+
+Depois de salvar, voltar ao Resend › Domains e clicar em **Verify**.
+
+### 2. Me passar a API key (`re_...`)
+A chave aparece **uma única vez**, na hora em que é criada. Se tiver sido perdida, é só
+apagar a `NutriPlat renovacao` em Resend › API keys e criar outra igual.
+
+Com a chave na mão, o resto é um comando:
+
+```
+python ligar_resend.py --key re_xxxxxxxx
 ```
 
-Depois eu convido um e-mail de teste em Authentication → Users → Invite e confiro que
-chega, em português, com a sua assinatura e o CRN.
+Ele grava `RESEND_API_KEY` e `EMAIL_REMETENTE` como secrets do projeto pela Management API,
+confere que os dois entraram, lê o segredo do cron no cofre e chama a function em teste seco.
+Para disparar de verdade: `python ligar_resend.py --so-teste --enviar`.
 
-## Os textos já estão escritos e revisados
-Estão em `configurar_email.py` — os três e-mails (convite, redefinir senha, confirmar
-e-mail), com a caixa branca sobre fundo rosado, o botão em vinho e a assinatura com CRN.
-Prévia navegável do convite: `previa-email-convite.html`.
+Remetente combinado: `NutriPlat <contato@nutrianaluisarocha.com>` — mesmo formato que a
+function `criar-conta-nutri` já espera.
 
-O convite é **compartilhado**: o mesmo e-mail vai para quem compra e-book, para quem entra
-no "Meu Plano" e para uma nutri convidada. Por isso ele não cita produto nenhum — citar
-sairia errado em dois dos três casos.
+### 3. O SMTP do Supabase (feito em 18/09 — mesma chave)
+```
+python configurar_email.py --host smtp.resend.com --port 465 --user resend \
+    --pass re_xxxxxxxx --de contato@nutrianaluisarocha.com
+```
+Isso destrava os templates em português dos e-mails de autenticação.
+
+## Como conferir que ficou bom
+1. `python ligar_resend.py --so-teste` → tem de listar os dois secrets.
+2. Conta QA com `assinatura_expira_em = hoje + 5 dias`, rodar com `--enviar` e checar em
+   `renovacao_avisos` que veio `canal='email'`, `ok=true`.
+3. O e-mail chegando na caixa. Depois, apagar a conta QA.

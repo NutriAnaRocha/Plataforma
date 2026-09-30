@@ -1,0 +1,42 @@
+# app.nutrianaluisarocha.com
+# Só a vitrine pública é para o buscador. O resto do endereço é app logado:
+# indexar tela de prontuário ou de paciente não traz visita e ainda expõe a
+# estrutura interna na busca.
+
+User-agent: *
+Allow: /$
+Allow: /encontre-sua-nutri
+Allow: /nutri/
+Allow: /seja-indicada
+Allow: /privacidade
+Allow: /termos
+Allow: /assets/
+
+Disallow: /agenda
+Disallow: /pacientes
+Disallow: /prontuario
+Disallow: /portal-paciente
+Disallow: /dashboard
+Disallow: /configuracoes
+Disallow: /financeiro
+Disallow: /relatorios
+Disallow: /prescricoes
+Disallow: /exames
+Disallow: /orientacoes
+Disallow: /protocolos
+Disallow: /formulacoes
+Disallow: /biblioteca
+Disallow: /biblioteca-clinica
+Disallow: /receitas
+Disallow: /favoritos
+Disallow: /comunidade
+Disallow: /whatsapp
+Disallow: /ia
+Disallow: /artigo
+Disallow: /perfil-profissional
+Disallow: /assinatura
+Disallow: /consentimento
+Disallow: /entrar
+Disallow: /_teste-portal
+
+Sitemap: https://app.nutrianaluisarocha.com/sitemap.xml

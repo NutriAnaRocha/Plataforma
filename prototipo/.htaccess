@@ -47,6 +47,40 @@ RewriteRule ^ /%1 [R=301,L]
 # 2) /index -> raiz.
 RewriteRule ^index/?$ / [R=301,L]
 
+# 2.1) Perfil público da nutricionista: /nutri/ana-luisa-rocha -> nutri.html?slug=...
+#      O endereço com o nome dentro é o que a profissional divulga e o que o
+#      Google indexa; nutri.html?slug= continua funcionando, mas ninguém vê.
+#      Precisa vir ANTES da regra 3: "nutri/ana-luisa-rocha" também casa com
+#      o padrão dela, que procuraria um arquivo nutri/ana-luisa-rocha.html
+#      inexistente e devolveria 404.
+RewriteRule ^nutri/([A-Za-z0-9-]+)/?$ /nutri.html?slug=$1 [L,QSA]
+
+# 2.2) /nutri sem ninguém depois não é página: manda para a busca.
+#      A condição preserva /nutri?slug=..., que é para onde a regra 1 joga
+#      quem chega pelo link antigo com .html.
+RewriteCond %{QUERY_STRING} !(^|&)slug=
+RewriteRule ^nutri/?$ /encontre-sua-nutri [R=301,L]
+
+# ============================================================
+#  Comunidade — desligada.
+#  A tela é 100% de demonstração: 26 posts com autores, CRNs e
+#  especialidades inventados, e o composer assinava tudo como
+#  "Ana Luísa Rocha — CRN-3 12345", um registro que não existe.
+#  A faxina de 20/09/2026 já a tirou do menu, mas /comunidade
+#  continuava respondendo 200 para quem soubesse o endereço.
+#  O arquivo segue no repositório: para religar a tela basta
+#  apagar este bloco.
+# ============================================================
+RewriteRule ^comunidade(\.html)?/?$ /dashboard [R=302,L]
+
+# ============================================================
+#  Retorno do OAuth do Google (Agenda + Meet)
+#  O redirect URI registrado no Google fica no domínio próprio,
+#  porque a verificação do app exige domínio comprovado no Search
+#  Console (supabase.co não dá). Repassa code/state para a function.
+# ============================================================
+RewriteRule ^google-callback/?$ https://btsqrpxzlkmucrfvsytl.supabase.co/functions/v1/google-oauth-callback [R=302,L]
+
 # 3) endereço sem extensão -> arquivo .html correspondente.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

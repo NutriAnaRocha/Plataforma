@@ -3,16 +3,11 @@
    Dados fictícios. Exposto como global p/ funcionar por file://.
    ============================================================ */
 window.CONFIG_DATA = {
-  perfil: {
-    nome: "Ana Luísa Rocha",
-    crn: "CRN-3 12345",
-    email: "ana.luisa@anutri.com.br",
-    telefone: "(11) 98888-1234",
-    cidade: "São Paulo, SP",
-    bio: "Nutricionista clínica com foco em saúde da mulher e emagrecimento saudável. Atendimento humanizado, baseado em evidências.",
-    instagram: "@ananutri",
-    site: "www.ananutri.com.br"
-  },
+  /* O perfil real vem de window.NutriPerfil (tabela profiles); a tela nasce
+     com os campos vazios e só repinta quando o banco responde. Este bloco
+     ficou até 20/09/2026 com um perfil inventado — inclusive um "CRN-3 12345"
+     que não é de ninguém — sem nunca ser lido por tela nenhuma. */
+  perfil: {},
 
   /* Áreas de atuação (multi-seleção com .chip) */
   especialidades: [
@@ -32,12 +27,19 @@ window.CONFIG_DATA = {
     { id: "marketing", titulo: "Novidades e dicas da plataforma", desc: "Atualizações de recursos, webinars e materiais.", on: false }
   ],
 
-  /* Integrações disponíveis */
+  /* Integrações.
+     Só Google Agenda e Google Meet conectam de verdade (OAuth, em
+     configuracoes.js). O WhatsApp da plataforma é envio ASSISTIDO — não há
+     conta para conectar aqui, então o card leva para a tela de WhatsApp.
+     Pagamento e NFS-e ainda não existem: ficam marcados como "Em breve" em
+     vez de um botão que trocava o rótulo e dava um toast dizendo que tinha
+     conectado. Até 20/09/2026 o card do WhatsApp vinha "Conectado" com o
+     número (11) 98888-1234, que nunca foi de ninguém. */
   integracoes: [
     { id: "google", nome: "Google Agenda", ico: "📅", desc: "Sincronize seus atendimentos com o Google Calendar automaticamente.", conectado: false, conta: "" },
-    { id: "whatsapp", nome: "WhatsApp", ico: "💬", desc: "Envie lembretes e confirmações de consulta direto no WhatsApp do paciente.", conectado: true, conta: "(11) 98888-1234" },
-    { id: "pagamentos", nome: "Gateway de Pagamento", ico: "💳", desc: "Receba pagamentos online e gere cobranças recorrentes de pacotes.", conectado: false, conta: "" },
     { id: "meet", nome: "Google Meet", ico: "🎥", desc: "Gera o link do Meet automaticamente na teleconsulta. Vem junto com o Google Agenda.", conectado: false, conta: "" },
-    { id: "nfe", nome: "Emissor de Nota Fiscal", ico: "🧾", desc: "Emita NFS-e automaticamente a cada pagamento recebido.", conectado: false, conta: "" }
+    { id: "whatsapp", nome: "WhatsApp", ico: "💬", desc: "Lembretes e confirmações saem pelo seu próprio WhatsApp, com um clique na ficha do paciente ou na agenda.", conectado: false, conta: "", link: "whatsapp.html", acao: "Ver mensagens" },
+    { id: "pagamentos", nome: "Gateway de Pagamento", ico: "💳", desc: "Receber pagamentos online e gerar cobranças recorrentes de pacotes.", conectado: false, conta: "", breve: true },
+    { id: "nfe", nome: "Emissor de Nota Fiscal", ico: "🧾", desc: "Emitir NFS-e automaticamente a cada pagamento recebido.", conectado: false, conta: "", breve: true }
   ]
 };

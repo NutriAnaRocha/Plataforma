@@ -61,6 +61,9 @@ EXTRA = {
     "champignon":     (22, 3.1, 3.3, 0.3, 1.0, "USDA SR Legacy 11260"),
     "mostarda":       (66, 4.0, 5.0, 3.3, 3.3, "USDA SR Legacy 02046"),
     "leite_coco_leve":(75, 0.7, 2.0, 7.0, 0, "média dos rótulos — leite de coco light"),
+    "castanha_caju_crua":(553, 18.2, 30.2, 43.8, 3.3, "USDA SR Legacy 12087 — castanha-de-caju crua"),
+    "uva_passa":      (299, 3.1, 79.2, 0.5, 3.7, "USDA SR Legacy 09298 — uva-passa sem semente"),
+    "tamara":         (277, 1.8, 75.0, 0.2, 6.7, "USDA SR Legacy 09421 — tâmara medjool"),
 }
 
 RECEITAS = [
@@ -87,7 +90,7 @@ dict(
         "Bata tudo no liquidificador com a água até ficar homogêneo.",
         "Beba sem coar: o que fica na peneira é justamente a fibra, que é o motivo de o suco valer mais que o refrigerante.",
     ],
-    dica="Suco nenhum desintoxica ninguém — quem faz isso é o seu fígado, de graça e o dia inteiro. O que este aqui faz é te dar fruta e folha numa hora em que você provavelmente não comeria nem uma nem outra.",
+    dica="Quando bater vontade de adoçar, prefira canela — quando combinar com a bebida —, adoçante, açúcar mascavo ou demerara. O açúcar fino é o que vale a pena evitar.",
 ),
 
 dict(
@@ -106,7 +109,7 @@ dict(
         "Bata com a hortelã e o limão. A melancia já tem água suficiente — não precisa acrescentar.",
         "Sirva na hora, com gelo.",
     ],
-    dica="Nesta você não precisa adoçar nada. Se der vontade de pôr açúcar, prove antes: quase sempre a vontade some.",
+    dica="Aqui não precisa adoçar nada. Se bater vontade, prove um golinho antes — quase sempre a vontade passa.",
 ),
 
 dict(
@@ -126,7 +129,7 @@ dict(
         "Junte a aveia e bata mais 10 segundos — se bater demais, vira cola.",
         "Polvilhe canela por cima.",
     ],
-    dica="É a aveia que segura a fome: sozinha, a banana batida sobe e desce rápido. Banana mais madura deixa mais doce sem precisar de açúcar.",
+    dica="É a aveia que segura a fome: sozinha, a banana batida vira energia rápida, sobe e cai depressa, e a fome volta antes da hora. Banana bem madura já deixa tudo docinho, sem precisar de açúcar.",
 ),
 
 dict(
@@ -138,15 +141,15 @@ dict(
     ing=[
         ("1/2 abacate maduro", 150, 163),
         ("1 colher de sopa cheia de cacau em pó 100%", 10, "cacau_po"),
-        ("adoçante ou 1 colher de chá de mel", 7, 507),
+        ("adoçante a gosto (opcional)", 2, "livre"),
         ("2 colheres de sopa de água gelada", 30, "livre"),
     ],
     preparo=[
         "Amasse bem o abacate com um garfo ou bata no mixer.",
-        "Junte o cacau, o mel e a água e misture até virar um creme liso e escuro.",
+        "Junte o cacau, a água e o adoçante, se usar, e misture até virar um creme liso e escuro.",
         "Leve à geladeira por 10 minutos se quiser mais firme.",
     ],
-    dica="Cacau em pó 100% é diferente de achocolatado: o segundo é açúcar com sabor de chocolate. Olhe a lista de ingredientes — se açúcar vier antes do cacau, é doce, não é cacau.",
+    dica="Cacau em pó 100% e achocolatado são coisas diferentes: no segundo, o açúcar vem antes do cacau. Vale dar uma olhadinha na lista de ingredientes na hora de escolher.",
 ),
 
 dict(
@@ -165,7 +168,7 @@ dict(
         "Misture no iogurte natural.",
         "Cubra com o restante dos morangos e a castanha picada.",
     ],
-    dica="Compare no mercado: o iogurte 'sabor morango' costuma ter o dobro de açúcar do natural — e o morango dele, quando existe, aparece no fim da lista.",
+    dica="Vale comparar na prateleira: o iogurte de sabor morango costuma ter bem mais açúcar que o natural, e a fruta aparece lá no fim da lista.",
 ),
 
 dict(
@@ -186,7 +189,7 @@ dict(
         "Mexa devagar e tire do fogo quando ainda estiverem um pouco moles: eles terminam de cozinhar no calor da panela.",
         "Misture o requeijão fora do fogo e salpique cebolinha.",
     ],
-    dica="Fogo alto é o que estraga ovo mexido. O creme vem do fogo baixo, não da quantidade de gordura.",
+    dica="O segredo do ovo cremoso é o fogo baixo e um pouquinho de paciência — não a quantidade de gordura.",
 ),
 
 dict(
@@ -207,7 +210,7 @@ dict(
         "Deixe a cebola de molho em água gelada por 2 minutos se quiser tirar o ardido.",
         "Tempere com azeite, vinagre, sal e orégano só na hora de servir, senão o tomate solta água.",
     ],
-    dica="O azeite não é vilão aqui: sem gordura, boa parte das vitaminas do tomate e da folha passa direto pelo seu corpo.",
+    dica="Pode caprichar no azeite sem receio: é a gordura dele que ajuda seu corpo a aproveitar as vitaminas do tomate e das folhas.",
 ),
 
 dict(
@@ -226,7 +229,7 @@ dict(
         "Espalhe a pasta de amendoim por cima e polvilhe canela.",
         "Se quiser, leve ao congelador por 20 minutos: vira picolé.",
     ],
-    dica="Pasta de amendoim boa tem UM ingrediente: amendoim. Se a lista trouxer açúcar, gordura vegetal e sal, você comprou doce, não amendoim.",
+    dica="Pasta de amendoim boa tem um ingrediente só: amendoim. Se aparecer açúcar e gordura vegetal na lista, ela está mais para doce.",
 ),
 
 dict(
@@ -246,7 +249,7 @@ dict(
         "Espalhe a aveia e a linhaça por cima.",
         "Esprema o limão na hora de comer — ele corta o enjoativo do mamão.",
     ],
-    dica="Fibra sem água não funciona: tome um copo de água junto, senão a aveia faz o efeito contrário.",
+    dica="Fibra gosta de água: tome um copo junto com o prato, senão a aveia acaba fazendo o efeito contrário.",
 ),
 
 dict(
@@ -265,7 +268,7 @@ dict(
         "Bata com o suco de laranja e o gengibre por 1 minuto.",
         "Beba na hora: o suco de laranja perde vitamina C parado na geladeira.",
     ],
-    dica="Beterraba crua tem mais nitrato que a cozida — é o que dá fama a este suco entre quem treina.",
+    dica="A beterraba crua guarda mais nitrato que a cozida — é por isso que este suco caiu no gosto de quem treina.",
 ),
 
 dict(
@@ -285,7 +288,7 @@ dict(
         "Amasse o abacate com sal, limão e pimenta e espalhe no pão.",
         "Corte o ovo cozido em rodelas por cima.",
     ],
-    dica="No pão, leia a lista: se a primeira farinha for branca, o 'integral' da frente é só marketing. Integral de verdade traz farinha de trigo integral em primeiro lugar.",
+    dica="No pão, dê uma olhada na lista: integral de verdade traz a farinha integral em primeiro lugar. Se a branca vier antes, o integral ficou só na embalagem.",
 ),
 
 dict(
@@ -305,7 +308,7 @@ dict(
         "Deixe na geladeira por pelo menos 1 hora (esse tempo é de espera, não de trabalho).",
         "Beba ao longo do dia e troque o limão a cada 24 h, senão amarga.",
     ],
-    dica="Não emagrece nem 'seca'. O que ela faz é te fazer beber mais água — e isso, sim, muda como você passa o dia.",
+    dica="Ela não seca nem emagrece — e nem precisa. O que ela faz é te ajudar a beber mais água ao longo do dia, e isso já muda bastante.",
 ),
 
 # ==================================================================
@@ -331,7 +334,7 @@ dict(
         "Quando a borda firmar, ponha o espinafre e o queijo de um lado só e dobre.",
         "Deixe mais 1 minuto com a frigideira tampada para o queijo derreter.",
     ],
-    dica="Gema não é problema: a fama de vilã do colesterol caiu por terra e é nela que estão a colina e as vitaminas do ovo.",
+    dica="Pode comer a gema tranquila: é nela que estão a colina e boa parte das vitaminas do ovo.",
 ),
 
 dict(
@@ -351,7 +354,7 @@ dict(
         "Despeje na frigideira antiaderente quente e espalhe fino.",
         "Quando soltar do fundo, vire, ponha o queijo, dobre e desligue.",
     ],
-    dica="Crepioca só de goma e água é carboidrato quase puro. É o ovo que a transforma em refeição — não diminua a proporção dele.",
+    dica="É o ovo que transforma a crepioca em refeição — a goma sozinha é quase só carboidrato. Vale manter a proporção dele.",
 ),
 
 dict(
@@ -371,7 +374,7 @@ dict(
         "Misture o frango com o requeijão e o tomate picado.",
         "Recheie de um lado, dobre e sirva.",
     ],
-    dica="Peneirar a goma é o segredo da tapioca que não fica borrachuda.",
+    dica="Peneirar a goma é o segredinho da tapioca macia, que não fica borrachuda.",
 ),
 
 dict(
@@ -392,7 +395,7 @@ dict(
         "Junte a abobrinha e mexa por 2 a 3 minutos: ela precisa ficar 'al dente', não mole.",
         "Tempere e sirva imediatamente, senão solta água.",
     ],
-    dica="Não cozinhe demais. Abobrinha passada do ponto vira sopa dentro do prato — e é isso que faz as pessoas dizerem que não gostam.",
+    dica="Tire do fogo um pouquinho antes de achar que está pronto: a abobrinha passada do ponto solta água e desmancha no prato.",
 ),
 
 dict(
@@ -414,7 +417,7 @@ dict(
         "Pique o tomate sem sementes e a cebola bem miúda.",
         "Misture tudo com azeite, limão e sal e deixe descansar 5 minutos antes de comer.",
     ],
-    dica="Cozinhar um pacote de grão-de-bico seco no domingo sai por menos de um terço do preço da lata — e rende salada, pasta e sopa a semana inteira.",
+    dica="Cozinhar um pacote de grão-de-bico no domingo sai bem mais em conta que a lata — e rende salada, pasta e sopa a semana toda.",
 ),
 
 dict(
@@ -435,7 +438,7 @@ dict(
         "Monte as folhas rasgadas com a mão, o tomate e a azeitona.",
         "Ponha o atum no centro e tempere com azeite e limão.",
     ],
-    dica="Atum em óleo tem mais caloria que o em água, mas o óleo fica na lata — escorrido, a diferença é bem menor do que dizem.",
+    dica="O atum em óleo tem mais caloria, sim, mas boa parte do óleo fica na lata. Escorrido, a diferença é menor do que parece.",
 ),
 
 dict(
@@ -455,7 +458,7 @@ dict(
         "Faça panquecas pequenas na frigideira antiaderente, em fogo baixo.",
         "Vire com cuidado quando aparecerem bolhas na superfície — esta massa é mais frágil que a de trigo.",
     ],
-    dica="Quanto mais preta a casca da banana, mais doce fica sem precisar de açúcar. Banana com casca manchada não é banana estragada.",
+    dica="Quanto mais manchadinha a casca, mais doce fica sem precisar de açúcar. Banana com casca preta não é banana estragada.",
 ),
 
 dict(
@@ -475,7 +478,7 @@ dict(
         "Enquanto isso, frite o ovo no azeite e pique o tomate.",
         "Sirva o ovo por cima do cuscuz com o tomate ao lado.",
     ],
-    dica="Cuscuz sozinho é carboidrato. É o ovo que muda a história da sua manhã — sem ele você vai estar com fome às 9h30.",
+    dica="O cuscuz sozinho é carboidrato; é o ovo que segura a sua manhã. Sem ele, a fome costuma bater lá pelas 9h30.",
 ),
 
 dict(
@@ -495,7 +498,7 @@ dict(
         "Despeje na frigideira antiaderente em fogo baixo e ponha o queijo picado por cima.",
         "Tampe por 2 minutos, dobre ao meio e sirva.",
     ],
-    dica="É mais parente da crepioca do que do pão de queijo da padaria — mas mata a vontade e tem proteína, o que o da padaria não tem.",
+    dica="Ele é mais parente da crepioca do que do pão de queijo da padaria — mas mata a vontade e ainda traz proteína.",
 ),
 
 dict(
@@ -507,14 +510,14 @@ dict(
     ing=[
         ("1 xícara de morangos congelados", 150, 239),
         ("1 pote de iogurte natural", 170, 448),
-        ("1 colher de chá de mel", 7, 507),
+        ("adoçante a gosto (opcional)", 2, "livre"),
     ],
     preparo=[
         "Use os morangos CONGELADOS — é o que dá a textura de milk-shake sem gelo.",
         "Bata tudo no liquidificador até ficar cremoso.",
         "Se ficar grosso demais, junte uma colher de leite, não de água.",
     ],
-    dica="Congelar a fruta madura que ia estragar é o truque que faz smoothie sair de graça e evitar desperdício.",
+    dica="Congelar a fruta que estava quase passando é um jeito carinhoso de não desperdiçar nada — e o smoothie sai quase de graça.",
 ),
 
 dict(
@@ -534,7 +537,7 @@ dict(
         "Passe pela água fria — é o que faz a casca sair inteira.",
         "Monte com o cottage e os tomates, regue com azeite e tempere.",
     ],
-    dica="Cottage é o queijo com mais proteína e menos gordura da prateleira. O que engana é o sódio: compare a tabela entre as marcas.",
+    dica="O cottage é o queijo com mais proteína e menos gordura da prateleira. Só vale conferir o sódio, que muda bastante de marca para marca.",
 ),
 
 dict(
@@ -555,7 +558,7 @@ dict(
         "Ponha o recheio no centro de cada folha de alface.",
         "Enrole como um charuto e prenda com palito.",
     ],
-    dica="Alface americana é a que aguenta enrolar sem rasgar. Crespa é mais nutritiva, mas quebra na hora de fechar.",
+    dica="A alface americana é a que aguenta enrolar sem rasgar. A crespa é mais nutritiva, mas quebra na hora de fechar.",
 ),
 
 dict(
@@ -575,7 +578,7 @@ dict(
         "Misture com a cebola picada e o limão.",
         "Torre o pão e espalhe por cima.",
     ],
-    dica="Sardinha entrega o mesmo ômega-3 do salmão por menos de um décimo do preço. É o melhor custo-benefício da prateleira inteira.",
+    dica="A sardinha traz o mesmo ômega-3 do salmão por uma fração do preço. É uma das compras mais generosas da prateleira.",
 ),
 
 dict(
@@ -596,7 +599,7 @@ dict(
         "Tempere com azeite, limão, sal e pimenta.",
         "Guarde em pote fechado: no dia seguinte fica ainda melhor.",
     ],
-    dica="Esta é a marmita de quem não tem geladeira no trabalho — sem folha, ela aguenta a manhã em temperatura ambiente numa bolsa térmica.",
+    dica="Esta é a marmita de quem não tem geladeira no trabalho: sem folha, ela aguenta bem a manhã na bolsa térmica.",
 ),
 
 dict(
@@ -616,7 +619,7 @@ dict(
         "Leve a aveia, o leite e a maçã ralada ao fogo baixo, mexendo até engrossar (uns 5 minutos).",
         "Sirva com os cubos de maçã e bastante canela por cima.",
     ],
-    dica="A maçã ralada adoça o mingau inteiro. Se ainda quiser doce, prove primeiro com a canela: ela dá sensação de doçura sem açúcar nenhum.",
+    dica="A maçã ralada já adoça o mingau inteiro. Se ainda quiser mais doce, experimente a canela antes do açúcar — ela dá essa sensação sozinha.",
 ),
 
 dict(
@@ -637,7 +640,7 @@ dict(
         "Misture o tomate e a cebola picados bem miúdos, sal e pimenta.",
         "Sirva com os legumes cortados em palitos.",
     ],
-    dica="O abacate brasileiro é maior e mais aguado que o avocado, mas faz o mesmo trabalho — e custa um terço do preço.",
+    dica="O abacate brasileiro é maior e mais aguado que o avocado, mas faz o mesmo trabalho aqui — e custa bem menos.",
 ),
 
 dict(
@@ -657,7 +660,7 @@ dict(
         "Junte a chia e mexa com a colher (não bata: a chia precisa ficar inteira).",
         "Espere 5 minutos: ela incha e vira gel, e é isso que segura a fome.",
     ],
-    dica="Chia sem líquido suficiente atrapalha em vez de ajudar. A regra é 10 partes de líquido para 1 de chia.",
+    dica="A chia precisa de líquido para trabalhar a seu favor: a medida é 10 partes de líquido para 1 de chia.",
 ),
 
 dict(
@@ -678,7 +681,7 @@ dict(
         "Bata no mixer com o azeite e o limão até virar creme (junte 1 colher de água se precisar).",
         "Misture a cebola bem picadinha e a cebolinha na mão, para dar textura.",
     ],
-    dica="Requeijão de pote tem amido, gordura e conservante. Este dura 4 dias na geladeira e tem três ingredientes.",
+    dica="O requeijão de pote leva amido, gordura e conservante. Este aqui tem três ingredientes e dura 4 dias na geladeira.",
 ),
 
 # ==================================================================
@@ -705,7 +708,7 @@ dict(
         "Tire o frango e, na mesma frigideira, salteie os legumes cortados em tiras por 5 minutos.",
         "Volte o frango por cima dos legumes, tampe e desligue.",
     ],
-    dica="Frango seco é frango virado demais. Vire uma vez só e deixe descansar 3 minutos antes de cortar — o suco volta para dentro da carne.",
+    dica="Frango seco costuma ser frango virado demais. Vire uma vez só e deixe descansar 3 minutinhos antes de cortar: o suco volta para dentro.",
 ),
 
 dict(
@@ -730,7 +733,7 @@ dict(
         "Junte o extrato de tomate, a mostarda e o champignon e cozinhe 5 minutos.",
         "DESLIGUE O FOGO e só então misture o iogurte, mexendo devagar.",
     ],
-    dica="Iogurte no fogo talha. Ele entra sempre com a panela desligada — é a única regra desta receita.",
+    dica="O iogurte talha se ferver, então ele entra sempre com a panela já desligada — é a única regra desta receita.",
 ),
 
 dict(
@@ -754,7 +757,7 @@ dict(
         "Despeje na forma e asse por 20 a 25 minutos, até firmar no centro.",
         "Espere 5 minutos antes de cortar, senão desmancha.",
     ],
-    dica="Ralar os legumes em vez de picar faz eles cozinharem no mesmo tempo do ovo — é o que evita o pedaço de cenoura cru no meio.",
+    dica="Ralar os legumes em vez de picar faz todos cozinharem junto com o ovo. É o que evita achar um pedacinho de cenoura crua no meio.",
 ),
 
 dict(
@@ -777,7 +780,7 @@ dict(
         "Misture tudo com a mão, aperte na forma e risque losangos por cima.",
         "Regue com azeite e asse a 200 °C por 25 minutos.",
     ],
-    dica="Peça no açougue para moer o patinho na hora. A carne moída pronta da bandeja costuma ser a de recorte mais gorda do balcão.",
+    dica="Se puder, peça para moerem o patinho na hora: a carne moída da bandeja costuma vir de recortes mais gordos.",
 ),
 
 dict(
@@ -801,7 +804,7 @@ dict(
         "Monte: frango embaixo, purê por cima, queijo no topo.",
         "Leve ao forno a 200 °C por 15 minutos para gratinar.",
     ],
-    dica="Batata-doce cozida com casca perde menos nutriente e desmancha menos. A casca sai sozinha depois de cozida.",
+    dica="Cozinhe a batata-doce com casca: ela perde menos nutriente, desmancha menos, e a casca sai sozinha depois.",
 ),
 
 dict(
@@ -824,7 +827,7 @@ dict(
         "Ponha o peixe por cima, cubra com tomate e cebola, regue com o resto do azeite.",
         "Volte ao forno por mais 15 minutos.",
     ],
-    dica="A batata entra antes porque demora mais que o peixe. Tudo junto desde o começo dá batata crua com peixe seco.",
+    dica="A batata entra antes porque demora mais que o peixe. Tudo junto desde o começo dá batata crua com peixe passado.",
 ),
 
 dict(
@@ -848,7 +851,7 @@ dict(
         "Junte os legumes em cubos e refogue 5 minutos.",
         "Acrescente a lentilha já cozida, o tomate e os temperos, e cozinhe mais 10 minutos em fogo baixo.",
     ],
-    dica="Coma com uma fruta cítrica na sequência: a vitamina C aumenta muito o aproveitamento do ferro das leguminosas. Café logo depois faz o contrário.",
+    dica="Uma fruta cítrica na sequência ajuda bastante o corpo a aproveitar o ferro da lentilha. O cafezinho faz o contrário — deixe para daqui a uma hora.",
 ),
 
 dict(
@@ -873,7 +876,7 @@ dict(
         "Acrescente o feijão com um pouco do caldo, o milho e os temperos.",
         "Cozinhe em fogo baixo por 15 minutos, amassando um pouco do feijão para engrossar.",
     ],
-    dica="Amassar parte do feijão contra a panela é o que engrossa o caldo sem farinha nenhuma.",
+    dica="Amassar parte do feijão contra a panela é o que engrossa o caldo, sem precisar de farinha nenhuma.",
 ),
 
 dict(
@@ -897,7 +900,7 @@ dict(
         "Refogue cebola, alho, a carne e o miolo da berinjela; junte o tomate e tempere.",
         "Recheie as cascas, cubra com mussarela e asse a 200 °C por 20 minutos.",
     ],
-    dica="Berinjela amarga é berinjela velha. Escolha as firmes e de casca brilhante — não precisa de sal nem de molho antes.",
+    dica="Berinjela amarga costuma ser berinjela velha. Escolhendo as firmes, de casca brilhante, nem precisa deixar de molho.",
 ),
 
 dict(
@@ -920,7 +923,7 @@ dict(
         "Junte a abóbora em cubos e a água e cozinhe 20 minutos, até desmanchar no garfo.",
         "Bata no liquidificador (com cuidado, quente) e volte ao fogo para acertar o sal.",
     ],
-    dica="Cabotiá é a abóbora de casca escura e polpa alaranjada e firme — é a que dá creme. A moranga aguada vira sopa rala.",
+    dica="A cabotiá, de casca escura e polpa firme, é a que dá esse creme. A moranga é mais aguada e deixa a sopa rala.",
 ),
 
 dict(
@@ -942,7 +945,7 @@ dict(
         "Salteie a abobrinha e a cenoura no azeite, deixando firmes.",
         "Misture tudo ainda morno com o tomate cortado, o limão e a hortelã.",
     ],
-    dica="Lave a quinoa em água corrente antes de cozinhar: ela tem uma camada natural amarga na casca (saponina) que estraga o prato.",
+    dica="Vale lavar a quinoa em água corrente antes: ela tem uma camadinha natural amarga na casca, a saponina, que muda o sabor do prato.",
 ),
 
 dict(
@@ -967,7 +970,7 @@ dict(
         "Junte os pimentões e a cebola em cubos grandes e salteie 3 minutos: eles ficam crocantes.",
         "Dissolva o amido em 1/2 xícara de água, junte para encorpar e finalize com o amendoim.",
     ],
-    dica="Shoyu é sal líquido: 1 colher de sopa tem quase 1 g de sódio. Use o de teor reduzido e não acrescente sal.",
+    dica="O shoyu é sal em forma líquida: uma colher de sopa já tem quase 1 g de sódio. Prefira o de teor reduzido e dispense o sal.",
 ),
 
 dict(
@@ -987,7 +990,7 @@ dict(
         "Faça bolas de 125 g e achate entre dois plásticos, com uma covinha no centro.",
         "Grelhe em frigideira bem quente, 3 minutos de cada lado, virando uma vez só.",
     ],
-    dica="Vire o pacote do hambúrguer congelado e conte os ingredientes. Este aqui tem três — e você acabou de ver quais.",
+    dica="Vale virar o pacote do hambúrguer congelado e comparar: este aqui tem três ingredientes, e você acabou de ver quais.",
 ),
 
 dict(
@@ -1011,7 +1014,7 @@ dict(
         "Refogue cebola, alho e a carne; tempere e deixe secar.",
         "Recheie, enrole, cubra com o molho e leve ao forno por 10 minutos.",
     ],
-    dica="A massa pronta congela com plástico entre os discos e dura 2 meses. Fazer o dobro dá o mesmo trabalho.",
+    dica="A massa congela bem com um plástico entre os discos e dura 2 meses. Fazer o dobro dá o mesmo trabalho.",
 ),
 
 dict(
@@ -1033,7 +1036,7 @@ dict(
         "Refogue cebola, alho e o miolo picado; junte o grão-de-bico amassado grosseiramente e o tomate.",
         "Recheie e asse a 200 °C por 20 minutos.",
     ],
-    dica="Amasse só metade do grão-de-bico: a outra metade inteira é o que dá textura e faz o recheio parecer carne moída.",
+    dica="Amasse só metade do grão-de-bico: a outra metade inteira é o que dá textura ao recheio.",
 ),
 
 dict(
@@ -1056,7 +1059,7 @@ dict(
         "Junte a cenoura, depois o brócolis e a ervilha, e refogue por 5 minutos.",
         "Misture o arroz integral já cozido, acerte o sal e finalize com cebolinha.",
     ],
-    dica="Arroz integral demora 40 minutos para cozinhar — cozinhe uma panela grande no domingo e ele resolve quatro jantares.",
+    dica="O arroz integral leva uns 40 minutos. Uma panela grande no domingo resolve quatro jantares da semana.",
 ),
 
 dict(
@@ -1078,7 +1081,7 @@ dict(
         "Esfarele com as mãos e refogue com cebola, alho e cúrcuma.",
         "Junte o tomate no fim e deixe secar por 5 minutos.",
     ],
-    dica="Tofu não tem gosto por natureza — ele pega o tempero que você der. Quem achou ruim provou sem tempero nenhum.",
+    dica="O tofu não tem sabor próprio: ele fica com o tempero que você der. Se um dia achou sem graça, provavelmente faltou tempero.",
 ),
 
 dict(
@@ -1099,7 +1102,7 @@ dict(
         "Tempere com limão e sal e AMASSE com as mãos por 1 minuto: ele murcha na medida e para de soltar água depois.",
         "Junte o azeite e o gergelim tostado na frigideira seca.",
     ],
-    dica="É o amassar com sal e limão que faz esta salada durar. Sem isso, no dia seguinte ela vira água no fundo do pote.",
+    dica="Amassar com sal e limão é o que faz esta salada durar. Sem esse passo, no dia seguinte ela solta água no pote.",
 ),
 
 dict(
@@ -1123,7 +1126,7 @@ dict(
         "Ponha os legumes em cubos nesse caldo e cozinhe até ficarem macios.",
         "Volte o frango desfiado, acerte o sal e finalize com cheiro-verde.",
     ],
-    dica="Caldo de tablete é sal, gordura e realçador. Cozinhar o frango na própria água da sopa dá o caldo de graça e sem sódio nenhum a mais.",
+    dica="O caldo de tablete é sal, gordura e realçador. Cozinhando o frango na própria água da sopa, o caldo sai de graça e sem sódio a mais.",
 ),
 
 dict(
@@ -1146,7 +1149,7 @@ dict(
         "Vire, espalhe o molho, a mussarela e o tomate.",
         "Tampe por 3 minutos, só até derreter o queijo.",
     ],
-    dica="Não é pizza de padaria e não adianta fingir que é. É a resposta honesta para a vontade de sexta à noite — com proteína no lugar da farinha branca.",
+    dica="Ela não é a pizza da padaria, e tudo bem. É uma resposta honesta para a vontade de sexta à noite, com proteína no lugar da farinha branca.",
 ),
 
 # ==================================================================
@@ -1170,7 +1173,7 @@ dict(
         "Regue com azeite e salpique sal grosso e pimenta.",
         "Rasgue o manjericão com a mão na hora de servir — cortado com faca, ele escurece.",
     ],
-    dica="Tomate na geladeira perde o sabor. Guarde fora dela e você não vai precisar de tempero nenhum além do sal.",
+    dica="Tomate na geladeira perde o sabor. Guardando fora dela, você não vai precisar de mais nada além de uma pitada de sal.",
 ),
 
 dict(
@@ -1192,7 +1195,7 @@ dict(
         "Na mesma panela, refogue a cebola com um pouco de água para soltar o fundo dourado — é dali que vem o sabor do molho.",
         "Desligue o fogo, misture o iogurte e a mostarda e volte o frango só para aquecer.",
     ],
-    dica="Iogurte grego natural tem quase o dobro da proteína do comum e nenhum açúcar. O 'grego' de potinho de sobremesa é outra coisa: leia o rótulo.",
+    dica="O iogurte grego natural tem quase o dobro de proteína do comum e nenhum açúcar. Só não confunda com o de potinho de sobremesa: vale ler o rótulo.",
 ),
 
 dict(
@@ -1212,7 +1215,7 @@ dict(
         "Bata na batedeira por 3 minutos, até virar chantilly.",
         "Misture o coco ralado, o adoçante e as raspas de limão e leve à geladeira.",
     ],
-    dica="Só funciona com leite de coco integral gelado — o light não tem gordura suficiente para montar.",
+    dica="Só monta com leite de coco integral bem gelado — o light não tem gordura suficiente para dar liga.",
 ),
 
 dict(
@@ -1233,7 +1236,7 @@ dict(
         "Vire e deixe 2 minutos — o miolo pode ficar levemente rosado.",
         "Cozinhe o brócolis no vapor por 5 minutos e salteie no azeite com alho.",
     ],
-    dica="Se o salmão estiver caro, esta receita fica igual de boa com sardinha fresca ou cavala — os três têm o mesmo tipo de gordura.",
+    dica="Se o salmão estiver caro, a sardinha fresca e a cavala fazem o mesmo papel: os três trazem o mesmo tipo de gordura.",
 ),
 
 # ==================================================================
@@ -1259,7 +1262,7 @@ dict(
         "Despeje na forma, cubra com a banana restante fatiada e canela.",
         "Asse a 180 °C por 35 a 40 minutos — o palito sai limpo quando está pronto.",
     ],
-    dica="Bananas com casca preta são as ideais: quanto mais maduras, mais doce o bolo, e você não precisa de açúcar nenhum.",
+    dica="As bananas de casca bem preta são as ideais aqui: quanto mais maduras, mais doce o bolo fica sem açúcar nenhum.",
 ),
 
 dict(
@@ -1273,17 +1276,17 @@ dict(
         ("3 ovos", 150, 489),
         ("1/2 xícara de óleo", 100, 272),
         ("2 xícaras de farinha de trigo integral", 240, "farinha_trigo_integral"),
-        ("1 xícara de açúcar mascavo", 160, 493),
+        ("1 xícara de eritritol culinário (adoçante que vai ao forno)", 160, "livre"),
         ("1 colher de sopa de fermento", 15, "livre"),
         ("2 colheres de sopa de cacau em pó para a calda", 20, "cacau_po"),
     ],
     preparo=[
         "Bata no liquidificador a cenoura crua picada, os ovos e o óleo até ficar liso.",
-        "Misture com a farinha e o açúcar mascavo, e o fermento por último.",
+        "Misture com a farinha e o eritritol, e o fermento por último.",
         "Asse a 180 °C por 40 minutos.",
-        "Para a calda, ferva o cacau com 3 colheres de água e 2 de açúcar mascavo por 2 minutos.",
+        "Para a calda, ferva o cacau com 3 colheres de água e 2 de eritritol por 2 minutos.",
     ],
-    dica="Continua sendo bolo — o integral e o mascavo mudam a fibra e o sabor, não a caloria. A diferença que importa é comer um pedaço, não metade da forma.",
+    dica="Açúcar mascavo é açúcar: por isso aqui entra eritritol, o adoçante que vai ao forno e não sobe a glicose. Continua sendo bolo — farinha e óleo têm caloria. A diferença que importa é comer um pedaço, não metade da forma.",
 ),
 
 dict(
@@ -1307,7 +1310,7 @@ dict(
         "Monte em camadas: berinjela, carne, queijo, repetindo.",
         "Asse a 200 °C por 25 minutos.",
     ],
-    dica="Não pule o passo de assar a berinjela antes. É a diferença entre lasanha e sopa de berinjela na travessa.",
+    dica="Não pule o passo de assar a berinjela antes — é ele que evita que a lasanha vire sopa na travessa.",
 ),
 
 dict(
@@ -1356,7 +1359,7 @@ dict(
         "Regue com azeite e leite de coco, tampe e cozinhe em fogo BAIXO por 25 minutos, sem mexer.",
         "Finalize com coentro. Nunca mexa com colher — balance a panela, senão o peixe desmancha.",
     ],
-    dica="Leite de coco de vidro costuma ter só coco e água. O de caixinha 'para culinária' quase sempre traz espessante e conservante — vire e compare.",
+    dica="O leite de coco de vidro costuma ter só coco e água. O de caixinha para culinária quase sempre traz espessante — vale comparar os dois lado a lado.",
 ),
 
 dict(
@@ -1393,16 +1396,16 @@ dict(
         ("3 xícaras de aveia em flocos", 270, 7),
         ("1/2 xícara de castanha-de-caju picada", 70, 588),
         ("1/2 xícara de coco em lascas", 50, 590),
-        ("3 colheres de sopa de mel", 60, 507),
+        ("1 banana bem madura amassada", 100, 182),
         ("2 colheres de sopa de óleo de coco", 25, "oleo_coco"),
         ("2 colheres de sopa de linhaça e canela", 25, 594),
     ],
     preparo=[
-        "Misture tudo numa tigela até a aveia ficar úmida por igual.",
+        "Amasse a banana com o óleo de coco e misture com o resto numa tigela, até a aveia ficar úmida por igual.",
         "Espalhe FINO numa assadeira e asse a 160 °C por 25 minutos, mexendo na metade do tempo.",
         "Deixe esfriar COMPLETAMENTE na assadeira antes de guardar — é ao esfriar que ela fica crocante.",
     ],
-    dica="Compare com a do mercado: a industrializada costuma ter açúcar entre os três primeiros ingredientes, e algumas trazem cobertura de chocolate chamada de 'gotas'.",
+    dica="Quem une e adoça aqui é a banana madura — mel é açúcar, e granola 'sem açúcar' feita com mel seria enganar você. Compare com a do mercado: a industrializada costuma ter açúcar entre os três primeiros ingredientes.",
 ),
 
 dict(
@@ -1422,7 +1425,7 @@ dict(
         "Misture a aveia e a canela até dar liga; deixe descansar 5 minutos para a aveia hidratar.",
         "Faça montinhos achatados na assadeira forrada e asse a 180 °C por 20 minutos.",
     ],
-    dica="Dura 4 dias em pote fechado e congela bem. É o lanche que evita a compra de biscoito recheado na saída da escola.",
+    dica="Duram 4 dias em pote fechado e congelam bem. É o lanchinho que salva a saída da escola.",
 ),
 
 dict(
@@ -1445,7 +1448,7 @@ dict(
         "Faça bolinhas do tamanho de uma noz e doure na panela com azeite, girando para pegar cor de todos os lados.",
         "Cubra com o molho de tomate e cozinhe tampado em fogo baixo por 20 minutos.",
     ],
-    dica="A aveia faz aqui o mesmo papel da farinha de rosca — e ainda entrega fibra em vez de farinha branca.",
+    dica="A aveia faz aqui o papel da farinha de rosca, e ainda traz fibra junto.",
 ),
 
 dict(
@@ -1465,7 +1468,7 @@ dict(
         "Cozinhe em fogo baixo com a água, o limão e as especiarias por 30 minutos, mexendo às vezes.",
         "Amasse com o garfo para a textura que preferir.",
     ],
-    dica="Dura 5 dias na geladeira e substitui geleia no pão — a geleia de pote é, em geral, mais açúcar do que fruta.",
+    dica="Dura 5 dias na geladeira e substitui a geleia no pão — a de pote costuma ter mais açúcar do que fruta.",
 ),
 
 # ==================================================================
@@ -1491,7 +1494,7 @@ dict(
         "Cozinhe na pressão com água nova e louro por 25 minutos depois que pegar pressão.",
         "Refogue cebola e alho no azeite, junte 2 conchas de feijão amassado, devolva à panela e cozinhe mais 10 minutos.",
     ],
-    dica="Feijão é a proteína mais barata do Brasil e, com arroz, forma proteína completa. Congele em porções: descongela em 3 minutos e acaba com a desculpa do 'não tenho o que comer'.",
+    dica="O feijão é a proteína mais generosa do Brasil e, com arroz, forma proteína completa. Congelado em porções, descongela em 3 minutos e salva o jantar.",
 ),
 
 dict(
@@ -1520,7 +1523,7 @@ dict(
 dict(
     slug="pao-integral-caseiro",
     titulo="Pão integral caseiro",
-    chamada="Quatro ingredientes contra os vinte do pão de forma da prateleira.",
+    chamada="Cinco ingredientes contra os vinte do pão de forma da prateleira — e nenhum deles é açúcar.",
     cat=["vegetariana", "vegana", "economica"],
     tempo=120, rende=14,
     ing=[
@@ -1528,16 +1531,15 @@ dict(
         ("1 xícara de farinha de trigo comum", 120, 35),
         ("1 tablete de fermento biológico fresco", 15, "livre"),
         ("2 colheres de sopa de azeite", 20, 260),
-        ("1 colher de sopa de mel", 20, 507),
         ("300 ml de água morna e sal", 300, "livre"),
     ],
     preparo=[
-        "Dissolva o fermento no mel com um pouco de água morna (morna, não quente: água fervendo mata o fermento).",
+        "Dissolva o fermento em um pouco da água morna (morna, não quente: água fervendo mata o fermento). Ele não precisa de açúcar para crescer — só leva uns minutos a mais.",
         "Misture as farinhas, o sal, o azeite e a água e sove por 10 minutos, até a massa ficar lisa.",
         "Deixe crescer coberto por 1 hora, até dobrar (tempo de espera).",
         "Modele, ponha na forma, deixe crescer mais 30 minutos e asse a 200 °C por 35 minutos.",
     ],
-    dica="Vire o pacote do pão de forma industrializado: além do açúcar e da gordura, ele traz conservante para durar 15 dias na prateleira. Este dura 4 — e é por isso que ele é pão.",
+    dica="O pão de forma industrializado leva conservante para durar 15 dias na prateleira. Este dura 4 — e é justamente por isso que ele é pão.",
 ),
 
 dict(
@@ -1562,7 +1564,7 @@ dict(
         "Volte a carne, cubra com água quente e cozinhe tampado por 1h30 em fogo baixo (ou 40 min na pressão).",
         "Junte os legumes na última meia hora, para não desmancharem.",
     ],
-    dica="Músculo e acém custam metade do filé e ficam mais macios em cozimento longo. Carne de panela cara é dinheiro jogado fora.",
+    dica="Músculo e acém custam bem menos que o filé e ficam mais macios no cozimento longo. Aqui, a carne mais simples é a melhor escolha.",
 ),
 
 dict(
@@ -1585,7 +1587,7 @@ dict(
         "Bata tudo no processador, juntando a água do cozimento aos poucos até virar creme.",
         "Sirva com azeite e páprica por cima.",
     ],
-    dica="É a água do cozimento — não mais azeite — que deixa o homus cremoso. Foi assim que virou o creme que é há séculos.",
+    dica="É a água do cozimento, e não mais azeite, que deixa o homus cremoso. Foi sempre assim que ele foi feito.",
 ),
 
 dict(
@@ -1608,7 +1610,7 @@ dict(
         "Ponha o frango desfiado e, com o fogo desligado, a couve fatiada bem fina.",
         "A couve cozinha só com o calor do caldo — assim ela fica verde e não perde tudo.",
     ],
-    dica="A cremosidade vem da batata, não do creme de leite. A linguiça calabresa tradicional traz mais sódio numa rodela do que a sopa inteira precisa.",
+    dica="A cremosidade vem da batata, não do creme de leite. E a calabresa tradicional traz numa rodela mais sódio do que a sopa inteira precisa.",
 ),
 
 # ==================================================================
@@ -1641,7 +1643,7 @@ dict(
         "Tempere com o limão, um pouco de sal e pimenta.",
         "Rasgue a hortelã com a mão por cima na hora de servir.",
     ],
-    dica="Escolha a manga ainda firme. A madura demais vira purê no prato e some no meio do pepino.",
+    dica="Escolha a manga ainda firme: a bem madura vira purê e some no meio do pepino.",
 ),
 
 dict(
@@ -1662,7 +1664,7 @@ dict(
         "Fatie a pera fina, com casca.",
         "Junte tudo, quebre as castanhas com a mão e tempere só na hora de comer.",
     ],
-    dica="A castanha aqui não é enfeite: é a gordura boa que segura a fome. Salada só de folha volta a dar fome em uma hora.",
+    dica="A castanha aqui não é enfeite: é a gordura boa que segura a fome. Salada só de folha costuma deixar você com fome de novo em uma hora.",
 ),
 
 dict(
@@ -1682,7 +1684,7 @@ dict(
         "Misture com o cottage até virar pasta, amassando com o garfo.",
         "Termine com limão, cebolinha e pimenta.",
     ],
-    dica="O cottage faz o papel cremoso da maionese com uma fração da gordura — e ainda soma proteína em vez de só somar caloria.",
+    dica="O cottage faz o papel cremoso da maionese com bem menos gordura, e ainda soma proteína.",
 ),
 
 dict(
@@ -1693,15 +1695,15 @@ dict(
     tempo=5, rende=2,
     ing=[
         ("2 xícaras de leite desnatado", 400, 457),
-        ("1 colher de chá de mel", 7, 507),
+        ("adoçante a gosto (opcional)", 2, "livre"),
         ("cúrcuma, canela e uma pitada de pimenta-do-reino", 5, "livre"),
     ],
     preparo=[
         "Aqueça o leite sem deixar ferver.",
         "Junte a cúrcuma, a canela e a pimenta — a pimenta é o que faz a cúrcuma ser aproveitada pelo corpo.",
-        "Adoce com o mel fora do fogo e beba quente.",
+        "Se quiser adoçar, use adoçante, fora do fogo, e beba quente.",
     ],
-    dica="Cúrcuma não cura nada sozinha e não substitui remédio nenhum. O que esta xícara faz de concreto é ocupar o lugar do doce das 22 h — e isso já é bastante.",
+    dica="A cúrcuma não cura nada sozinha e não substitui remédio nenhum. O que esta xícara faz é ocupar o lugar do doce das 22 h — e isso já é bastante.",
 ),
 
 dict(
@@ -1713,14 +1715,14 @@ dict(
     ing=[
         ("2 potes de iogurte natural", 400, 448),
         ("1 caixa de morangos", 200, 239),
-        ("1 colher de sopa de mel", 30, 507),
+        ("adoçante a gosto (opcional)", 2, "livre"),
     ],
     preparo=[
-        "Bata o iogurte com metade dos morangos e o mel.",
+        "Bata o iogurte com metade dos morangos (e o adoçante, se usar).",
         "Pique o resto dos morangos e misture com a colher, para ficar pedaço na mordida.",
         "Encha as forminhas e leve ao congelador por cerca de 4 horas (tempo de espera, não de trabalho).",
     ],
-    dica="Picolé de fruta comprado costuma ser água, açúcar e aroma. Aqui a fruta é o ingrediente principal — e o iogurte ainda traz proteína.",
+    dica="O picolé de fruta comprado costuma ser água, açúcar e aroma. Aqui a fruta é a protagonista, e o iogurte ainda traz proteína.",
 ),
 
 dict(
@@ -1741,7 +1743,7 @@ dict(
         "Tempere na hora com limão, azeite e sal.",
         "Sirva logo: crua e ralada na hora, ela é doce; parada de véspera, solta água.",
     ],
-    dica="Crua a beterraba mantém melhor o folato e o nitrato natural, que se perdem na água quando ela é fervida — e ainda economiza gás.",
+    dica="Crua, a beterraba guarda melhor o folato e o nitrato, que se perdem na água da fervura. E ainda economiza gás.",
 ),
 
 # ------------------------------ 10 MINUTOS ------------------------------
@@ -1766,7 +1768,7 @@ dict(
         "Abra quatro buracos no molho e quebre um ovo em cada um.",
         "Tampe e deixe até a clara firmar e a gema ainda tremer — cerca de 4 minutos.",
     ],
-    dica="Não mexa depois de pôr os ovos. É o molho quente que cozinha, e mexer transforma a shakshuka em ovo mexido com tomate.",
+    dica="Depois de colocar os ovos, deixe quietinho: é o molho quente que cozinha. Mexer transforma a shakshuka em ovo mexido com tomate.",
 ),
 
 dict(
@@ -1788,7 +1790,7 @@ dict(
         "Tampe e deixe na geladeira de um dia para o outro.",
         "De manhã, complete com o resto da banana em rodelas.",
     ],
-    dica="A aveia de molho fica mais fácil de digerir e mais cremosa, sem cozinhar nada. É o mesmo prato do mingau — só que sem panela e sem pressa de manhã.",
+    dica="De molho, a aveia fica mais cremosa e mais fácil de digerir, sem cozinhar nada. É o mingau de quem não tem pressa de manhã.",
 ),
 
 dict(
@@ -1810,7 +1812,7 @@ dict(
         "Junte a cenoura ralada, a cebola em fatias finas e a salsa.",
         "Tempere com azeite, limão, sal e pimenta e deixe descansar 5 minutos antes de comer.",
     ],
-    dica="A vitamina C do limão ajuda o corpo a aproveitar o ferro da lentilha. Não é crendice: é o único truque de cozinha que muda mesmo a absorção do ferro vegetal.",
+    dica="A vitamina C do limão ajuda o corpo a aproveitar o ferro da lentilha. Não é crendice: é o truque de cozinha que realmente muda a absorção.",
 ),
 
 dict(
@@ -1832,7 +1834,7 @@ dict(
         "Misture o atum escorrido com tomate, cebola e cheiro-verde.",
         "Sirva por cima do cuscuz quente, com o azeite na hora.",
     ],
-    dica="O flocão de milho sozinho é quase só carboidrato. É a lata de atum que transforma isso num almoço que sustenta até a noite.",
+    dica="O flocão sozinho é quase só carboidrato. É a lata de atum que transforma isso num almoço que sustenta até a noite.",
 ),
 
 dict(
@@ -1854,7 +1856,7 @@ dict(
         "Misture o iogurte com a mostarda, o limão, o sal e a pimenta.",
         "Junte tudo e deixe 10 minutos na geladeira antes de servir.",
     ],
-    dica="O limão na maçã ralada não é só sabor: é o que impede que ela escureça enquanto a salada espera na mesa.",
+    dica="O limão na maçã ralada não é só sabor: é ele que impede que ela escureça enquanto a salada espera na mesa.",
 ),
 
 dict(
@@ -1873,7 +1875,7 @@ dict(
         "Bata tudo no liquidificador até ficar liso.",
         "Beba na hora: a linhaça moída oxida rápido e perde a graça se ficar parada.",
     ],
-    dica="Quem faz o intestino andar é a fibra somada à água — e não a linhaça sozinha. Se o dia inteiro for de pouca água, nem esta vitamina resolve.",
+    dica="Quem faz o intestino andar é a fibra junto com a água. Se o dia for de pouca água, nem esta vitamina dá conta sozinha.",
 ),
 
 dict(
@@ -1894,7 +1896,7 @@ dict(
         "Cubra com a banana em rodelas, a aveia e a castanha picada.",
         "Termine com canela por cima.",
     ],
-    dica="Se quiser deixar mais doce, amasse metade da banana no iogurte antes. Banana amassada adoça muito mais do que banana em rodela.",
+    dica="Se quiser mais doce, amasse metade da banana no iogurte antes: amassada, ela adoça muito mais do que em rodelas.",
 ),
 
 dict(
@@ -1913,7 +1915,7 @@ dict(
         "Deixe na geladeira por pelo menos 3 horas (tempo de espera).",
         "Bata a manga até virar creme e ponha por cima na hora de servir.",
     ],
-    dica="É a manga madura que adoça: nenhum açúcar entra aqui. Se a sua estiver ácida, espere mais um ou dois dias na fruteira em vez de corrigir com açúcar.",
+    dica="É a manga madura que adoça, sem nenhum açúcar. Se a sua ainda estiver ácida, deixe mais um ou dois dias na fruteira.",
 ),
 
 dict(
@@ -1925,14 +1927,14 @@ dict(
     ing=[
         ("2 potes de iogurte grego natural", 400, "iogurte_grego"),
         ("polpa de 2 maracujás", 100, 233),
-        ("1 colher de sopa de mel", 30, 507),
+        ("adoçante a gosto (opcional)", 2, "livre"),
     ],
     preparo=[
-        "Bata o iogurte com metade da polpa e o mel até ficar aerado.",
+        "Bata o iogurte com metade da polpa (e o adoçante, se usar) até ficar aerado.",
         "Distribua em taças e leve à geladeira por 1 hora (tempo de espera).",
         "Cubra com o resto da polpa, com as sementes, na hora de servir.",
     ],
-    dica="O mousse tradicional leva uma lata de leite condensado para quatro porções — perto de 90 g de açúcar. Aqui a acidez do maracujá faz o trabalho que o açúcar fazia.",
+    dica="O mousse tradicional leva uma lata de leite condensado para quatro porções. Aqui é a acidez do maracujá que faz esse trabalho.",
 ),
 
 # ------------------------------ 30 MINUTOS ------------------------------
@@ -1955,7 +1957,7 @@ dict(
         "Asse por 8 minutos, vire e asse mais 6.",
         "Deixe descansar 3 minutos fora do aparelho antes de cortar, para o suco não escorrer todo na tábua.",
     ],
-    dica="Não empilhe os filés no cesto. Air fryer é ar circulando: peça amontoada cozinha no vapor e sai pálida e borrachuda.",
+    dica="Não empilhe os filés no cesto: a air fryer trabalha com ar circulando, e peça amontoada acaba cozinhando no vapor.",
 ),
 
 dict(
@@ -1980,7 +1982,7 @@ dict(
         "Junte o grão-de-bico e o leite de coco e cozinhe 10 minutos em fogo baixo.",
         "Desligue e misture o espinafre — ele murcha só com o calor da panela.",
     ],
-    dica="Grão-de-bico com arroz forma proteína tão completa quanto a da carne. É por isso que quase toda cozinha do mundo tem um par assim: feijão com arroz é o nosso.",
+    dica="Grão-de-bico com arroz forma proteína completa, do mesmo jeito que o nosso feijão com arroz. Quase toda cozinha do mundo tem um par assim.",
 ),
 
 dict(
@@ -2002,7 +2004,7 @@ dict(
         "Refogue cebola e alho no azeite, junte a soja e deixe dourar de verdade — é aqui que ela ganha gosto.",
         "Ponha o tomate picado e os temperos e cozinhe 15 minutos em fogo baixo.",
     ],
-    dica="Apertar a soja depois de hidratar é o passo que quase todo mundo pula — e é o que tira o gosto de papelão que dá fama ruim a ela.",
+    dica="Apertar bem a soja depois de hidratar é o passo que quase todo mundo pula — e é justamente ele que tira o gosto que dá má fama a ela.",
 ),
 
 dict(
@@ -2024,7 +2026,7 @@ dict(
         "Faça bolinhas com a colher e ponha numa assadeira forrada.",
         "Asse a 200 °C por 20 minutos, virando na metade.",
     ],
-    dica="Servem de lanche da tarde, de jantar com salada e de recheio de sanduíche no dia seguinte. Feitos numa vez, resolvem três refeições.",
+    dica="Servem de lanche da tarde, de jantar com salada e de recheio no dia seguinte. Um preparo só resolve três refeições.",
 ),
 
 dict(
@@ -2046,7 +2048,7 @@ dict(
         "Modele em cilindros em volta de espetos ou faça no formato de linguiça.",
         "Asse a 220 °C por 18 minutos, virando na metade.",
     ],
-    dica="Uma pitada de canela na carne não deixa gosto de doce: é o que dá o sabor árabe que a gente reconhece e não sabe nomear.",
+    dica="Uma pitada de canela na carne não deixa gosto de doce: é ela que dá aquele sabor árabe que a gente reconhece e não sabe nomear.",
 ),
 
 dict(
@@ -2070,7 +2072,7 @@ dict(
         "Pique tudo miúdo e misture com o azeite, o limão e o sal.",
         "Deixe descansar 10 minutos na geladeira antes de servir.",
     ],
-    dica="Água fria, não quente. Trigo hidratado na água fervente vira mingau e o tabule perde a mordida.",
+    dica="Água fria, não quente: o trigo hidratado na água fervente vira mingau e o tabule perde a mordida.",
 ),
 
 dict(
@@ -2094,7 +2096,7 @@ dict(
         "Ponha a quinoa cozida e o caldo aos poucos, mexendo até ficar cremoso.",
         "Desligue e misture o queijo ralado.",
     ],
-    dica="A quinoa já cozida vira risoto em cinco minutos. Cozinhe uma panela grande no domingo e ela resolve prato de semana inteira.",
+    dica="A quinoa já cozida vira risoto em cinco minutos. Uma panela grande no domingo resolve o prato da semana.",
 ),
 
 dict(
@@ -2117,7 +2119,7 @@ dict(
         "Cozinhe o macarrão e junte ao molho na própria panela, com um pouco da água do cozimento.",
         "Manjericão só no fim, com o fogo desligado.",
     ],
-    dica="A água do cozimento tem amido e é ela que faz o molho grudar no macarrão. Escorrer tudo na pia é jogar fora o que ligaria o prato.",
+    dica="A água do cozimento tem amido e é ela que faz o molho abraçar o macarrão. Guarde uma concha antes de escorrer.",
 ),
 
 dict(
@@ -2141,7 +2143,7 @@ dict(
         "Refogue cebola e alho no azeite, junte tudo e o resto do feijão inteiro.",
         "Deixe ferver 10 minutos para encorpar.",
     ],
-    dica="É a abóbora batida que engrossa, não a farinha nem o creme de leite. Caldo grosso não precisa de nada além de um legume cozido demais.",
+    dica="É a abóbora batida que engrossa, não a farinha nem o creme de leite. Um legume bem cozido dá conta sozinho.",
 ),
 
 # ------------------------------ 60 MINUTOS ------------------------------
@@ -2155,25 +2157,25 @@ dict(
     ing=[
         ("2 xícaras de fubá", 250, 43),
         ("1 xícara de farinha de trigo", 100, 35),
-        ("3/4 de xícara de açúcar", 150, 492),
+        ("3/4 de xícara de eritritol culinário (adoçante que vai ao forno)", 150, "livre"),
         ("3 ovos", 150, 489),
         ("1 xícara e meia de leite desnatado", 300, 457),
         ("1/3 de xícara de óleo", 80, 272),
         ("1 colher de sopa de fermento e erva-doce", 20, "livre"),
     ],
     preparo=[
-        "Bata no liquidificador os ovos, o leite, o óleo e o açúcar.",
+        "Bata no liquidificador os ovos, o leite, o óleo e o eritritol.",
         "Passe para uma tigela e misture o fubá, a farinha e a erva-doce.",
         "O fermento entra por último, mexendo com a colher.",
         "Asse a 180 °C por cerca de 40 minutos, até o palito sair seco.",
     ],
-    dica="Uma fatia deste bolo tem menos açúcar que a maioria dos bolos de caixinha — e nenhum ingrediente com nome que você não saiba pronunciar. Mas continua sendo bolo: a fatia é uma, não o pedaço inteiro.",
+    dica="Aqui o açúcar sai e entra eritritol, que vai ao forno e não sobe a glicose. Mas o fubá e a farinha continuam virando açúcar no sangue: continua sendo bolo, e a fatia é uma, não o pedaço inteiro.",
 ),
 
 dict(
     slug="bolo-de-maca-integral",
     titulo="Bolo de maçã integral",
-    chamada="Metade da massa é maçã — e é ela que adoça, não a xícara de açúcar.",
+    chamada="Metade da massa é maçã — e é ela que adoça, sem açúcar nenhum.",
     cat=["sobremesa", "economica", "vegetariana", "fruta"],
     tempo=60, rende=12,
     ing=[
@@ -2181,17 +2183,17 @@ dict(
         ("2 xícaras de farinha de trigo integral", 250, "farinha_trigo_integral"),
         ("1/2 xícara de aveia em flocos", 60, 7),
         ("3 ovos", 150, 489),
-        ("1/2 xícara de açúcar mascavo", 100, 493),
+        ("1/2 xícara de eritritol culinário (adoçante que vai ao forno)", 100, "livre"),
         ("1/4 de xícara de óleo", 60, 272),
         ("1 colher de sopa de fermento e canela", 20, "livre"),
     ],
     preparo=[
         "Rale duas maçãs e reserve a terceira em fatias para cobrir.",
-        "Bata os ovos com o açúcar e o óleo e junte a maçã ralada.",
+        "Bata os ovos com o eritritol e o óleo e junte a maçã ralada.",
         "Misture a farinha integral, a aveia e a canela, e o fermento por último.",
         "Cubra com as fatias, polvilhe canela e asse a 180 °C por 45 minutos.",
     ],
-    dica="A farinha integral pede um pouco mais de líquido e deixa o bolo mais denso — é assim mesmo. Bolo integral fofinho como o branco costuma ser integral só no nome.",
+    dica="A farinha integral pede um pouco mais de líquido e deixa o bolo mais denso — é assim mesmo, e fica gostoso.",
 ),
 
 dict(
@@ -2214,7 +2216,7 @@ dict(
         "Recheie, feche com palito e sele numa frigideira quente.",
         "Termine no forno a 200 °C por 25 minutos.",
     ],
-    dica="Escorrer a água do espinafre é o que separa o recheio cremoso do recheio que vaza. Aperte na peneira até parar de pingar.",
+    dica="Escorra bem o espinafre, apertando na peneira até parar de pingar: é o que garante o recheio cremoso em vez do recheio que vaza.",
 ),
 
 dict(
@@ -2237,7 +2239,7 @@ dict(
         "Ponha numa forma de bolo inglês untada e polvilhe o gergelim.",
         "Asse a 180 °C por 40 minutos e espere esfriar antes de fatiar.",
     ],
-    dica="Este pão é feito com fermento químico, não biológico: não cresce como pão de padaria e é mais denso mesmo. Em compensação fica pronto em uma hora, do zero.",
+    dica="Este pão leva fermento químico, então é mais denso que o da padaria mesmo. Em compensação, sai do zero em uma hora.",
 ),
 
 # ------------------------------ 120 MINUTOS -----------------------------
@@ -2261,7 +2263,7 @@ dict(
         "Junte os tomates picados e cozinhe em fogo baixo por 1 hora e meia, mexendo de vez em quando.",
         "Manjericão só no fim. Guarde em potes na geladeira por até 5 dias, ou congele em porções.",
     ],
-    dica="O molho de vidro costuma trazer açúcar para corrigir a acidez do tomate ruim. Com tomate maduro de verdade e uma hora e meia de fogo baixo, o açúcar não faz falta.",
+    dica="O molho de vidro costuma levar açúcar para corrigir a acidez do tomate. Com tomate maduro e fogo baixo, ele não faz falta nenhuma.",
 ),
 
 dict(
@@ -2280,7 +2282,150 @@ dict(
         "Salgue só no fim do cozimento — sal no início endurece a casca.",
         "Congele em porções com um pouco do caldo, que é o que impede o grão de ressecar.",
     ],
-    dica="A água do molho leva junto boa parte dos compostos que dão gases. Trocar essa água e não cozinhar nela é o que faz diferença de verdade na barriga.",
+    dica="A água do molho leva junto boa parte do que causa gases. Trocar essa água e não cozinhar nela faz diferença de verdade.",
+),
+
+# ==================================================================
+#  FAÇA EM CASA — o que a prateleira não tem
+#
+#  Estas seis nascem do outro lado do app: são as categorias em que a
+#  leitura de rótulo termina sem indicação de marca porque não existe
+#  opção honesta na prateleira. Ver RECEITAS_CASEIRAS em
+#  supabase/functions/analisar-rotulo/index.ts — os slugs daqui são
+#  citados lá, e trocar um slug quebra a ponte.
+# ==================================================================
+
+dict(
+    slug="barra-de-cereal-caseira",
+    titulo="Barra de cereal caseira",
+    chamada="A barra do mercado é xarope de glucose com aveia por cima. Esta aqui é o contrário.",
+    cat=["economica", "vegetariana", "sobremesa"],
+    tempo=30, rende=10,
+    ing=[
+        ("2 xícaras de aveia em flocos", 180, 7),
+        ("4 tâmaras sem caroço", 80, "tamara"),
+        ("1/2 xícara de uva-passa", 60, "uva_passa"),
+        ("3 colheres de sopa de pasta de amendoim", 48, "pasta_amendoim"),
+        ("2 colheres de sopa de mel", 30, 507),
+        ("1/4 de xícara de coco ralado", 20, 590),
+    ],
+    preparo=[
+        "Aqueça o forno a 180 °C. Espalhe a aveia numa assadeira e torre por 8 minutos, mexendo na metade.",
+        "Pique bem as tâmaras, ou bata no processador com um fio de água até virar pasta.",
+        "Numa panela em fogo baixo, misture a pasta de amendoim com o mel só até amolecer — não deixe ferver.",
+        "Junte tudo numa tigela: aveia torrada, tâmara, uva-passa, coco e a mistura morna. Misture com as mãos até a massa grudar quando você aperta.",
+        "Aperte MUITO bem numa forma forrada com papel-manteiga, usando o fundo de um copo. Barra que esfarela é barra mal apertada.",
+        "Leve à geladeira por 2 horas e só então corte em 10 barras (tempo de espera).",
+    ],
+    dica="Na barra de mercado, o primeiro ingrediente costuma ser xarope de glucose, e a aveia aparece só em terceiro. Aqui o doce vem da tâmara e da uva-passa, com fibra junto. Embrulhe uma a uma em papel-manteiga e leve na bolsa.",
+),
+
+dict(
+    slug="pasta-de-amendoim-caseira",
+    titulo="Pasta de amendoim caseira",
+    chamada="Um ingrediente só. É literalmente amendoim batido até virar pasta.",
+    cat=["economica", "vegana", "vegetariana", "lowcarb"],
+    tempo=10, rende=10,
+    ing=[
+        ("300 g de amendoim cru sem pele", 300, 557),
+        ("uma pitada de sal", 1, "livre"),
+    ],
+    preparo=[
+        "Espalhe o amendoim numa assadeira e torre a 180 °C por 12 a 15 minutos, até cheirar a amendoim torrado. É a torra que solta o óleo — sem ela a pasta não vira.",
+        "Deixe amornar e bata no processador. Nos primeiros 2 minutos vira farinha e parece que deu errado: continue.",
+        "Entre 5 e 10 minutos a farinha vira creme sozinha, sem acrescentar óleo nenhum. Raspe as laterais de vez em quando.",
+        "Junte o sal, bata mais 30 segundos e guarde em pote de vidro na geladeira por até 1 mês.",
+        "Se o processador esquentar demais, desligue 5 minutos e volte — motor forçado é o que queima.",
+    ],
+    dica="Segure a vontade de pôr óleo lá pelo minuto 3: é bem quando falta pouco, e o amendoim solta a gordura dele sozinho. Açúcar também não precisa.",
+),
+
+dict(
+    slug="ketchup-caseiro",
+    titulo="Ketchup caseiro",
+    chamada="Sem xarope de milho, e com o gosto de tomate que o de garrafa perdeu.",
+    cat=["economica", "vegana", "vegetariana"],
+    tempo=30, rende=8,
+    ing=[
+        ("1 lata de extrato de tomate", 340, 158),
+        ("1/2 cebola pequena", 50, 107),
+        ("2 colheres de sopa de vinagre", 30, "livre"),
+        ("1 colher de sopa de mel", 15, 507),
+        ("sal, pimenta, cravo em pó e água", 150, "livre"),
+    ],
+    preparo=[
+        "Bata a cebola crua com o vinagre e 150 ml de água no liquidificador até não sobrar pedaço.",
+        "Leve à panela com o extrato de tomate, o mel e os temperos.",
+        "Cozinhe em fogo baixo por 20 minutos, mexendo de vez em quando, até engrossar e a colher deixar rastro no fundo.",
+        "Prove o sal e a acidez ainda quente: ketchup esfriado fica mais doce do que parecia.",
+        "Guarde em pote de vidro na geladeira por até 15 dias.",
+    ],
+    dica="No ketchup de garrafa, o primeiro ingrediente quase nunca é tomate. Aqui é uma colher de mel para o pote inteiro, e o resto é tomate mesmo. Segue sendo condimento: para a batata assada de domingo.",
+),
+
+dict(
+    slug="maionese-de-abacate-caseira",
+    titulo="Maionese de abacate",
+    chamada="Cremosa, verde e pronta em cinco minutos — sem óleo de soja e sem conservante.",
+    cat=["lowcarb", "vegana", "vegetariana", "economica"],
+    tempo=5, rende=6,
+    ing=[
+        ("1 abacate pequeno maduro", 200, 163),
+        ("suco de 1 limão", 20, 219),
+        ("1/2 dente de alho", 2, 82),
+        ("1 colher de chá de azeite", 5, 260),
+        ("sal e pimenta-do-reino", 2, "livre"),
+    ],
+    preparo=[
+        "Amasse o abacate com o garfo ou bata no mixer com o alho, o limão e o azeite.",
+        "Bata até ficar completamente liso — é o liso que faz parecer maionese.",
+        "Acerte o sal e a pimenta. Se quiser mais firme, leve 20 minutos à geladeira.",
+        "Faça a quantidade do dia: com o limão ela aguenta 2 dias na geladeira, com filme encostado na superfície.",
+    ],
+    dica="A maionese de pote não é vilã, mas é bastante gordura por colher. O abacate dá a mesma cremosidade com gordura boa e potássio — e o limão é o que segura o escurecimento.",
+),
+
+dict(
+    slug="chips-de-batata-doce-na-air-fryer",
+    titulo="Chips de batata-doce na air fryer",
+    chamada="A vontade de salgadinho resolvida com uma batata e uma colher de azeite.",
+    cat=["economica", "vegana", "vegetariana"],
+    tempo=30, rende=4,
+    ing=[
+        ("2 batatas-doces médias", 400, 89),
+        ("1 colher de sopa de azeite", 13, 260),
+        ("sal e páprica defumada", 2, "livre"),
+    ],
+    preparo=[
+        "Lave bem e fatie a batata FINA, com casca, num mandolim ou no fio do descascador. Fatia grossa vira batata assada, não chips.",
+        "Deixe as fatias 10 minutos de molho em água gelada e seque bem no pano — é o amido que sai ali que faz a fatia ficar crocante.",
+        "Misture com o azeite e os temperos, com a mão, até toda fatia brilhar.",
+        "Air fryer a 160 °C por 12 a 15 minutos, sacudindo a cesta a cada 5 minutos e tirando as que já douraram.",
+        "Elas terminam de ficar crocantes esfriando na bancada — ainda moles quando quentes não quer dizer que faltou tempo.",
+    ],
+    dica="Não é batata frita sem culpa: é um lanche de comida de verdade que mata a mesma vontade. A diferença maior está no pacote — o salgadinho tem realçador de sabor, feito para você não conseguir parar. Aqui você fez quatro porções, e elas acabam.",
+),
+
+dict(
+    slug="leite-de-castanha-caseiro",
+    titulo="Leite de castanha caseiro",
+    chamada="Sem coar, sem sobra e sem os sete ingredientes que a caixinha precisa ter.",
+    cat=["vegana", "vegetariana"],
+    tempo=10, rende=5,
+    ing=[
+        ("1 xícara de castanha-de-caju crua", 100, "castanha_caju_crua"),
+        ("1 litro de água filtrada", 1000, "livre"),
+        ("1 tâmara sem caroço (opcional)", 20, "tamara"),
+        ("uma pitada de sal e canela", 1, "livre"),
+    ],
+    preparo=[
+        "Deixe a castanha de molho em água por 4 horas — ou 20 minutos em água bem quente, quando a pressa mandar (tempo de espera).",
+        "Escorra, despreze a água do molho e bata com 1 litro de água nova por 2 minutos, no liquidificador, na potência máxima.",
+        "A castanha-de-caju é a única que dispensa o coador: ela dissolve. Com amêndoa ou castanha-do-pará, aí sim passe num pano.",
+        "Junte a tâmara, o sal e a canela e bata mais 30 segundos.",
+        "Guarde na geladeira por até 3 dias em garrafa de vidro. Separa em camadas — é normal, é só chacoalhar.",
+    ],
+    dica="Este copo tem mais caloria que o de caixinha, e isso é informação, não defeito: a bebida de mercado costuma ser água com pouca castanha e uma lista de estabilizantes. Só não troque pelo leite de vaca sem ajustar o resto: mesmo o caseiro tem bem menos proteína e cálcio.",
 ),
 
 ]

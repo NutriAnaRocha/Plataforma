@@ -14,6 +14,11 @@
     especialidades: [], contatoProfissional: "",
     logoUrl: "", carimboUrl: "", assinaturaUrl: "", usarAssinatura: true,
     areaAtuacao: [], areaAtuacaoOutro: "",
+    // Perfil público (diretório) — a casca renderiza antes do get().
+    slug: "", perfilStatus: "rascunho", perfilRecusaMotivo: "", apresentacao: "",
+    atendeOnline: true, atendePresencial: false, estado: "", precoConsultaCents: null,
+    aceitaNovos: true, publicadoEm: "", planoTier: "gratis",
+    formacao: "", anoFormatura: null, posGraduacao: [], atuacaoDesde: null, motivoEntrada: "",
     brandColors: (window.NutriPerfil && window.NutriPerfil.CORES_PADRAO) || { primaria: "#840B55", secundaria: "#F1B2DC", destaque: "#A82670", fundo: "#FFFFFF" }
   };
 
@@ -106,10 +111,32 @@
   function db() { return window.NutriPerfil; }
   function val(id) { var e = el(id); return e ? e.value : ""; }
 
+  // A bio é uma apresentação breve: o limite é o mesmo em Configurações e no banco (perfil-db).
+  var BIO_MAX = 300;
+  // Mínimos do perfil público — espelham publicar_perfil() (0098). Sem eles a
+  // página da nutri sai vazia e o paciente não tem o que avaliar.
+  var TEXTO_MIN = { bio: 80, publico: 40, funciona: 80 };
+
+  /** Textarea com contador "n/max" que fica laranja abaixo do mínimo. */
+  function textoContado(label, id, value, min, max, rows, ph, dica) {
+    var n = (value || "").length;
+    return '<div class="pp-block">' +
+      '<div class="pp-ap__head">' +
+        '<span class="field__label">' + esc(label) + '</span>' +
+        '<span class="pp-ap__count' + (n < min ? " is-curta" : "") + '" id="' + id + '-count">' + n + '/' + max + '</span>' +
+      '</div>' +
+      '<textarea class="field__input" id="' + id + '" rows="' + rows + '" maxlength="' + max + '" data-min="' + min + '"' +
+        ' placeholder="' + esc(ph) + '">' + esc(value) + '</textarea>' +
+      '<p class="cfg-hint">' + esc(dica) + '</p>' +
+    '</div>';
+  }
+
   function field(label, id, value, opts) {
     opts = opts || {};
+    if (opts.max) label += " · até " + opts.max + " caracteres";
     var input = opts.textarea
       ? '<textarea class="field__input" id="' + id + '" rows="' + (opts.rows || 3) + '"' +
+          (opts.max ? ' maxlength="' + opts.max + '"' : "") +
           (opts.ph ? ' placeholder="' + esc(opts.ph) + '"' : "") + '>' + esc(value) + '</textarea>'
       : '<input class="field__input" id="' + id + '" type="' + (opts.type || "text") + '" value="' + esc(value) + '"' +
           (opts.ph ? ' placeholder="' + esc(opts.ph) + '"' : "") + ' />';
@@ -149,7 +176,7 @@
         '</div>' +
       '</div>' +
       '<div class="pp-block">' +
-        field("Bio profissional", "pp-bio", perfil.bio, { textarea: true, rows: 3, wide: true, ph: "Uma apresentação curta que aparece no seu perfil." }) +
+        field("Bio profissional", "pp-bio", perfil.bio, { textarea: true, rows: 3, wide: true, max: BIO_MAX, ph: "Uma apresentação curta que aparece no seu perfil." }) +
       '</div>';
 
     el("panel-dados").innerHTML =
@@ -174,7 +201,7 @@
       bio: val("pp-bio")
     }).then(function (p) {
       perfil = mergePerfil(p);
-      renderDados(); renderTopbar(); refreshPreview();
+      renderDados(); renderPublico(); renderTopbar(); refreshPreview();
       toast("Dados salvos");
     }).catch(function (e) {
       toast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
@@ -267,7 +294,8 @@
 
   /* ---------- Uploads (logo/carimbo/assinatura) ---------- */
   // Redimensiona preservando transparência (PNG). maxW/maxH em px.
-  function processarImagem(file, maxDim) {
+  // jpeg=true para foto (sem transparência): fica ~10x mais leve que PNG.
+  function processarImagem(file, maxDim, jpeg) {
     return new Promise(function (resolve, reject) {
       var reader = new FileReader();
       reader.onerror = function () { reject(new Error("não foi possível ler o arquivo")); };
@@ -281,7 +309,8 @@
           var cv = document.createElement("canvas");
           cv.width = cw; cv.height = ch;
           cv.getContext("2d").drawImage(img, 0, 0, cw, ch);
-          resolve(cv.toDataURL("image/png"));   // PNG mantém transparência do logo/assinatura
+          resolve(jpeg ? cv.toDataURL("image/jpeg", 0.85)
+                       : cv.toDataURL("image/png"));   // PNG mantém transparência do logo/assinatura
         };
         img.src = reader.result;
       };
@@ -289,21 +318,28 @@
     });
   }
 
-  var SLOT_FIELD = { logo: "logoUrl", carimbo: "carimboUrl", assinatura: "assinaturaUrl" };
+  // "avatar" é a foto do perfil público — mesmo caminho de upload dos outros
+  // slots (data URL comprimida, sem storage).
+  var SLOT_FIELD = { logo: "logoUrl", carimbo: "carimboUrl", assinatura: "assinaturaUrl", avatar: "avatarUrl" };
 
   function enviarSlot(key, file) {
     if (!file) return;
     if (!/^image\/(png|jpe?g|webp)$/i.test(file.type)) { toast("Use uma imagem PNG, JPG ou WEBP.", true); return; }
-    if (file.size > 3 * 1024 * 1024) { toast("A imagem passa de 3 MB. Escolha uma menor.", true); return; }
+    // Sem teto de tamanho: a imagem é reduzida aqui antes de ir pro banco.
     if (!db()) { toast("Banco indisponível.", true); return; }
-    toast("Processando imagem…");
-    processarImagem(file, key === "logo" ? 480 : 600).then(function (dataUrl) {
+    // Foto de perfil passa pelo ajuste (enquadrar + zoom); logo/carimbo não.
+    var pronto = key === "avatar" && window.FotoUpload
+      ? window.FotoUpload.ler(file)
+      : processarImagem(file, key === "logo" ? 480 : 600);
+    pronto.then(function (dataUrl) {
+      toast("Salvando imagem…");
       var patch = {}; patch[SLOT_FIELD[key]] = dataUrl;
       return db().update(patch);
     }).then(function (p) {
-      perfil = mergePerfil(p); renderIdentidade(); renderTopbar(); refreshPreview();
+      perfil = mergePerfil(p); renderIdentidade(); renderPublico(); renderTopbar(); refreshPreview();
       toast("Imagem salva");
     }).catch(function (e) {
+      if (e && e.message === "cancelado") return;
       toast("Não foi possível enviar. " + (e && e.message ? e.message : ""), true);
     });
   }
@@ -312,7 +348,7 @@
     if (!db()) { toast("Banco indisponível.", true); return; }
     var patch = {}; patch[SLOT_FIELD[key]] = "";
     db().update(patch).then(function (p) {
-      perfil = mergePerfil(p); renderIdentidade(); renderTopbar(); refreshPreview();
+      perfil = mergePerfil(p); renderIdentidade(); renderPublico(); renderTopbar(); refreshPreview();
       toast("Imagem removida");
     }).catch(function (e) { toast("Não foi possível remover. " + (e && e.message ? e.message : ""), true); });
   }
@@ -453,9 +489,336 @@
   }
 
   /* ============================================================
+     PAINEL 4 — PERFIL PÚBLICO (o card que o paciente vê no diretório)
+
+     O que faz alguém clicar não é a lista de especialidades: é o rosto e
+     uma frase que soa como gente. Por isso foto e apresentação são
+     requisito para enviar à análise — e a validação de verdade está no
+     banco (publicar_perfil), não aqui.
+     ============================================================ */
+  var UFS = ("AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO").split(" ");
+
+  var STATUS_LABEL = {
+    rascunho:   { t: "Rascunho",          d: "Ainda não enviado — só você vê." },
+    em_analise: { t: "Em análise",        d: "Enviado. A Ana avisa assim que olhar." },
+    aprovado:   { t: "No ar",             d: "Seu perfil aparece na busca do site." },
+    recusado:   { t: "Precisa de ajuste", d: "Veja o motivo abaixo, corrija e envie de novo." }
+  };
+
+  // 'gratis' virou a vitrine sem cobrança (0092), não mais "trial".
+  var TIER_LABEL = { gratis: "Vitrine grátis", vitrine: "Vitrine", plataforma: "Plataforma", completo: "Completo" };
+
+  function precoBR(cents) {
+    if (cents == null) return "";
+    return (cents / 100).toFixed(2).replace(".", ",");
+  }
+
+  /** O que ainda falta para poder enviar. Espelha publicar_perfil() (0086). */
+  function pendencias() {
+    var f = [];
+    if (!perfil.avatarUrl) f.push("sua foto");
+    if (!perfil.apresentacao || perfil.apresentacao.trim().length < 40) f.push("a apresentação (mín. 40 caracteres)");
+    if ((perfil.bio || "").trim().length < TEXTO_MIN.bio) f.push("o Sobre você (mín. " + TEXTO_MIN.bio + " caracteres)");
+    if ((perfil.publicoAtendido || "").trim().length < TEXTO_MIN.publico) f.push("o Quem você atende (mín. " + TEXTO_MIN.publico + ")");
+    if ((perfil.comoFunciona || "").trim().length < TEXTO_MIN.funciona) f.push("o Como funciona a consulta (mín. " + TEXTO_MIN.funciona + ")");
+    if (!perfil.crn) f.push("o CRN");
+    if (!perfil.areaAtuacao.length) f.push("pelo menos uma especialidade");
+    if (!perfil.cidade || !perfil.estado) f.push("cidade e estado");
+    if (!perfil.atendeOnline && !perfil.atendePresencial) f.push("como você atende");
+    if (!perfil.instagram && !perfil.site) f.push("Instagram ou site");
+    return f;
+  }
+
+  /** O card exatamente como ele sai na busca — sem promessa, é o mesmo desenho. */
+  function cardPreview() {
+    var foto = perfil.avatarUrl
+      ? '<img src="' + esc(perfil.avatarUrl) + '" alt="" />'
+      : '<span>' + esc(iniciais(perfil.nome)) + '</span>';
+    var modos = [];
+    if (perfil.atendeOnline) modos.push("Online");
+    if (perfil.atendePresencial) modos.push("Presencial");
+    var linha2 = [perfil.cidade, perfil.estado].filter(Boolean).join(", ");
+    var preco = perfil.precoConsultaCents ? "a partir de R$ " + precoBR(perfil.precoConsultaCents) : "";
+
+    return '<div class="pp-card' + (perfil.planoTier === "completo" ? " is-destaque" : "") + '">' +
+      '<div class="pp-card__foto">' + foto + '</div>' +
+      '<div class="pp-card__info">' +
+        '<div class="pp-card__nome">' + esc(perfil.nome || "Seu nome") + '</div>' +
+        '<div class="pp-card__meta">' +
+          esc([perfil.crn, linha2].filter(Boolean).join(" · ") || "CRN · cidade") + '<br />' +
+          esc(perfil.areaAtuacao.slice(0, 3).join(" · ") || "suas especialidades") + '<br />' +
+          esc([modos.join(" e "), preco].filter(Boolean).join(" · ")) +
+        '</div>' +
+        '<p class="pp-card__desc">' +
+          esc(perfil.apresentacao || "Sua apresentação aparece aqui — é o que faz o paciente clicar.") +
+        '</p>' +
+        (perfil.planoTier === "completo" ? '<span class="pp-card__selo">Destaque</span>' : "") +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderPublico() {
+    var pane = el("panel-publico"); if (!pane) return;
+    var st = STATUS_LABEL[perfil.perfilStatus] || STATUS_LABEL.rascunho;
+    var falta = pendencias();
+    var apLen = (perfil.apresentacao || "").length;
+
+    var checks = AREAS.map(function (a) {
+      var on = perfil.areaAtuacao.indexOf(a) > -1;
+      return '<label class="pp-check' + (on ? " is-on" : "") + '">' +
+        '<input type="checkbox" value="' + esc(a) + '"' + (on ? " checked" : "") + ' />' +
+        '<span class="pp-check__box"></span><span>' + esc(a) + '</span></label>';
+    }).join("");
+
+    var ufs = '<select class="field__input" id="pub-estado">' +
+      '<option value="">UF</option>' +
+      UFS.map(function (u) {
+        return '<option value="' + u + '"' + (perfil.estado === u ? " selected" : "") + '>' + u + '</option>';
+      }).join("") + '</select>';
+
+    /* Estado do perfil + o que falta */
+    var statusHTML =
+      '<div class="pp-status pp-status--' + esc(perfil.perfilStatus) + '">' +
+        '<div><b>' + esc(st.t) + '</b><p class="cfg-hint">' + esc(st.d) + '</p>' +
+          (perfil.perfilStatus === "recusado" && perfil.perfilRecusaMotivo
+            ? '<p class="pp-status__motivo">' + esc(perfil.perfilRecusaMotivo) + '</p>' : "") +
+          (perfil.perfilStatus === "aprovado" && perfil.slug
+            ? '<p class="cfg-hint">nutrianaluisarocha.com/nutri/' + esc(perfil.slug) + '</p>' : "") +
+        '</div>' +
+        '<span class="pp-tier">' + esc(TIER_LABEL[perfil.planoTier] || "Grátis") + '</span>' +
+      '</div>' +
+      (falta.length
+        ? '<div class="pp-falta"><b>Para enviar, falta:</b> ' + esc(falta.join(", ")) + '.</div>'
+        : '');
+
+    /* Foto */
+    var fotoHTML =
+      '<div class="pp-slot">' +
+        '<div class="pp-slot__preview pp-slot__preview--round">' +
+          (perfil.avatarUrl
+            ? '<img class="pp-slot__img" src="' + esc(perfil.avatarUrl) + '" alt="Sua foto" />'
+            : '<div class="pp-slot__empty">Sem foto</div>') +
+        '</div>' +
+        '<div class="pp-slot__info">' +
+          '<div class="pp-slot__tit">Sua foto</div>' +
+          '<p class="cfg-hint">Rosto visível, luz boa, fundo simples. É o primeiro contato que o paciente tem com você.</p>' +
+          '<input type="file" id="pp-file-avatar" accept="image/png,image/jpeg,image/webp" hidden />' +
+          '<div class="pp-slot__btns">' +
+            '<button class="btn btn--outline" type="button" data-upload="avatar">' + (perfil.avatarUrl ? "Trocar" : "Enviar") + '</button>' +
+            (perfil.avatarUrl ? '<button class="btn btn--ghost" type="button" data-remove="avatar">Remover</button>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    /* Apresentação */
+    var apresentacaoHTML =
+      '<div class="pp-block">' +
+        '<div class="pp-ap__head">' +
+          '<span class="field__label">Sua apresentação</span>' +
+          '<span class="pp-ap__count" id="pub-ap-count">' + apLen + '/220</span>' +
+        '</div>' +
+        '<textarea class="field__input" id="pub-apresentacao" rows="3" maxlength="220" ' +
+          'placeholder="Ex.: Eu cuido de mulheres que querem engravidar e se perdem no meio de tanta informação. Aqui a gente vai no seu ritmo.">' +
+          esc(perfil.apresentacao) + '</textarea>' +
+        '<div class="pp-ap__foot">' +
+          '<p class="cfg-hint">Entre 40 e 220 caracteres, na primeira pessoa. Fale com quem você atende, não sobre você.</p>' +
+          '<button class="btn btn--ghost" type="button" data-action="ia-apresentacao">✨ Escrever com ajuda da IA</button>' +
+        '</div>' +
+        '<div class="pp-ia" id="pub-ia" hidden></div>' +
+      '</div>';
+
+    var body =
+      statusHTML +
+      fotoHTML +
+      apresentacaoHTML +
+      textoContado("Quem você atende", "pub-publico", perfil.publicoAtendido, TEXTO_MIN.publico, 400, 3,
+        "Ex.: Mulheres tentando engravidar, com SOP ou endometriose, e gestantes.",
+        "Mínimo de " + TEXTO_MIN.publico + " caracteres. Ajuda o paciente a saber se é com você.") +
+      textoContado("Como funciona a consulta", "pub-funciona", perfil.comoFunciona, TEXTO_MIN.funciona, 800, 5,
+        "Ex.: Consulta de 60 min por vídeo, plano alimentar em até 3 dias, retorno em 30 dias e suporte pelo app.",
+        "Mínimo de " + TEXTO_MIN.funciona + " caracteres. Conte o passo a passo: como marca, duração, o que recebe, retornos.") +
+      textoContado("Sobre você", "pub-bio", perfil.bio, TEXTO_MIN.bio, BIO_MAX, 4,
+        "Ex.: Nutricionista há 8 anos, especialista em fertilidade. Atendimento acolhedor e sem dieta da moda.",
+        "Mínimo de " + TEXTO_MIN.bio + " caracteres, na primeira pessoa. Sua trajetória e o seu jeito de atender.") +
+      '<div class="pp-block">' +
+        '<span class="field__label">Especialidades</span>' +
+        '<div class="pp-checks" id="pub-areas">' + checks + '</div>' +
+      '</div>' +
+      '<div class="cfg-form">' +
+        field("Cidade", "pub-cidade", perfil.cidade, { ph: "Ex.: Rio de Janeiro" }) +
+        field("Bairro do consultório", "pub-bairro", perfil.bairro, { ph: "Só se atende presencial — ex.: Tijuca" }) +
+        '<label class="field field--light"><span class="field__label">Estado</span>' + ufs + '</label>' +
+        field("Valor da consulta (R$)", "pub-preco", precoBR(perfil.precoConsultaCents), { ph: "Opcional — ex.: 180,00" }) +
+      '</div>' +
+      '<div class="pp-block">' +
+        '<span class="field__label">Como você atende</span>' +
+        '<div class="pp-checks" id="pub-modos">' +
+          '<label class="pp-check' + (perfil.atendeOnline ? " is-on" : "") + '">' +
+            '<input type="checkbox" id="pub-online"' + (perfil.atendeOnline ? " checked" : "") + ' />' +
+            '<span class="pp-check__box"></span><span>Online</span></label>' +
+          '<label class="pp-check' + (perfil.atendePresencial ? " is-on" : "") + '">' +
+            '<input type="checkbox" id="pub-presencial"' + (perfil.atendePresencial ? " checked" : "") + ' />' +
+            '<span class="pp-check__box"></span><span>Presencial</span></label>' +
+          '<label class="pp-check' + (perfil.aceitaNovos ? " is-on" : "") + '">' +
+            '<input type="checkbox" id="pub-aceita"' + (perfil.aceitaNovos ? " checked" : "") + ' />' +
+            '<span class="pp-check__box"></span><span>Aceitando novos pacientes</span></label>' +
+        '</div>' +
+        '<p class="cfg-hint">Com a agenda cheia, desmarque a última: você continua na busca, mas não recebe novas solicitações.</p>' +
+      '</div>' +
+      '<div class="cfg-form">' +
+        field("Instagram", "pub-instagram", perfil.instagram, { ph: "@seuperfil" }) +
+        field("Site", "pub-site", perfil.site, { ph: "https://…" }) +
+        field("Seu endereço no diretório", "pub-slug", perfil.slug, { ph: "ana-luisa-rocha" }) +
+      '</div>' +
+      '<p class="cfg-hint">O endereço vira nutrianaluisarocha.com/nutri/<b>' +
+        esc(perfil.slug || "seu-nome") + '</b>. Deixe em branco e eu gero a partir do seu nome.</p>' +
+      '<div class="cfg-form">' +
+        field("Formação", "pub-formacao", perfil.formacao, { ph: "Ex.: UFRJ" }) +
+        field("Ano de formatura", "pub-ano", perfil.anoFormatura || "", { ph: "Ex.: 2016" }) +
+        field("Atuando desde", "pub-desde", perfil.atuacaoDesde || "", { ph: "Ex.: 2017" }) +
+      '</div>' +
+      '<div class="pp-block">' +
+        field("Pós-graduação e cursos", "pub-pos", perfil.posGraduacao.join(", "),
+          { wide: true, ph: "Separe por vírgula" }) +
+      '</div>' +
+      '<div class="pp-block">' +
+        field("Por que você quer estar no diretório?", "pub-motivo", perfil.motivoEntrada,
+          { textarea: true, rows: 2, wide: true, ph: "Só a Ana lê — não aparece para o paciente." }) +
+      '</div>';
+
+    var podeEnviar = !falta.length && perfil.perfilStatus !== "em_analise";
+
+    pane.innerHTML =
+      card("Perfil público", "É assim que você aparece para quem procura uma nutricionista no site.", body) +
+      card("Como o paciente vê", "O mesmo card da busca — nada além disto sai daqui.",
+        '<div class="pp-card-wrap">' + cardPreview() + '</div>') +
+      '<div class="cfg-actions">' +
+        '<button class="btn btn--outline" type="button" data-action="save-publico">Salvar</button>' +
+        '<button class="btn btn--primary" type="button" data-action="enviar-analise"' +
+          (podeEnviar ? "" : " disabled") + '>' +
+          (perfil.perfilStatus === "em_analise" ? "Em análise" : "Salvar e enviar para análise") +
+        '</button>' +
+      '</div>';
+  }
+
+  function coletaPublico() {
+    // area_atuacao é o mesmo campo das duas abas. "Outro" só existe em Dados
+    // profissionais — preservamos aqui para salvar o público não apagá-lo.
+    var areas = Array.prototype.slice.call(document.querySelectorAll("#pub-areas input:checked"))
+      .map(function (i) { return i.value; });
+    if (perfil.areaAtuacao.indexOf("Outro") > -1 && areas.indexOf("Outro") === -1) areas.push("Outro");
+
+    return {
+      apresentacao: val("pub-apresentacao"),
+      bio: val("pub-bio"),
+      publicoAtendido: val("pub-publico"),
+      comoFunciona: val("pub-funciona"),
+      bairro: val("pub-bairro"),
+      areaAtuacao: areas,
+      cidade: val("pub-cidade"),
+      estado: val("pub-estado"),
+      precoConsulta: val("pub-preco"),
+      atendeOnline: !!(el("pub-online") && el("pub-online").checked),
+      atendePresencial: !!(el("pub-presencial") && el("pub-presencial").checked),
+      aceitaNovos: !!(el("pub-aceita") && el("pub-aceita").checked),
+      instagram: val("pub-instagram"),
+      site: val("pub-site"),
+      slug: val("pub-slug"),
+      formacao: val("pub-formacao"),
+      anoFormatura: val("pub-ano"),
+      atuacaoDesde: val("pub-desde"),
+      posGraduacao: val("pub-pos").split(",").map(function (s) { return s.trim(); }).filter(Boolean),
+      motivoEntrada: val("pub-motivo")
+    };
+  }
+
+  function savePublico(btn, silencioso) {
+    if (!db()) { toast("Banco indisponível.", true); return Promise.reject(new Error("sem banco")); }
+    busy(btn, true);
+    return db().update(coletaPublico()).then(function (p) {
+      perfil = mergePerfil(p);
+      renderDados(); renderPublico(); renderTopbar();   // bio é editada nas duas abas
+      if (!silencioso) toast("Perfil salvo");
+      return p;
+    }).catch(function (e) {
+      toast("Não foi possível salvar. " + (e && e.message ? e.message : ""), true);
+      throw e;
+    }).then(function (p) { busy(btn, false); return p; }, function (e) { busy(btn, false); throw e; });
+  }
+
+  function enviarAnalise(btn) {
+    // Salva antes: quem clica em "enviar" espera que o que está na tela vá junto.
+    savePublico(btn, true).then(function () {
+      busy(btn, true, "Enviando…");
+      return db().publicar();
+    }).then(function () {
+      return db().get();
+    }).then(function (p) {
+      perfil = mergePerfil(p);
+      renderPublico();
+      toast("Perfil enviado para análise");
+    }).catch(function (e) {
+      if (e && e.message && e.message !== "sem banco") toast(e.message, true);
+    }).then(function () { busy(btn, false); });
+  }
+
+  // Rascunho da apresentação: a IA parte do que já está no perfil, e quem
+  // escolhe é a nutri. Nada é salvo sem ela clicar em usar.
+  function iaApresentacao(btn) {
+    if (!el("pub-ia")) return;
+    var box;
+    // Mostra o estado, salva (o que redesenha o painel) e só então volta a
+    // pegar a caixa — a referência de antes do render já saiu do DOM.
+    function caixa(html) {
+      box = el("pub-ia");
+      if (!box) return;
+      box.hidden = false;
+      box.innerHTML = html;
+    }
+    caixa('<p class="cfg-hint">Escrevendo três opções…</p>');
+
+    // Salva antes para a IA ler o perfil atualizado (especialidades, cidade).
+    savePublico(null, true).then(function () {
+      caixa('<p class="cfg-hint">Escrevendo três opções…</p>');
+      return window.NutriDBReady;
+    }).then(function (c) {
+      return c.functions.invoke("gerar-apresentacao", { body: {} });
+    }).then(function (res) {
+      var err = res && res.error;
+      var opcoes = res && res.data && res.data.opcoes;
+      if (err || !opcoes || !opcoes.length) {
+        throw new Error((res && res.data && res.data.error) || "não consegui escrever agora");
+      }
+      caixa(
+        '<p class="cfg-hint">Escolha uma para editar — ela só é salva quando você salvar o perfil.</p>' +
+        opcoes.map(function (o) {
+          return '<button class="pp-ia__op" type="button" data-ia-opcao="' + esc(o) + '">' + esc(o) + '</button>';
+        }).join("")
+      );
+    }).catch(function (e) {
+      caixa('<p class="cfg-hint">' + esc(e && e.message ? e.message : "não consegui escrever agora") + '</p>');
+    });
+  }
+
+  function usarOpcaoIA(texto) {
+    var ta = el("pub-apresentacao"); if (!ta) return;
+    ta.value = texto;
+    ta.dispatchEvent(new Event("input", { bubbles: true }));
+    ta.focus();
+    var box = el("pub-ia"); if (box) box.hidden = true;
+    toast("Texto aplicado — ajuste e salve");
+  }
+
+  /* ============================================================
      EVENTOS
      ============================================================ */
-  var ACTIONS = { "save-dados": saveDados, "save-paleta": savePaleta };
+  var ACTIONS = {
+    "save-dados": saveDados,
+    "save-paleta": savePaleta,
+    "save-publico": savePublico,
+    "enviar-analise": enviarAnalise,
+    "ia-apresentacao": iaApresentacao
+  };
 
   function wire() {
     // Abas
@@ -477,7 +840,13 @@
       if (t.id && t.id.indexOf("pp-file-") === 0) {
         var key = t.id.replace("pp-file-", "");
         enviarSlot(key, t.files && t.files[0]);
+        t.value = "";   // permite escolher a mesma foto de novo depois de cancelar
         t.value = "";
+        return;
+      }
+      // Checkboxes do perfil público (especialidades e modalidade).
+      if (t.closest && (t.closest("#pub-areas") || t.closest("#pub-modos"))) {
+        var l = t.closest(".pp-check"); if (l) l.classList.toggle("is-on", t.checked);
         return;
       }
       // Área "Outro": mostra/esconde o campo aberto
@@ -499,6 +868,24 @@
     // Campo hex digitado → atualiza o dot e o color picker
     panels.addEventListener("input", function (e) {
       var t = e.target;
+      // Contador da apresentação: 40 é o mínimo que o banco aceita.
+      if (t.id === "pub-apresentacao") {
+        var c = el("pub-ap-count");
+        if (c) {
+          var n = t.value.length;
+          c.textContent = n + "/220";
+          c.classList.toggle("is-curta", n > 0 && n < 40);
+        }
+        return;
+      }
+      if (t.hasAttribute && t.hasAttribute("data-min")) {
+        var cc = el(t.id + "-count");
+        if (cc) {
+          cc.textContent = t.value.length + "/" + t.getAttribute("maxlength");
+          cc.classList.toggle("is-curta", t.value.trim().length < +t.getAttribute("data-min"));
+        }
+        return;
+      }
       if (t.hasAttribute && t.hasAttribute("data-hex")) {
         var v = t.value.trim();
         if (isHex(v)) {
@@ -517,6 +904,8 @@
       if (up) { var inp = el("pp-file-" + up.getAttribute("data-upload")); if (inp) inp.click(); return; }
       var rm = e.target.closest("[data-remove]");
       if (rm) { removerSlot(rm.getAttribute("data-remove")); return; }
+      var op = e.target.closest("[data-ia-opcao]");
+      if (op) { usarOpcaoIA(op.getAttribute("data-ia-opcao")); return; }
       var sw = e.target.closest('[data-toggle="usar-assinatura"]');
       if (sw) { toggleUsarAssinatura(sw); return; }
       if (e.target.closest("#pp-sign-clear")) { limparSign(); return; }
@@ -545,7 +934,7 @@
     if (s) s.addEventListener("click", function () { app.classList.remove("nav-open"); });
   }
 
-  function renderAll() { renderDados(); renderIdentidade(); renderPreview(); }
+  function renderAll() { renderDados(); renderIdentidade(); renderPublico(); renderPreview(); }
 
   function init() {
     renderAll();      // casca
@@ -556,6 +945,14 @@
         perfil = mergePerfil(p);
         renderAll(); renderTopbar();
       }).catch(function () { /* offline/file:// — mantém a casca */ });
+
+      // Vocabulário curado (0086). Se a tabela ainda não existir, AREAS
+      // continua com as cinco de sempre e nada quebra.
+      window.NutriPerfil.especialidades().then(function (lista) {
+        if (!lista || !lista.length) return;
+        AREAS = lista.map(function (e) { return e.nome; });
+        renderDados(); renderPublico();
+      }).catch(function () {});
     }
   }
 

@@ -11,7 +11,7 @@
 .bar-col__bar{ width:100%; max-width:46px; border-radius:8px 8px 0 0; background:linear-gradient(180deg, var(--vinho), var(--vinho-claro)); transition:filter var(--t-fast) var(--ease); }
 .bar-col:hover .bar-col__bar{ filter:brightness(1.08); }
 .bar-col__v{ font-size:var(--fs-caption); font-weight:800; color:var(--vinho); }
-.bar-col__l{ font-size:11px; color:var(--cinza-medio); }
+.bar-col__l{ font-size:12px; color:var(--cinza-medio); }
 
 /* Donut de objetivos */
 .donut-wrap{ display:flex; align-items:center; gap:var(--sp-5); flex-wrap:wrap; }

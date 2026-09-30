@@ -24,7 +24,9 @@ const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const CLIENT_ID = Deno.env.get("GOOGLE_CLIENT_ID") || "";
 
 // Precisa bater EXATAMENTE com o "Authorized redirect URI" no Google Cloud.
-const REDIRECT_URI = `${SUPABASE_URL}/functions/v1/google-oauth-callback`;
+// Fica no domínio próprio (verificável no Search Console, exigência da
+// verificação do app); o .htaccess do app repassa por 302 para a function.
+const REDIRECT_URI = "https://app.nutrianaluisarocha.com/google-callback";
 
 // calendar.events: criar/editar/apagar eventos (Meet vem junto). openid+email:
 // descobrir qual conta foi conectada (só p/ exibir).

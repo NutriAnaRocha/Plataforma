@@ -46,6 +46,8 @@
   font-size: var(--fs-sm);
   font-weight: 600;
   white-space: nowrap;
+  display: inline-block;
+  padding: 4px 0;
 }
 .legal-back:hover { color: #fff; text-decoration: underline; }
 
@@ -167,7 +169,7 @@
   font-size: var(--fs-caption);
   text-align: center;
 }
-.legal-foot a { color: var(--vinho); }
+.legal-foot a { color: var(--vinho); display: inline-block; padding: 5px 0; }
 
 @media print {
   .legal-top, .legal-back, .legal-foot { display: none; }

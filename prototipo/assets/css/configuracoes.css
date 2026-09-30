@@ -99,7 +99,10 @@ select.field__input { cursor: pointer; }
 .cfg-integr__nome { font-size: var(--fs-body); font-weight: 800; color: var(--cinza-escuro); display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
 .cfg-integr__desc { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 600; margin: 3px 0 0; line-height: 1.45; }
 .cfg-integr__conta { font-size: var(--fs-caption); color: var(--vinho); font-weight: 700; margin: 6px 0 0; }
-.cfg-integr__btn { flex: none; }
+.cfg-integr__btn, .cfg-integr__acao { flex: none; }
+/* Conector que ainda não existe: card apagado e botão "Em breve" travado. */
+.cfg-integr.is-breve { opacity: .62; }
+.cfg-integr.is-breve .cfg-integr__btn { cursor: default; }
 .cfg-badge { font-size: 0.64rem; font-weight: 800; padding: 3px 9px; border-radius: 999px; letter-spacing: 0.3px; }
 .cfg-badge--on { background: #E6F6EE; color: #1B8A5A; }
 .cfg-badge--off { background: #F1EEF0; color: #7A6B72; }
@@ -132,6 +135,45 @@ select.field__input { cursor: pointer; }
   .cfg-convite .btn { width: 100%; }
 }
 
+/* ---------- Ficha de análise do diretório ----------
+   Aprovar não pode ser um botão no escuro: a ficha traz o card como o
+   paciente veria, a formação e os links para conferir por fora. */
+.adm-ficha {
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  padding: var(--sp-4); background: var(--branco);
+}
+.adm-ficha + .adm-ficha { margin-top: var(--sp-3); }
+.adm-ficha .cfg-actions { margin-top: var(--sp-3); }
+
+.adm-card { display: flex; gap: var(--sp-3); align-items: flex-start; }
+.adm-card__foto {
+  width: 56px; height: 56px; flex: none; border-radius: 50%; overflow: hidden;
+  background: var(--rosa-suave); display: grid; place-items: center;
+  color: var(--vinho); font-weight: 800;
+}
+.adm-card__foto img { width: 100%; height: 100%; object-fit: cover; }
+.adm-card__nome { font-weight: 800; color: var(--cinza-escuro); line-height: 1.25; }
+.adm-card__meta { font-size: var(--fs-caption); color: var(--texto-sutil); line-height: 1.55; margin-top: 3px; }
+.adm-card__desc {
+  margin: var(--sp-2) 0 0; padding-top: var(--sp-2);
+  border-top: 1px dashed var(--cinza-borda);
+  font-size: var(--fs-sm); line-height: 1.5; color: var(--texto);
+}
+
+.adm-dl {
+  display: grid; grid-template-columns: auto 1fr; gap: 6px var(--sp-3);
+  margin: var(--sp-3) 0 0; font-size: var(--fs-sm);
+}
+.adm-dl dt { font-weight: 700; color: var(--texto-sutil); white-space: nowrap; }
+.adm-dl dd { margin: 0; color: var(--texto); min-width: 0; word-break: break-word; }
+.adm-dl a { color: var(--vinho); font-weight: 700; }
+@media (max-width: 480px) {
+  .adm-dl { grid-template-columns: 1fr; gap: 2px; }
+  .adm-dl dd { margin-bottom: 6px; }
+}
+
+.adm-nota { margin-top: var(--sp-3); }
+
 /* ---------- Toast ---------- */
 .cfg-toast {
   position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
@@ -156,6 +198,6 @@ select.field__input { cursor: pointer; }
   .canvas { padding: var(--sp-4); }
   .cfg-form { grid-template-columns: 1fr; }
   .cfg-integr { flex-wrap: wrap; }
-  .cfg-integr__btn { width: 100%; }
+  .cfg-integr__btn, .cfg-integr__acao { width: 100%; }
   .cfg-actions .btn { flex: 1; }
 }

@@ -9,8 +9,9 @@
 //    código. Aconteceu com a própria Ana no primeiro pagamento real.
 //
 //  O QUE ESTA FUNCTION FAZ
-//    1. Grava o POST cru da InfinitePay em mercado_pagamentos (e-mail do
-//       comprador incluído: é a chave de recuperação do código).
+//    1. Grava o POST cru da InfinitePay em mercado_pagamentos, com o
+//       receipt_url em coluna própria: é a chave de recuperação do
+//       código (o payload real não traz e-mail nenhum — ver abaixo).
 //    2. Delega a entrega para quem já sabe entregar — mercado-assinatura
 //       ou mercado-creditos. Elas conferem o pagamento server-to-server
 //       no /payment_check e são idempotentes por transaction_nsu.
@@ -24,13 +25,23 @@
 //    caminho confiável; o redirect virou atalho para a tela já mostrar o
 //    código na hora.
 //
+//  O QUE O PAYLOAD REAL TEM (pagamento de teste, 20/08/2026)
+//    items, amount, order_nsu, paid_amount, receipt_url, installments,
+//    invoice_slug, capture_method, transaction_nsu. E SÓ. Não vem
+//    e-mail, nem nome, nem telefone: o webhook não sabe quem pagou.
+//    Os campos de identidade continuam sendo lidos aqui porque não
+//    custam nada e um dia podem aparecer, mas nada depende deles.
+//
 //  RENOVAÇÃO SEM O NAVEGADOR
 //    Pelo redirect, quem já assina manda o código guardado no aparelho e
-//    a compra vira renovação. O webhook não tem localStorage nenhum — o
-//    que ele tem é o e-mail do checkout. Então o código anterior é
-//    procurado pelo e-mail em mercado_pagamentos. Sem isso, uma renovação
-//    feita pelo navegador do Instagram criaria um SEGUNDO código, e a
-//    assinante ficaria com o acesso partido em dois.
+//    a compra vira renovação. O webhook não tem localStorage nenhum, e
+//    também não tem e-mail. O único campo que é NOSSO no payload é o
+//    order_nsu — ele vem fixo do link de checkout. Então a tela de
+//    renovação cria um link com o código dentro do order_nsu
+//    ("rotulens-anual~8K2Q-AJU4", mercado-assinatura/renovar_link) e é
+//    daí que sai o código anterior. Sem isso, uma renovação feita pelo
+//    navegador do Instagram criaria um SEGUNDO código, e a assinante
+//    ficaria com o acesso partido em dois.
 //
 //  RESPOSTA SEMPRE 200
 //    A InfinitePay reenvia o webhook quando não recebe 200. Um erro nosso
@@ -67,6 +78,20 @@ const PRODUTO: Record<string, "assinatura" | "creditos"> = {
   "rotulens-anual": "assinatura",
   "rotulens-pacote50": "creditos",
 };
+
+// "rotulens-anual~8K2Q-AJU4" -> { base: "rotulens-anual", codigo: "8K2Q-AJU4" }
+// O que vem depois do til é o código de quem está renovando, colado no
+// link por mercado-assinatura/renovar_link. Link sem til é compra nova.
+function partirOrderNsu(orderNsu: string | null) {
+  if (!orderNsu) return { base: null as string | null, codigo: "" };
+  const i = orderNsu.indexOf("~");
+  if (i < 0) return { base: orderNsu, codigo: "" };
+  const codigo = orderNsu.slice(i + 1).trim().toUpperCase();
+  return {
+    base: orderNsu.slice(0, i),
+    codigo: /^[A-Z0-9-]{6,16}$/.test(codigo) ? codigo : "",
+  };
+}
 
 /** Procura um valor em vários caminhos possíveis do payload.
  *  Defensivo de propósito: o formato do POST da InfinitePay não está
@@ -119,9 +144,13 @@ Deno.serve(async (req) => {
     "customer.phone", "phone", "payer.phone", "customer_phone",
     "data.customer.phone",
   ]);
+  const recibo = pick(payload, [
+    "receipt_url", "receiptUrl", "data.receipt_url",
+  ]);
   const pagoRaw = pick(payload, ["paid_amount", "amount", "data.paid_amount"]);
   const valor = pagoRaw ? parseInt(String(pagoRaw), 10) : null;
-  const produto = orderNsu ? PRODUTO[orderNsu] ?? null : null;
+  const { base: orderBase, codigo: codigoDoLink } = partirOrderNsu(orderNsu);
+  const produto = orderBase ? PRODUTO[orderBase] ?? null : null;
 
   // Sem nsu não há pagamento identificável: guarda para a Ana ver e sai.
   // (Acontece se a InfinitePay mandar um ping de teste, por exemplo.)
@@ -129,21 +158,20 @@ Deno.serve(async (req) => {
     await admin.from("mercado_pagamentos").insert({
       transaction_nsu: "sem-nsu-" + crypto.randomUUID(),
       order_nsu: orderNsu, invoice_slug: slug, produto,
-      email, nome, telefone, valor_centavos: valor,
+      email, nome, telefone, valor_centavos: valor, receipt_url: recibo,
       status: "erro", detalhe: "payload sem transaction_nsu", payload,
     });
     return json({ ok: true, sem_nsu: true });
   }
 
   // ---- 1) Registra o pagamento ----
-  // insert + ignora conflito, em vez de upsert: o reenvio do MESMO nsu não
-  // pode reescrever o e-mail da linha. É o que impede que um POST forjado
-  // com o nsu de outra pessoa cole outro e-mail sobre a compra dela e
-  // depois recupere o código por e-mail.
+  // insert + ignora conflito, em vez de upsert: o reenvio do MESMO nsu
+  // não pode reescrever a linha. É o que impede que um POST forjado com o
+  // nsu de outra pessoa cole outros dados sobre a compra dela.
   const { error: errIns } = await admin.from("mercado_pagamentos").insert({
     transaction_nsu: nsu,
     order_nsu: orderNsu, invoice_slug: slug, produto,
-    email, nome, telefone, valor_centavos: valor,
+    email, nome, telefone, valor_centavos: valor, receipt_url: recibo,
     status: "recebido", payload,
   });
   const jaExistia = !!errIns && errIns.code === "23505";
@@ -177,9 +205,22 @@ Deno.serve(async (req) => {
     return json({ ok: true, sem_produto: true });
   }
 
-  // ---- 2) Renovação: acha o código anterior deste e-mail ----
+  // ---- 2) Renovação: o código anterior vem no próprio order_nsu ----
+  // Quem clicou em "Renovar" na tela pagou por um link criado na hora,
+  // com o código dela no order_nsu. Confere que o código existe mesmo
+  // antes de mandar adiante: order_nsu vem do link, e link é URL que
+  // qualquer um pode montar — um código inventado aqui faria a
+  // mercado-assinatura tentar renovar assinatura de ninguém.
   let codigoAntigo = "";
-  if (produto === "assinatura" && email) {
+  if (produto === "assinatura" && codigoDoLink) {
+    const { data: ass } = await admin.from("mercado_assinaturas")
+      .select("codigo").eq("codigo", codigoDoLink).maybeSingle();
+    codigoAntigo = ass?.codigo ?? "";
+  }
+  // Segunda porta: as compras que a Ana lançou à mão têm e-mail. Se um
+  // dia o payload deles passar a trazer e-mail, isto volta a valer
+  // sozinho — hoje não casa nunca, e é de propósito que não casa.
+  if (produto === "assinatura" && !codigoAntigo && email) {
     const { data: anterior } = await admin.from("mercado_pagamentos")
       .select("codigo")
       .eq("produto", "assinatura")

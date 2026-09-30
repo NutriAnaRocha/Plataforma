@@ -1,15 +1,15 @@
 /* ============================================================
    RELATÓRIOS — indicadores DERIVADOS do banco real (window.NutriPacientes
-   + window.NutriConsultas). Enquanto o banco carrega mostra a casca; sem
-   banco (file://) cai no mock REL_DATA. Nada de números fabricados: uma
+   + window.NutriConsultas). Enquanto o banco carrega mostra a casca vazia; sem
+   banco (file://) a casca fica vazia. Nada de números fabricados: uma
    nutri sem pacientes vê zeros honestos.
    ============================================================ */
 (function () {
   "use strict";
-  var M = window.REL_DATA || {};   // modelo atual (mock até o real chegar)
+  var M = window.REL_DATA || {};   // casca vazia até o banco responder
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
-  var CORES = ["#0E4C5C", "#840B55", "#17758A", "#A82670", "#7FBFCE"];
+  var CORES = ["#1C5B57", "#E3A33B", "#267069", "#A4561A", "#A9D3CE"];
 
   /* ---------- KPIs ---------- */
   function renderKpis() {
@@ -183,7 +183,7 @@
   }
 
   function loadReal() {
-    if (!window.NutriPacientes || !window.NutriConsultas) return; // file:// → mantém mock
+    if (!window.NutriPacientes || !window.NutriConsultas) return; // file:// → casca vazia, sem números
     var hoje = new Date();
     var ini = new Date(hoje.getFullYear(), hoje.getMonth() - 5, 1);
     var fromISO = ini.getFullYear() + "-" + pad(ini.getMonth() + 1) + "-01";
@@ -195,7 +195,7 @@
       M = construirModelo(r[0] || [], r[1] || []);
       var per = el("rel-periodo"); if (per) per.textContent = M.periodoLabel;
       renderAll();
-    }).catch(function () { /* mantém o mock já renderizado */ });
+    }).catch(function () { /* falhou: segue a casca vazia, nunca números fabricados */ });
   }
 
   function initMobileNav() {
@@ -206,7 +206,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     if (el("rel-periodo") && M.periodoLabel) el("rel-periodo").textContent = M.periodoLabel;
-    renderAll();       // casca (mock em file://; será substituída pelo real)
+    renderAll();       // casca vazia; será substituída pelo dado real
     initMobileNav();
     loadReal();
   });

@@ -628,7 +628,9 @@
     getPlanoNutri: function () {
       if (_planoNutri) return Promise.resolve(_planoNutri);
       return client().then(function (c) {
-        return c.from("profiles").select("plano_nutri").maybeSingle();
+        // Sem o filtro por uid, a conta admin cai em "multiple rows returned"
+        // e todo mundo vira 'full' pelo catch abaixo — sem aviso nenhum.
+        return window.NutriMeuPerfil(c, "plano_nutri");
       }).then(function (res) {
         if (res.error) throw res.error;
         _planoNutri = (res.data && res.data.plano_nutri) || "full";

@@ -42,7 +42,8 @@
   function field(label, id, value, opts) {
     opts = opts || {};
     var input = opts.textarea
-      ? '<textarea class="field__input" id="' + id + '" rows="' + (opts.rows || 3) + '">' + esc(value) + '</textarea>'
+      ? '<textarea class="field__input" id="' + id + '" rows="' + (opts.rows || 3) + '"' +
+          (opts.max ? ' maxlength="' + opts.max + '"' : "") + '>' + esc(value) + '</textarea>'
       : '<input class="field__input" id="' + id + '" type="' + (opts.type || "text") + '" value="' + esc(value) + '"' +
           (opts.ph ? ' placeholder="' + esc(opts.ph) + '"' : "") + ' />';
     return '<label class="field field--light' + (opts.wide ? " field--wide" : "") + '">' +
@@ -81,7 +82,7 @@
           '<input type="file" id="cfg-foto-input" accept="image/png,image/jpeg,image/webp" hidden />' +
           '<button class="btn btn--outline" type="button" id="btn-foto">Trocar foto</button>' +
           (perfil.avatarUrl ? '<button class="btn btn--ghost cfg-photo__rm" type="button" id="btn-foto-rm">Remover foto</button>' : '') +
-          '<p class="cfg-hint">JPG ou PNG, até 2 MB.</p>' +
+          '<p class="cfg-hint">Qualquer foto do celular serve — eu ajusto o tamanho sozinha.</p>' +
         '</div>' +
       '</div>' +
       '<div class="cfg-form">' +
@@ -91,7 +92,7 @@
         field("Telefone público", "cfg-tel", perfil.telefone, { type: "tel" }) +
         field("Instagram", "cfg-insta", perfil.instagram) +
         field("Site", "cfg-site", perfil.site) +
-        field("Bio / apresentação", "cfg-bio", perfil.bio, { textarea: true, rows: 3, wide: true }) +
+        field("Bio / apresentação · até 300 caracteres", "cfg-bio", perfil.bio, { textarea: true, rows: 3, wide: true, max: 300 }) +
       '</div>';
 
     var especial =
@@ -182,19 +183,29 @@
       '<div class="cfg-actions"><button class="btn btn--primary" type="button" data-action="save-notif">Salvar preferências</button></div>';
   }
 
-  /* ---------- Painel: Integrações (mock — conectores externos ainda não implementados) ---------- */
+  /* ---------- Painel: Integrações ----------
+     Google Agenda e Meet conectam de verdade (OAuth). O WhatsApp é envio
+     assistido e só leva para a tela dele. O que ainda não existe aparece
+     como "Em breve", desabilitado — nunca como um botão que finge conectar. */
   function renderIntegr() {
     var cards = (data.integracoes || []).map(function (i) {
-      return '<article class="cfg-integr" data-integr="' + i.id + '">' +
+      var acao;
+      if (i.breve) {
+        acao = '<button class="btn btn--outline cfg-integr__btn" type="button" disabled>Em breve</button>';
+      } else if (i.link) {
+        acao = '<a class="btn btn--outline cfg-integr__acao" href="' + esc(i.link) + '">' + esc(i.acao || "Abrir") + '</a>';
+      } else {
+        acao = '<button class="btn ' + (i.conectado ? "btn--outline" : "btn--primary") + ' cfg-integr__btn" type="button">' +
+          (i.conectado ? "Desconectar" : "Conectar") + '</button>';
+      }
+      return '<article class="cfg-integr' + (i.breve ? " is-breve" : "") + '" data-integr="' + i.id + '">' +
         '<div class="cfg-integr__ico">' + i.ico + '</div>' +
         '<div class="cfg-integr__body">' +
           '<div class="cfg-integr__nome">' + esc(i.nome) +
             (i.conectado ? '<span class="cfg-badge cfg-badge--on">Conectado</span>' : '') + '</div>' +
           '<p class="cfg-integr__desc">' + esc(i.desc) + '</p>' +
           (i.conectado && i.conta ? '<p class="cfg-integr__conta">🔗 ' + esc(i.conta) + '</p>' : '') +
-        '</div>' +
-        '<button class="btn ' + (i.conectado ? "btn--outline" : "btn--primary") + ' cfg-integr__btn" type="button">' +
-          (i.conectado ? "Desconectar" : "Conectar") + '</button>' +
+        '</div>' + acao +
       '</article>';
     }).join("");
     el("panel-integr").innerHTML =
@@ -247,6 +258,7 @@
     var g = qs.get("google");
     if (!g) return;
     if (g === "ok") toast("Google conectado! Sua agenda já sincroniza.");
+    else if (qs.get("msg") === "sem_agenda") toast("Autorize o acesso à agenda e tente de novo: na tela do Google, deixe marcada a caixa do Google Agenda.", true);
     else toast("Falha ao conectar o Google" + (qs.get("msg") ? ": " + qs.get("msg") : "") + ".", true);
     // Limpa os parâmetros da URL (mantém a aba).
     history.replaceState(null, "", location.pathname + "?tab=integr");
@@ -374,6 +386,13 @@
                 'data-email="' + esc(c.email) + '">' +
                 (liberada ? "⏸️ Pausar" : "▶️ Reativar") + "</button>"
             : "";
+          // Só faz sentido para quem já tem conta (a === null é convite órfão).
+          var reset = a && !a.is_admin
+            ? '<button class="btn btn--ghost btn--sm" type="button" data-action="nova-senha" ' +
+                'data-email="' + esc(c.email) + '" data-nome="' + esc(c.nome || "") + '">' +
+                "🔑 Nova senha</button>"
+            : "";
+          acao = reset + acao;
           return '<div class="cfg-convite">' +
             '<div class="cfg-toggle-txt"><strong>' + esc(c.nome || "(sem nome)") + '</strong>' +
               '<span>' + esc(c.email) + ' · ' + esc((c.created_at || "").slice(0, 10)) + '</span></div>' +
@@ -397,6 +416,29 @@
       '<p class="cfg-hint">Use quando alguém pagar pelo link do InfinitePay e a liberação automática ainda não estiver ligada. A conta precisa já existir (convide antes, se for o caso).</p>';
 
     el("panel-admin").innerHTML =
+      card("Cadastros novos",
+        "Quem se inscreveu sozinha em /seja-indicada. Confira o CRN no site do conselho antes de liberar — " +
+        "aprovar aqui é dizer que o registro existe, não publicar o perfil.",
+        renderFilaCadastros()) +
+      card("Perfis aguardando aprovação",
+        "Só entra na busca do site depois que você aprova. Abra o Instagram antes de decidir.",
+        renderFilaPerfis()) +
+      card("Comissões a pagar",
+        "O que as indicadas pagaram até o fim do mês passado e já passou dos 7 dias de arrependimento. " +
+        "Faça o Pix no 1º dia útil (" + proximoDiaUtil() + ") e clique em Paguei — cada valor só aparece uma vez.",
+        renderComissoes()) +
+      card("Avisos de renovação",
+        "A InfinitePay não cobra sozinha: todo dia às 9h a plataforma avisa quem está para vencer, " +
+        "com o botão de pagar. Aqui ficam os últimos 30 dias.",
+        renderAvisos()) +
+      card("Pagamentos dos últimos 7 dias",
+        "Ainda dentro do prazo de arrependimento. Se você devolveu o dinheiro na InfinitePay, clique em Reembolsou: " +
+        "a comissão é cancelada e o período pago sai da conta.",
+        renderRecentes()) +
+      card("Embaixadoras",
+        "Cadastre a nutri pelo e-mail da conta dela. Ela ganha 6 meses de assinatura grátis e um cupom: " +
+        "quem assinar com ele fica registrada como indicada dela, e ela recebe 30% de cada pagamento por 12 meses.",
+        renderEmbaixadoras()) +
       card("Convidar nutricionista",
         "Crie o acesso de outra nutri. Ela recebe e-mail + senha e entra pela tela de login. A carteira dela começa vazia, mas a Inteligência Clínica já vem completa.",
         form) +
@@ -404,6 +446,481 @@
         "Libera o acesso pago de uma nutri por um período, a partir do e-mail dela.",
         ativar) +
       card("Nutricionistas convidadas", "", lista);
+  }
+
+  /* ---------- Embaixadoras e comissões (0096) ----------
+     Os valores vêm prontos do banco (admin_embaixadoras / minhas_indicacoes):
+     aqui não se calcula dinheiro, só se mostra. "A pagar" é o que entrou
+     antes deste mês; "acumulando" é o do mês corrente, pago no próximo. */
+  var embaixadoras = [];
+
+  function reais(c) {
+    return "R$ " + ((c || 0) / 100).toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+,)/g, ".");
+  }
+
+  // 1º dia útil do mês que vem (fim de semana e 1º de janeiro pulados).
+  function proximoDiaUtil() {
+    var h = new Date();
+    var d = new Date(h.getFullYear(), h.getMonth() + 1, 1);
+    while (d.getDay() === 0 || d.getDay() === 6 || (d.getMonth() === 0 && d.getDate() === 1)) {
+      d.setDate(d.getDate() + 1);
+    }
+    return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "long" });
+  }
+
+  /* ---------- Avisos de renovação (0099) ----------
+     Só leitura: quem manda é o cron do banco + a function
+     nutriplat-renovacao. Enquanto não houver provedor de e-mail
+     configurado, o aviso fica registrado como "não enviado" — e é
+     exatamente isso que este card precisa deixar claro. */
+  var avisos = [];
+
+  var AVISO_NOME = {
+    trial_3d: "teste acabando (3 dias)",
+    trial_fim: "último dia do teste",
+    vence_5d: "vence em 5 dias",
+    vence_1d: "vence amanhã",
+    venceu: "venceu (carência)",
+    bloqueio: "último dia de acesso"
+  };
+
+  function renderAvisos() {
+    var semEmail = avisos.some(function (a) { return a.canal === "sem_provedor"; });
+    var alerta = semEmail
+      ? '<p class="cfg-hint"><strong>Os e-mails não estão saindo.</strong> Falta ligar o provedor ' +
+        "(secrets RESEND_API_KEY e EMAIL_REMETENTE). O aviso dentro do app funciona de qualquer jeito.</p>"
+      : "";
+    if (!avisos.length) {
+      return alerta + '<p class="cfg-hint">Nenhum aviso nos últimos 30 dias — ninguém chegou perto de vencer.</p>';
+    }
+    return alerta + '<div class="cfg-convites">' + avisos.slice(0, 20).map(function (a) {
+      return '<div class="cfg-convite">' +
+        '<div class="cfg-toggle-txt"><strong>' + esc(a.nome || a.email) + "</strong>" +
+          "<span>" + esc(AVISO_NOME[a.tipo] || a.tipo) +
+          " · " + new Date(a.em).toLocaleDateString("pt-BR") + "</span></div>" +
+        '<span class="cfg-badge ' + (a.ok ? "cfg-badge--on" : "cfg-badge--off") + '">' +
+          (a.ok ? "enviado" : a.canal === "sem_provedor" ? "sem e-mail" : "falhou") + "</span>" +
+      "</div>";
+    }).join("") + "</div>";
+  }
+
+  var recentes = [];
+
+  function renderRecentes() {
+    if (!recentes.length) return '<p class="cfg-hint">Nenhum pagamento nos últimos 7 dias.</p>';
+    return '<div class="cfg-convites">' + recentes.map(function (g) {
+      return '<div class="cfg-convite">' +
+        '<div class="cfg-toggle-txt"><strong>' + esc(g.nome || g.email) + " · " + reais(g.valor) + "</strong>" +
+          "<span>" + esc(g.ciclo) + " · " + new Date(g.em).toLocaleDateString("pt-BR") +
+          (g.comissao ? " · comissão " + reais(g.comissao) : "") + "</span></div>" +
+        '<button class="btn btn--ghost btn--sm" type="button" data-action="reembolsou" data-nsu="' + esc(g.nsu) +
+          '" data-nome="' + esc(g.nome || g.email || "") + '">Reembolsou</button>' +
+      "</div>";
+    }).join("") + "</div>";
+  }
+
+  function reembolsou(btn) {
+    if (!confirm("Confirma que devolveu o pagamento de " + btn.getAttribute("data-nome") + "?")) return;
+    busy(btn, true, "Registrando…");
+    window.NutriDBReady.then(function (c) {
+      return c.rpc("admin_reembolsou", { p_nsu: btn.getAttribute("data-nsu") });
+    }).then(function (r) {
+      if (!r || !r.data || !r.data.ok) throw new Error("falha");
+      toast("Reembolso registrado");
+      carregarEmbaixadoras();
+    }).catch(function () {
+      toast("Não foi possível registrar. Tente de novo.", true);
+      busy(btn, false);
+    });
+  }
+
+  function renderComissoes() {
+    var devidas = embaixadoras.filter(function (e) { return e.a_pagar > 0; });
+    if (!devidas.length) {
+      var acum = embaixadoras.reduce(function (s, e) { return s + (e.acumulando || 0); }, 0);
+      return '<p class="cfg-hint">Nada a pagar agora.' +
+        (acum ? " Acumulando para o próximo pagamento: <strong>" + reais(acum) + "</strong>." : "") + "</p>";
+    }
+    return '<div class="cfg-convites">' + devidas.map(function (e) {
+      return '<div class="cfg-convite">' +
+        '<div class="cfg-toggle-txt"><strong>' + esc(e.nome || e.email) + " · " + reais(e.a_pagar) + "</strong>" +
+          "<span>Pix: " + (e.pix ? "<code>" + esc(e.pix) + "</code>" : "sem chave cadastrada") + "</span></div>" +
+        (e.pix ? '<button class="btn btn--ghost btn--sm" type="button" data-copy="' + esc(e.pix) + '">Copiar Pix</button>' : "") +
+        '<button class="btn btn--primary btn--sm" type="button" data-action="comissao-paga" data-id="' + esc(e.id) +
+          '" data-nome="' + esc(e.nome || "") + '" data-valor="' + esc(reais(e.a_pagar)) + '">Paguei</button>' +
+      "</div>";
+    }).join("") + "</div>";
+  }
+
+  function renderEmbaixadoras() {
+    var form =
+      '<div class="cfg-form">' +
+        field("E-mail da conta dela", "emb-email", "", { type: "email", ph: "email@dela.com" }) +
+        field("Cupom", "emb-cupom", "", { ph: "Ex.: JULIANUTRI" }) +
+        field("Chave Pix", "emb-pix", "", { ph: "CPF, e-mail ou telefone" }) +
+      "</div>" +
+      '<div class="cfg-actions">' +
+        '<button class="btn btn--primary" type="button" data-action="salvar-embaixadora">Salvar embaixadora</button>' +
+        '<p class="cfg-hint">Antes de liberar, mande para ela o <a href="embaixadoras.html" target="_blank" rel="noopener">termo de parceria</a>.</p>' +
+      "</div>" +
+      '<p class="cfg-hint">Salvar de novo a mesma pessoa troca o cupom ou o Pix e renova mais 6 meses grátis.</p>';
+
+    var lista = embaixadoras.length
+      ? '<div class="cfg-convites">' + embaixadoras.map(function (e) {
+          var ate = e.gratis_ate ? " · grátis até " + new Date(e.gratis_ate).toLocaleDateString("pt-BR") : "";
+          return '<div class="cfg-convite">' +
+            '<div class="cfg-toggle-txt"><strong>' + esc(e.nome || e.email) + " · " + esc(e.cupom) + "</strong>" +
+              "<span>" + e.indicadas + " indicada" + (e.indicadas === 1 ? "" : "s") + ", " +
+                e.pagantes + " já pag" + (e.pagantes === 1 ? "ou" : "aram") +
+                " · recebeu " + reais(e.pago) + " · acumulando " + reais(e.acumulando) + esc(ate) + "</span></div>" +
+            '<span class="cfg-badge ' + (e.ativa ? "cfg-badge--on" : "cfg-badge--off") + '">' +
+              (e.ativa ? "ativa" : "encerrada") + "</span>" +
+            '<button class="btn btn--ghost btn--sm" type="button" data-action="embaixadora-ativa" data-id="' + esc(e.id) +
+              '" data-ativa="' + (e.ativa ? "0" : "1") + '">' + (e.ativa ? "Encerrar parceria" : "Reativar") + "</button>" +
+          "</div>";
+        }).join("") + "</div>"
+      : '<p class="cfg-hint">Nenhuma embaixadora ainda.</p>';
+    return form + lista;
+  }
+
+  function carregarEmbaixadoras() {
+    if (!window.NutriDBReady) return;
+    window.NutriDBReady.then(function (c) {
+      return Promise.all([c.rpc("admin_embaixadoras"), c.rpc("admin_pagamentos_recentes"),
+                          c.rpc("admin_avisos_renovacao")]);
+    })
+      .then(function (rs) {
+        var r = rs[0];
+        if (r && r.error) throw r.error;
+        embaixadoras = (r && r.data) || [];
+        recentes = (rs[1] && rs[1].data) || [];
+        avisos = (rs[2] && rs[2].data) || [];
+        renderAdmin();
+      }).catch(function () { /* migração 0096 ausente: os cards ficam vazios */ });
+  }
+
+  var MOTIVO_EMB = {
+    sem_conta: "Não achei conta de nutricionista com esse e-mail. Ela precisa se cadastrar antes.",
+    cupom_invalido: "O cupom precisa ter de 4 a 20 letras ou números.",
+    cupom_em_uso: "Esse cupom já é de outra embaixadora.",
+    nao_autorizado: "Só a administradora pode fazer isso."
+  };
+
+  function salvarEmbaixadora(btn) {
+    var email = (el("emb-email").value || "").trim();
+    var cupom = (el("emb-cupom").value || "").trim();
+    if (!email || !cupom) { toast("Preencha o e-mail e o cupom.", true); return; }
+    busy(btn, true, "Salvando…");
+    window.NutriDBReady.then(function (c) {
+      return c.rpc("admin_embaixadora_salvar", { p_email: email, p_cupom: cupom, p_pix: el("emb-pix").value || "" });
+    }).then(function (r) {
+      var d = r && r.data;
+      if (!d || !d.ok) throw new Error(MOTIVO_EMB[d && d.motivo] || (r && r.error && r.error.message) || "falha");
+      toast("Embaixadora salva com o cupom " + d.cupom);
+      carregarEmbaixadoras();
+    }).catch(function (e) {
+      toast(e.message, true);
+      busy(btn, false);
+    });
+  }
+
+  function comissaoPaga(btn) {
+    var nome = btn.getAttribute("data-nome") || "a embaixadora";
+    if (!confirm("Confirma que fez o Pix de " + btn.getAttribute("data-valor") + " para " + nome + "?")) return;
+    busy(btn, true, "Registrando…");
+    window.NutriDBReady.then(function (c) {
+      return c.rpc("admin_comissao_paga", { p_embaixadora: btn.getAttribute("data-id") });
+    }).then(function (r) {
+      var d = r && r.data;
+      if (!d || !d.ok) throw new Error("falha");
+      toast("Pagamento de " + reais(d.total) + " registrado");
+      carregarEmbaixadoras();
+    }).catch(function () {
+      toast("Não foi possível registrar. Tente de novo.", true);
+      busy(btn, false);
+    });
+  }
+
+  function embaixadoraAtiva(btn) {
+    var ativa = btn.getAttribute("data-ativa") === "1";
+    if (!ativa && !confirm("Encerrar a parceria? O cupom para de funcionar e novas comissões deixam de ser lançadas.")) return;
+    busy(btn, true, "Salvando…");
+    window.NutriDBReady.then(function (c) {
+      return c.rpc("admin_embaixadora_ativa", { p_id: btn.getAttribute("data-id"), p_ativa: ativa });
+    }).then(function () {
+      toast(ativa ? "Parceria reativada" : "Parceria encerrada");
+      carregarEmbaixadoras();
+    }).catch(function () { toast("Não foi possível salvar.", true); busy(btn, false); });
+  }
+
+  /* Aba "Minhas indicações": só aparece para quem é embaixadora. */
+  function checkEmbaixadora() {
+    if (!window.NutriDBReady) return;
+    window.NutriDBReady.then(function (c) { return c.rpc("minhas_indicacoes"); })
+      .then(function (r) {
+        var d = r && r.data;
+        if (!d || el("panel-indicacoes")) return;
+        var tabs = el("cfg-tabs");
+        var panels = document.querySelector(".cfg-panels");
+        if (!tabs || !panels) return;
+        var tab = document.createElement("button");
+        tab.className = "cfg-tab"; tab.type = "button"; tab.setAttribute("data-tab", "indicacoes");
+        tab.innerHTML = '<span class="cfg-tab__ico">🤝</span> Minhas indicações';
+        tabs.appendChild(tab);
+        var panel = document.createElement("section");
+        panel.className = "cfg-panel"; panel.setAttribute("data-panel", "indicacoes"); panel.id = "panel-indicacoes";
+        panels.appendChild(panel);
+
+        var link = "https://app.nutrianaluisarocha.com/seja-indicada?cupom=" + encodeURIComponent(d.cupom);
+        var ativas = d.indicadas.filter(function (i) { return i.ativa; }).length;
+        var resumo =
+          '<div class="cfg-convites">' +
+            '<div class="cfg-convite"><div class="cfg-toggle-txt"><strong>Seu cupom: ' + esc(d.cupom) + "</strong>" +
+              "<span>Quem assina com ele fica registrada como sua indicada.</span></div>" +
+              '<button class="btn btn--ghost btn--sm" type="button" data-copy="' + esc(d.cupom) + '">Copiar cupom</button>' +
+              '<button class="btn btn--primary btn--sm" type="button" data-copy="' + esc(link) + '">Copiar link</button></div>' +
+            '<div class="cfg-convite"><div class="cfg-toggle-txt"><strong>A receber em ' + proximoDiaUtil() + ": " +
+              reais(d.a_receber + d.acumulando) + "</strong>" +
+              "<span>" + reais(d.a_receber) + " de meses anteriores + " + reais(d.acumulando) + " deste mês · já recebido: " +
+              reais(d.recebido) + "</span></div></div>" +
+            '<div class="cfg-convite"><div class="cfg-toggle-txt"><strong>' + d.indicadas.length + " indicada" +
+              (d.indicadas.length === 1 ? "" : "s") + ", " + ativas + " com assinatura ativa</strong>" +
+              "<span>Pix cadastrado: " + esc(d.pix || "nenhum — fale com a Ana") + "</span></div></div>" +
+          "</div>";
+
+        var lista = d.indicadas.length
+          ? '<div class="cfg-convites">' + d.indicadas.map(function (i) {
+              return '<div class="cfg-convite"><div class="cfg-toggle-txt"><strong>' + esc(i.nome || "Nutri") + "</strong>" +
+                "<span>desde " + new Date(i.desde).toLocaleDateString("pt-BR") + " · " + i.pagamentos +
+                " pagamento" + (i.pagamentos === 1 ? "" : "s") + " com comissão</span></div>" +
+                '<span class="cfg-badge ' + (i.ativa ? "cfg-badge--on" : "cfg-badge--off") + '">' +
+                (i.ativa ? "ativa" : "inativa") + "</span></div>";
+            }).join("") + "</div>"
+          : '<p class="cfg-hint">Ninguém usou seu cupom ainda. Mande o link para as colegas.</p>';
+
+        panel.innerHTML =
+          card("Seu programa de embaixadora",
+            "Você recebe " + String(d.percentual).replace(".00", "") + "% de cada pagamento das nutris que assinaram com o seu cupom, por " +
+            d.meses + " meses cada uma. O Pix cai no 1º dia útil do mês, referente ao que foi pago no mês anterior.", resumo) +
+          card("Suas indicadas", "", lista);
+      }).catch(function () { /* não é embaixadora */ });
+  }
+
+  /* ---------- Curadoria do diretório (0086) ----------
+     A ficha de análise: tudo que a Ana precisa para decidir numa tela só —
+     quem é, o que vai ao ar, e os links para conferir por fora. */
+  var filaPerfis = [];
+
+  function instaUrl(v) {
+    v = String(v || "").trim().replace(/^@/, "");
+    if (!v) return "";
+    return /^https?:/i.test(v) ? v : "https://instagram.com/" + v;
+  }
+  function siteUrl(v) {
+    v = String(v || "").trim();
+    if (!v) return "";
+    return /^https?:/i.test(v) ? v : "https://" + v;
+  }
+
+  function fichaPerfil(p) {
+    var areas = Array.isArray(p.area_atuacao) ? p.area_atuacao : [];
+    var pos = Array.isArray(p.pos_graduacao) ? p.pos_graduacao : [];
+    var modos = [p.atende_online ? "Online" : "", p.atende_presencial ? "Presencial" : ""]
+      .filter(Boolean).join(" e ");
+    var preco = p.preco_consulta_cents
+      ? "R$ " + (p.preco_consulta_cents / 100).toFixed(2).replace(".", ",") : "não informado";
+    var ig = instaUrl(p.instagram), st = siteUrl(p.site);
+
+    var formacao = [
+      p.formacao || "",
+      p.ano_formatura ? "formada em " + p.ano_formatura : "",
+      p.atuacao_desde ? "atuando desde " + p.atuacao_desde : ""
+    ].filter(Boolean).join(" · ") || "não informada";
+
+    // O card como o paciente veria — a decisão é sobre isto, não sobre a linha da lista.
+    var cardHTML =
+      '<div class="adm-card">' +
+        '<div class="adm-card__foto">' +
+          (p.avatar_url ? '<img src="' + esc(p.avatar_url) + '" alt="" />' : '<span>?</span>') +
+        '</div>' +
+        '<div>' +
+          '<div class="adm-card__nome">' + esc(p.nome || "(sem nome)") + '</div>' +
+          '<div class="adm-card__meta">' +
+            esc([p.crn, [p.cidade, p.estado].filter(Boolean).join(", ")].filter(Boolean).join(" · ")) + '<br />' +
+            esc(areas.slice(0, 3).join(" · ")) + '<br />' +
+            esc([modos, preco !== "não informado" ? "a partir de " + preco : ""].filter(Boolean).join(" · ")) +
+          '</div>' +
+          '<p class="adm-card__desc">' + esc(p.apresentacao || "(sem apresentação)") + '</p>' +
+        '</div>' +
+      '</div>';
+
+    return '<div class="adm-ficha" data-ficha="' + esc(p.id) + '">' +
+      cardHTML +
+      '<dl class="adm-dl">' +
+        '<dt>Formação</dt><dd>' + esc(formacao) + '</dd>' +
+        (pos.length ? '<dt>Pós e cursos</dt><dd>' + esc(pos.join(", ")) + '</dd>' : "") +
+        '<dt>Contato</dt><dd>' + esc(p.email || "") + (p.telefone ? " · " + esc(p.telefone) : "") + '</dd>' +
+        '<dt>Presença</dt><dd>' +
+          (ig ? '<a href="' + esc(ig) + '" target="_blank" rel="noopener">Instagram ↗</a>' : "") +
+          (ig && st ? " · " : "") +
+          (st ? '<a href="' + esc(st) + '" target="_blank" rel="noopener">Site ↗</a>' : "") +
+          (!ig && !st ? "—" : "") +
+        '</dd>' +
+        (p.motivo_entrada ? '<dt>Motivo</dt><dd>' + esc(p.motivo_entrada) + '</dd>' : "") +
+        '<dt>Endereço</dt><dd>/nutri/' + esc(p.slug || "—") + '</dd>' +
+      '</dl>' +
+      '<textarea class="field__input adm-nota" id="adm-nota-' + esc(p.id) + '" rows="2" ' +
+        'placeholder="Anotação sua (opcional) — a nutri não vê.">' + esc(p.analise_observacao || "") + '</textarea>' +
+      '<div class="cfg-actions">' +
+        '<button class="btn btn--ghost" type="button" data-action="recusar-perfil" data-id="' + esc(p.id) + '" ' +
+          'data-nome="' + esc(p.nome || "") + '">Recusar</button>' +
+        '<button class="btn btn--primary" type="button" data-action="aprovar-perfil" data-id="' + esc(p.id) + '">Aprovar</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderFilaPerfis() {
+    if (!filaPerfis.length) {
+      return '<p class="cfg-hint">Nenhum perfil esperando. Quando alguém enviar, aparece aqui.</p>';
+    }
+    return filaPerfis.map(fichaPerfil).join("");
+  }
+
+  /* ---------- Cadastros públicos da nutri (0091) ----------
+     Outra fila, outro ato. Aqui se confere o REGISTRO de quem acabou de se
+     inscrever em /seja-indicada; publicar o perfil continua sendo a fila de
+     cima, e só acontece depois que ela completa foto e apresentação. */
+  var filaCadastros = [];
+
+  var PLANO_NOME = {
+    plataforma: "NutriPlat (R$ 39,95 → R$ 79,90)"
+  };
+
+  function fichaCadastro(c) {
+    var modos = [c.atende_online ? "Online" : "", c.atende_presencial ? "Presencial" : ""]
+      .filter(Boolean).join(" e ");
+    var esp = Array.isArray(c.especialidades) ? c.especialidades : [];
+    var local = [c.cidade, c.estado].filter(Boolean).join(", ");
+    var crnBusca = "https://www.google.com/search?q=" +
+      encodeURIComponent('"' + (c.crn || "") + '" ' + (c.nome || "") + " nutricionista");
+
+    return '<div class="adm-ficha" data-cad="' + esc(c.id) + '">' +
+      '<div class="adm-card__nome">' + esc(c.nome) + '</div>' +
+      '<dl class="adm-dl">' +
+        '<dt>CRN</dt><dd>' + esc(c.crn || "—") +
+          ' · <a href="' + esc(crnBusca) + '" target="_blank" rel="noopener">conferir ↗</a></dd>' +
+        '<dt>Contato</dt><dd>' + esc(c.email) + (c.telefone ? " · " + esc(c.telefone) : "") + '</dd>' +
+        '<dt>Atende</dt><dd>' + esc([modos, local].filter(Boolean).join(" · ") || "—") + '</dd>' +
+        (esp.length ? '<dt>Especialidades</dt><dd>' + esc(esp.join(", ")) + '</dd>' : "") +
+        (c.atuacao_desde ? '<dt>Atua desde</dt><dd>' + esc(c.atuacao_desde) + '</dd>' : "") +
+        '<dt>Plano escolhido</dt><dd>' + esc(PLANO_NOME[c.plano_tier] || c.plano_tier) +
+          ' · ' + esc(c.plano_ciclo) + '</dd>' +
+        '<dt>Inscrita em</dt><dd>' + esc((c.criado_em || "").slice(0, 10)) +
+          (c.email_enviado ? "" : " · <em>e-mail de confirmação não enviado</em>") + '</dd>' +
+      '</dl>' +
+      '<textarea class="field__input adm-nota" id="cad-nota-' + esc(c.id) + '" rows="2" ' +
+        'placeholder="Anotação sua (opcional) — ela não vê.">' + esc(c.analise_obs || "") + '</textarea>' +
+      '<div class="cfg-actions">' +
+        '<button class="btn btn--ghost" type="button" data-action="recusar-cadastro" data-id="' + esc(c.id) + '">Recusar</button>' +
+        '<button class="btn btn--primary" type="button" data-action="aprovar-cadastro" data-id="' + esc(c.id) + '">Registro conferido</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderFilaCadastros() {
+    if (!filaCadastros.length) {
+      return '<p class="cfg-hint">Nenhum cadastro novo esperando.</p>';
+    }
+    return filaCadastros.map(fichaCadastro).join("");
+  }
+
+  function carregarFilaCadastros() {
+    if (!window.NutriDBReady) return;
+    window.NutriDBReady.then(function (c) {
+      return c.from("nutri_cadastros")
+        .select("id,nome,email,telefone,crn,cidade,estado,atende_online,atende_presencial," +
+                "especialidades,atuacao_desde,plano_tier,plano_ciclo,analise_obs,email_enviado,criado_em")
+        .eq("status", "pendente")
+        .order("criado_em", { ascending: false });
+    }).then(function (res) {
+      if (res && res.error) throw res.error;
+      filaCadastros = (res && res.data) || [];
+      renderAdmin();
+    }).catch(function () { /* migração ainda não aplicada: a fila só não aparece */ });
+  }
+
+  function decidirCadastro(btn, status, rotulo) {
+    var id = btn.getAttribute("data-id"); if (!id) return;
+    var nota = el("cad-nota-" + id);
+    busy(btn, true, rotulo + "…");
+    window.NutriDBReady.then(function (c) {
+      return c.from("nutri_cadastros").update({
+        status: status,
+        analise_obs: (nota && nota.value.trim()) || null,
+        analisado_em: new Date().toISOString()
+      }).eq("id", id);
+    }).then(function (res) {
+      if (res && res.error) throw new Error(res.error.message || "falha");
+      toast(status === "aprovado"
+        ? "Registro conferido — ela já pode enviar o perfil para publicação"
+        : "Cadastro recusado");
+      carregarFilaCadastros();
+    }).catch(function (e) {
+      toast("Não foi possível salvar. " + ((e && e.message) || ""), true);
+      busy(btn, false);
+    });
+  }
+
+  function carregarFilaPerfis() {
+    if (!window.NutriDBReady) return;
+    window.NutriDBReady.then(function (c) {
+      return c.from("profiles")
+        .select("id,nome,email,telefone,crn,cidade,estado,avatar_url,apresentacao,area_atuacao," +
+                "atende_online,atende_presencial,preco_consulta_cents,slug,instagram,site," +
+                "formacao,ano_formatura,pos_graduacao,atuacao_desde,motivo_entrada,analise_observacao")
+        .eq("perfil_status", "em_analise")
+        .order("nome");
+    }).then(function (res) {
+      if (res && res.error) throw res.error;
+      filaPerfis = (res && res.data) || [];
+      renderAdmin();
+    }).catch(function () { /* migração ainda não aplicada: a fila só não aparece */ });
+  }
+
+  function aprovarPerfil(btn) {
+    var id = btn.getAttribute("data-id"); if (!id) return;
+    var nota = el("adm-nota-" + id);
+    busy(btn, true, "Aprovando…");
+    window.NutriDBReady.then(function (c) {
+      return c.rpc("aprovar_perfil", { p_id: id, p_observacao: (nota && nota.value.trim()) || null });
+    }).then(function (res) {
+      if (res && res.error) throw new Error(res.error.message || "falha");
+      toast("Perfil aprovado — já está na busca");
+      carregarFilaPerfis();
+    }).catch(function (e) {
+      toast("Não foi possível aprovar. " + ((e && e.message) || ""), true);
+      busy(btn, false);
+    });
+  }
+
+  function recusarPerfil(btn) {
+    var id = btn.getAttribute("data-id"); if (!id) return;
+    var nome = btn.getAttribute("data-nome") || "esta nutricionista";
+    // O motivo volta na tela dela, com o perfil reaberto para correção.
+    var motivo = prompt("O que " + nome + " precisa ajustar?\n\nEla lê este texto na tela dela.");
+    if (motivo === null) return;
+    if (!motivo.trim()) { toast("Escreva o motivo — é o que ela vai corrigir.", true); return; }
+    busy(btn, true, "Enviando…");
+    window.NutriDBReady.then(function (c) {
+      return c.rpc("recusar_perfil", { p_id: id, p_motivo: motivo.trim() });
+    }).then(function (res) {
+      if (res && res.error) throw new Error(res.error.message || "falha");
+      toast("Recusado — ela recebe o motivo na tela dela");
+      carregarFilaPerfis();
+    }).catch(function (e) {
+      toast("Não foi possível recusar. " + ((e && e.message) || ""), true);
+      busy(btn, false);
+    });
   }
 
   function copiar(texto, btn) {
@@ -532,19 +1049,63 @@
   function pausarAssinatura(btn) { mudarAcesso(btn, true); }
   function reativarAssinatura(btn) { mudarAcesso(btn, false); }
 
-  function mostrarCredenciais(nome, email, senha) {
+  /* Gera uma senha nova para uma nutri que perdeu a dela. Existe porque o
+     "Esqueci minha senha" ainda dispara o e-mail em inglês do supabase.io —
+     enquanto isso, quem repassa a senha é a admin. A senha antiga para de
+     valer na hora. */
+  function novaSenha(btn) {
+    if (!window.NutriDBReady) { toast("Banco indisponível.", true); return; }
+    var email = (btn.getAttribute("data-email") || "").trim().toLowerCase();
+    var nome = (btn.getAttribute("data-nome") || "").trim() || "tudo bem";
+    if (!email) return;
+    if (!confirm("Gerar uma senha nova para " + email + "?\n\nA senha atual dela para de funcionar na hora. Nenhum dado é apagado.")) return;
+    busy(btn, true, "Gerando…");
+    window.NutriDBReady.then(function (c) {
+      return c.functions.invoke("create-nutri-access", { body: { email: email, reset: true } });
+    }).then(function (res) {
+      if (res.error) {
+        if (res.error.context && res.error.context.json) {
+          return res.error.context.json().then(function (b) { throw new Error(b && b.error || "falha"); });
+        }
+        throw new Error("falha");
+      }
+      var d = res.data || {};
+      if (d.error) throw new Error(d.error);
+      mostrarCredenciais(nome, d.email, d.senha, true);
+      var box = el("adm-result");
+      if (box && box.scrollIntoView) box.scrollIntoView({ behavior: "smooth", block: "center" });
+      toast("Senha nova gerada!");
+    }).catch(function (e) {
+      var m = (e && e.message) || "";
+      toast(m === "conta_nao_encontrada" ? "Não achei uma conta com esse e-mail."
+        : m === "alvo_admin" ? "Não dá para trocar a senha de outra administradora por aqui."
+        : m === "nao_autorizado" ? "Só a administradora pode fazer isso."
+        : "Não foi possível gerar a senha. " + m, true);
+    }).then(function () { busy(btn, false); });
+  }
+
+  function mostrarCredenciais(nome, email, senha, reset) {
     var box = el("adm-result");
     if (!box) return;
-    var login = location.origin + location.pathname.replace(/[^/]+$/, "index.html");
-    var msg =
-      "Oi, " + nome + "! Criei seu acesso à plataforma 💚\n\n" +
-      "Entre em: " + login + "\n" +
-      "E-mail: " + email + "\n" +
-      "Senha: " + senha + "\n\n" +
-      "É só entrar e, se quiser, trocar a senha em Configurações.";
+    // /entrar é o espelho do login com a prévia da PLATAFORMA. O "/" cru
+    // mostraria no WhatsApp o card do portal do paciente — errado pra nutri.
+    var login = location.origin + "/entrar";
+    var msg = reset
+      ? "Oi, " + nome + "! Gerei uma senha nova pra você 💚\n\n" +
+        "Entre em: " + login + "\n" +
+        "E-mail: " + email + "\n" +
+        "Senha: " + senha + "\n\n" +
+        "Assim que entrar, troque por uma senha sua em Configurações → Senha."
+      : "Oi, " + nome + "! Criei seu acesso à plataforma 💚\n\n" +
+        "Entre em: " + login + "\n" +
+        "E-mail: " + email + "\n" +
+        "Senha: " + senha + "\n\n" +
+        "É só entrar e, se quiser, trocar a senha em Configurações.";
     box.innerHTML =
       '<div class="cfg-cred">' +
-        '<p class="cfg-cred__title">✅ Acesso criado. Envie estes dados para ela:</p>' +
+        '<p class="cfg-cred__title">' +
+          (reset ? "🔑 Senha nova gerada. Envie estes dados para ela:"
+                 : "✅ Acesso criado. Envie estes dados para ela:") + '</p>' +
         '<div class="cfg-cred__row"><span>E-mail</span><code>' + esc(email) + '</code></div>' +
         '<div class="cfg-cred__row"><span>Senha</span><code>' + esc(senha) + '</code></div>' +
         '<div class="cfg-actions" style="margin-top:var(--sp-3)">' +
@@ -576,7 +1137,14 @@
   function checkAdmin() {
     if (!window.NutriDBReady) return;
     window.NutriDBReady.then(function (c) {
-      return c.from("profiles").select("is_admin").maybeSingle();
+      // O .eq(id) não é enfeite: quem é admin enxerga TODOS os perfis pela
+      // policy de curadoria, e aí o maybeSingle() sem filtro devolve
+      // "multiple rows returned" — a aba Admin sumia justamente para o admin.
+      return c.auth.getUser().then(function (u) {
+        var uid = u && u.data && u.data.user && u.data.user.id;
+        if (!uid) return { data: null };
+        return c.from("profiles").select("is_admin").eq("id", uid).maybeSingle();
+      });
     }).then(function (res) {
       if (!res || !res.data || res.data.is_admin !== true) return;
       if (el("panel-admin")) return; // já montado
@@ -592,6 +1160,9 @@
       panels.appendChild(panel);
       renderAdmin();
       carregarConvites();
+      carregarFilaPerfis();
+      carregarFilaCadastros();
+      carregarEmbaixadoras();
     }).catch(function () { /* não é admin ou offline: nada muda */ });
   }
 
@@ -634,7 +1205,12 @@
     "save-notif": saveNotif, "invite-nutri": inviteNutri,
     "exportar-dados": exportarDados, "excluir-conta": excluirConta,
     "ativar-assinatura": ativarAssinatura,
-    "pausar-assinatura": pausarAssinatura, "reativar-assinatura": reativarAssinatura };
+    "pausar-assinatura": pausarAssinatura, "reativar-assinatura": reativarAssinatura,
+    "nova-senha": novaSenha,
+    "salvar-embaixadora": salvarEmbaixadora, "comissao-paga": comissaoPaga, "reembolsou": reembolsou, "embaixadora-ativa": embaixadoraAtiva,
+    "aprovar-perfil": aprovarPerfil, "recusar-perfil": recusarPerfil,
+    "aprovar-cadastro": function (b) { decidirCadastro(b, "aprovado", "Salvando"); },
+    "recusar-cadastro": function (b) { decidirCadastro(b, "recusado", "Salvando"); } };
 
   /* ---------- Foto de perfil ---------- */
   // Lê o arquivo, redimensiona para no máx. 320px e devolve um JPEG data URL leve.
@@ -664,16 +1240,18 @@
   function trocarFoto(file) {
     if (!file) return;
     if (!/^image\/(png|jpe?g|webp)$/i.test(file.type)) { toast("Use uma imagem JPG, PNG ou WEBP.", true); return; }
-    if (file.size > 2 * 1024 * 1024) { toast("A imagem passa de 2 MB. Escolha uma menor.", true); return; }
     if (!db()) { toast("Banco indisponível.", true); return; }
     var btn = el("btn-foto");
-    busy(btn, true, "Enviando…");
-    processarFoto(file).then(function (dataUrl) {
+    // Com o ajuste carregado, a pessoa enquadra o rosto antes de salvar.
+    var pronto = window.FotoUpload ? window.FotoUpload.ler(file) : processarFoto(file);
+    pronto.then(function (dataUrl) {
+      busy(btn, true, "Enviando…");
       return db().update({ avatarUrl: dataUrl });
     }).then(function (p) {
       perfil = p; renderPerfil();
       toast("Foto atualizada");
     }).catch(function (e) {
+      if (e && e.message === "cancelado") return;
       toast("Não foi possível trocar a foto. " + (e && e.message ? e.message : ""), true);
       busy(btn, false);
     });
@@ -738,8 +1316,9 @@
         var item = (data.integracoes || []).filter(function (x) { return x.id === id; })[0];
         // Google Agenda e Meet compartilham a MESMA conexão OAuth do Google.
         if (id === "google" || id === "meet") { toggleGoogle(item, integrBtn); return; }
-        // Demais cards ainda são cosméticos (conectores externos pendentes).
-        if (item) { item.conectado = !item.conectado; renderIntegr(); toast(item.conectado ? item.nome + " conectado" : item.nome + " desconectado"); }
+        // Nenhum outro conector existe ainda. O card desses vem desabilitado
+        // ("Em breve"); se um dia chegar aqui, não finge que conectou.
+        if (item) toast(item.nome + " ainda não está disponível.");
         return;
       }
       var copyBtn = e.target.closest("[data-copy]");
@@ -789,6 +1368,7 @@
     if (qs.get("tab")) abrirTab(qs.get("tab"));
     tratarRetornoGoogle();
     refreshGoogle();
+    checkEmbaixadora(); // aba "Minhas indicações" só para embaixadora
     checkAdmin();     // injeta a aba Admin se a pessoa for administradora
   }
 

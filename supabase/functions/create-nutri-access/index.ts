@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
   if (!perfil || perfil.is_admin !== true) return json({ error: "nao_autorizado" }, 403);
 
   // 3) Corpo.
-  let body: { email?: string; nome?: string; senha?: string; observacao?: string };
+  let body: { email?: string; nome?: string; senha?: string; observacao?: string; reset?: boolean };
   try {
     body = await req.json();
   } catch {
@@ -84,8 +84,37 @@ Deno.serve(async (req) => {
   }
   const email = (body.email || "").trim().toLowerCase();
   const nome = (body.nome || "").trim();
-  if (!email || !nome) return json({ error: "faltam_campos" }, 400);
+  if (!email) return json({ error: "faltam_campos" }, 400);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: "email_invalido" }, 400);
+
+  // 3b) MODO RESET — a nutri perdeu a senha. Gera uma nova e devolve p/ a Ana
+  //     repassar. Existe porque os e-mails de auth ainda saem em inglês pelo
+  //     supabase.io: "Esqueci minha senha" não é caminho utilizável hoje.
+  if (body.reset === true) {
+    const { data: alvo, error: alvoErr } = await admin
+      .from("profiles")
+      .select("id, is_admin, tipo")
+      .eq("email", email)
+      .maybeSingle();
+    if (alvoErr) return json({ error: "erro_perfil" }, 500);
+    if (!alvo) return json({ error: "conta_nao_encontrada" }, 404);
+    // Não deixa um admin trocar a senha de outro admin pela tela.
+    if (alvo.is_admin === true && alvo.id !== callerId)
+      return json({ error: "alvo_admin" }, 403);
+
+    const nova = (body.senha || "").trim() || gerarSenha();
+    if (nova.length < 6) return json({ error: "senha_curta" }, 400);
+
+    const { error: updErr } = await admin.auth.admin.updateUserById(alvo.id, {
+      password: nova,
+      email_confirm: true,
+    });
+    if (updErr) return json({ error: "falha_trocar_senha", detail: updErr.message }, 500);
+
+    return json({ ok: true, reset: true, user_id: alvo.id, email, senha: nova });
+  }
+
+  if (!nome) return json({ error: "faltam_campos" }, 400);
   const senha = (body.senha || "").trim() || gerarSenha();
   if (senha.length < 6) return json({ error: "senha_curta" }, 400);
 

@@ -69,7 +69,7 @@
     var lista = prescricoesVisiveis(p);
     if (!lista.length) {
       return '<div class="pcard"><div class="empty-state">Você ainda não tem fórmulas prescritas. ' +
-        'Quando a Ana prescrever, elas aparecem aqui.</div></div>';
+        'Quando a sua nutricionista prescrever, elas aparecem aqui.</div></div>';
     }
     var cards = lista.map(function (o) {
       return '<article class="pcard pfx">' +
@@ -83,7 +83,7 @@
       '</article>';
     }).join("");
     return cards +
-      '<p class="pclin__nota">Estas são as fórmulas que a Ana prescreveu para você. ' +
+      '<p class="pclin__nota">Estas são as fórmulas que a sua nutricionista prescreveu para você. ' +
       'Não mude a dose nem pare por conta própria — se algo incomodar, fale com ela pelas mensagens.</p>';
   }
 
@@ -125,7 +125,7 @@
         '<span class="pex__data">pedido em ' + esc(dataBR(x.data)) + '</span></div>' +
       (lis ? '<ul class="pex__lista">' + lis + '</ul>' : "") +
       (x.obs ? '<p class="pex__obs">📌 ' + esc(x.obs) + '</p>' : "") +
-      '<p class="pex__acao">Quando tiver o resultado em mãos, envie para a Ana pelas mensagens — ' +
+      '<p class="pex__acao">Quando tiver o resultado em mãos, envie para a sua nutricionista pelas mensagens — ' +
         'ela registra aqui e você vê tudo nesta aba.</p>' +
     '</article>';
   }
@@ -148,7 +148,7 @@
       : fora.length
         ? '<p class="pex__resumo pex__resumo--flag">' + fora.length +
           (fora.length === 1 ? ' resultado fora da faixa de referência.' : ' resultados fora da faixa de referência.') +
-          ' A Ana já está vendo isso — se precisar de ajuste, ela te fala.</p>'
+          ' A sua nutricionista já está vendo isso — se precisar de ajuste, ela te fala.</p>'
         : '<p class="pex__resumo pex__resumo--ok">Todos os resultados dentro da faixa de referência. 🌿</p>';
 
     return '<article class="pcard pex">' +
@@ -165,13 +165,13 @@
     var todo = pendentes(p), res = resultados(p);
     if (!todo.length && !res.length) {
       return '<div class="pcard"><div class="empty-state">Nenhum exame por aqui ainda. ' +
-        'Quando a Ana pedir ou registrar exames, eles aparecem nesta aba.</div></div>';
+        'Quando a sua nutricionista pedir ou registrar exames, eles aparecem nesta aba.</div></div>';
     }
     var html = "";
     if (todo.length) html += todo.map(cardPendente).join("");
     if (res.length) html += res.map(function (x) { return cardResultado(x, p.sexo); }).join("");
     html += '<p class="pclin__nota">As faixas de referência mudam de laboratório para laboratório. ' +
-      'Este resumo é para você acompanhar — quem interpreta o seu exame é a Ana, junto com o seu médico.</p>';
+      'Este resumo é para você acompanhar — quem interpreta o seu exame é a sua nutricionista, junto com o seu médico.</p>';
     return html;
   }
 

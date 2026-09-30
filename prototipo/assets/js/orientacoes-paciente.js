@@ -16,7 +16,7 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
     });
   }
-  function hojeISO() { return new Date().toISOString().slice(0, 10); }
+  function hojeISO() { return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
   function fmtData(iso) { var m = /(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || "")); return m ? m[3] + "/" + m[2] + "/" + m[1] : (iso || ""); }
   function uid() { return "o" + Date.now() + Math.floor(Math.random() * 1000); }
   function secWrap(t, inner) { return '<section class="fsec"><h2 class="fsec__title">' + esc(t) + "</h2>" + inner + "</section>"; }

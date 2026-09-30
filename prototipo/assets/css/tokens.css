@@ -1,44 +1,39 @@
 /* ============================================================
    DESIGN TOKENS — Plataforma Nutri (protótipo)
-   Identidade visual: Ana Luísa Rocha Nutricionista
+   Identidade visual: NutriPlat · A2 Sálvia-petróleo
    Tudo aqui é reutilizável pelas próximas telas (Dashboard, etc.)
    ============================================================ */
 
-/* ---- Fonte display (wordmark / títulos) ---- */
-@font-face {
-  font-family: "Merienda";
-  src: url("../img/fonts/Merienda-VariableFont_wght.ttf") format("truetype");
-  font-weight: 300 900;
-  font-display: swap;
-}
+/* Fontes (Bricolage Grotesque + Figtree) carregadas pelo <link> do Google Fonts em cada página. */
 
 :root {
-  /* ---------- Paleta da plataforma (azul petroleo) ----------
+  /* ---------- Paleta da plataforma (A2 Sálvia-petróleo) ----------
      Os nomes --vinho/--rosa foram mantidos por compatibilidade:
      sao usados em ~30 arquivos CSS. O valor e que mudou.
      A identidade da nutri (documentos) vive em perfil-db.js. */
-  --petroleo: #0E4C5C;
-  --petroleo-escuro: #093642;
-  --petroleo-claro: #17758A;
-  --azul-suave: #EEF6F8;
+  --petroleo: #1C5B57;
+  --petroleo-escuro: #134441;
+  --petroleo-claro: #267069;
+  --azul-suave: #EAF3F2;
 
-  /* Acento da marca da Ana (Pantone 235 C) — acao e destaque sobre o petroleo */
-  --magenta: #840B55;
-  --magenta-escuro: #5E0A3D;
-  --magenta-claro: #A82670;
-  --magenta-suave: #FCEFF7;
+  /* Acao: petroleo profundo. O calor vem do mel (--mel e --magenta-suave) */
+  --magenta: #134441;
+  --magenta-escuro: #0D3330;
+  --magenta-claro: #1C5B57;
+  --magenta-suave: #FBF1DE;
+  --mel: #E3A33B;
 
   --vinho: var(--petroleo);
-  --rosa: #9FCBD6;
+  --rosa: #A9D3CE;
   --branco: #FFFFFF;
   --cinza-claro: #F5F5F5;
-  --cinza-escuro: #3C3C3C;
+  --cinza-escuro: #1A2323;
 
   /* ---------- Derivadas ---------- */
   --vinho-escuro: var(--petroleo-escuro);  /* hover / estados pressionados */
   --vinho-claro: var(--petroleo-claro);    /* destaques sobre o petroleo */
   --rosa-suave: var(--azul-suave);         /* fundos muito sutis */
-  --cinza-medio: #8A8A8A;        /* textos secundários */
+  --cinza-medio: #626B6A;        /* textos secundários (AA: 5,4 no branco, 5,0 no #F5F5F5) */
   --cinza-borda: #E7E7EA;        /* bordas/divisores */
   --texto: var(--cinza-escuro);
   --texto-sutil: var(--cinza-medio);
@@ -49,8 +44,8 @@
   --sobre-vinho-70: rgba(255, 255, 255, 0.72);
 
   /* ---------- Tipografia ---------- */
-  --font-display: "Merienda", "Georgia", serif;
-  --font-ui: "Montserrat", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-ui: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
 
   --fs-display: clamp(2.6rem, 4.5vw, 3.6rem);
   --fs-h1: 1.85rem;
@@ -58,7 +53,7 @@
   --fs-h3: 1.05rem;
   --fs-body: 0.95rem;
   --fs-sm: 0.85rem;
-  --fs-caption: 0.74rem;
+  --fs-caption: 0.78rem;   /* 12,5px: piso de legibilidade no mobile (medido em 390px, 20/09) */
 
   --lh-tight: 1.2;
   --lh-normal: 1.55;
@@ -74,10 +69,10 @@
   --shadow-sm: 0 1px 2px rgba(60, 60, 60, 0.06),
                0 2px 6px rgba(60, 60, 60, 0.05);
   --shadow-md: 0 4px 12px rgba(60, 60, 60, 0.07),
-               0 12px 28px rgba(14, 76, 92, 0.08);
+               0 12px 28px rgba(28, 91, 87, 0.08);
   --shadow-lg: 0 10px 24px rgba(60, 60, 60, 0.10),
-               0 24px 60px rgba(14, 76, 92, 0.12);
-  --ring-foco: 0 0 0 3px rgba(132, 11, 85, 0.20);   /* foco no magenta: e acao */
+               0 24px 60px rgba(28, 91, 87, 0.12);
+  --ring-foco: 0 0 0 3px rgba(19, 68, 65, 0.22);   /* foco na cor de acao */
 
   /* ---------- Espaçamento (escala 4) ---------- */
   --sp-1: 4px;

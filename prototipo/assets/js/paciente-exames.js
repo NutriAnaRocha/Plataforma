@@ -26,7 +26,7 @@
     return isNaN(n) ? null : n;
   }
   function uid() { return "ex" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
-  function hojeISO() { return new Date().toISOString().slice(0, 10); }
+  function hojeISO() { return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
   function fmtData(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
     return m ? m[3] + "/" + m[2] + "/" + m[1] : (iso || "—");

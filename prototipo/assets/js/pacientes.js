@@ -730,7 +730,12 @@
     (p.consultas || []).forEach(function (c) { eventos.push({ ico: "🩺", tipo: "Consulta", data: c.data, txt: (c.tipo ? esc(c.tipo) + " — " : "") + esc(c.nota || "") }); });
     (p.prescricoes || []).forEach(function (x) { eventos.push({ ico: "💊", tipo: "Prescrição", data: x.data, txt: esc(x.titulo || "") }); });
     (p.exames || []).forEach(function (x) { eventos.push({ ico: "🧪", tipo: "Exame", data: x.data, txt: esc(x.titulo || "") }); });
+    (p.questionarios || []).forEach(function (x) { eventos.push({ ico: "📝", tipo: "Anamnese", data: x.data, txt: esc(x.titulo || "") }); });
+    (p.orientacoes || []).forEach(function (x) { eventos.push({ ico: "📄", tipo: "Orientação", data: x.data, txt: esc(x.titulo || "") }); });
     if (p.plano && p.plano.titulo) eventos.push({ ico: "🥗", tipo: "Plano alimentar", data: "", txt: esc(p.plano.titulo) });
+    // Mais recente primeiro; sem data (plano) vai ao topo, o cadastro fecha a linha.
+    eventos.sort(function (a, b) { return String(b.data || "9999").localeCompare(String(a.data || "9999")); });
+    eventos.forEach(function (e) { e.data = fmtData(e.data) || e.data; });
     if (p.criadoEm) eventos.push({ ico: "✅", tipo: "Cadastro", data: fmtCadastro(p.criadoEm), txt: "Paciente cadastrado na plataforma" });
 
     var linha = eventos.length
@@ -958,7 +963,7 @@
         '<p class="pf-note">Envie estes dados para <strong>' + esc(p.nome) + '</strong>. ' +
           'Anote agora: a senha não fica visível depois.</p>' +
         '<div class="cred-box">' +
-          '<div class="cred-row"><span class="cred-lbl">Link</span><code id="cred-link">' + esc(location.origin + location.pathname.replace(/[^/]*$/, "") + "index.html") + '</code></div>' +
+          '<div class="cred-row"><span class="cred-lbl">Link</span><code id="cred-link">' + esc(location.origin + location.pathname.replace(/[^/]*$/, "")) + '</code></div>' +
           '<div class="cred-row"><span class="cred-lbl">E-mail</span><code id="cred-email">' + esc(cred.email) + '</code></div>' +
           '<div class="cred-row"><span class="cred-lbl">Senha</span><code id="cred-senha">' + esc(cred.senha) + '</code></div>' +
         '</div>' +
@@ -1107,7 +1112,7 @@
       '<span class="card__sub">peso · ' + esc(labels[0]) + '–' + esc(labels[labels.length - 1]) + '</span></div>' +
       '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Evolução de peso">' +
       '<defs><linearGradient id="gradWine2" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0%" stop-color="#0E4C5C" stop-opacity="0.20"/><stop offset="100%" stop-color="#0E4C5C" stop-opacity="0"/></linearGradient></defs>' +
+      '<stop offset="0%" stop-color="#1C5B57" stop-opacity="0.20"/><stop offset="100%" stop-color="#1C5B57" stop-opacity="0"/></linearGradient></defs>' +
       '<path class="chart__area" style="fill:url(#gradWine2)" d="' + area + '"></path>' +
       '<path class="chart__line" d="' + line + '"></path>' + dots + lbls + '</svg>';
   }

@@ -78,7 +78,7 @@
     /* Grava a avaliação do dia. onConflict na chave (paciente_id, data)
        para o segundo clique corrigir em vez de duplicar. */
     salvar: function (pacienteId, antropo, data, observacao) {
-      var row = toRow(pacienteId, antropo, data || new Date().toISOString().slice(0, 10), observacao);
+      var row = toRow(pacienteId, antropo, data || new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10), observacao);
       return client().then(function (c) {
         return c.from("paciente_avaliacoes")
           .upsert(row, { onConflict: "paciente_id,data" })

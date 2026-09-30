@@ -22,7 +22,7 @@ import sys, os, json, argparse, urllib.request, urllib.error
 
 CRED = os.path.join(os.path.expanduser("~"), ".claude", ".nutri-supabase-credentials")
 VINHO = "#840B55"
-REMETENTE_NOME = "Ana Luísa Rocha — Nutricionista"
+REMETENTE_NOME = "NutriPlat"
 
 
 def load_creds():
@@ -53,7 +53,7 @@ def pagina(titulo, corpo, rotulo_botao, rodape_extra=""):
       <span style="word-break:break-all">{{{{ .ConfirmationURL }}}}</span></p>
     {rodape_extra}
     <p style="margin:26px 0 0;padding-top:18px;border-top:1px solid #efe6ea;font-size:13px;color:#8a8a8a">
-      Ana Luísa Rocha — Nutricionista · CRN 25100401
+      NutriPlat · plataforma de gestão para nutricionistas
     </p>
   </div>
 </div>"""
@@ -138,7 +138,7 @@ def main():
             raise SystemExit("Faltam --host/--user/--pass/--de (ou use --so-templates).")
         body.update({
             "smtp_host": a.host,
-            "smtp_port": a.port,
+            "smtp_port": str(a.port),   # a API exige string
             "smtp_user": a.user,
             "smtp_pass": a.senha,
             "smtp_admin_email": a.de,

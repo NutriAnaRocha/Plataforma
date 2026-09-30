@@ -209,6 +209,12 @@
       if (scrim) scrim.addEventListener("click", function () { app.classList.remove("nav-open"); });
     }
 
+    /* Pergunta que veio do balão do Dashboard (ia.html?q=…): entra já enviada. */
+    try {
+      var q = new URLSearchParams(location.search).get("q");
+      if (q) { input.value = q; sendMsg(q); }
+    } catch (e) {}
+
     input.focus();
   });
 })();

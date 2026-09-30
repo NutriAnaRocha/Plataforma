@@ -13,6 +13,31 @@
    ficava pendurado no rodapé de todas as telas. */
 .portal-loading[hidden] { display: none; }
 
+/* Paciente com conta e sem nutricionista ainda (portal.js → showNoData) */
+.portal-loading.portal-vazio { align-items: flex-start; padding: var(--sp-6) var(--sp-4); color: var(--texto); }
+.pv {
+  width: 100%; max-width: 520px; margin: var(--sp-5) auto 0; text-align: left;
+  background: var(--branco); border-radius: var(--radius-card); box-shadow: var(--shadow-md);
+  padding: var(--sp-6) var(--sp-5);
+}
+.pv__ola { margin: 0; color: var(--petroleo); font-weight: 600; font-size: var(--fs-sm); }
+.pv__tit { margin: 4px 0 var(--sp-2); font-family: var(--font-display); font-size: var(--fs-h2); line-height: var(--lh-tight); color: var(--petroleo-escuro); }
+.pv__sub { margin: 0 0 var(--sp-5); color: var(--texto-sutil); }
+.pv__passos { list-style: none; counter-reset: pv; margin: 0 0 var(--sp-5); padding: 0; display: grid; gap: var(--sp-4); }
+.pv__passos li { counter-increment: pv; position: relative; padding-left: 44px; min-height: 32px; }
+.pv__passos li::before {
+  content: counter(pv); position: absolute; left: 0; top: 0; width: 32px; height: 32px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--petroleo); color: #fff; font-weight: 700; font-size: var(--fs-sm);
+}
+.pv__passos b { display: block; color: var(--texto); }
+.pv__passos span { display: block; color: var(--texto-sutil); font-size: var(--fs-sm); margin-top: 2px; }
+.pv .pv__cta { display: flex; width: 100%; justify-content: center; text-align: center; white-space: normal; text-decoration: none; }
+.pv__inclui { margin-top: var(--sp-5); padding: var(--sp-4); background: var(--cinza-claro); border-radius: var(--radius-sm); }
+.pv__inclui-tit { margin: 0 0 var(--sp-2); font-weight: 600; font-size: var(--fs-sm); color: var(--texto); }
+.pv__inclui ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px var(--sp-3); font-size: var(--fs-sm); color: var(--texto-sutil); }
+.pv__jatem { margin: var(--sp-5) 0 0; font-size: var(--fs-caption); color: var(--texto-sutil); overflow-wrap: anywhere; }
+.pv__sair { display: block; margin: var(--sp-4) auto 0; background: none; border: 0; color: var(--texto-sutil); text-decoration: underline; font: inherit; font-size: var(--fs-sm); cursor: pointer; padding: 8px; }
+
 /* Faixa de preview (modo "Ver como paciente") */
 .preview-bar {
   background: var(--vinho); color: #fff; text-align: center;
@@ -20,7 +45,7 @@
   display: flex; gap: var(--sp-3); align-items: center; justify-content: center; flex-wrap: wrap;
 }
 .preview-bar[hidden] { display: none; } /* o atributo hidden precisa vencer o display:flex */
-.preview-bar__back { color: #fff; text-decoration: underline; font-weight: 600; }
+.preview-bar__back { color: #fff; text-decoration: underline; font-weight: 600; display: inline-block; padding: 5px 0; }
 
 .portal { max-width: 720px; margin: 0 auto; padding: 0 var(--sp-4) var(--sp-7); }
 
@@ -87,6 +112,18 @@
 .pcard__title { margin: 0 0 var(--sp-4); font-size: var(--fs-h3); color: var(--cinza-escuro); }
 .pcard__meta { font-size: var(--fs-caption); color: var(--texto-sutil); font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
 .pcard__hint { margin: var(--sp-2) 0 0; font-size: var(--fs-sm); color: var(--texto-sutil); }
+
+/* Escolha do plano, quando a nutri liberou mais de um */
+.plano-picker { padding: var(--sp-4) var(--sp-5); }
+.plano-picker__lbl { margin: 0 0 var(--sp-3); font-size: var(--fs-sm); color: var(--texto-sutil); }
+.plano-picker__chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.plano-chip {
+  flex: none; background: var(--branco); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-chip); padding: 8px 14px; font: inherit; font-weight: 600;
+  font-size: var(--fs-sm); color: var(--texto); cursor: pointer;
+}
+.plano-chip:hover { border-color: var(--vinho); }
+.plano-chip.is-active { background: var(--vinho); color: #fff; border-color: var(--vinho); }
 
 /* Barra de adesão (% do plano seguido) no topo do plano */
 .plano-adesao { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-3); }

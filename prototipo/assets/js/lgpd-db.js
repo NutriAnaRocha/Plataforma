@@ -52,11 +52,11 @@
             var pacote = {
               _meta: {
                 gerado_em: new Date().toISOString(),
-                plataforma: "Anutri",
+                plataforma: "NutriPlat",
                 titular: { id: uid, email: email },
                 observacao: "Exportação de dados pessoais (LGPD, art. 18). " +
                   "A nutricionista é a controladora dos dados dos seus pacientes; " +
-                  "a Anutri atua como operadora."
+                  "a NutriPlat atua como operadora."
               }
             };
             var totais = {};
@@ -64,8 +64,8 @@
               pacote[r.nome] = r.dados;
               totais[r.nome] = r.dados.length;
             });
-            var carimbo = new Date().toISOString().slice(0, 10);
-            baixarArquivo("anutri-meus-dados-" + carimbo + ".json",
+            var carimbo = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+            baixarArquivo("nutriplat-meus-dados-" + carimbo + ".json",
               JSON.stringify(pacote, null, 2));
             return { totais: totais };
           });

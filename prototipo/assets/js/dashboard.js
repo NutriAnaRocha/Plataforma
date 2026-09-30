@@ -51,7 +51,7 @@
       renderPacientesReal();
       renderPendenciasReal();
       renderAniversariantes();
-    }).catch(function () { /* mantém mock */ });
+    }).catch(function () { renderFalha(); });
 
     // Assinaturas do programa "Meu Plano" — de onde saem as pendências de
     // reavaliação e de renovação. A RLS da 0043 já entrega só a carteira
@@ -111,20 +111,24 @@
     if (sub) sub.textContent = texto;
   }
 
-  /* ---------- Stat cards ---------- */
+  /* ---------- Stat cards ----------
+     Com `href`, o card é um <a> de verdade. Ele sempre PARECEU clicável (tem
+     o hover que levanta o cartão), mas era um <div> morto: tocar em
+     "Pacientes ativos" ou "Consultas hoje" no celular não abria nada. Quem
+     não passa href (o modo de demonstração) continua saindo como <div>. */
   function statCard(s) {
-    return '' +
-      '<div class="stat">' +
-        '<div class="stat__ico stat__ico--' + s.cor + '">' + s.ico + '</div>' +
-        '<div>' +
-          '<div class="stat__valor">' + esc(s.valor) + '</div>' +
-          '<div class="stat__label">' + esc(s.label) + '</div>' +
-        '</div>' +
-        '<div class="stat__foot">' +
-          (s.delta ? '<span class="delta delta--' + s.deltaTipo + '">' + esc(s.delta) + '</span>' : '') +
-          '<span class="stat__sub">' + esc(s.sub) + '</span>' +
-        '</div>' +
+    var miolo =
+      '<div class="stat__ico stat__ico--' + s.cor + '">' + s.ico + '</div>' +
+      '<div>' +
+        '<div class="stat__valor">' + esc(s.valor) + '</div>' +
+        '<div class="stat__label">' + esc(s.label) + '</div>' +
+      '</div>' +
+      '<div class="stat__foot">' +
+        (s.delta ? '<span class="delta delta--' + s.deltaTipo + '">' + esc(s.delta) + '</span>' : '') +
+        '<span class="stat__sub">' + esc(s.sub) + '</span>' +
       '</div>';
+    if (!s.href) return '<div class="stat">' + miolo + '</div>';
+    return '<a class="stat stat--link" href="' + esc(s.href) + '">' + miolo + '</a>';
   }
   function renderStatsMock() {
     var wrap = el("stats"); if (!wrap) return;
@@ -141,10 +145,10 @@
       ? Math.round(comAdesao.reduce(function (a, p) { return a + p.adesao; }, 0) / comAdesao.length) : 0;
     var nHoje = consultasHoje ? consultasHoje.filter(function (c) { return c.status !== "cancelada"; }).length : null;
     wrap.innerHTML = [
-      { label: "Pacientes ativos", valor: ativos, sub: "de " + total + " no total", ico: "👥", cor: "vinho" },
-      { label: "Consultas hoje", valor: nHoje == null ? "—" : nHoje, sub: nHoje ? "ver agenda" : (nHoje === 0 ? "dia livre" : "carregando"), ico: "📅", cor: "rosa" },
-      { label: "Adesão média", valor: adesaoMedia + "%", sub: "ao plano alimentar", ico: "📈", cor: "rosa" },
-      { label: "Precisam de atenção", valor: atencao, sub: atencao ? "revisar plano" : "tudo em dia", ico: "⚠️", cor: "alerta" }
+      { label: "Pacientes ativos", valor: ativos, sub: "de " + total + " no total", ico: "👥", cor: "vinho", href: "pacientes.html" },
+      { label: "Consultas hoje", valor: nHoje == null ? "—" : nHoje, sub: nHoje ? "ver agenda" : (nHoje === 0 ? "dia livre" : "carregando"), ico: "📅", cor: "rosa", href: "agenda.html" },
+      { label: "Adesão média", valor: adesaoMedia + "%", sub: "ao plano alimentar", ico: "📈", cor: "rosa", href: "relatorios.html" },
+      { label: "Precisam de atenção", valor: atencao, sub: atencao ? "revisar plano" : "tudo em dia", ico: "⚠️", cor: "alerta", href: "pacientes.html" }
     ].map(function (s) { s.delta = ""; s.deltaTipo = "neutro"; return statCard(s); }).join("");
   }
 
@@ -218,6 +222,13 @@
   }
 
   /* ---------- Pacientes em foco ---------- */
+  /* O banco não respondeu. Dizer isso: deixar a casca no lugar faria a
+     nutri tomar o que está na tela por carteira dela. */
+  function renderFalha() {
+    var p = el("pacientes");
+    if (p) p.innerHTML = '<div class="empty-state">Não foi possível carregar os seus dados agora. Recarregue a página.</div>';
+  }
+
   function prowMock(p) {
     return '<div class="prow">' +
       '<span class="avatar avatar--sm avatar--rosa">' + esc(p.ini) + '</span>' +
@@ -246,7 +257,7 @@
     }).slice(0, 5);
     wrap.innerHTML = ord.map(function (p) {
       var low = p.adesao < 50 ? " is-low" : "";
-      return '<a class="prow" href="prontuario.html?id=' + encodeURIComponent(p.id) + '" style="text-decoration:none;color:inherit">' +
+      return '<a class="prow" href="pacientes.html?id=' + encodeURIComponent(p.id) + '" style="text-decoration:none;color:inherit">' +
         '<span class="avatar avatar--sm avatar--rosa">' + esc(p.ini) + '</span>' +
         '<div class="prow__info"><div class="prow__nome">' + esc(p.nome) + '</div>' +
           '<div class="prow__obj">' + esc(p.objetivo || "Sem objetivo definido") + '</div></div>' +
@@ -437,7 +448,7 @@
       // o questionário é lido; o resto cai no prontuário.
       var href = t.prazo
         ? "pacientes.html?id=" + encodeURIComponent(t.id) + "&sec=anamnese"
-        : "prontuario.html?id=" + encodeURIComponent(t.id);
+        : "pacientes.html?id=" + encodeURIComponent(t.id);
       // Itens do programa que a nutri resolve fora do sistema (ler a
       // reavaliação, mandar o convite) ganham um "✓ resolvido" que grava
       // o carimbo — senão eles nunca sairiam da fila.
@@ -496,7 +507,7 @@
     });
   }
 
-  /* ---------- Nútri AI (demo) ---------- */
+  /* ---------- Nútri AI (atalho: leva a pergunta para ia.html) ---------- */
   function initAI() {
     var fab = el("ai-fab");
     var panel = el("ai-panel");
@@ -530,17 +541,14 @@
       return m;
     }
 
+    /* O Nútri AI de verdade vive em ia.html (edge function assistente-ia,
+       com o contexto clínico do paciente). Este balão só leva a pergunta
+       para lá — até 20/09/2026 ele fingia digitar e devolvia um texto fixo,
+       igual para qualquer pergunta. */
     function sendMsg(text) {
       text = (text || "").trim();
       if (!text) return;
-      addMsg(esc(text), "me");
-      if (input) input.value = "";
-      if (suggest) suggest.style.display = "none";
-      var typing = addMsg('<span class="msg--typing"><span></span><span></span><span></span></span>', "ai");
-      setTimeout(function () {
-        typing.innerHTML = D.aiRespostaDemo || "Posso ajudar com isso! (resposta de demonstração)";
-        thread.scrollTop = thread.scrollHeight;
-      }, 1100);
+      location.href = "ia.html?q=" + encodeURIComponent(text);
     }
 
     send.addEventListener("click", function () { sendMsg(input.value); });

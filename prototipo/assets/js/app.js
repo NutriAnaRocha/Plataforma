@@ -6,7 +6,7 @@
   "use strict";
 
   /* ▼▼▼ TROCAR O NOME DA PLATAFORMA AQUI (único lugar) ▼▼▼ */
-  var BRAND = "Anutri";
+  var BRAND = "NutriPlat";
   /* ▲▲▲ ----------------------------------------------- ▲▲▲ */
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -87,7 +87,23 @@
       clearMsg();
     }
 
-    btnEntrar.addEventListener("click", function () { openForm("entrar"); });
+    /* Duas portas (15/09/2026): paciente e nutricionista. O login é o mesmo —
+       afterAuth() já manda cada tipo para o seu lugar —, o que muda é o
+       rótulo e para onde vai o "Criar conta". */
+    var perfilEl = document.getElementById("auth-perfil");
+    var linkCriar = document.getElementById("link-criar");
+    var PERFIS = {
+      paciente: { rotulo: "Entrar como paciente", criar: "/cadastro-paciente" },
+      nutri: { rotulo: "Entrar como nutricionista", criar: "/seja-indicada#cadastro" }
+    };
+    document.querySelectorAll("[data-perfil]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var p = PERFIS[b.getAttribute("data-perfil")] || PERFIS.nutri;
+        if (perfilEl) perfilEl.textContent = p.rotulo;
+        if (linkCriar) linkCriar.href = p.criar;
+        openForm("entrar");
+      });
+    });
     btnCriar.addEventListener("click", function () { openForm("criar"); });
     btnVoltar.addEventListener("click", closeForm);
 
@@ -137,7 +153,9 @@
     function afterAuth(c) {
       var next = new URLSearchParams(location.search).get("next");
       if (next && /^[a-z0-9-]+\.html$/i.test(next)) { window.location.href = next; return Promise.resolve(); }
-      return c.from("profiles").select("onboarded,tipo").maybeSingle().then(function (res) {
+      // NutriMeuPerfil e não select().maybeSingle(): a conta admin enxerga
+      // todos os perfis, e sem o filtro o login dela caía no ramo de erro.
+      return window.NutriMeuPerfil(c, "onboarded,tipo").then(function (res) {
         var tipo = (res.data && res.data.tipo) || "nutri";
         if (tipo === "paciente") { window.location.href = "portal-paciente.html"; return; }
         // Comprador de e-book: o lugar dele é a biblioteca do site, não o painel.
@@ -186,12 +204,16 @@
       return out;
     }
 
-    function enterRecovery() {
+    // convite=true: conta criada pelo webhook de pagamento (type=invite), que
+    // ainda não tem senha — mesmo formulário, com o texto de "criar".
+    function enterRecovery(convite) {
       recoveryMode = true;
       openForm("entrar");                    // revela o formulário
       if (fieldNome) fieldNome.hidden = true;
       document.getElementById("email").closest(".field").hidden = true;
       var row = form.querySelector(".auth-form__row"); if (row) row.hidden = true;
+      var criarRow = document.getElementById("auth-criar"); if (criarRow) criarRow.hidden = true;
+      if (perfilEl) perfilEl.textContent = "";
       var backWrap = form.querySelector(".auth-form__back-wrap"); if (backWrap) backWrap.hidden = true;
       var lbl = form.querySelector('label[for="senha"]'); if (lbl) lbl.textContent = "Nova senha";
       var senhaInput = document.getElementById("senha");
@@ -204,9 +226,14 @@
         var senhaField = senhaInput.closest(".field");
         senhaField.parentNode.insertBefore(confirmField, senhaField.nextSibling);
       }
-      submitLabel = "Salvar nova senha";
+      if (convite) {
+        if (lbl) lbl.textContent = "Crie sua senha";
+        senhaInput.placeholder = "Sua senha (mín. 6 caracteres)";
+        var lbl2 = confirmField.querySelector("label"); if (lbl2) lbl2.textContent = "Confirmar senha";
+      }
+      submitLabel = convite ? "Criar senha e entrar" : "Salvar nova senha";
       submit.textContent = submitLabel;
-      showMsg("Defina uma nova senha para a sua conta.", "info");
+      showMsg(convite ? "Defina sua senha para entrar na plataforma." : "Defina uma nova senha para a sua conta.", "info");
       senhaInput.focus();
     }
 
@@ -227,7 +254,8 @@
     }
 
     var hashParams = parseHash();
-    if (hashParams.type === "recovery" && hashParams.access_token) {
+    var convite = hashParams.type === "invite";
+    if ((hashParams.type === "recovery" || convite) && hashParams.access_token) {
       window.NutriDBReady.then(function (c) {
         return c.auth.setSession({
           access_token: hashParams.access_token,
@@ -235,9 +263,12 @@
         });
       }).then(function (res) {
         if (res.error) throw res.error;
-        enterRecovery();
+        // A sessão já está aberta: tira o token da barra de endereço na hora.
+        history.replaceState(null, "", location.pathname + location.search);
+        enterRecovery(convite);
       }).catch(function () {
-        showMsg("Link de redefinição inválido ou expirado. Solicite um novo em \"Esqueci minha senha\".");
+        showMsg((convite ? "Link de convite" : "Link de redefinição") +
+          " inválido ou expirado. Solicite um novo em \"Esqueci minha senha\".");
       });
     } else if (hashParams.error) {
       showMsg("Link inválido ou expirado. Solicite um novo em \"Esqueci minha senha\".");

@@ -7,11 +7,11 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..800&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="assets/css/tokens.css?v=e7f9d01b" />
-  <link rel="stylesheet" href="assets/css/style.css?v=3cca70f7" />
-  <link rel="stylesheet" href="assets/css/dashboard.css?v=57971dfc" />
+  <link rel="stylesheet" href="assets/css/tokens.css?v=ad4420de" />
+  <link rel="stylesheet" href="assets/css/style.css?v=d7d917c5" />
+  <link rel="stylesheet" href="assets/css/dashboard.css?v=1b41f5eb" />
 </head>
 <body>
   <div class="app" id="app">
@@ -20,14 +20,13 @@
     <aside class="sidebar">
       <div class="sidebar__logo">
         <span class="sidebar__mark"><img src="assets/img/logo-mark.png" alt="" /></span>
-        <span class="sidebar__word" data-brand>Anutri</span>
+        <span class="sidebar__word" data-brand>NutriPlat</span>
       </div>
 
       <nav class="menu" aria-label="Menu principal">
         <a href="dashboard.html" class="is-active"><span class="ico">📊</span> Dashboard</a>
         <a href="pacientes.html"><span class="ico">👥</span> Pacientes</a>
         <a href="agenda.html"><span class="ico">📅</span> Agenda</a>
-        <a href="prontuario.html"><span class="ico">📋</span> Prontuários</a>
         <a href="prescricoes.html"><span class="ico">🥗</span> Prescrições</a>
         <a href="exames.html"><span class="ico">🧪</span> Exames</a>
 
@@ -40,7 +39,6 @@
         <a href="formulacoes.html"><span class="ico">⚗️</span> Formulações</a>
 
         <p class="menu__label">Gestão</p>
-        <a href="comunidade.html"><span class="ico">💬</span> Comunidade</a>
         <a href="financeiro.html"><span class="ico">💰</span> Financeiro</a>
         <a href="relatorios.html"><span class="ico">📈</span> Relatórios</a>
 
@@ -54,8 +52,8 @@
       <div class="sidebar__user">
         <span class="avatar avatar--sm avatar--rosa" id="side-user-av">AL</span>
         <div class="sidebar__user-info">
-          <div class="sidebar__user-name" id="side-user-name">Ana Luísa</div>
-          <div class="sidebar__user-crn" id="side-user-crn">CRN-3 12345</div>
+          <div class="sidebar__user-name" id="side-user-name"></div>
+          <div class="sidebar__user-crn" id="side-user-crn"></div>
         </div>
       </div>
     </aside>
@@ -116,7 +114,7 @@
                   <h2 class="card__title">Evolução &amp; adesão</h2>
                   <p class="card__sub">Adesão média ao plano — últimas 8 semanas</p>
                 </div>
-                <a class="card__link" href="#">Relatório →</a>
+                <a class="card__link" href="relatorios.html">Relatório →</a>
               </div>
               <div class="card__body"><div class="chart" id="chart"></div></div>
             </section>
@@ -130,7 +128,7 @@
                   <h2 class="card__title">Pacientes em foco</h2>
                   <p class="card__sub">Progresso rumo ao objetivo</p>
                 </div>
-                <a class="card__link" href="#">Todos →</a>
+                <a class="card__link" href="pacientes.html">Todos →</a>
               </div>
               <div class="card__body plist" id="pacientes"></div>
             </section>
@@ -143,10 +141,19 @@
               <div class="card__body simple" id="aniversariantes"></div>
             </section>
 
+            <!-- Avaliações dos pacientes: some do DOM quando não há nenhuma
+                 (avaliacoes-nutri.js). O retorno é anônimo por desenho. -->
+            <section class="card" id="card-avaliacoes" hidden>
+              <div class="card__head">
+                <h2 class="card__title">⭐ Como avaliam você</h2>
+                <span class="card__sub">Anônimo</span>
+              </div>
+              <div class="card__body" id="avaliacoes-nutri"></div>
+            </section>
+
             <section class="card">
               <div class="card__head">
                 <h2 class="card__title">Pendências</h2>
-                <a class="card__link" href="#">+ Nova</a>
               </div>
               <div class="card__body todo" id="pendencias"></div>
             </section>
@@ -188,15 +195,18 @@
   </section>
 
   <!-- Scripts -->
-  <script src="assets/js/pwa.js?v=f2f2e8e0"></script>
-  <script src="assets/js/dashboard-data.js?v=dedf959d"></script>
-  <script src="assets/js/supabase-client.js?v=5dec5cdd"></script>
-  <script src="assets/js/pacientes-db.js?v=d1dd6dbc"></script>
-  <script src="assets/js/consultas-db.js?v=59f58bd8"></script>
-  <script src="assets/js/perfil-db.js?v=4861c7ef"></script>
-  <script src="assets/js/auth-guard.js?v=2e5950de"></script>
-  <script src="assets/js/dashboard.js?v=75798830"></script>
-  <script src="assets/js/sidebar-user.js?v=168ca49c"></script>
-  <script src="assets/js/app.js?v=2fe09b12"></script>
+  <script src="assets/js/pwa.js?v=89ea9fd0"></script>
+  <script src="assets/js/icones.js?v=584c5273"></script>
+  <script src="assets/js/dashboard-data.js?v=84b8d349"></script>
+  <script src="assets/js/supabase-client.js?v=6b9d6888"></script>
+  <script src="assets/js/pacientes-db.js?v=46268ced"></script>
+  <script src="assets/js/consultas-db.js?v=4537c91a"></script>
+  <script src="assets/js/perfil-db.js?v=bb2aca47"></script>
+  <script src="assets/js/auth-guard.js?v=1c7519c5"></script>
+  <script src="assets/js/dashboard.js?v=55397760"></script>
+  <!-- Cartão "Como avaliam você": preenche #avaliacoes-nutri se houver nota. -->
+  <script src="assets/js/avaliacoes-nutri.js?v=d404bee1"></script>
+  <script src="assets/js/sidebar-user.js?v=b212e85f"></script>
+  <script src="assets/js/app.js?v=cb7d93e5"></script>
 </body>
 </html>

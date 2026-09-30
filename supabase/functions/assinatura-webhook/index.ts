@@ -92,7 +92,15 @@ Deno.serve(async (req) => {
 
   // ---- 4) Aplica o efeito na assinatura ----
   if (ativa) {
-    await admin.rpc("ativar_assinatura", { p_email: email, p_meses: 1, p_provider: provider, p_ref: ref });
+    // Anual (R$ 799) libera 12 meses; o resto é mensalidade. A InfinitePay
+    // manda centavos inteiros (79900); valor em reais (799 / 39.9) também serve.
+    const bruto = Number(pick(payload, ["paid_amount", "amount", "data.paid_amount", "data.amount"]) ?? 0);
+    const reais = Number.isInteger(bruto) && bruto >= 1000 ? bruto / 100 : bruto;
+    const anual = reais >= 700;
+    await admin.rpc("ativar_assinatura", {
+      p_email: email, p_meses: anual ? 12 : 1, p_provider: provider, p_ref: ref,
+      p_tier: "plataforma", p_ciclo: anual ? "anual" : "mensal",
+    });
     return json({ ok: true, acao: "ativada", email });
   }
   if (encerra) {

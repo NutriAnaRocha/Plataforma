@@ -83,7 +83,7 @@ mark.ia-add {
 .ia-rev__acts { display: flex; justify-content: flex-end; gap: var(--sp-2); flex-wrap: wrap; }
 
 /* ---------- Cartão de conduta ---------- */
-.ia-card { border-color: var(--magenta-suave, #FCEFF7); }
+.ia-card { border-color: var(--magenta-suave, #FBF1DE); }
 .ia-card__sub {
   font-size: var(--fs-sm, 0.85rem);
   color: var(--texto-sutil);

@@ -15,11 +15,11 @@
 
   var ctx = { mode: "real", paciente: null, user: null, marcas: {}, assinatura: null, receitas: [], documentos: [] };
 
-  // WhatsApp da Ana — canal do convite de renovação. O programa é
-  // pagamento único por período: renovar é uma decisão nova da paciente,
-  // conversada, nunca uma cobrança que dispara sozinha (ver 0043).
-  var WA_NUTRI = "5521994094557";
-  var SITE_PROGRAMA = "https://nutrianaluisarocha.com/meu-plano";
+  /* O convite de renovação sai pelo CHAT do próprio portal, não por um
+     WhatsApp fixo: este portal atende paciente de outra nutri, e o número
+     daqui era o da Ana (mesmo motivo de abrirChatCom, lá embaixo). O
+     programa é pagamento único por período: renovar é uma decisão nova da
+     paciente, conversada, nunca uma cobrança que dispara sozinha (0043). */
 
   window.NutriDBReady.then(function (c) {
     return c.auth.getSession().then(function (r) {
@@ -27,7 +27,11 @@
       ctx.user = r.data.session.user;
       var previewId = new URLSearchParams(window.location.search).get("preview");
 
-      return c.from("profiles").select("tipo,nome").maybeSingle().then(function (pr) {
+      // O uid já está na mão (ctx.user): filtrar é de graça aqui, e sem isso
+      // a conta admin cai em "multiple rows returned" e o portal trava.
+      return c.from("profiles").select("tipo,nome").eq("id", ctx.user.id)
+        .maybeSingle().then(function (pr) {
+        ctx.nome = (pr.data && pr.data.nome) || "";
         var tipo = (pr.data && pr.data.tipo) || "nutri";
         if (tipo === "nutri") {
           if (!previewId) { window.location.replace("dashboard.html"); return null; }
@@ -55,8 +59,34 @@
   });
 
   function showNoData() {
-    el("portal-loading").innerHTML = "Ainda não há um acompanhamento vinculado a esta conta. " +
-      "Fale com sua nutricionista. <br><br><button class='btn btn--outline' data-logout type='button'>Sair</button>";
+    // Desde 15/09/2026 o paciente cria a conta sozinho: chegar aqui sem
+    // ficha é o normal de quem ainda não escolheu a nutricionista.
+    var primeiro = String(ctx.nome || "").trim().split(/\s+/)[0];
+    var box = el("portal-loading");
+    box.classList.add("portal-vazio");
+    box.innerHTML =
+      "<div class='pv'>" +
+        "<p class='pv__ola'>" + (primeiro ? "Olá, " + esc(primeiro) + "!" : "Olá!") + "</p>" +
+        "<h1 class='pv__tit'>Sua conta está pronta</h1>" +
+        "<p class='pv__sub'>Falta só escolher quem vai cuidar de você. Funciona assim:</p>" +
+        "<ol class='pv__passos'>" +
+          "<li><b>Escolha sua nutricionista</b><span>Veja especialidade, formação, valor e se atende online ou presencial.</span></li>" +
+          "<li><b>Peça o atendimento</b><span>O pedido chega à profissional, que combina horário e valores com você.</span></li>" +
+          "<li><b>Acompanhe tudo por aqui</b><span>Depois da primeira consulta, o seu acompanhamento abre nesta tela.</span></li>" +
+        "</ol>" +
+        "<a class='btn btn--primary pv__cta' href='/encontre-sua-nutri'>Encontrar minha nutricionista</a>" +
+        "<div class='pv__inclui'>" +
+          "<p class='pv__inclui-tit'>O que vai aparecer aqui</p>" +
+          "<ul>" +
+            "<li>🥗 Plano alimentar</li><li>📸 Diário do prato</li>" +
+            "<li>🎯 Metas da semana</li><li>🛒 Lista de compras</li>" +
+            "<li>💬 Conversa com a nutri</li><li>📄 Documentos e receitas</li>" +
+          "</ul>" +
+        "</div>" +
+        "<p class='pv__jatem'>Já é paciente e não vê seu acompanhamento? Peça à sua nutricionista para cadastrar você com o e-mail <b>" +
+          esc(ctx.user && ctx.user.email) + "</b>.</p>" +
+        "<button class='pv__sair' data-logout type='button'>Sair da conta</button>" +
+      "</div>";
     wireLogout();
   }
 
@@ -164,6 +194,12 @@
       });
     }
 
+    // "Como foi a sua consulta?" — só aparece se a RPC achar consulta
+    // concluída sem avaliação; falha em silêncio (é um extra do portal).
+    if (window.AvaliacaoView) {
+      window.AvaliacaoView.montar(el("av-host"), { readonly: ctx.mode === "preview" });
+    }
+
     if (temReavaliacao(p)) {
       window.ReavaliacaoView.wire(p, ctx.assinatura, {
         readonly: ctx.mode === "preview",
@@ -243,7 +279,7 @@
      Vigência acabando: convite, não cobrança. O pagamento é único por
      período (0043) exatamente para não repetir a cobrança-surpresa que
      enche o Reclame Aqui dos concorrentes — então quem decide renovar é
-     ela, e o caminho é conversar com a Ana.
+     ela, e o caminho é conversar com a nutricionista dela.
      Sem promessa, sem prazo de resultado, sem escassez artificial: só a
      data real do contrato dela. */
   var AVISO_RENOVACAO_DIAS = 15;
@@ -277,15 +313,11 @@
       : "O período que você contratou vai até " + dataBR(a.fim) +
         (dias === 0 ? " (é hoje)." : dias === 1 ? " (falta 1 dia)." : " (faltam " + dias + " dias).") +
         " Se quiser seguir, é só me avisar que eu preparo a continuação.";
-    var wa = "https://wa.me/" + WA_NUTRI + "?text=" +
-      encodeURIComponent("Olá, Ana! Quero conversar sobre continuar o meu acompanhamento 🌸");
-
     return '<div class="pcard renov' + (venceu ? " renov--fim" : "") + '">' +
       '<h2 class="pcard__title">' + esc(titulo) + '</h2>' +
       '<p class="renov__txt">' + esc(corpo) + '</p>' +
       '<div class="renov__acoes">' +
-        '<a class="btn btn--primary" href="' + wa + '" target="_blank" rel="noopener">Falar com a Ana</a>' +
-        '<a class="btn btn--outline" href="' + SITE_PROGRAMA + '" target="_blank" rel="noopener">Ver os planos</a>' +
+        '<button type="button" class="btn btn--primary" data-renov-chat>Falar com a minha nutri</button>' +
       '</div>' +
       '<p class="renov__nota">Nada é cobrado automaticamente: o pagamento aqui é único por período.</p>' +
     '</div>';
@@ -372,8 +404,29 @@
   function planosLiberados(p) {
     var pl = p.plano || {};
     if (Array.isArray(pl.planos)) return pl.planos.filter(function (x) { return x && x.publicado; });
-    if ((pl.refeicoes || []).length) return [pl];
-    return [];
+    return pl && (pl.refeicoes || []).length ? [pl] : [];
+  }
+
+  /* ---------- Escolha do plano (quando há mais de um liberado) ----------
+     A escolha é da paciente e mora no aparelho dela — a nutri não precisa
+     saber qual ela abriu, e assim nenhuma escrita extra vai para o banco. */
+  var LS_PLANO_SEL = "nutri:plano-sel:";
+  function planoKeyId(plano, i) { return (plano && plano.id) || ("i" + i); }
+  function planoSelIdx(p, planos) {
+    if (planos.length < 2) return 0;
+    var salvo = "";
+    try { salvo = localStorage.getItem(LS_PLANO_SEL + p.id) || ""; } catch (e) {}
+    for (var i = 0; i < planos.length; i++) if (planoKeyId(planos[i], i) === salvo) return i;
+    return 0; // plano apagado ou nunca escolhido: volta para o 1º liberado
+  }
+  function setPlanoSel(p, id) {
+    try { localStorage.setItem(LS_PLANO_SEL + p.id, id); } catch (e) {}
+  }
+  /* Prefixo das chaves de marcação. O 1º plano liberado é o espelhado em
+     p.plano.refeicoes — é dele que a nutri lê a adesão (chaves "ri:ii"), então
+     ele fica sem prefixo. Os demais ganham "pl:<id>:" para não se misturarem. */
+  function checkPrefixo(planos, i) {
+    return i === 0 ? "" : "pl:" + planoKeyId(planos[i], i) + ":";
   }
   /* ---------- "Seu plano está pronto" ----------
      A anamnese e a reavaliação prometem à paciente que ela "recebe um
@@ -449,31 +502,37 @@
     var novo = planoNovidade(p) ? planoNovoHTML() : "";
     var readonly = ctx.mode === "preview";
     var multi = planos.length > 1;
-    var corpo = planos.map(function (plano, pi) {
+    /* Mais de um plano liberado: em vez de empilhar todos na tela (e deixar só
+       o primeiro marcável), a paciente escolhe numa aba qual vai seguir. Cada
+       plano tem os próprios checks e a própria barra de adesão. */
+    var sel = planoSelIdx(p, planos);
+    var plano = planos[sel];
+    var prefixo = checkPrefixo(planos, sel);
+    var picker = multi
+      ? '<div class="pcard plano-picker">' +
+          '<p class="plano-picker__lbl">Você tem ' + planos.length + ' planos liberados — escolha qual quer seguir agora:</p>' +
+          '<div class="plano-picker__chips">' +
+            planos.map(function (x, i) {
+              return '<button type="button" class="plano-chip' + (i === sel ? " is-active" : "") + '"' +
+                ' data-plano-sel="' + esc(planoKeyId(x, i)) + '">' +
+                esc(x.titulo || ("Plano " + (i + 1))) + '</button>';
+            }).join("") +
+          '</div></div>'
+      : "";
+    var corpo = (function () {
       var refs = plano.refeicoes || [];
-      // Só o 1º plano liberado é "interativo" (checkboxes + adesão), casando com a
-      // adesão que a nutri acompanha (chaves ri:ii sobre o plano espelhado no topo).
-      var interativo = pi === 0;
-      var head;
-      if (interativo) {
-        var pct = adesaoPct(p);
-        head = '<div class="pcard pcard--head"><h2>' + esc(plano.titulo || "Plano alimentar") + '</h2>' +
-          (plano.atualizadoEm ? '<span class="pcard__meta">Atualizado em ' + esc(plano.atualizadoEm) + '</span>' : '') +
-          '<div class="plano-adesao"><div class="plano-adesao__bar"><span id="adesao-fill" style="width:' + pct + '%"></span></div>' +
-            '<span class="plano-adesao__pct" id="adesao-pct">' + pct + '% seguido</span></div>' +
-          '<p class="pcard__hint">Marque o que você seguiu — sua nutricionista acompanha sua adesão por aqui.</p></div>';
-      } else {
-        head = '<div class="pcard pcard--head"><h2>' + esc(plano.titulo || "Plano alimentar") + '</h2>' +
-          (plano.atualizadoEm ? '<span class="pcard__meta">Atualizado em ' + esc(plano.atualizadoEm) + '</span>' : '') +
-          '<p class="pcard__hint">Plano adicional liberado pela sua nutricionista.</p></div>';
-      }
+      var pct = adesaoPct(plano, prefixo);
+      var head = '<div class="pcard pcard--head"><h2>' + esc(plano.titulo || "Plano alimentar") + '</h2>' +
+        (plano.atualizadoEm ? '<span class="pcard__meta">Atualizado em ' + esc(plano.atualizadoEm) + '</span>' : '') +
+        '<div class="plano-adesao"><div class="plano-adesao__bar"><span id="adesao-fill" style="width:' + pct + '%"></span></div>' +
+          '<span class="plano-adesao__pct" id="adesao-pct">' + pct + '% seguido</span></div>' +
+        '<p class="pcard__hint">Marque o que você seguiu — sua nutricionista acompanha sua adesão por aqui.</p></div>';
       var body = refs.map(function (r, ri) {
         var itens = (r.itens || []).map(function (it, ii) {
           var texto = itemTexto(it);
           var subs = itemSubs(it);
           var troca = subs ? '<span class="meal-item__subs"><b>ou</b> ' + esc(subs) + '</span>' : '';
-          if (!interativo) return '<li class="meal-item"><span>' + esc(texto) + '</span>' + troca + '</li>';
-          var key = ri + ":" + ii;
+          var key = prefixo + ri + ":" + ii;
           var done = checkGet(key);
           return '<li class="meal-item"><label><input type="checkbox" data-check="' + esc(key) + '"' +
             (done ? " checked" : "") + (readonly ? " disabled" : "") + '> ' +
@@ -497,16 +556,26 @@
           foto +
           '<ul class="meal__list">' + itens + '</ul></div>';
       }).join("");
-      return (multi ? '<div class="plano-sep">' + esc(plano.titulo || "Plano alimentar") + '</div>' : '') + head + body;
-    }).join("");
-    // Lista de compras (uma só, do 1º plano liberado) + dicas de marmita.
+      return head + body;
+    })();
+    // Lista de compras (do plano que ela escolheu seguir) + dicas de marmita.
     // Sai só dos alimentos do plano — ingrediente de receita não entra mais
     // (a receita já lista os dela). O que a nutri curou está no próprio plano;
     // o que a paciente mexeu, nas marcas dela.
     var compras = window.ListaCompras
-      ? window.ListaCompras.htmlPortal(planos[0], ctx.marcas, readonly, comprasEdits(planos[0]))
+      ? window.ListaCompras.htmlPortal(plano, ctx.marcas, readonly, comprasEdits(plano))
       : "";
-    return renov + novo + corpo + compras;
+    return renov + novo + picker + corpo + compras;
+  }
+
+  /* Redesenha o painel do plano inteiro (troca de plano, edição da lista de
+     compras). As fotos são reassinadas porque o HTML novo perdeu as URLs. */
+  function rerenderPlano() {
+    var pane = el("pane-plano");
+    if (!pane || !ctx.paciente) return;
+    pane.innerHTML = renderPlano(ctx.paciente);
+    hidratarFotosPortal(ctx.paciente);
+    hidratarFotosRefeicao();
   }
 
   // Marcação do plano sincronizada no banco (tabela plano_adesao, gravada pelo
@@ -537,17 +606,24 @@
   }
 
   // % de itens do plano marcados como seguidos (só conta itens que ainda existem).
-  function adesaoPct(p) {
-    var refs = (p.plano && p.plano.refeicoes) || [];
+  function adesaoPct(plano, prefixo) {
+    var refs = (plano && plano.refeicoes) || [];
     var total = 0, feitos = 0;
     refs.forEach(function (r, ri) {
       if (r && r.alternativa) return; // opção alternativa não pesa na adesão
-      (r.itens || []).forEach(function (_it, ii) { total++; if (ctx.marcas[ri + ":" + ii] === true) feitos++; });
+      (r.itens || []).forEach(function (_it, ii) { total++; if (ctx.marcas[prefixo + ri + ":" + ii] === true) feitos++; });
     });
     return total ? Math.round(feitos * 100 / total) : 0;
   }
+  // Adesão do plano que está na tela — com vários liberados, a barra é do escolhido.
+  function adesaoPctAtual() {
+    var planos = planosLiberados(ctx.paciente);
+    if (!planos.length) return 0;
+    var i = planoSelIdx(ctx.paciente, planos);
+    return adesaoPct(planos[i], checkPrefixo(planos, i));
+  }
   function refreshAdesaoUI() {
-    var pct = adesaoPct(ctx.paciente);
+    var pct = adesaoPctAtual();
     var fill = el("adesao-fill"), lbl = el("adesao-pct");
     if (fill) fill.style.width = pct + "%";
     if (lbl) lbl.textContent = pct + "% seguido";
@@ -684,7 +760,7 @@
       '<span class="card__sub">peso · ' + esc(labels[0] || "") + '–' + esc(labels[labels.length - 1] || "") + '</span></div>' +
       '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Evolução de peso">' +
       '<defs><linearGradient id="gradWineP" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0%" stop-color="#0E4C5C" stop-opacity="0.20"/><stop offset="100%" stop-color="#0E4C5C" stop-opacity="0"/></linearGradient></defs>' +
+      '<stop offset="0%" stop-color="#1C5B57" stop-opacity="0.20"/><stop offset="100%" stop-color="#1C5B57" stop-opacity="0"/></linearGradient></defs>' +
       '<path class="chart__area" style="fill:url(#gradWineP)" d="' + area + '"></path>' +
       '<path class="chart__line" d="' + line + '"></path>' + dots + lbls + '</svg>';
   }
@@ -758,7 +834,10 @@
   function abrirChatCom(texto) {
     var tab = el("portal-tabs").querySelector('.ptab[data-t="chat"]');
     if (!tab || tab.hidden) {
-      window.open("https://wa.me/" + WA_NUTRI + "?text=" + encodeURIComponent(texto), "_blank", "noopener");
+      /* Sem a aba de mensagens não há para onde mandar: o WhatsApp daqui era
+         o da Ana, e este portal também atende paciente de outra nutri. */
+      alert("As mensagens ainda não estão liberadas no seu portal. " +
+            "Peça à sua nutricionista para ativar em Perfil › Portal do paciente.");
       return;
     }
     switchTab("chat");
@@ -815,12 +894,22 @@
       if (edits.extras.length) ctx.marcas["lc:extra"] = edits.extras; else delete ctx.marcas["lc:extra"];
       if (edits.remover.length) ctx.marcas["lc:rm"] = edits.remover; else delete ctx.marcas["lc:rm"];
       salvarMarcas();
-      var pane = el("pane-plano");
-      if (pane && ctx.paciente) {
-        pane.innerHTML = renderPlano(ctx.paciente);
-        hidratarFotosPortal(ctx.paciente);
-        hidratarFotosRefeicao();
-      }
+      rerenderPlano();
     });
   }
+
+  /* Convite de renovação: leva para o chat com a mensagem já escrita. Sem a
+     aba de mensagens liberada, abrirChatCom explica em vez de não fazer nada. */
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest || !e.target.closest("[data-renov-chat]")) return;
+    abrirChatCom("Quero conversar sobre continuar o meu acompanhamento 🌸");
+  });
+
+  /* Troca do plano em foco (só existe com mais de um liberado). */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-plano-sel]");
+    if (!b || !ctx.paciente) return;
+    setPlanoSel(ctx.paciente, b.getAttribute("data-plano-sel"));
+    rerenderPlano();
+  });
 })();

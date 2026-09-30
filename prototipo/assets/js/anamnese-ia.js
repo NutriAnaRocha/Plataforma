@@ -313,7 +313,7 @@
       var box = document.getElementById("ia-cond-box");
       if (box) {
         box.innerHTML = '<div class="ia-cond__ok">✓ Salvo na evolução clínica. ' +
-          '<a href="prontuario.html?id=' + encodeURIComponent(p.id) + '#evolucao">Ver no prontuário</a></div>';
+          '<a href="pacientes.html?id=' + encodeURIComponent(p.id) + '&sec=prontuario">Ver no prontuário</a></div>';
       }
       ultimaConduta = null;
     } catch (e) {

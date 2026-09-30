@@ -583,7 +583,7 @@
       limparRascunho();
       var host = document.getElementById("anm-root");
       if (host) host.innerHTML = enviadaHTML({
-        data: new Date().toISOString().slice(0, 10), respostas: respostas
+        data: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10), respostas: respostas
       });
       if (_onSalvo) _onSalvo(respostas);
     }).catch(function () {

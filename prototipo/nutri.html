@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Esta é a ÚNICA página do app servida num endereço com barra no meio
+       (/nutri/ana-luisa-rocha). Sem o <base>, "assets/css/…" seria procurado
+       em /nutri/assets/… e todo CSS e JS voltava 404 — a página ficava no
+       esqueleto de carregamento para sempre. Não trocar por caminhos com "/"
+       na frente: o versionar_assets.py casa com o formato relativo. -->
+  <base href="/" />
+  <title>Perfil da nutricionista · NutriPlat</title>
+  <meta name="description" content="Perfil profissional de nutricionista na NutriPlat: especialidades, formação, modalidade de atendimento e contato." />
+  <meta name="theme-color" content="#1C5B57" />
+  <link rel="canonical" href="https://app.nutrianaluisarocha.com/encontre-sua-nutri" />
+  <link rel="icon" href="assets/img/logo-mark.png" />
+
+  <meta property="og:type" content="profile" />
+  <meta property="og:site_name" content="NutriPlat" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:title" content="Perfil de nutricionista · NutriPlat" />
+  <meta property="og:description" content="Especialidades, formação e atendimento — encontre a nutricionista certa para o seu caso." />
+  <meta property="og:image" content="https://app.nutrianaluisarocha.com/assets/img/og-nutri.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/tokens.css?v=ad4420de" />
+  <link rel="stylesheet" href="assets/css/diretorio.css?v=677d8495" />
+</head>
+<body class="pub">
+
+<header class="pub-nav">
+  <div class="wrap">
+    <a class="pub-nav__marca" href="/encontre-sua-nutri">
+      <img src="assets/img/logo-mark.png" alt="" /> NutriPlat
+    </a>
+    <nav class="pub-nav__links">
+      <a href="/encontre-sua-nutri">Encontrar nutri</a>
+      <a href="/seja-indicada">Sou nutricionista</a>
+      <a class="btn btn--contorno" href="/">Entrar</a>
+    </nav>
+  </div>
+</header>
+
+<main id="perfil">
+  <div class="wrap" style="padding:var(--sp-7) 0">
+    <div class="esqueleto" style="height:240px"></div>
+  </div>
+</main>
+
+<footer class="pub-rodape">
+  <div class="wrap">
+    <div>
+      <strong style="font-family:var(--font-display);font-weight:900;color:var(--branco)">NutriPlat</strong>
+      <p class="nota" style="margin-top:var(--sp-2)">
+        A NutriPlat não presta atendimento nutricional: ela conecta você a nutricionistas com registro
+        ativo no CRN. O atendimento, o plano e a conduta são de responsabilidade da profissional escolhida.
+      </p>
+    </div>
+    <div>
+      <p><a href="/encontre-sua-nutri">Ver todas as nutricionistas</a></p>
+      <p><a href="/privacidade">Privacidade</a></p>
+      <p><a href="/termos">Termos de uso</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/diretorio.js?v=f3bd53be"></script>
+<script src="assets/js/nutri-perfil.js?v=fcf6ae8a"></script>
+</body>
+</html>

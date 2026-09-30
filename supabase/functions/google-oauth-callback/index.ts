@@ -16,8 +16,10 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const CLIENT_ID = Deno.env.get("GOOGLE_CLIENT_ID") || "";
 const CLIENT_SECRET = Deno.env.get("GOOGLE_CLIENT_SECRET") || "";
-const REDIRECT_URI = `${SUPABASE_URL}/functions/v1/google-oauth-callback`;
+// Mesmo valor do google-oauth-start (domínio próprio → 302 do .htaccess p/ cá).
+const REDIRECT_URI = "https://app.nutrianaluisarocha.com/google-callback";
 const FALLBACK_RETURN = "https://app.nutrianaluisarocha.com/configuracoes.html";
+const CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.events";
 
 // Redireciona o navegador de volta à plataforma, sinalizando sucesso/erro.
 function backTo(returnTo: string, status: "ok" | "erro", detail?: string) {
@@ -51,7 +53,9 @@ Deno.serve(async (req) => {
   // state = "nonce|returnTo"
   const sepIdx = state.indexOf("|");
   const nonce = sepIdx >= 0 ? state.slice(0, sepIdx) : state;
-  const returnTo = sepIdx >= 0 ? state.slice(sepIdx + 1) : FALLBACK_RETURN;
+  const rawReturn = sepIdx >= 0 ? state.slice(sepIdx + 1) : "";
+  // Mesma regra do start: só volta para o domínio da plataforma (evita open redirect).
+  const returnTo = /^https:\/\/app\.nutrianaluisarocha\.com\//.test(rawReturn) ? rawReturn : FALLBACK_RETURN;
 
   if (oauthErr) return backTo(returnTo, "erro", oauthErr);
   if (!code || !nonce) return backTo(returnTo, "erro", "faltou code/state");
@@ -71,7 +75,7 @@ Deno.serve(async (req) => {
   const nutriId = st.nutricionista_id as string;
 
   // 2) Troca o code por tokens.
-  let tok: { refresh_token?: string; access_token?: string; id_token?: string; error?: string; error_description?: string };
+  let tok: { refresh_token?: string; access_token?: string; id_token?: string; scope?: string; error?: string; error_description?: string };
   try {
     const resp = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
@@ -88,6 +92,22 @@ Deno.serve(async (req) => {
     if (!resp.ok) return backTo(returnTo, "erro", tok.error_description || tok.error || "falha na troca de token");
   } catch (e) {
     return backTo(returnTo, "erro", "erro de rede com o Google");
+  }
+
+  // 2b) Consentimento granular: a nutri pode desmarcar a caixa da agenda.
+  //     Sem calendar.events a sync daria 403 em silêncio, então não conecta,
+  //     devolve a concessão parcial e pede para autorizar de novo.
+  const scopes = (tok.scope || "").split(" ");
+  if (!scopes.includes(CALENDAR_SCOPE)) {
+    const t = tok.refresh_token || tok.access_token;
+    if (t) {
+      await fetch("https://oauth2.googleapis.com/revoke", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ token: t }),
+      }).catch(() => {});
+    }
+    return backTo(returnTo, "erro", "sem_agenda");
   }
 
   const email = emailFromIdToken(tok.id_token);

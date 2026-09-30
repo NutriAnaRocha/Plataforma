@@ -9,13 +9,13 @@ Onde cada pedaço mora:
 
 | Parte | Caminho |
 |---|---|
-| App (telas, PWA) | `Sites/site/mercado/` |
+| App (telas, PWA) | `Sites/site/rotulens/` |
 | Chamada de IA + regras | `Plataforma Nutri/supabase/functions/analisar-rotulo/` |
 | Banco (tabelas, RLS) | `Plataforma Nutri/supabase/migrations/0051_mercado_com_a_nutri.sql` |
 | Base de produtos | esta pasta (`importar_off.py`, `carregar_produtos.py`) |
 | Divulgação | seção `#app` em `Sites/site/index.html` |
 
-Endereço: **https://nutrianarocha.github.io/site/mercado/**
+Endereço: **https://nutrianaluisarocha.com/rotulens/**
 
 ---
 
@@ -285,3 +285,45 @@ Vai no dicionário `EXTRA` de `receitas_dados.py`, **com a fonte na própria lin
 Contadas no servidor, por dispositivo, em `mercado_receitas_vistas`. Quem limpa o navegador
 ganha outras três — e tudo bem: servir texto pronto do banco não custa nada (diferente da
 leitura de rótulo, que chama a OpenAI), e quem faz isso não ia assinar mesmo.
+
+---
+
+## Indicação saudável e perfil da pessoa (setembro/2026)
+
+**O que aconteceu:** uma paciente com diabetes fotografou um biscoito e o app
+sugeriu **biscoito recheado**, cream cracker e água e sal. Três causas:
+
+1. a marca só precisava ser *menos pior* que o produto da foto — nenhuma régua
+   absoluta;
+2. o prompt de escolha mandava **evitar linha proteica/fit** e preferir "a mesma
+   coisa" (quem pegou biscoito recebia biscoito);
+3. o app não sabia nada sobre quem estava lendo.
+
+**O que mudou** (`analisar-rotulo/index.ts`):
+
+| Onde | Regra |
+|---|---|
+| `serveParaIndicar()` | Régua absoluta para QUALQUER pessoa: nada recheado/cobertura/wafer, nada "ALTO EM" (lupa da RDC 429), sem açúcar entre os 3 primeiros ingredientes, sem gordura hidrogenada, sem farinha branca/amido em 1º em biscoito, pão, barra e cereal. |
+| `PERFIS` | O que a pessoa marca na tela: controla o açúcar, pressão, colesterol, mais proteína, sem lactose, sem glúten. Com "açúcar": ≤ 5 g/100 g, nenhum açúcar adicionado em nenhuma posição, sem amido refinado em 1º. Sem glúten exige **prova** (selo ou "não contém glúten"). |
+| `FAMILIAS` | A busca olha a prateleira vizinha que resolve a mesma vontade (biscoito → barra proteica). |
+| `MARCAS_DA_NUTRI` | Flormel e Hey!Mu ganham prioridade no ranking quando estão na base e passam na régua. |
+| `INDICACOES_DA_ANA` | Bloco fixo "Vontade de doce? O que eu indico" (Flormel, Hey!Mu), escrito no servidor, com o aviso de que zero adição de açúcar não é liberado à vontade. **Ana: revise e amplie esta lista.** |
+| Prompts | Caminhos proíbem polvilho, biscoito de arroz, suco, mel, mascavo, granola/barra com açúcar; troca de doce é a versão **sem adição de açúcar**. |
+| `REFERENCIA_TACO` | Refrigerante e energético não são mais comparados com suco de laranja. |
+
+**O perfil é dado de saúde (LGPD art. 11) e não é gravado:** fica no
+localStorage do aparelho, atravessa a função e volta só na resposta.
+
+**Custo esperado:** com a régua absoluta, várias prateleiras vão ficar sem três
+marcas — o app diz isso e mostra os caminhos. Indicar pouco é melhor que
+indicar mal. Para pôr as marcas da Ana na base:
+
+```bash
+python importar_off.py --marcas flormel,hey-mu --anexar
+python carregar_produtos.py
+```
+
+**Receitas** (`receitas_dados.py`): a "granola sem açúcar" levava mel (agora é
+banana madura); mel virou adoçante opcional nas sobremesas e bebidas; os bolos
+trocaram açúcar/mascavo por eritritol culinário; o pão integral não leva mais
+mel. SQL regenerado em `0055`.

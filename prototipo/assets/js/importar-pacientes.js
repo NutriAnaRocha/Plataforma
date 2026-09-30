@@ -1,10 +1,10 @@
 /* ============================================================
-   Anutri — Importador de pacientes (CSV / XLSX)
+   NutriPlat — Importador de pacientes (CSV / XLSX)
    ------------------------------------------------------------
    Assistente de 4 passos para a nutri trazer a carteira de
    pacientes de outra plataforma:
      1. Arquivo    — CSV ou XLSX (é o que todo sistema exporta)
-     2. Mapeamento — coluna do arquivo -> campo da Anutri
+     2. Mapeamento — coluna do arquivo -> campo da NutriPlat
      3. Prévia     — normalização, duplicados, erros
      4. Importar   — insert em lote + relatório
 
@@ -16,7 +16,7 @@
 (function () {
   "use strict";
 
-  /* ---------- Campos que a Anutri aceita no import ---------- */
+  /* ---------- Campos que a NutriPlat aceita no import ---------- */
   var CAMPOS = [
     { k: "nome",            l: "Nome completo",       req: true,
       alias: ["nome", "nomecompleto", "paciente", "nomedopaciente", "nomepaciente", "cliente", "nomecliente", "nomedocliente"] },

@@ -7,20 +7,20 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..800&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="assets/css/tokens.css?v=e7f9d01b" />
-  <link rel="stylesheet" href="assets/css/style.css?v=3cca70f7" />
-  <link rel="stylesheet" href="assets/css/portal.css?v=c20df8a6" />
-  <link rel="stylesheet" href="assets/css/antropometria.css?v=15abeef7" />
-  <link rel="stylesheet" href="assets/css/lista-compras.css?v=b9e32758" />
-  <link rel="stylesheet" href="assets/css/treino.css?v=dde88d71" />
-  <link rel="stylesheet" href="assets/css/metas.css?v=13a1c815" />
-  <link rel="stylesheet" href="assets/css/receitas-paciente.css?v=cedb5ae5" />
-  <link rel="stylesheet" href="assets/css/anamnese.css?v=695bbe98" />
-  <link rel="stylesheet" href="assets/css/intestino.css?v=68c19ebc" />
-  <link rel="stylesheet" href="assets/css/ciclo.css?v=7cfb9e9b" />
-  <link rel="stylesheet" href="assets/css/paciente-arquivos.css?v=4281012e" />
+  <link rel="stylesheet" href="assets/css/tokens.css?v=ad4420de" />
+  <link rel="stylesheet" href="assets/css/style.css?v=d7d917c5" />
+  <link rel="stylesheet" href="assets/css/portal.css?v=ccfedd4b" />
+  <link rel="stylesheet" href="assets/css/antropometria.css?v=4ec1c745" />
+  <link rel="stylesheet" href="assets/css/lista-compras.css?v=5bf0256a" />
+  <link rel="stylesheet" href="assets/css/treino.css?v=d0de9f43" />
+  <link rel="stylesheet" href="assets/css/metas.css?v=4c924dc6" />
+  <link rel="stylesheet" href="assets/css/receitas-paciente.css?v=d6182c03" />
+  <link rel="stylesheet" href="assets/css/anamnese.css?v=efc5dada" />
+  <link rel="stylesheet" href="assets/css/intestino.css?v=6c2187ac" />
+  <link rel="stylesheet" href="assets/css/ciclo.css?v=953d8ea0" />
+  <link rel="stylesheet" href="assets/css/paciente-arquivos.css?v=190f96d1" />
 </head>
 <body class="portal-body">
 
@@ -36,7 +36,7 @@
     <header class="portal-head">
       <div class="portal-head__brand">
         <span class="portal-head__mark"><img src="assets/img/logo-mark.png" alt="" /></span>
-        <span data-brand>Anutri</span>
+        <span data-brand>NutriPlat</span>
       </div>
       <div class="portal-head__right">
         <span class="portal-head__hi" id="portal-hi">Olá</span>
@@ -52,6 +52,9 @@
         <p class="portal-hero__sub" id="portal-sub">Acompanhe seu plano, sua evolução e fale com sua nutricionista.</p>
       </div>
     </section>
+
+    <!-- Avaliação da última consulta (só aparece quando há uma pendente) -->
+    <div id="av-host"></div>
 
     <!-- Abas -->
     <nav class="portal-tabs" id="portal-tabs" aria-label="Seções">
@@ -94,34 +97,38 @@
   <div class="portal-loading" id="portal-loading">Carregando seu acompanhamento…</div>
 
   <!-- Scripts -->
-  <script src="assets/js/pwa.js?v=f2f2e8e0"></script>
-  <script src="assets/js/supabase-client.js?v=5dec5cdd"></script>
-  <script src="assets/js/pacientes-db.js?v=d1dd6dbc"></script>
-  <script src="assets/js/alimentos-data.js?v=db94e741"></script>
-  <script src="assets/js/nome-alimento.js?v=5caaff64"></script>
-  <script src="assets/js/lista-compras.js?v=08a11133"></script>
-  <script src="assets/js/anamnese-paciente.js?v=70b45bb1"></script>
-  <script src="assets/js/reavaliacao-paciente.js?v=30afb16b"></script>
-  <script src="assets/js/prato-paciente.js?v=b38d7329"></script>
-  <script src="assets/js/receitas-paciente.js?v=be372628"></script>
+  <script src="assets/js/pwa.js?v=89ea9fd0"></script>
+  <script src="assets/js/icones.js?v=584c5273"></script>
+  <script src="assets/js/supabase-client.js?v=6b9d6888"></script>
+  <script src="assets/js/pacientes-db.js?v=46268ced"></script>
+  <script src="assets/js/alimentos-data.js?v=536d0f93"></script>
+  <script src="assets/js/nome-alimento.js?v=422dea4a"></script>
+  <script src="assets/js/lista-compras.js?v=be243996"></script>
+  <script src="assets/js/anamnese-paciente.js?v=365f649b"></script>
+  <script src="assets/js/reavaliacao-paciente.js?v=8344652b"></script>
+  <script src="assets/js/prato-paciente.js?v=4e59e0a0"></script>
+  <script src="assets/js/receitas-paciente.js?v=8d9b5342"></script>
   <!-- Treino e Metas expõem TreinoView/MetasView, que portal.js chama para
        montar as abas 🏋️ e 🎯. Sem estes dois, as abas nascem vazias. -->
-  <script src="assets/js/treino-paciente.js?v=2388fbbf"></script>
-  <script src="assets/js/metas-paciente.js?v=8c662029"></script>
+  <script src="assets/js/treino-paciente.js?v=70a35ec3"></script>
+  <script src="assets/js/metas-paciente.js?v=12c14a06"></script>
   <!-- Espaços de auto-registro do paciente (0067/0068). Expõem
        IntestinoView/CicloView, que portal.js monta nas abas 🌿 e 🌸. -->
-  <script src="assets/js/intestino.js?v=33141395"></script>
-  <script src="assets/js/ciclo.js?v=1a761f01"></script>
+  <script src="assets/js/intestino.js?v=baba3db2"></script>
+  <script src="assets/js/ciclo.js?v=1855a0dc"></script>
   <!-- Documentos que a nutri liberou nesta ficha (0070). Expõe
        ArquivosView, que portal.js monta na aba 📎. -->
   <!-- Formulas e exames do paciente: le a propria ficha (RLS). A regua dos
        marcadores vem de paciente-exames.js (window.Exames.MARC). -->
-  <script src="assets/js/editor-formulas.js?v=3f1d7769"></script>
-  <script src="assets/js/paciente-exames.js?v=ce65b8ca"></script>
-  <script src="assets/js/portal-clinico.js?v=e83f9e30"></script>
-  <script src="assets/js/arquivos-db.js?v=243291a0"></script>
-  <script src="assets/js/arquivos-paciente.js?v=0654ae1b"></script>
-  <script src="assets/js/portal.js?v=3d463de7"></script>
-  <script src="assets/js/app.js?v=2fe09b12"></script>
+  <script src="assets/js/editor-formulas.js?v=a9bcffd6"></script>
+  <script src="assets/js/paciente-exames.js?v=08ea59fd"></script>
+  <script src="assets/js/portal-clinico.js?v=7944349c"></script>
+  <script src="assets/js/arquivos-db.js?v=d3356b10"></script>
+  <script src="assets/js/arquivos-paciente.js?v=96410b97"></script>
+  <!-- AvaliacaoView: o cartão "como foi a sua consulta" (#av-host), montado
+       por portal.js no fim do boot. -->
+  <script src="assets/js/avaliacao-paciente.js?v=1275e44f"></script>
+  <script src="assets/js/portal.js?v=cc41b892"></script>
+  <script src="assets/js/app.js?v=cb7d93e5"></script>
 </body>
 </html>

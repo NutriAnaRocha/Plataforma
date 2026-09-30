@@ -1,0 +1,532 @@
+/* ============================================================
+   DIRETÓRIO PÚBLICO — encontre-sua-nutri · nutri · seja-indicada
+   As únicas páginas da NutriPlat que abrem SEM login. Por isso têm
+   casca própria: nada de sidebar, nada de auth-guard, nada de
+   app.js. Só tokens.css + este arquivo.
+   ============================================================ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body.pub {
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  color: var(--texto);
+  background: var(--branco);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Link herda a cor do texto — MENOS quando ele é um botão: `.pub a` é mais
+   específico que `.btn--primario`, e sem o :not() o rótulo do CTA sai na cor
+   do corpo em cima do magenta, ilegível. */
+.pub a:not(.btn) { color: inherit; }
+
+.wrap { width: min(100% - 32px, 1100px); margin-inline: auto; }
+
+/* ---------- Cabeçalho ---------- */
+.pub-nav {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(255, 255, 255, .92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cinza-borda);
+}
+.pub-nav .wrap {
+  display: flex; align-items: center; gap: var(--sp-4);
+  min-height: 64px;
+}
+.pub-nav__marca {
+  display: flex; align-items: center; gap: var(--sp-2);
+  font-family: var(--font-display); font-weight: 900;
+  font-size: 1.3rem; color: var(--petroleo); text-decoration: none;
+}
+.pub-nav__marca img { height: 30px; width: auto; }
+.pub-nav__links { margin-left: auto; display: flex; align-items: center; gap: var(--sp-4); }
+.pub-nav__links a { font-weight: 600; font-size: var(--fs-sm); text-decoration: none; }
+.pub-nav__links a:hover { color: var(--magenta); }
+
+/* ---------- Botões ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  padding: 12px 22px; border: 0; border-radius: var(--radius-btn);
+  font-family: var(--font-ui); font-weight: 600; font-size: var(--fs-sm);
+  cursor: pointer; text-decoration: none; transition: background var(--t-fast), transform var(--t-fast);
+}
+.btn:focus-visible { outline: none; box-shadow: var(--ring-foco); }
+.btn--primario { background: var(--magenta); color: var(--branco); }
+.btn--primario:hover { background: var(--magenta-escuro); }
+.btn--petroleo { background: var(--petroleo); color: var(--branco); }
+.btn--petroleo:hover { background: var(--petroleo-escuro); }
+.btn--contorno { background: transparent; color: var(--petroleo); box-shadow: inset 0 0 0 1.5px var(--cinza-borda); }
+.btn--contorno:hover { box-shadow: inset 0 0 0 1.5px var(--petroleo); }
+.btn--bloco { width: 100%; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+
+/* ---------- Abertura ---------- */
+.hero {
+  background: linear-gradient(160deg, var(--petroleo) 0%, var(--petroleo-escuro) 100%);
+  color: var(--branco);
+  padding: clamp(48px, 8vw, 88px) 0;
+}
+.hero h1 {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(2rem, 5vw, 3rem); line-height: var(--lh-tight);
+  margin-bottom: var(--sp-4);
+}
+.hero p { max-width: 58ch; color: var(--sobre-vinho-70); font-size: 1.02rem; }
+.hero .btn { margin-top: var(--sp-5); }
+
+/* ---------- Seções ---------- */
+.secao { padding: clamp(40px, 6vw, 72px) 0; }
+.secao--alt { background: var(--azul-suave); }
+.secao h2 {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(1.5rem, 3.2vw, 2rem); color: var(--petroleo);
+  margin-bottom: var(--sp-3);
+}
+.secao > .wrap > p.sub { max-width: 62ch; color: var(--texto-sutil); margin-bottom: var(--sp-6); }
+
+/* ---------- Quiz ---------- */
+.quiz {
+  background: var(--branco); border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg); padding: clamp(20px, 4vw, 36px);
+  margin-top: calc(clamp(48px, 8vw, 88px) * -.5);
+  position: relative; z-index: 5;
+}
+.quiz__trilha { display: flex; gap: var(--sp-2); margin-bottom: var(--sp-5); }
+.quiz__trilha span {
+  flex: 1; height: 4px; border-radius: 999px; background: var(--cinza-borda);
+  transition: background var(--t-med);
+}
+.quiz__trilha span.feito { background: var(--magenta); }
+.quiz__passo[hidden] { display: none; }
+.quiz h3 {
+  font-family: var(--font-display); font-weight: 900; font-size: var(--fs-h2);
+  color: var(--petroleo); margin-bottom: var(--sp-2);
+}
+.quiz .ajuda { color: var(--texto-sutil); font-size: var(--fs-sm); margin-bottom: var(--sp-4); }
+.quiz__acoes { display: flex; gap: var(--sp-3); margin-top: var(--sp-5); flex-wrap: wrap; }
+.quiz__acoes .btn { flex: 1 1 160px; }
+
+/* Opções clicáveis (rádio e caixa) desenhadas como cartão. */
+.opcoes { display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.opcao {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: 14px 16px; border-radius: var(--radius-input);
+  box-shadow: inset 0 0 0 1.5px var(--cinza-borda);
+  cursor: pointer; font-weight: 500; transition: box-shadow var(--t-fast), background var(--t-fast);
+}
+.opcao:hover { box-shadow: inset 0 0 0 1.5px var(--petroleo-claro); }
+.opcao input { accent-color: var(--magenta); width: 18px; height: 18px; flex: none; }
+.opcao:has(input:checked) { background: var(--magenta-suave); box-shadow: inset 0 0 0 2px var(--magenta); }
+.opcao:has(input:focus-visible) { box-shadow: var(--ring-foco), inset 0 0 0 2px var(--magenta); }
+
+.campo { display: grid; gap: var(--sp-2); }
+.campo label { font-weight: 600; font-size: var(--fs-sm); color: var(--petroleo); }
+.campo select, .campo input {
+  font-family: var(--font-ui); font-size: var(--fs-body); padding: 12px 14px;
+  border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-input);
+  background: var(--branco); color: var(--texto);
+}
+.campo select:focus, .campo input:focus { outline: none; border-color: var(--magenta); box-shadow: var(--ring-foco); }
+
+/* ---------- Barra de filtros dos resultados ---------- */
+.filtros {
+  display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: end;
+  padding: var(--sp-4); background: var(--branco);
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  margin-bottom: var(--sp-5);
+}
+.filtros .campo { flex: 1 1 180px; }
+
+/* ---------- Cartões ---------- */
+.faixa__titulo {
+  display: flex; align-items: baseline; gap: var(--sp-3); flex-wrap: wrap;
+  margin-bottom: var(--sp-4);
+}
+.faixa__titulo h3 {
+  font-family: var(--font-display); font-weight: 900; font-size: var(--fs-h2); color: var(--petroleo);
+}
+.faixa__titulo small { color: var(--texto-sutil); font-size: var(--fs-caption); }
+
+.cards { display: grid; gap: var(--sp-4); grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+
+.card {
+  display: flex; flex-direction: column; gap: var(--sp-3);
+  padding: var(--sp-5); background: var(--branco);
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm); text-decoration: none;
+  transition: box-shadow var(--t-med), transform var(--t-med);
+}
+.card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.card--destaque { border-color: var(--magenta); box-shadow: var(--shadow-md); }
+.card__topo { display: flex; gap: var(--sp-3); align-items: center; }
+.card__foto {
+  width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex: none;
+  background: var(--azul-suave); color: var(--petroleo);
+  display: grid; place-items: center;
+  font-family: var(--font-display); font-weight: 900; font-size: 1.4rem;
+}
+.card__nome { font-family: var(--font-display); font-weight: 900; font-size: var(--fs-h3); color: var(--petroleo); }
+.card__crn { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.card__bio {
+  color: var(--texto); font-size: var(--fs-sm);
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.card__redes { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); }
+.card__rede {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 32px; min-width: 0;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--petroleo); overflow-wrap: anywhere; cursor: pointer;
+}
+.card__rede:hover { text-decoration: underline; }
+.card__rede svg { flex: none; }
+.card__rodape { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
+.card__preco { font-weight: 600; color: var(--petroleo); font-size: var(--fs-sm); }
+
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.chip {
+  padding: 4px 12px; border-radius: var(--radius-chip);
+  background: var(--azul-suave); color: var(--petroleo);
+  font-size: var(--fs-caption); font-weight: 600;
+}
+.chip--selo { background: var(--magenta-suave); color: var(--magenta); }
+.chip--modo { background: var(--cinza-claro); color: var(--texto); }
+
+/* ---------- Estados ---------- */
+.aviso {
+  padding: var(--sp-6); text-align: center; color: var(--texto-sutil);
+  border: 1px dashed var(--cinza-borda); border-radius: var(--radius-card);
+}
+.aviso strong { display: block; color: var(--petroleo); font-size: var(--fs-h3); margin-bottom: var(--sp-2); }
+.esqueleto {
+  height: 190px; border-radius: var(--radius-card); background: var(--cinza-claro);
+  animation: pulso 1.2s ease-in-out infinite;
+}
+@keyframes pulso { 50% { opacity: .5; } }
+
+/* ---------- Página da nutri ---------- */
+.perfil__capa { background: linear-gradient(160deg, var(--petroleo) 0%, var(--petroleo-escuro) 100%); color: var(--branco); padding: clamp(36px, 6vw, 64px) 0; }
+.perfil__topo { display: flex; gap: var(--sp-5); align-items: center; flex-wrap: wrap; }
+.perfil__foto {
+  width: 120px; height: 120px; border-radius: 50%; object-fit: cover; flex: none;
+  border: 3px solid var(--sobre-vinho-16); background: var(--petroleo-claro);
+  display: grid; place-items: center; font-family: var(--font-display); font-weight: 900; font-size: 2.4rem; color: var(--branco);
+}
+.perfil__nome { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.7rem, 4vw, 2.4rem); }
+.perfil__meta { color: var(--sobre-vinho-70); font-size: var(--fs-sm); margin-top: var(--sp-1); }
+.perfil__capa .chips { margin-top: var(--sp-3); }
+.perfil__capa .chip { background: var(--sobre-vinho-16); color: var(--branco); }
+
+.perfil__corpo { display: grid; gap: var(--sp-6); grid-template-columns: 1fr 320px; align-items: start; }
+.perfil__texto h2 { font-family: var(--font-display); font-weight: 900; font-size: var(--fs-h2); color: var(--petroleo); margin: var(--sp-5) 0 var(--sp-2); }
+.perfil__texto p { white-space: pre-line; }
+.perfil__redes { display: flex; flex-direction: column; gap: var(--sp-2); }
+.perfil__rede { display: inline-flex; align-items: center; gap: var(--sp-2); color: var(--petroleo); font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.perfil__rede svg { flex: none; width: 20px; height: 20px; }
+.perfil__lado {
+  position: sticky; top: 88px; padding: var(--sp-5);
+  background: var(--branco); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-card); box-shadow: var(--shadow-md);
+  display: grid; gap: var(--sp-3);
+}
+.perfil__lado .preco { font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: var(--petroleo); }
+.perfil__lado small { color: var(--texto-sutil); font-size: var(--fs-caption); }
+
+/* ---------- Planos (seja-indicada) ---------- */
+.planos { display: grid; gap: var(--sp-4); grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-items: start; }
+.plano {
+  padding: var(--sp-5); background: var(--branco);
+  border: 1px solid var(--cinza-borda); border-radius: var(--radius-card);
+  display: grid; gap: var(--sp-3); box-shadow: var(--shadow-sm);
+}
+.plano--destaque { border-color: var(--magenta); box-shadow: var(--shadow-lg); }
+.plano h3 { font-family: var(--font-display); font-weight: 900; font-size: var(--fs-h2); color: var(--petroleo); }
+.plano .valor { font-family: var(--font-display); font-weight: 900; font-size: 2rem; color: var(--magenta); }
+.plano .valor span { font-family: var(--font-ui); font-weight: 600; font-size: var(--fs-sm); color: var(--texto-sutil); }
+.plano ul { list-style: none; display: grid; gap: var(--sp-2); font-size: var(--fs-sm); }
+.plano li { padding-left: 22px; position: relative; }
+.plano li::before { content: "✓"; position: absolute; left: 0; color: var(--magenta); font-weight: 700; }
+.plano li.nao { color: var(--texto-sutil); }
+.plano li.nao::before { content: "—"; color: var(--cinza-medio); }
+
+/* ---------- Rodapé ---------- */
+.pub-rodape {
+  background: var(--petroleo-escuro); color: var(--sobre-vinho-70);
+  padding: var(--sp-6) 0; font-size: var(--fs-sm); margin-top: var(--sp-7);
+}
+.pub-rodape .wrap { display: flex; gap: var(--sp-5); flex-wrap: wrap; justify-content: space-between; }
+.pub-rodape a { color: var(--branco); text-decoration: none; display: inline-block; padding: 5px 0; }
+.pub-rodape a:hover { text-decoration: underline; }
+.pub-rodape .nota { max-width: 60ch; font-size: var(--fs-caption); }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 900px) {
+  .perfil__corpo { grid-template-columns: 1fr; }
+  .perfil__lado { position: static; }
+}
+@media (max-width: 600px) {
+  .pub-nav__links a:not(.btn) { display: none; }
+  .quiz { margin-top: var(--sp-5); }
+  .cards { grid-template-columns: 1fr; }
+  .perfil__topo { flex-direction: column; align-items: flex-start; text-align: left; }
+}
+
+/* ============================================================
+   Cadastro público da nutri (/seja-indicada) — 14/09/2026.
+   Seletor de ciclo, cartões de plano com preço por ciclo e o
+   quiz de 4 passos que cria a conta.
+   ============================================================ */
+.ciclos {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  background: var(--branco); padding: 6px; border-radius: 999px;
+  box-shadow: inset 0 0 0 1.5px var(--cinza-borda);
+  width: fit-content; margin: 0 auto var(--sp-5);
+}
+.ciclo {
+  border: 0; background: transparent; cursor: pointer;
+  padding: 9px 16px; border-radius: 999px;
+  font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--texto-sutil);
+}
+.ciclo:hover { color: var(--petroleo); }
+.ciclo.is-on { background: var(--petroleo); color: var(--branco); }
+.ciclo__selo { font-size: var(--fs-caption); opacity: 0.85; }
+
+.plano { position: relative; }
+.plano__fita {
+  position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+  background: var(--magenta); color: var(--branco);
+  font-size: var(--fs-caption); font-weight: 700;
+  padding: 4px 12px; border-radius: 999px; white-space: nowrap;
+}
+.plano__cobranca { font-size: var(--fs-caption); color: var(--texto-sutil); margin-top: -6px; }
+.plano__resumo { font-size: var(--fs-sm); color: var(--texto); }
+.plano__trial {
+  margin-top: var(--sp-5); text-align: center;
+  font-size: var(--fs-sm); color: var(--texto-sutil);
+}
+
+/* ---- o quiz ---- */
+.cn-form {
+  background: var(--branco); border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm); padding: clamp(20px, 4vw, 32px);
+  max-width: 620px;
+}
+.cn-form h3 {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: var(--fs-h2); color: var(--petroleo); margin-bottom: var(--sp-4);
+}
+.cn-passos { display: flex; align-items: center; gap: 6px; margin-bottom: var(--sp-3); }
+.cn-bola { width: 28px; height: 5px; border-radius: 999px; background: var(--cinza-borda); }
+.cn-bola.is-on { background: var(--magenta); }
+.cn-passo-n { margin-left: auto; font-size: var(--fs-caption); color: var(--texto-sutil); }
+
+.cn-campos { display: grid; gap: var(--sp-3); }
+.campo { display: grid; gap: 5px; }
+.campo__rot { font-weight: 600; font-size: var(--fs-sm); color: var(--petroleo); }
+.campo__dica { font-size: var(--fs-caption); color: var(--texto-sutil); }
+.cn-campos input[type="text"], .cn-campos input[type="email"],
+.cn-campos input[type="tel"], .cn-campos input[type="password"],
+.cn-campos input[type="number"], .cn-campos select {
+  width: 100%; padding: 12px 14px; font: inherit;
+  border-radius: var(--radius-btn, 12px);
+  border: 1.5px solid var(--cinza-borda);
+  background: var(--branco); color: var(--texto);
+}
+.cn-campos input:focus, .cn-campos select:focus {
+  outline: none; border-color: var(--petroleo);
+}
+.dupla { display: grid; gap: var(--sp-3); grid-template-columns: 2fr 1fr; }
+.opcoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.opcoes--grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.cn-campos .opcao {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: var(--radius-btn, 12px);
+  box-shadow: inset 0 0 0 1.5px var(--cinza-borda);
+  font-size: var(--fs-sm); cursor: pointer;
+}
+.cn-campos .opcao:has(input:checked) { box-shadow: inset 0 0 0 1.5px var(--petroleo); }
+
+.resumo-plano {
+  display: grid; gap: 4px;
+  background: var(--azul-suave); color: var(--petroleo);
+  padding: var(--sp-3); border-radius: var(--radius-btn, 12px);
+}
+.link {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font: inherit; font-size: var(--fs-caption); font-weight: 600;
+  color: var(--magenta); text-decoration: underline; justify-self: start;
+}
+
+.cn-erro {
+  margin-top: var(--sp-3); padding: 10px 14px;
+  border-radius: var(--radius-btn, 12px);
+  background: #fdecec; color: #8c2626; font-size: var(--fs-sm);
+}
+.cn-acoes {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: var(--sp-3); margin-top: var(--sp-5);
+}
+.cn-fim { display: grid; gap: var(--sp-3); }
+.cn-fim h3 { margin-bottom: 0; }
+
+@media (max-width: 520px) {
+  .dupla { grid-template-columns: 1fr; }
+  .ciclos { width: 100%; justify-content: center; }
+  .cn-acoes .btn { flex: 1; }
+}
+
+/* ============================================================
+   VITRINE DE NUTRIS (/encontre-sua-nutri) — 16/09/2026.
+   Substituiu o quiz de 4 passos: coluna de filtros à esquerda e
+   resultados à direita. No celular a coluna vira painel de tela
+   cheia, aberto pelo botão "Filtros" — no telefone, filtro fixo
+   no topo empurraria os cartões para fora da primeira tela.
+   ============================================================ */
+.hero--curto { padding: clamp(32px, 5vw, 56px) 0; }
+
+.vit { margin-top: calc(clamp(32px, 5vw, 56px) * -.5); position: relative; z-index: 5; }
+
+/* ---- barra de busca ---- */
+.vit-busca {
+  display: flex; gap: var(--sp-3); align-items: center;
+  background: var(--branco); border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg); padding: var(--sp-4);
+}
+.vit-busca input[type="search"] {
+  flex: 1 1 auto; min-width: 0;
+  font-family: var(--font-ui); font-size: var(--fs-body); padding: 12px 14px;
+  border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-input);
+  background: var(--branco); color: var(--texto);
+}
+.vit-busca input[type="search"]:focus { outline: none; border-color: var(--magenta); box-shadow: var(--ring-foco); }
+.vit-busca__filtros { display: none; }
+
+/* ---- duas colunas ---- */
+.vit-corpo {
+  display: grid; grid-template-columns: 260px 1fr;
+  gap: var(--sp-5); align-items: start;
+  margin: var(--sp-5) 0 var(--sp-7);
+}
+
+/* ---- coluna de filtros ---- */
+.vit-filtros {
+  position: sticky; top: 80px;
+  background: var(--branco); border: 1px solid var(--cinza-borda);
+  border-radius: var(--radius-card); padding: var(--sp-4);
+  display: grid; gap: var(--sp-4);
+}
+.vit-filtros__cab { display: none; }
+.fgrupo { display: grid; gap: var(--sp-2); }
+.fgrupo + .fgrupo { border-top: 1px solid var(--cinza-borda); padding-top: var(--sp-4); }
+.fgrupo h4 {
+  font-family: var(--font-display); font-weight: 800; font-size: var(--fs-sm);
+  color: var(--petroleo); text-transform: none;
+}
+.fgrupo__corpo { display: grid; gap: 6px; }
+/* A lista de especialidades cresce com o domínio; sem teto ela empurra
+   preço e disponibilidade para fora da tela. */
+.fgrupo__corpo--rolagem { max-height: 230px; overflow-y: auto; padding-right: 4px; }
+.fgrupo .ajuda { color: var(--texto-sutil); font-size: var(--fs-caption); }
+.fgrupo .campo select { width: 100%; }
+
+/* Variante enxuta da .opcao: em coluna estreita o cartão gordo do quiz
+   deixaria dois filtros visíveis por vez. */
+.opcao--fina {
+  padding: 7px 10px; gap: var(--sp-2);
+  font-size: var(--fs-sm); font-weight: 500;
+  box-shadow: none; border-radius: var(--radius-input);
+}
+.opcao--fina:hover { background: var(--cinza-claro); box-shadow: none; }
+.opcao--fina input { width: 16px; height: 16px; }
+.opcao--fina:has(input:checked) { background: var(--magenta-suave); box-shadow: none; color: var(--magenta); font-weight: 600; }
+
+/* ---- preço ---- */
+.chips-preco { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips-preco button {
+  border: 0; cursor: pointer; font: inherit;
+  font-size: var(--fs-caption); font-weight: 600;
+  padding: 6px 12px; border-radius: var(--radius-chip);
+  background: var(--azul-suave); color: var(--petroleo);
+}
+.chips-preco button:hover { background: var(--cinza-claro); }
+.chips-preco button.is-on { background: var(--magenta); color: var(--branco); }
+.faixa-preco { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.faixa-preco input {
+  width: 100%; min-width: 0; font: inherit; font-size: var(--fs-sm);
+  padding: 9px 10px; border: 1.5px solid var(--cinza-borda);
+  border-radius: var(--radius-input); background: var(--branco); color: var(--texto);
+}
+.faixa-preco input:focus { outline: none; border-color: var(--magenta); box-shadow: var(--ring-foco); }
+.faixa-preco span { color: var(--texto-sutil); }
+
+/* ---- cabeçalho dos resultados ---- */
+.vit-cab {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-4);
+}
+.vit-cab__contador { font-weight: 600; color: var(--petroleo); }
+.campo--linha { display: flex; align-items: center; gap: var(--sp-2); }
+.campo--linha label { white-space: nowrap; }
+.campo--linha select { padding: 9px 12px; font-size: var(--fs-sm); }
+
+/* ---- pílulas do que está filtrado ---- */
+.vit-aplicados { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--sp-4); }
+.pilula {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 0; cursor: pointer; font: inherit;
+  font-size: var(--fs-caption); font-weight: 600;
+  padding: 6px 12px; border-radius: var(--radius-chip);
+  background: var(--magenta-suave); color: var(--magenta);
+}
+.pilula:hover { background: var(--magenta); color: var(--branco); }
+.pilula span[aria-hidden] { font-size: 1.05rem; line-height: 1; }
+
+.vit-mais { margin-top: var(--sp-5); text-align: center; }
+
+/* Rótulo só para leitor de tela — o campo tem placeholder visível. */
+.sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Cartão sem valor declarado: diz isso, em vez de um rodapé vazio. */
+.card__preco--vazio { color: var(--texto-sutil); font-weight: 500; }
+
+/* ---- celular: filtros viram painel ---- */
+@media (max-width: 860px) {
+  .vit-corpo { grid-template-columns: 1fr; }
+  .vit-busca__filtros { display: inline-flex; }
+  .vit-filtros {
+    position: fixed; inset: 0; z-index: 60;
+    border-radius: 0; border: 0; overflow-y: auto;
+    padding: var(--sp-4) var(--sp-4) var(--sp-7);
+    align-content: start;
+    display: none;
+  }
+  .vit-filtros.is-aberto { display: grid; }
+  /* `.vit` tem z-index 5 e ABRE UM CONTEXTO DE EMPILHAMENTO: dentro dele o
+     z-index 60 do painel vale só entre irmãos, e o conjunto todo continua
+     abaixo do cabeçalho sticky (z-index 40). Resultado: o painel aparecia,
+     mas o "×" ficava sob a barra e não recebia clique. Enquanto o painel
+     está aberto, a vitrine sobe acima do cabeçalho — e só então. */
+  body.sem-rolagem .vit { z-index: 60; }
+  .vit-filtros__cab {
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: calc(var(--sp-4) * -1); z-index: 1;
+    background: var(--branco); padding: var(--sp-2) 0;
+    font-family: var(--font-display); font-size: var(--fs-h3); color: var(--petroleo);
+  }
+  .vit-filtros__x {
+    border: 0; background: transparent; cursor: pointer;
+    font-size: 1.8rem; line-height: 1; color: var(--texto-sutil); padding: 0 6px;
+  }
+  .fgrupo__corpo--rolagem { max-height: none; overflow: visible; }
+  body.sem-rolagem { overflow: hidden; }
+}
+
+@media (max-width: 520px) {
+  .vit-busca { flex-wrap: wrap; }
+  .vit-busca input[type="search"] { flex: 1 1 100%; }
+  .vit-busca .btn { flex: 1; }
+  .vit-cab { align-items: flex-start; }
+}

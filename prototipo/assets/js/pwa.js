@@ -34,7 +34,7 @@
 
   // Manifest + tema (Android/Chrome)
   addLink("manifest", "manifest.webmanifest");
-  addMeta("theme-color", "#0E4C5C");
+  addMeta("theme-color", "#1C5B57");
 
   // iOS / Safari — vira app em tela cheia com ícone próprio
   addMeta("apple-mobile-web-app-capable", "yes");
@@ -84,8 +84,8 @@
       '.pwa-install{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);' +
       'z-index:2147483000;display:flex;align-items:center;gap:.5rem;' +
       'padding:.7rem 1rem .7rem 1.1rem;border:0;border-radius:999px;cursor:pointer;' +
-      'background:#0E4C5C;color:#fff;font-family:Montserrat,system-ui,sans-serif;' +
-      'font-size:.95rem;font-weight:700;box-shadow:0 8px 24px rgba(14, 76, 92,.35);' +
+      'background:#1C5B57;color:#fff;font-family:Figtree,system-ui,sans-serif;' +
+      'font-size:.95rem;font-weight:700;box-shadow:0 8px 24px rgba(28, 91, 87,.35);' +
       'max-width:calc(100vw - 24px);' +
       'padding-bottom:calc(.7rem + env(safe-area-inset-bottom));' +
       'animation:pwaUp .28s ease both}' +
@@ -100,17 +100,17 @@
       '@keyframes pwaFade{from{opacity:0}to{opacity:1}}' +
       '.pwa-sheet__card{background:#fff;color:#2a1420;width:100%;max-width:440px;' +
       'border-radius:20px 20px 0 0;padding:1.4rem 1.3rem calc(1.6rem + env(safe-area-inset-bottom));' +
-      'font-family:Montserrat,system-ui,sans-serif;box-shadow:0 -12px 40px rgba(0,0,0,.3);' +
+      'font-family:Figtree,system-ui,sans-serif;box-shadow:0 -12px 40px rgba(0,0,0,.3);' +
       'animation:pwaUp2 .3s ease both}' +
       '@keyframes pwaUp2{from{transform:translateY(30px)}to{transform:translateY(0)}}' +
-      '.pwa-sheet__title{margin:0 0 .2rem;font-size:1.15rem;font-weight:800;color:#0E4C5C}' +
+      '.pwa-sheet__title{margin:0 0 .2rem;font-size:1.15rem;font-weight:800;color:#1C5B57}' +
       '.pwa-sheet__sub{margin:0 0 1rem;font-size:.9rem;color:#6b5560;line-height:1.4}' +
       '.pwa-step{display:flex;align-items:center;gap:.7rem;padding:.55rem 0;font-size:.95rem;font-weight:600}' +
       '.pwa-step__n{flex:0 0 auto;width:1.7rem;height:1.7rem;border-radius:50%;background:#f3e3ec;' +
-      'color:#0E4C5C;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.9rem}' +
-      '.pwa-step svg{flex:0 0 auto;color:#0E4C5C}' +
+      'color:#1C5B57;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.9rem}' +
+      '.pwa-step svg{flex:0 0 auto;color:#1C5B57}' +
       '.pwa-sheet__done{margin-top:1rem;width:100%;padding:.85rem;border:0;border-radius:12px;' +
-      'background:#0E4C5C;color:#fff;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit}';
+      'background:#1C5B57;color:#fff;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit}';
     var s = document.createElement("style");
     s.id = "pwa-install-style";
     s.textContent = css;

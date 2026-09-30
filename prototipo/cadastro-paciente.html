@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Criar conta de paciente · NutriPlat</title>
+  <meta name="description" content="Crie sua conta de paciente na NutriPlat: acompanhe seu plano alimentar e encontre a nutricionista certa para você." />
+  <meta name="theme-color" content="#1C5B57" />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="icon" href="assets/img/logo-mark.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/tokens.css?v=ad4420de" />
+  <link rel="stylesheet" href="assets/css/diretorio.css?v=677d8495" />
+  <style>
+    .cp-wrap { max-width: 560px; }
+    .cp-foto { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .cp-foto__prev {
+      width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+      background: #e8eef0; flex: none;
+    }
+    .cp-foto__prev[hidden] { display: none; }
+    /* O botão nativo do arquivo tem largura mínima e, sem isso, esticava a
+       coluna do grid para além da tela no celular. */
+    .cn-campos > * { min-width: 0; }
+    /* O input de arquivo nativo tem largura imposta pelo navegador e estourava
+       a tela no celular: fica invisível, e o <label> vira o botão. */
+    .cp-foto input[type="file"] {
+      position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden;
+    }
+    .cn-campos input, .cn-campos select { box-sizing: border-box; }
+    .campo[hidden] { display: none; }
+    .campo select, .campo textarea {
+      width: 100%; font: inherit; padding: 10px 12px; box-sizing: border-box;
+      border: 1px solid #cfd8dc; border-radius: 10px; background: #fff; color: inherit;
+    }
+    .cp-entrar { margin-top: 16px; text-align: center; }
+  </style>
+</head>
+<body class="pub">
+
+<header class="pub-nav">
+  <div class="wrap">
+    <a class="pub-nav__marca" href="/">
+      <img src="assets/img/logo-mark.png" alt="" /> NutriPlat
+    </a>
+    <nav class="pub-nav__links">
+      <a class="btn btn--contorno" href="/">Entrar</a>
+    </nav>
+  </div>
+</header>
+
+<section class="secao">
+  <div class="wrap cp-wrap">
+    <h2>Criar minha conta</h2>
+    <p class="sub">Com a conta você acompanha o seu plano e fala com a sua nutricionista.</p>
+    <div class="cn-form" id="cadastro-form"></div>
+    <p class="cp-entrar">Já tem conta? <a href="/">Entrar</a></p>
+  </div>
+</section>
+
+<footer class="pub-rodape">
+  <div class="wrap">
+    <div>
+      <strong style="font-family:var(--font-display);font-weight:900;color:var(--branco)">NutriPlat</strong>
+      <p class="nota" style="margin-top:var(--sp-2)">
+        Plataforma de gestão para nutricionistas e portal do paciente.
+      </p>
+    </div>
+    <div>
+      <p><a href="/encontre-sua-nutri">Encontrar nutricionista</a></p>
+      <p><a href="/privacidade">Privacidade</a></p>
+      <p><a href="/termos">Termos de uso</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/foto-upload.js?v=a2e21454"></script>
+<script src="assets/js/cadastro-paciente.js?v=cffc90ee"></script>
+</body>
+</html>

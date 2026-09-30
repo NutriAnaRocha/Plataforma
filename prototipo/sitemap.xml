@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Só as páginas públicas. Os perfis /nutri/<slug> ainda não entram aqui:
+     enquanto forem poucos, o link da busca basta para o robô chegar neles.
+     Quando passarem de algumas dezenas, gerar este arquivo pelo banco. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://app.nutrianaluisarocha.com/encontre-sua-nutri</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://app.nutrianaluisarocha.com/seja-indicada</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://app.nutrianaluisarocha.com/privacidade</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://app.nutrianaluisarocha.com/termos</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+</urlset>

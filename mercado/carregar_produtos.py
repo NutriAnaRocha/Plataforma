@@ -59,6 +59,9 @@ def main():
             l = l.strip()
             if l:
                 linhas.append(json.loads(l))
+    # O mesmo codigo duas vezes no arquivo (repasse com --anexar) derruba o
+    # lote inteiro no ON CONFLICT. Fica a ultima versao de cada um.
+    linhas = list({p.get("code"): p for p in linhas}.values())
     print("%d produtos para carregar" % len(linhas))
 
     creds = load_creds()
