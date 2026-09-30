@@ -19,6 +19,13 @@ SAIDA: produtos.jsonl (uma linha por produto), consumido por gerar_sql.py.
 
 Uso:  python importar_off.py [--paginas 3]
       python importar_off.py --somente olive-oils,honeys --anexar
+      python importar_off.py --marcas flormel,hey-mu --anexar
+
+--marcas busca pela MARCA em vez da categoria: e o jeito de garantir na base
+as marcas que a Ana indica no consultorio (MARCAS_DA_NUTRI na edge function
+analisar-rotulo), que a busca por categoria pode nao alcancar. O produto
+entra na primeira categoria da lista abaixo que a OFF atribuir a ele; doce
+sem categoria conhecida (doce de leite, brigadeiro) entra em "candies".
 
 A OFF derruba requisicao com 503 quando esta sob carga, e uma categoria
 pode voltar vazia sem ter acabado. Dai o --somente: repassar so nas que
@@ -120,6 +127,38 @@ def buscar(tag, pagina):
     return None
 
 
+def buscar_marca(marca, pagina):
+    q = urllib.parse.urlencode({
+        "countries_tags_en": "brazil",
+        "brands_tags": marca,
+        "fields": CAMPOS,
+        "page_size": 100,
+        "page": pagina,
+    })
+    url = "https://world.openfoodfacts.org/api/v2/search?" + q
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    for tentativa in range(4):
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                return json.loads(r.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            if e.code in (429, 503):
+                time.sleep(INTERVALO * (tentativa + 2))
+                continue
+            return None
+        except Exception:
+            time.sleep(INTERVALO)
+    return None
+
+
+def categoria_do_produto(p):
+    tags = [t.split(":", 1)[-1] for t in (p.get("categories_tags") or [])]
+    for tag, nome_pt in CATEGORIAS:
+        if tag in tags:
+            return tag, nome_pt
+    return "candies", "Balas e doces"
+
+
 def util(p):
     """So entra produto que da para COMPARAR: precisa de nome, e de energia,
     acucar e sodio por 100 g. Sem esses tres nao ha ranking possivel -- e uma
@@ -171,6 +210,11 @@ def main():
 
     modo = "a" if "--anexar" in sys.argv else "w"
 
+    marcas = []
+    if "--marcas" in sys.argv:
+        marcas = [m for m in sys.argv[sys.argv.index("--marcas") + 1].split(",") if m]
+        alvo = []
+
     # Ja no arquivo: evita regravar produto que veio na primeira passada.
     vistos = set()
     if modo == "a" and os.path.exists(SAIDA):
@@ -207,6 +251,27 @@ def main():
                 if len(prods) < 100:
                     break
             print("%-28s (%-30s) -> %4d utilizaveis" % (nome_pt, tag, guardados), flush=True)
+        for marca in marcas:
+            guardados = 0
+            for pg in range(1, paginas + 1):
+                d = buscar_marca(marca, pg)
+                time.sleep(INTERVALO)
+                if not d:
+                    print("  ! marca %s pagina %d: falhou" % (marca, pg), flush=True)
+                    break
+                prods = d.get("products") or []
+                for p in prods:
+                    r = util(p)
+                    if not r or not r["code"] or r["code"] in vistos:
+                        continue
+                    vistos.add(r["code"])
+                    r["categoria_tag"], r["categoria"] = categoria_do_produto(p)
+                    out.write(json.dumps(r, ensure_ascii=False) + "\n")
+                    guardados += 1
+                    total += 1
+                if len(prods) < 100:
+                    break
+            print("marca %-22s -> %4d utilizaveis" % (marca, guardados), flush=True)
     print("\nTOTAL: %d produtos em %s" % (total, SAIDA))
 
 

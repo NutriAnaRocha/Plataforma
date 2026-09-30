@@ -143,6 +143,121 @@ const CATEGORIAS: Record<string, string> = {
   "salts": "Sais",
 };
 
+// Categorias vendidas em ml. Os limites da lupa "ALTO EM" são outros para
+// líquido (7,5 g de açúcar, 3 g de saturada e 300 mg de sódio por 100 ml).
+const LIQUIDOS = new Set([
+  "milks", "plant-based-milk-alternatives", "sodas", "fruit-juices", "energy-drinks",
+]);
+
+// Onde a gordura saturada é do PRÓPRIO alimento (queijo, manteiga, cacau,
+// azeite, gema). Barrar "alto em saturada" aqui apagaria a categoria inteira
+// sem melhorar nada. Continua valendo a trava de saturada de quem marcou o
+// perfil "colesterol".
+const GORDURA_INERENTE = new Set([
+  "cheeses", "butters", "olive-oils", "vegetable-oils", "peanut-butters",
+  "chocolates", "milks", "eggs", "canned-tuna",
+]);
+
+// A MESMA VONTADE, EM MAIS DE UMA PRATELEIRA.
+//
+// Setembro/2026: uma paciente com diabetes fotografou um biscoito e o app
+// sugeriu biscoito recheado, porque só olhava a prateleira de biscoitos e
+// qualquer coisa "menos pior" passava. Quem quer um lanche doce e crocante
+// pode resolver com uma barra de proteína ou um chocolate zero adição de
+// açúcar — a prateleira ao lado. A família amplia a busca; a vontade quem
+// confere é o modelo, na escolha final.
+const FAMILIAS: Record<string, string[]> = {
+  "biscuits": ["biscuits", "protein-bars", "cereal-bars"],
+  "cereal-bars": ["cereal-bars", "protein-bars", "biscuits"],
+  "protein-bars": ["protein-bars", "cereal-bars"],
+  "chocolates": ["chocolates", "candies", "protein-bars"],
+  "candies": ["candies", "chocolates"],
+  "ice-creams": ["ice-creams", "yogurts"],
+  "breakfast-cereals": ["breakfast-cereals", "granolas", "oats"],
+  "granolas": ["granolas", "oats", "breakfast-cereals"],
+  "jams": ["jams", "peanut-butters"],
+  "sodas": ["sodas", "teas"],
+  "fruit-juices": ["fruit-juices", "teas"],
+  "energy-drinks": ["energy-drinks", "teas", "coffees"],
+  "snacks": ["snacks", "crisps"],
+  "crisps": ["crisps", "snacks"],
+};
+
+// O que a pessoa pode marcar na tela ("para quem é essa leitura?"). É
+// autodeclarado, não é diagnóstico: o app não pergunta nem confere doença,
+// só muda o que PRIORIZA ao ler e ao indicar. Por ser dado de saúde (LGPD,
+// art. 11) NÃO é gravado no banco — vive no aparelho da pessoa e só
+// atravessa esta função.
+const PERFIS: Record<string, string> = {
+  acucar: "controla o açúcar no sangue (diabetes, pré-diabetes ou resistência à insulina)",
+  sodio: "precisa de menos sódio (pressão alta)",
+  gordura: "precisa de menos gordura saturada (colesterol)",
+  proteina: "quer mais proteína e saciedade",
+  sem_lactose: "não consome lactose",
+  sem_gluten: "não consome glúten",
+};
+
+// Marcas que a Ana indica no consultório, pedido dela em 30/09/2026. Ganham
+// prioridade no ranking QUANDO já existem na base real e passam em todos os
+// filtros de saúde — a indicação da Ana não fura régua nenhuma.
+const MARCAS_DA_NUTRI = ["flormel", "flor de mel", "hey!mu", "hey! mu", "hey mu", "heymu"];
+
+function ehMarcaDaNutri(marca: unknown): boolean {
+  const m = String(marca || "").toLowerCase();
+  return MARCAS_DA_NUTRI.some((x) => m.includes(x));
+}
+
+// INDICAÇÕES DA ANA — texto FIXO, escrito aqui e não pelo modelo, pelo mesmo
+// motivo de diet/light: é recomendação com o CRN dela na tela. Aparece quando
+// a vontade é de DOCE (e o produto não é boa escolha, ou a pessoa controla o
+// açúcar). Não tem número de tabela de propósito: os números mudam com a
+// formulação e estes produtos ainda não estão na base da Open Food Facts.
+// ANA: revise e acrescente aqui as marcas que você indica.
+const INDICACOES_DA_ANA: Array<{
+  marca: string; produto: string; porque: string;
+  sem_lactose: boolean; sem_gluten: boolean;
+}> = [
+  {
+    marca: "Flormel",
+    produto: "Chocolates zero adição de açúcares",
+    porque: "Chocolate de cacau de verdade, sem açúcar adicionado e sem glúten. É o que eu indico quando a vontade é chocolate.",
+    sem_lactose: false,
+    sem_gluten: true,
+  },
+  {
+    marca: "Flormel",
+    produto: "Doces e cookies zero adição de açúcares",
+    porque: "Resolve a vontade de docinho sem açúcar adicionado e sem glúten — a marca inteira é zero adição de açúcares.",
+    sem_lactose: false,
+    sem_gluten: true,
+  },
+  {
+    marca: "Hey!Mu",
+    produto: "Doce de leite zero adição de açúcar",
+    porque: "Sem açúcar adicionado, sem amido e sem glúten. Uma colher depois do almoço mata a vontade de sobremesa.",
+    sem_lactose: false,
+    sem_gluten: true,
+  },
+  {
+    marca: "Hey!Mu",
+    produto: "Brigadeiro de colher zero adição de açúcar",
+    porque: "Sem açúcar adicionado, sem glúten e sem lactose. Brigadeiro de verdade, na porção de uma sobremesa.",
+    sem_lactose: true,
+    sem_gluten: true,
+  },
+];
+
+const CUIDADO_ZERO =
+  "Zero adição de açúcar não quer dizer liberado à vontade: esses doces ainda têm gordura e caloria, " +
+  "e os adoçantes tipo maltitol, em quantidade, soltam o intestino. Porção de sobremesa, logo depois " +
+  "de uma refeição, é o jeito que funciona melhor.";
+
+// Categorias em que a vontade é, quase sempre, de doce. Complementa o campo
+// "vontade" do modelo, que pode vir vazio.
+const DOCES = new Set([
+  "chocolates", "candies", "ice-creams", "jams", "cereal-bars", "sugars", "honeys",
+]);
+
 // A COMIDA DE VERDADE, PELA TACO.
 //
 // Pedido da Ana: a TACO passa a ser a base das respostas. Ela não tem marca
@@ -157,10 +272,13 @@ const CATEGORIAS: Record<string, string> = {
 //
 // Os ids são os números da própria TACO, conferidos contra o PDF oficial
 // (ver mercado/extrai_taco.py e a migração 0052).
+//
+// Refrigerante e energético NÃO têm régua de propósito: a antiga era o suco
+// de laranja, e pôr suco ao lado do refrigerante como "a comida de verdade"
+// ensina, a quem controla o açúcar, que suco é a troca — e não é. A troca de
+// bebida doce é água, água com gás ou chá sem açúcar, e isso vai nos caminhos.
 const REFERENCIA_TACO: Record<string, number> = {
-  "sodas": 209,                  // Laranja, baía, suco
   "fruit-juices": 208,           // Laranja, baía, crua (a fruta inteira)
-  "energy-drinks": 209,          // Laranja, baía, suco
   "breakfast-cereals": 7,        // Aveia, flocos, crua
   "granolas": 7,                 // Aveia, flocos, crua
   "oats": 7,                     // Aveia, flocos, crua
@@ -240,6 +358,8 @@ Devolva APENAS um JSON válido, sem texto fora do JSON, no formato EXATO:
   "consumo_g": 40,
   "consumo_desc": "o pacotinho inteiro, 4 fatias",
   "funcao": "base crocante que carrega recheio no lanche da tarde",
+  "vontade": "doce",
+  "perfil_nota": "",
   "caminhos_intro": "",
   "caminhos": [{ "tipo": "melhor_versao", "titulo": "torrada 100% integral", "melhora": "farinha integral em primeiro lugar, o dobro de fibra por 100 g" }],
   "falta": []
@@ -288,21 +408,39 @@ NÃO faça conta de caloria aqui: dê os números e a descrição; a conta é fe
 
 "funcao": em poucas palavras, o PAPEL desse alimento na refeição — o que ele resolve para quem comprou (base crocante que carrega recheio, lanche seco de trigo, bebida do café da manhã, proteína rápida do almoço). É o que permite sugerir caminho mesmo para produto que não se encaixa em categoria nenhuma.
 
+"vontade": a vontade que esse produto resolve, numa palavra: "doce", "salgado", "bebida", "refeicao" ou "outro".
+
+"perfil_nota": só existe quando a mensagem do usuário trouxer PRIORIDADES DA PESSOA. UMA ou DUAS frases dizendo, com o número do rótulo, o que esse produto significa PARA AQUELA PRIORIDADE ("para quem controla o açúcar, o que pesa aqui não é só o açúcar: a farinha branca é o primeiro ingrediente e vira açúcar no sangue do mesmo jeito"). Sem prioridades, devolva "".
+
 "caminhos": de 2 a 4 alternativas, SEMPRE. É PROIBIDO devolver lista vazia e é PROIBIDO dizer que você não identificou a categoria do produto: se a categoria não existir, trabalhe em cima da "funcao" que você mesmo escreveu. Nesta ordem, e no máximo um item de cada "tipo":
 1. "melhor_versao" — o MESMO tipo de produto com ingredientes melhores (mais integral, sem açúcar na lista, menos sódio).
 2. "mesmo_papel" — outro alimento que cumpre a MESMA função na refeição, com menos processamento.
-3. "in_natura" — comida que não vem com rótulo: fruta, ovo, raiz, tubérculo, castanha, aveia em flocos, tapioca, café. Pão, biscoito e iogurte de pote NÃO são in natura, mesmo integrais — se você não achar nada sem rótulo que sirva para aquele momento, deixe este item de fora e devolva só dois caminhos.
+3. "in_natura" — comida que não vem com rótulo: fruta com casca, ovo, legume, raiz cozida, castanha, aveia em flocos, café. Pão, biscoito e iogurte de pote NÃO são in natura, mesmo integrais — se você não achar nada sem rótulo que sirva para aquele momento, deixe este item de fora e devolva só dois caminhos.
 "titulo": o alimento, em 2 a 6 palavras, SEM MARCA e CONCRETO o bastante para a pessoa saber o que pegar: "banana com pasta de amendoim", "ovo cozido", "torrada 100% integral" — nunca uma categoria solta como "fruta", "castanhas" ou "algo natural".
 "melhora": UMA frase dizendo o que exatamente melhora — fibra, açúcar, sódio, grau de processamento —, de preferência com número. É PROIBIDO o elogio genérico: "é mais saudável", "é natural", "é nutritiva", "é uma opção melhor", "menos processamento" sozinho não dizem nada.
 ERRADO: "banana — opção natural e nutritiva". CERTO: "banana — o açúcar vem com fibra, e não há sódio nem gordura adicionada como no recheio".
 ERRADO: "biscoito de aveia — menos processamento". CERTO: "biscoito de aveia — a aveia entra como primeiro ingrediente, o que triplica a fibra em relação a esse aqui".
 Nada de prometer resultado.
 
+CAMINHOS SÃO INDICAÇÃO DE NUTRICIONISTA — a régua é a do consultório, não a do "menos pior":
+- NUNCA indique nos caminhos: nada recheado, com cobertura ou wafer; biscoito de polvilho, de arroz, cream cracker ou água e sal (amido refinado que vira açúcar rápido); suco, mesmo natural ou integral; mel, melado, açúcar mascavo, demerara ou de coco; granola ou barra de cereal com açúcar na lista; achocolatado; pão branco; tapioca sozinha. Nenhum deles é troca melhor — é o mesmo problema com outro nome.
+- A "melhor_versao" de um produto doce é a versão SEM ADIÇÃO DE AÇÚCAR (zero adição de açúcar, 70% cacau ou mais, iogurte natural), nunca a versão "com menos açúcar". A de um produto de farinha é a de farinha INTEGRAL como primeiro ingrediente, sem açúcar na lista.
+- Prefira caminhos que juntem FIBRA com PROTEÍNA ou gordura boa, que seguram a fome e sobem a glicose devagar: fruta com casca + castanhas, iogurte natural + chia, ovo cozido, queijo branco, pasta de amendoim integral, homus.
+- Troca de bebida doce é água, água com gás e limão, chá ou café sem açúcar — nunca suco.
+
 CRITÉRIOS DE "MELHOR" (use só estes): posição dos ingredientes na lista, principalmente açúcar e gordura; integral de verdade, com farinha integral como 1º ingrediente; sódio e açúcar por 100 g, nunca só pela porção da embalagem; grau de processamento (classificação NOVA); fibra e proteína por 100 g.
 
 "caminhos_intro": UMA frase antes da lista. Se o produto já for uma escolha razoável (veredito "boa", ou "atencao" sem nada grave), diga isso com todas as letras — "esse aqui já é uma escolha ok, não precisa trocar" — e apresente os caminhos como variação, não como correção. Se o produto for fraco, NÃO repita o veredito nem os alertas ("esse produto não é uma boa escolha" a pessoa já leu acima): parta da vontade dela e emende nos caminhos — "se a vontade é de algo doce e crocante, dá para resolver assim".
 
 "falta": liste o que você NÃO conseguiu ler e que faria diferença. Use exatamente os valores "tabela" (não veio a tabela nutricional), "ingredientes" (não veio a lista de ingredientes) ou "nitidez" (a foto está ilegível). Se leu tudo, devolva [].
+
+PRIORIDADES DA PESSOA: quando a mensagem do usuário trouxer uma lista de prioridades que a própria pessoa marcou (controla o açúcar, menos sódio, menos gordura saturada, mais proteína, sem lactose, sem glúten), elas MANDAM no veredito e nos caminhos:
+- controla o açúcar: açúcar a partir de 5 g por 100 g (2,5 g em líquido) já é no mínimo "atencao"; açúcar ou farinha branca/amido entre os três primeiros ingredientes é "evitar". Os caminhos NÃO podem ter açúcar adicionado, farinha branca, fruta em forma de suco ou doce, nem nada da lista NUNCA acima; puxe para fibra + proteína.
+- menos sódio: sódio a partir de 400 mg por 100 g é "evitar"; caminhos com sódio baixo.
+- menos gordura saturada: a partir de 6 g por 100 g é "evitar"; caminhos com gordura boa (azeite, castanha, peixe), não saturada.
+- mais proteína: prefira caminhos com proteína relevante (ovo, iogurte natural, queijo branco, leguminosas, atum).
+- sem lactose / sem glúten: NUNCA sugira caminho que contenha o que a pessoa não consome.
+Fale da prioridade como algo que ELA marcou ("para quem controla o açúcar"), sem diagnosticar e sem falar em tratamento.
 
 PROIBIDO
 - Diagnosticar, prescrever dieta, mandar cortar refeição, sugerir jejum, suplemento ou medicamento.
@@ -313,13 +451,14 @@ PROIBIDO
 - Inventar número que não está na foto.
 
 Se a imagem NÃO for um rótulo/embalagem de alimento, devolva exatamente:
-{ "eh_rotulo": false, "produto": "o que a imagem parece ser", "marca": "", "categoria_tag": "outro", "porcao": "", "tabela": {}, "por_100g": {}, "diet_light": "nenhum", "veredito": "atencao", "resumo": "", "destaques": [], "alertas": [], "ingredientes": [], "porcao_g": null, "consumo_g": null, "consumo_desc": "", "funcao": "", "caminhos_intro": "", "caminhos": [], "falta": [] }`;
+{ "eh_rotulo": false, "produto": "o que a imagem parece ser", "marca": "", "categoria_tag": "outro", "porcao": "", "tabela": {}, "por_100g": {}, "diet_light": "nenhum", "veredito": "atencao", "resumo": "", "destaques": [], "alertas": [], "ingredientes": [], "porcao_g": null, "consumo_g": null, "consumo_desc": "", "funcao": "", "vontade": "outro", "perfil_nota": "", "caminhos_intro": "", "caminhos": [], "falta": [] }`;
 
 const SYSTEM_ALTERNATIVAS = `Você escolhe alternativas de compra para o app "No mercado com a Nutri Ana".
 
-Recebe: o produto que a pessoa pegou na prateleira e uma LISTA DE CANDIDATOS REAIS, já filtrados como nutricionalmente melhores, todos da mesma categoria e todos existentes no mercado brasileiro.
+Recebe: o produto que a pessoa pegou na prateleira, as PRIORIDADES que ela marcou (pode vir vazio) e uma LISTA DE CANDIDATOS REAIS do mercado brasileiro. Os candidatos já passaram por um filtro de saúde (nada "ALTO EM", nada recheado, sem açúcar entre os três primeiros ingredientes, sem gordura hidrogenada) e podem ser da mesma prateleira ou da prateleira vizinha que resolve a mesma vontade.
 
 Escolha EXATAMENTE 3, de TRÊS MARCAS DIFERENTES, e escreva por que cada uma é melhor.
+Esta é uma indicação de nutricionista, assinada com o CRN dela: a pergunta não é "qual é menos pior que o da mão dela", é "qual eu indicaria no consultório".
 
 Devolva APENAS um JSON válido:
 { "escolhas": [{ "code": "7891000000000", "porque": "tem metade do açúcar e a lista de ingredientes é bem mais curta" }] }
@@ -328,9 +467,12 @@ REGRAS
 - Use SOMENTE os "code" que vieram na lista. Nunca invente produto, marca ou código.
 - As três precisam ser de marcas diferentes entre si. Indicar três produtos da mesma marca seria favorecer marca.
 - "porque": UMA frase curta, concreta e comparando com o produto que a pessoa pegou ("tem menos da metade do sódio", "não tem açúcar na lista"). Use os números que vieram, sem inventar.
-- PREFIRA O QUE EXISTE NO MERCADO COMUM. Quem está no corredor precisa achar aquilo na prateleira do lado. Evite item de nicho, importado, de loja de suplemento ou de marca que só se compra pela internet (linha "proteica", "fit", whey, marca desconhecida). Entre um produto de nicho um pouco melhor e um produto comum quase tão bom, escolha o comum.
-- Prefira também o produto que é a MESMA COISA que a pessoa quer comer. Quem pegou biscoito recheado quer biscoito, não barra de proteína: a alternativa tem de resolver a mesma vontade, senão não é alternativa, é sermão.
-- Se a lista tiver menos de 3 marcas diferentes, devolva {"escolhas": []}.
+- SAÚDE PRIMEIRO. Ordem de preferência: sem adição de açúcar > integral de verdade > mais fibra e proteína > menos sódio e saturada > lista curta. Produto proteico e zero adição de açúcar é BEM-VINDO quando é melhor de verdade.
+- NUNCA escolha produto recheado, com cobertura, wafer, biscoito de amido refinado (cream cracker, água e sal, polvilho, rosquinha) para quem controla o açúcar, nem nada que tenha açúcar entre os primeiros ingredientes. Se o candidato só é "melhor" porque o da mão dela é muito ruim, ele NÃO serve.
+- As PRIORIDADES mandam: quem controla o açúcar recebe opção sem adição de açúcar e com fibra/proteína; quem precisa de menos sódio, a de sódio mais baixo; sem lactose/sem glúten, só o que não contém.
+- "indicada_pela_nutri": true marca uma marca que a Ana já indica no consultório. Entre candidatos parecidos, prefira essa.
+- Resolva a MESMA VONTADE (doce com doce, salgado com salgado, bebida com bebida), mas pode ser outro formato: quem pegou biscoito doce pode levar uma barra proteica sem açúcar.
+- Se a lista tiver menos de 3 marcas diferentes, ou se não houver 3 que você indicaria de verdade, devolva {"escolhas": []}. Não indicar é melhor que indicar mal.
 - Não prometa resultado nem diga que o produto "emagrece" ou "é saudável" de forma absoluta. Compare, apenas.`;
 
 /** A explicação de diet/light é ESCRITA AQUI, não pelo modelo.
@@ -479,6 +621,106 @@ function dadoConfiavel(c: Record<string, unknown>): boolean {
   return true;
 }
 
+/** Divide a lista de ingredientes nos itens de primeiro nível, sem quebrar o
+ *  que está dentro de parênteses ("recheio (açúcar, gordura...)" é UM item). */
+function itensDaLista(texto: string): string[] {
+  const t = texto.replace(/^\s*ingredientes?\s*:\s*/i, "");
+  const itens: string[] = [];
+  let nivel = 0, atual = "";
+  for (const ch of t) {
+    if (ch === "(" || ch === "[") nivel++;
+    if (ch === ")" || ch === "]") nivel = Math.max(0, nivel - 1);
+    if ((ch === "," || ch === ";" || ch === ".") && nivel === 0) {
+      if (atual.trim()) itens.push(atual.trim().toLowerCase());
+      atual = "";
+    } else atual += ch;
+  }
+  if (atual.trim()) itens.push(atual.trim().toLowerCase());
+  return itens;
+}
+
+const NOMES_DE_ACUCAR =
+  /a[çc][uú]car|xarope|glicose|maltodextrina|dextrose|frutose|sacarose|melado|\bmel\b|rapadura|caramelo/i;
+const AMIDO_REFINADO =
+  /^(farinha de trigo(?! integral)|farinha de arroz|amido|f[eé]cula|polvilho|goma|farinha de milho|fub[aá])/i;
+// Prateleiras em que "farinha branca em primeiro" é o próprio defeito do
+// produto: indicar um biscoito de farinha branca no lugar de outro é trocar
+// seis por meia dúzia. (Macarrão fica de fora: aí a versão comum é o normal.)
+const PANIFICADOS = new Set([
+  "biscuits", "breads", "cereal-bars", "protein-bars", "breakfast-cereals", "granolas", "snacks",
+]);
+const RECHEADO = /\brech|wafer|cobert|confeit|trufad|\bcookie recheado/i;
+
+/** A RÉGUA DE INDICAÇÃO. Setembro/2026: "menos pior que o da mão dela" deixava
+ *  passar biscoito recheado para uma paciente com diabetes, porque o produto
+ *  fotografado era ainda pior. Indicação com o CRN da Ana não pode ser
+ *  relativa: o candidato precisa ser bom POR SI, e bom para as prioridades que
+ *  a pessoa marcou. Devolve false para o que não se indica a ninguém. */
+function serveParaIndicar(c: Record<string, unknown>, perfil: Set<string>): boolean {
+  const num = (k: string) => (typeof c[k] === "number" ? (c[k] as number) : null);
+  const cat = String(c.categoria_tag || "");
+  const liq = LIQUIDOS.has(cat);
+  const nome = String(c.nome || "");
+  const ingr = String(c.ingredientes || "");
+  const itens = itensDaLista(ingr);
+  const labels = (Array.isArray(c.labels) ? c.labels : []).map((l) => String(l).toLowerCase());
+  const tudo = (nome + " " + ingr).toLowerCase();
+
+  const acucar = num("acucar") ?? 0, sat = num("sat") ?? 0, sodio = num("sodio") ?? 0;
+
+  // --- para todo mundo ---
+  if (RECHEADO.test(nome) || /\brecheio\b|\bcobertura\b/i.test(ingr)) return false;
+  if (/hidrogenad/i.test(ingr)) return false;
+  // Lupa "ALTO EM" (RDC 429/2020). Açúcar aqui é o total, que é mais duro que
+  // o adicionado da lei — do lado seguro.
+  if (acucar >= (liq ? 7.5 : 15)) return false;
+  if (!GORDURA_INERENTE.has(cat) && sat >= (liq ? 3 : 6)) return false;
+  if (sodio >= (liq ? 0.3 : 0.6)) return false;
+  if (itens.slice(0, 3).some((i) => NOMES_DE_ACUCAR.test(i))) return false;
+  if ((num("aditivos") ?? 0) > 6) return false;
+  if (PANIFICADOS.has(cat) && itens.length && AMIDO_REFINADO.test(itens[0])) return false;
+
+  // --- prioridades que a pessoa marcou ---
+  if (perfil.has("acucar")) {
+    const lacteo = cat === "milks" || cat === "yogurts" || cat === "plant-based-milk-alternatives";
+    // Leite e iogurte natural têm ~4-5 g de lactose por 100 g, que não é
+    // açúcar adicionado. O resto: o limite de "baixo em açúcares" da lei.
+    if (acucar > (lacteo ? 6 : liq ? 2.5 : 5)) return false;
+    // Qualquer açúcar adicionado na lista, em qualquer posição e nome.
+    if (itens.some((i) => NOMES_DE_ACUCAR.test(i) && !/sem a[çc][uú]car|zero a[çc][uú]car/.test(i))) return false;
+    // Farinha branca ou amido em primeiro vira glicose tão rápido quanto açúcar.
+    if (itens.length && AMIDO_REFINADO.test(itens[0])) return false;
+  }
+  if (perfil.has("sodio") && sodio > (liq ? 0.15 : 0.4)) return false;
+  if (perfil.has("gordura") && sat > (liq ? 1.5 : 3)) return false;
+  if (perfil.has("sem_lactose")) {
+    const semLactose = labels.some((l) => /no-lactose|lactose-free|sem-lactose|zero-lactose/.test(l)) ||
+      /(zero|sem|isento de|n[aã]o cont[eé]m) lactose/.test(tudo);
+    const temLeite = /leite|soro|lact|queijo|manteiga|creme de leite|case[ií]na|whey|iogurte/.test(ingr.toLowerCase());
+    if (!semLactose && (temLeite || !ingr)) return false;
+  }
+  if (perfil.has("sem_gluten")) {
+    // Pede PROVA de que não tem glúten: para quem é celíaca, "não achei trigo
+    // na lista" não basta.
+    const semGluten = labels.some((l) => /no-gluten|gluten-free|sem-gluten/.test(l)) ||
+      /(n[aã]o cont[eé]m|sem|isento de) gl[uú]ten/.test(tudo);
+    if (!semGluten || /trigo|cevada|centeio|malte/i.test(ingr)) return false;
+  }
+  return true;
+}
+
+/** Ordena os que passaram pela régua conforme o que a pessoa priorizou. */
+function penalidadePerfil(c: Record<string, number | null>, perfil: Set<string>, daNutri: boolean): number {
+  const v = (k: string) => (typeof c[k] === "number" ? (c[k] as number) : 0);
+  let pen = penalidade(c);
+  if (perfil.has("acucar")) pen += v("acucar") * 0.6 + Math.max(0, v("cho") - v("fibra")) / 10 - v("fibra") / 2 - v("ptn") / 8;
+  if (perfil.has("sodio")) pen += (v("sodio") * 1000) / 100;
+  if (perfil.has("gordura")) pen += v("sat");
+  if (perfil.has("proteina")) pen -= v("ptn") / 3;
+  if (daNutri) pen -= 2;
+  return pen;
+}
+
 /** Nomes que a Open Food Facts guarda mas que não servem para indicar
  *  compra: fardo, caixa com 12, "leve mais pague menos". A pessoa está
  *  procurando UM produto na prateleira. */
@@ -527,12 +769,21 @@ Deno.serve(async (req) => {
     fotos?: Array<string | { url?: string; tipo?: string }>;
     dispositivo?: string;
     codigo?: string;   // pacote de leituras comprado (opcional)
+    perfil?: string[]; // prioridades que a pessoa marcou (opcional, não é gravado)
   };
   try {
     body = await req.json();
   } catch {
     return json({ error: "invalid_body" }, 400);
   }
+
+  const perfil = new Set(
+    (Array.isArray(body.perfil) ? body.perfil : [])
+      .map((p) => txt(p, 20))
+      .filter((p) => p in PERFIS)
+      .slice(0, 6),
+  );
+  const prioridades = Array.from(perfil).map((p) => PERFIS[p]);
 
   const dispositivo = txt(body.dispositivo, 64);
   if (!/^[A-Za-z0-9-]{8,64}$/.test(dispositivo)) return json({ error: "dispositivo_invalido" }, 400);
@@ -794,7 +1045,11 @@ Deno.serve(async (req) => {
               (fotos.some((f) => f.tipo)
                 ? `, nesta ordem: ${fotos.map((f) => f.tipo || "parte do pacote").join(", ")}. `
                 : ". ") +
-              `Leia o rótulo e devolva o JSON pedido.`,
+              `Leia o rótulo e devolva o JSON pedido.` +
+              (prioridades.length
+                ? `\n\nPRIORIDADES DA PESSOA (marcadas por ela no app): a pessoa ${prioridades.join("; ")}. ` +
+                  `Aplique as regras de PRIORIDADES DA PESSOA no veredito, na "perfil_nota" e nos caminhos.`
+                : ""),
           },
           // A resolução muda conforme o que a foto precisa entregar, e isso
           // é dinheiro: imagem em "high" custa várias vezes mais que em
@@ -892,11 +1147,12 @@ Deno.serve(async (req) => {
   let motivoSemAlternativa = "";
 
   if (veredito !== "boa" && categoria) {
+    const familia = FAMILIAS[catTag] || [catTag];
     const { data: cands } = await admin
       .from("mercado_produtos")
-      .select("code,nome,marca,quantidade,nova,aditivos,kcal,ptn,cho,acucar,fibra,lip,sat,sodio,ingredientes")
-      .eq("categoria_tag", catTag)
-      .limit(400);
+      .select("code,nome,marca,quantidade,categoria_tag,categoria,labels,nova,aditivos,kcal,ptn,cho,acucar,fibra,lip,sat,sodio,ingredientes")
+      .in("categoria_tag", familia)
+      .limit(400 * familia.length);
 
     const meu = {
       acucar: n(p100.acucar_g),
@@ -912,12 +1168,23 @@ Deno.serve(async (req) => {
     const ranqueados = (cands || [])
       .filter((c) => nomeUsavel(String(c.nome || "")) && String(c.marca || "").trim())
       .filter((c) => dadoConfiavel(c as unknown as Record<string, unknown>))
-      .map((c) => ({ ...c, pen: penalidade(c as unknown as Record<string, number | null>) }))
-      // Só entra quem é MELHOR que o produto da mão dela. Quando não deu
+      // A régua absoluta: bom por si e bom para o que ela marcou. Ver
+      // serveParaIndicar — é o que tira o biscoito recheado da lista.
+      .filter((c) => serveParaIndicar(c as unknown as Record<string, unknown>, perfil))
+      .map((c) => ({
+        ...c,
+        daNutri: ehMarcaDaNutri(c.marca),
+        pen: penalidade(c as unknown as Record<string, number | null>),
+      }))
+      // E, além de bom, MELHOR que o produto da mão dela. Quando não deu
       // para converter a tabela para 100 g, minhaPenalidade fica frouxa e
-      // o corte não filtra nada — por isso o ranking abaixo ainda ordena.
+      // o corte não filtra nada — a régua acima continua valendo.
       .filter((c) => c.pen < minhaPenalidade)
-      .sort((a, b) => a.pen - b.pen);
+      .map((c) => ({
+        ...c,
+        ordem: penalidadePerfil(c as unknown as Record<string, number | null>, perfil, c.daNutri),
+      }))
+      .sort((a, b) => a.ordem - b.ordem);
 
     // Uma marca por linha: a lista precisa mostrar OPÇÃO, e três produtos
     // da mesma marca não é opção, é vitrine.
@@ -926,14 +1193,15 @@ Deno.serve(async (req) => {
       const chave = String(c.marca).toLowerCase().split(",")[0].trim();
       if (chave && !porMarca.has(chave)) porMarca.set(chave, c);
     }
-    const finalistas = Array.from(porMarca.values()).slice(0, 10);
+    const finalistas = Array.from(porMarca.values()).slice(0, 12);
 
     if (finalistas.length < 3) {
       // A REGRA DAS 3 MARCAS: menos de três marcas diferentes e melhores,
       // não sugere nenhuma.
       motivoSemAlternativa =
-        "Ainda não tenho três marcas diferentes dessa categoria na base para comparar com honestidade, " +
-        "então prefiro não indicar nenhuma a indicar poucas. Os caminhos acima valem do mesmo jeito.";
+        "Na base de hoje não achei três marcas diferentes dessa prateleira que eu indicaria de verdade" +
+        (perfil.size ? " para o que você marcou" : "") +
+        " — e indicar marca só por ser menos pior que a sua não é indicação. Os caminhos acima valem do mesmo jeito.";
     } else {
       try {
         const escolha = await openai([
@@ -945,17 +1213,22 @@ Deno.serve(async (req) => {
                 nome: txt(out.produto, 120),
                 marca: txt(out.marca, 80),
                 categoria,
+                vontade: txt(out.vontade, 20),
                 por_100g: p100,
                 alertas: listaDeTextos(out.alertas, 4),
               },
+              prioridades_da_pessoa: prioridades,
               candidatos: finalistas.map((c) => ({
                 code: c.code,
                 nome: c.nome,
                 marca: c.marca,
+                categoria: c.categoria,
                 quantidade: c.quantidade,
+                indicada_pela_nutri: c.daNutri,
+                ingredientes: String(c.ingredientes || "").slice(0, 300),
                 por_100g: {
                   kcal: c.kcal, proteina_g: c.ptn, acucar_g: c.acucar,
-                  fibra_g: c.fibra, gordura_sat_g: c.sat,
+                  carboidrato_g: c.cho, fibra_g: c.fibra, gordura_sat_g: c.sat,
                   sodio_mg: c.sodio != null ? Math.round(Number(c.sodio) * 1000) : null,
                 },
                 grupo_nova: c.nova,
@@ -998,6 +1271,20 @@ Deno.serve(async (req) => {
     }
   }
 
+  // ---------- 5c) Indicações da Ana (texto fixo) ----------
+  // Quando a vontade é de doce, a resposta de nutricionista não é "um
+  // biscoito com um pouco menos de açúcar": é o doce zero adição de açúcar
+  // que ela já indica. Aparece se o produto não foi boa escolha, ou sempre
+  // para quem controla o açúcar. Filtra lactose e glúten pelo perfil.
+  const vontade = txt(out.vontade, 20).toLowerCase();
+  const ehDoce = vontade === "doce" || DOCES.has(catTag);
+  const indicacoes = ehDoce && (veredito !== "boa" || perfil.has("acucar"))
+    ? INDICACOES_DA_ANA
+      .filter((i) => !perfil.has("sem_lactose") || i.sem_lactose)
+      .filter((i) => !perfil.has("sem_gluten") || i.sem_gluten)
+      .map((i) => ({ marca: i.marca, produto: i.produto, porque: i.porque }))
+    : [];
+
   // ---------- 6) Grava e devolve ----------
   const linha = {
     user_id: uid,
@@ -1030,6 +1317,7 @@ Deno.serve(async (req) => {
         n(out.porcao_g), n(out.consumo_g), txt(out.consumo_desc, 80), p100,
       ),
       funcao: txt(out.funcao, 120),
+      vontade,
       caminhos_intro: txt(out.caminhos_intro, 240),
       caminhos,
     },
@@ -1076,9 +1364,24 @@ Deno.serve(async (req) => {
     restamCreditos = deb && deb.ok === true ? Number(deb.restam) : Math.max(0, saldoAntes - 1);
   }
 
+  // O que depende do PERFIL volta só nesta resposta e não vai para o banco:
+  // "para quem controla o açúcar" gravado junto do dispositivo seria dado de
+  // saúde (LGPD, art. 11) guardado sem necessidade. O histórico do próprio
+  // aparelho guarda o que chega aqui.
+  const analise = {
+    ...gravado,
+    tabela: {
+      ...(gravado.tabela || {}),
+      perfil: Array.from(perfil),
+      perfil_nota: perfil.size ? txt(out.perfil_nota, 400) : "",
+      indicacoes,
+      indicacoes_cuidado: indicacoes.length ? CUIDADO_ZERO : "",
+    },
+  };
+
   return json({
     ok: true,
-    analise: gravado,
+    analise,
     sem_alternativa: motivoSemAlternativa,
     falta: listaDeTextos(out.falta, 3),
     // A assinante também vê saldo agora: um teto que existe e ninguém enxerga

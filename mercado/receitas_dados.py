@@ -138,12 +138,12 @@ dict(
     ing=[
         ("1/2 abacate maduro", 150, 163),
         ("1 colher de sopa cheia de cacau em pó 100%", 10, "cacau_po"),
-        ("adoçante ou 1 colher de chá de mel", 7, 507),
+        ("adoçante a gosto (opcional)", 2, "livre"),
         ("2 colheres de sopa de água gelada", 30, "livre"),
     ],
     preparo=[
         "Amasse bem o abacate com um garfo ou bata no mixer.",
-        "Junte o cacau, o mel e a água e misture até virar um creme liso e escuro.",
+        "Junte o cacau, a água e o adoçante, se usar, e misture até virar um creme liso e escuro.",
         "Leve à geladeira por 10 minutos se quiser mais firme.",
     ],
     dica="Cacau em pó 100% é diferente de achocolatado: o segundo é açúcar com sabor de chocolate. Olhe a lista de ingredientes — se açúcar vier antes do cacau, é doce, não é cacau.",
@@ -507,7 +507,7 @@ dict(
     ing=[
         ("1 xícara de morangos congelados", 150, 239),
         ("1 pote de iogurte natural", 170, 448),
-        ("1 colher de chá de mel", 7, 507),
+        ("adoçante a gosto (opcional)", 2, "livre"),
     ],
     preparo=[
         "Use os morangos CONGELADOS — é o que dá a textura de milk-shake sem gelo.",
@@ -1273,17 +1273,17 @@ dict(
         ("3 ovos", 150, 489),
         ("1/2 xícara de óleo", 100, 272),
         ("2 xícaras de farinha de trigo integral", 240, "farinha_trigo_integral"),
-        ("1 xícara de açúcar mascavo", 160, 493),
+        ("1 xícara de eritritol culinário (adoçante que vai ao forno)", 160, "livre"),
         ("1 colher de sopa de fermento", 15, "livre"),
         ("2 colheres de sopa de cacau em pó para a calda", 20, "cacau_po"),
     ],
     preparo=[
         "Bata no liquidificador a cenoura crua picada, os ovos e o óleo até ficar liso.",
-        "Misture com a farinha e o açúcar mascavo, e o fermento por último.",
+        "Misture com a farinha e o eritritol, e o fermento por último.",
         "Asse a 180 °C por 40 minutos.",
-        "Para a calda, ferva o cacau com 3 colheres de água e 2 de açúcar mascavo por 2 minutos.",
+        "Para a calda, ferva o cacau com 3 colheres de água e 2 de eritritol por 2 minutos.",
     ],
-    dica="Continua sendo bolo — o integral e o mascavo mudam a fibra e o sabor, não a caloria. A diferença que importa é comer um pedaço, não metade da forma.",
+    dica="Açúcar mascavo é açúcar: por isso aqui entra eritritol, o adoçante que vai ao forno e não sobe a glicose. Continua sendo bolo — farinha e óleo têm caloria. A diferença que importa é comer um pedaço, não metade da forma.",
 ),
 
 dict(
@@ -1393,16 +1393,16 @@ dict(
         ("3 xícaras de aveia em flocos", 270, 7),
         ("1/2 xícara de castanha-de-caju picada", 70, 588),
         ("1/2 xícara de coco em lascas", 50, 590),
-        ("3 colheres de sopa de mel", 60, 507),
+        ("1 banana bem madura amassada", 100, 182),
         ("2 colheres de sopa de óleo de coco", 25, "oleo_coco"),
         ("2 colheres de sopa de linhaça e canela", 25, 594),
     ],
     preparo=[
-        "Misture tudo numa tigela até a aveia ficar úmida por igual.",
+        "Amasse a banana com o óleo de coco e misture com o resto numa tigela, até a aveia ficar úmida por igual.",
         "Espalhe FINO numa assadeira e asse a 160 °C por 25 minutos, mexendo na metade do tempo.",
         "Deixe esfriar COMPLETAMENTE na assadeira antes de guardar — é ao esfriar que ela fica crocante.",
     ],
-    dica="Compare com a do mercado: a industrializada costuma ter açúcar entre os três primeiros ingredientes, e algumas trazem cobertura de chocolate chamada de 'gotas'.",
+    dica="Quem une e adoça aqui é a banana madura — mel é açúcar, e granola 'sem açúcar' feita com mel seria enganar você. Compare com a do mercado: a industrializada costuma ter açúcar entre os três primeiros ingredientes.",
 ),
 
 dict(
@@ -1520,7 +1520,7 @@ dict(
 dict(
     slug="pao-integral-caseiro",
     titulo="Pão integral caseiro",
-    chamada="Quatro ingredientes contra os vinte do pão de forma da prateleira.",
+    chamada="Cinco ingredientes contra os vinte do pão de forma da prateleira — e nenhum deles é açúcar.",
     cat=["vegetariana", "vegana", "economica"],
     tempo=120, rende=14,
     ing=[
@@ -1528,11 +1528,10 @@ dict(
         ("1 xícara de farinha de trigo comum", 120, 35),
         ("1 tablete de fermento biológico fresco", 15, "livre"),
         ("2 colheres de sopa de azeite", 20, 260),
-        ("1 colher de sopa de mel", 20, 507),
         ("300 ml de água morna e sal", 300, "livre"),
     ],
     preparo=[
-        "Dissolva o fermento no mel com um pouco de água morna (morna, não quente: água fervendo mata o fermento).",
+        "Dissolva o fermento em um pouco da água morna (morna, não quente: água fervendo mata o fermento). Ele não precisa de açúcar para crescer — só leva uns minutos a mais.",
         "Misture as farinhas, o sal, o azeite e a água e sove por 10 minutos, até a massa ficar lisa.",
         "Deixe crescer coberto por 1 hora, até dobrar (tempo de espera).",
         "Modele, ponha na forma, deixe crescer mais 30 minutos e asse a 200 °C por 35 minutos.",
@@ -1693,13 +1692,13 @@ dict(
     tempo=5, rende=2,
     ing=[
         ("2 xícaras de leite desnatado", 400, 457),
-        ("1 colher de chá de mel", 7, 507),
+        ("adoçante a gosto (opcional)", 2, "livre"),
         ("cúrcuma, canela e uma pitada de pimenta-do-reino", 5, "livre"),
     ],
     preparo=[
         "Aqueça o leite sem deixar ferver.",
         "Junte a cúrcuma, a canela e a pimenta — a pimenta é o que faz a cúrcuma ser aproveitada pelo corpo.",
-        "Adoce com o mel fora do fogo e beba quente.",
+        "Se quiser adoçar, use adoçante, fora do fogo, e beba quente.",
     ],
     dica="Cúrcuma não cura nada sozinha e não substitui remédio nenhum. O que esta xícara faz de concreto é ocupar o lugar do doce das 22 h — e isso já é bastante.",
 ),
@@ -1713,10 +1712,10 @@ dict(
     ing=[
         ("2 potes de iogurte natural", 400, 448),
         ("1 caixa de morangos", 200, 239),
-        ("1 colher de sopa de mel", 30, 507),
+        ("adoçante a gosto (opcional)", 2, "livre"),
     ],
     preparo=[
-        "Bata o iogurte com metade dos morangos e o mel.",
+        "Bata o iogurte com metade dos morangos (e o adoçante, se usar).",
         "Pique o resto dos morangos e misture com a colher, para ficar pedaço na mordida.",
         "Encha as forminhas e leve ao congelador por cerca de 4 horas (tempo de espera, não de trabalho).",
     ],
@@ -1925,10 +1924,10 @@ dict(
     ing=[
         ("2 potes de iogurte grego natural", 400, "iogurte_grego"),
         ("polpa de 2 maracujás", 100, 233),
-        ("1 colher de sopa de mel", 30, 507),
+        ("adoçante a gosto (opcional)", 2, "livre"),
     ],
     preparo=[
-        "Bata o iogurte com metade da polpa e o mel até ficar aerado.",
+        "Bata o iogurte com metade da polpa (e o adoçante, se usar) até ficar aerado.",
         "Distribua em taças e leve à geladeira por 1 hora (tempo de espera).",
         "Cubra com o resto da polpa, com as sementes, na hora de servir.",
     ],
@@ -2155,25 +2154,25 @@ dict(
     ing=[
         ("2 xícaras de fubá", 250, 43),
         ("1 xícara de farinha de trigo", 100, 35),
-        ("3/4 de xícara de açúcar", 150, 492),
+        ("3/4 de xícara de eritritol culinário (adoçante que vai ao forno)", 150, "livre"),
         ("3 ovos", 150, 489),
         ("1 xícara e meia de leite desnatado", 300, 457),
         ("1/3 de xícara de óleo", 80, 272),
         ("1 colher de sopa de fermento e erva-doce", 20, "livre"),
     ],
     preparo=[
-        "Bata no liquidificador os ovos, o leite, o óleo e o açúcar.",
+        "Bata no liquidificador os ovos, o leite, o óleo e o eritritol.",
         "Passe para uma tigela e misture o fubá, a farinha e a erva-doce.",
         "O fermento entra por último, mexendo com a colher.",
         "Asse a 180 °C por cerca de 40 minutos, até o palito sair seco.",
     ],
-    dica="Uma fatia deste bolo tem menos açúcar que a maioria dos bolos de caixinha — e nenhum ingrediente com nome que você não saiba pronunciar. Mas continua sendo bolo: a fatia é uma, não o pedaço inteiro.",
+    dica="Aqui o açúcar sai e entra eritritol, que vai ao forno e não sobe a glicose. Mas o fubá e a farinha continuam virando açúcar no sangue: continua sendo bolo, e a fatia é uma, não o pedaço inteiro.",
 ),
 
 dict(
     slug="bolo-de-maca-integral",
     titulo="Bolo de maçã integral",
-    chamada="Metade da massa é maçã — e é ela que adoça, não a xícara de açúcar.",
+    chamada="Metade da massa é maçã — e é ela que adoça, sem açúcar nenhum.",
     cat=["sobremesa", "economica", "vegetariana", "fruta"],
     tempo=60, rende=12,
     ing=[
@@ -2181,13 +2180,13 @@ dict(
         ("2 xícaras de farinha de trigo integral", 250, "farinha_trigo_integral"),
         ("1/2 xícara de aveia em flocos", 60, 7),
         ("3 ovos", 150, 489),
-        ("1/2 xícara de açúcar mascavo", 100, 493),
+        ("1/2 xícara de eritritol culinário (adoçante que vai ao forno)", 100, "livre"),
         ("1/4 de xícara de óleo", 60, 272),
         ("1 colher de sopa de fermento e canela", 20, "livre"),
     ],
     preparo=[
         "Rale duas maçãs e reserve a terceira em fatias para cobrir.",
-        "Bata os ovos com o açúcar e o óleo e junte a maçã ralada.",
+        "Bata os ovos com o eritritol e o óleo e junte a maçã ralada.",
         "Misture a farinha integral, a aveia e a canela, e o fermento por último.",
         "Cubra com as fatias, polvilhe canela e asse a 180 °C por 45 minutos.",
     ],

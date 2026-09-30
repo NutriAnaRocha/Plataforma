@@ -93,10 +93,10 @@ values (
   'Creme de abacate com cacau',
   'Gosto de mousse de chocolate, feito com fruta e sem forno.',
   array['sobremesa', 'lowcarb', 'cetogenica', 'vegana', 'vegetariana', 'fruta']::text[],
-  5, 2, 98,
-  94.4, 1.9, 10.3, 7.0, 6.6,
-  '[{"item": "1/2 abacate maduro", "gramas": 150, "taco_id": 163, "fonte": null, "nome_tabela": "Abacate, cru"}, {"item": "1 colher de sopa cheia de cacau em pó 100%", "gramas": 10, "taco_id": null, "fonte": "extra:cacau_po", "nome_tabela": "cacau_po"}, {"item": "adoçante ou 1 colher de chá de mel", "gramas": 7, "taco_id": 507, "fonte": null, "nome_tabela": "Mel, de abelha"}, {"item": "2 colheres de sopa de água gelada", "gramas": 30, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
-  array['Amasse bem o abacate com um garfo ou bata no mixer.', 'Junte o cacau, o mel e a água e misture até virar um creme liso e escuro.', 'Leve à geladeira por 10 minutos se quiser mais firme.']::text[],
+  5, 2, 96,
+  83.6, 1.9, 7.4, 7.0, 6.6,
+  '[{"item": "1/2 abacate maduro", "gramas": 150, "taco_id": 163, "fonte": null, "nome_tabela": "Abacate, cru"}, {"item": "1 colher de sopa cheia de cacau em pó 100%", "gramas": 10, "taco_id": null, "fonte": "extra:cacau_po", "nome_tabela": "cacau_po"}, {"item": "adoçante a gosto (opcional)", "gramas": 2, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}, {"item": "2 colheres de sopa de água gelada", "gramas": 30, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Amasse bem o abacate com um garfo ou bata no mixer.', 'Junte o cacau, a água e o adoçante, se usar, e misture até virar um creme liso e escuro.', 'Leve à geladeira por 10 minutos se quiser mais firme.']::text[],
   'Cacau em pó 100% é diferente de achocolatado: o segundo é açúcar com sabor de chocolate. Olhe a lista de ingredientes — se açúcar vier antes do cacau, é doce, não é cacau.',
   4)
 on conflict (slug) do update set
@@ -525,9 +525,9 @@ values (
   'Smoothie de morango com iogurte',
   'Cremoso como milk-shake, com proteína de verdade e sem xarope.',
   array['suco', 'sobremesa', 'fruta', 'vegetariana']::text[],
-  5, 1, 327,
-  154.3, 8.3, 19.3, 5.5, 2.5,
-  '[{"item": "1 xícara de morangos congelados", "gramas": 150, "taco_id": 239, "fonte": null, "nome_tabela": "Morango, cru"}, {"item": "1 pote de iogurte natural", "gramas": 170, "taco_id": 448, "fonte": null, "nome_tabela": "Iogurte, natural"}, {"item": "1 colher de chá de mel", "gramas": 7, "taco_id": 507, "fonte": null, "nome_tabela": "Mel, de abelha"}]'::jsonb,
+  5, 1, 322,
+  132.7, 8.3, 13.4, 5.5, 2.5,
+  '[{"item": "1 xícara de morangos congelados", "gramas": 150, "taco_id": 239, "fonte": null, "nome_tabela": "Morango, cru"}, {"item": "1 pote de iogurte natural", "gramas": 170, "taco_id": 448, "fonte": null, "nome_tabela": "Iogurte, natural"}, {"item": "adoçante a gosto (opcional)", "gramas": 2, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
   array['Use os morangos CONGELADOS — é o que dá a textura de milk-shake sem gelo.', 'Bata tudo no liquidificador até ficar cremoso.', 'Se ficar grosso demais, junte uma colher de leite, não de água.']::text[],
   'Congelar a fruta madura que ia estragar é o truque que faz smoothie sair de graça e evitar desperdício.',
   22)
@@ -1342,10 +1342,10 @@ values (
   'O bolo da vovó com farinha integral e cobertura de cacau de verdade.',
   array['sobremesa', 'vegetariana', 'economica']::text[],
   60, 12, 82,
-  221.0, 5.0, 30.2, 10.2, 3.6,
-  '[{"item": "3 cenouras médias", "gramas": 300, "taco_id": 110, "fonte": null, "nome_tabela": "Cenoura, crua"}, {"item": "3 ovos", "gramas": 150, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "1/2 xícara de óleo", "gramas": 100, "taco_id": 272, "fonte": null, "nome_tabela": "Óleo, de soja"}, {"item": "2 xícaras de farinha de trigo integral", "gramas": 240, "taco_id": null, "fonte": "extra:farinha_trigo_integral", "nome_tabela": "farinha_trigo_integral"}, {"item": "1 xícara de açúcar mascavo", "gramas": 160, "taco_id": 493, "fonte": null, "nome_tabela": "Açúcar, mascavo"}, {"item": "1 colher de sopa de fermento", "gramas": 15, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}, {"item": "2 colheres de sopa de cacau em pó para a calda", "gramas": 20, "taco_id": null, "fonte": "extra:cacau_po", "nome_tabela": "cacau_po"}]'::jsonb,
-  array['Bata no liquidificador a cenoura crua picada, os ovos e o óleo até ficar liso.', 'Misture com a farinha e o açúcar mascavo, e o fermento por último.', 'Asse a 180 °C por 40 minutos.', 'Para a calda, ferva o cacau com 3 colheres de água e 2 de açúcar mascavo por 2 minutos.']::text[],
-  'Continua sendo bolo — o integral e o mascavo mudam a fibra e o sabor, não a caloria. A diferença que importa é comer um pedaço, não metade da forma.',
+  171.9, 4.9, 17.6, 10.2, 3.6,
+  '[{"item": "3 cenouras médias", "gramas": 300, "taco_id": 110, "fonte": null, "nome_tabela": "Cenoura, crua"}, {"item": "3 ovos", "gramas": 150, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "1/2 xícara de óleo", "gramas": 100, "taco_id": 272, "fonte": null, "nome_tabela": "Óleo, de soja"}, {"item": "2 xícaras de farinha de trigo integral", "gramas": 240, "taco_id": null, "fonte": "extra:farinha_trigo_integral", "nome_tabela": "farinha_trigo_integral"}, {"item": "1 xícara de eritritol culinário (adoçante que vai ao forno)", "gramas": 160, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}, {"item": "1 colher de sopa de fermento", "gramas": 15, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}, {"item": "2 colheres de sopa de cacau em pó para a calda", "gramas": 20, "taco_id": null, "fonte": "extra:cacau_po", "nome_tabela": "cacau_po"}]'::jsonb,
+  array['Bata no liquidificador a cenoura crua picada, os ovos e o óleo até ficar liso.', 'Misture com a farinha e o eritritol, e o fermento por último.', 'Asse a 180 °C por 40 minutos.', 'Para a calda, ferva o cacau com 3 colheres de água e 2 de eritritol por 2 minutos.']::text[],
+  'Açúcar mascavo é açúcar: por isso aqui entra eritritol, o adoçante que vai ao forno e não sobe a glicose. Continua sendo bolo — farinha e óleo têm caloria. A diferença que importa é comer um pedaço, não metade da forma.',
   56)
 on conflict (slug) do update set
   titulo=excluded.titulo, chamada=excluded.chamada,
@@ -1461,11 +1461,11 @@ values (
   'Granola caseira sem açúcar',
   'Um pote que dura o mês e custa metade da granola ''fit'' do mercado.',
   array['sobremesa', 'vegana', 'vegetariana', 'economica']::text[],
-  60, 15, 33,
-  146.0, 3.7, 17.8, 7.3, 2.5,
-  '[{"item": "3 xícaras de aveia em flocos", "gramas": 270, "taco_id": 7, "fonte": null, "nome_tabela": "Aveia, flocos, crua"}, {"item": "1/2 xícara de castanha-de-caju picada", "gramas": 70, "taco_id": 588, "fonte": null, "nome_tabela": "Castanha-de-caju, torrada, salgada"}, {"item": "1/2 xícara de coco em lascas", "gramas": 50, "taco_id": 590, "fonte": null, "nome_tabela": "Coco, cru"}, {"item": "3 colheres de sopa de mel", "gramas": 60, "taco_id": 507, "fonte": null, "nome_tabela": "Mel, de abelha"}, {"item": "2 colheres de sopa de óleo de coco", "gramas": 25, "taco_id": null, "fonte": "extra:oleo_coco", "nome_tabela": "oleo_coco"}, {"item": "2 colheres de sopa de linhaça e canela", "gramas": 25, "taco_id": 594, "fonte": null, "nome_tabela": "Linhaça, semente"}]'::jsonb,
-  array['Misture tudo numa tigela até a aveia ficar úmida por igual.', 'Espalhe FINO numa assadeira e asse a 160 °C por 25 minutos, mexendo na metade do tempo.', 'Deixe esfriar COMPLETAMENTE na assadeira antes de guardar — é ao esfriar que ela fica crocante.']::text[],
-  'Compare com a do mercado: a industrializada costuma ter açúcar entre os três primeiros ingredientes, e algumas trazem cobertura de chocolate chamada de ''gotas''.',
+  60, 15, 36,
+  140.2, 3.8, 16.1, 7.3, 2.7,
+  '[{"item": "3 xícaras de aveia em flocos", "gramas": 270, "taco_id": 7, "fonte": null, "nome_tabela": "Aveia, flocos, crua"}, {"item": "1/2 xícara de castanha-de-caju picada", "gramas": 70, "taco_id": 588, "fonte": null, "nome_tabela": "Castanha-de-caju, torrada, salgada"}, {"item": "1/2 xícara de coco em lascas", "gramas": 50, "taco_id": 590, "fonte": null, "nome_tabela": "Coco, cru"}, {"item": "1 banana bem madura amassada", "gramas": 100, "taco_id": 182, "fonte": null, "nome_tabela": "Banana, prata, crua"}, {"item": "2 colheres de sopa de óleo de coco", "gramas": 25, "taco_id": null, "fonte": "extra:oleo_coco", "nome_tabela": "oleo_coco"}, {"item": "2 colheres de sopa de linhaça e canela", "gramas": 25, "taco_id": 594, "fonte": null, "nome_tabela": "Linhaça, semente"}]'::jsonb,
+  array['Amasse a banana com o óleo de coco e misture com o resto numa tigela, até a aveia ficar úmida por igual.', 'Espalhe FINO numa assadeira e asse a 160 °C por 25 minutos, mexendo na metade do tempo.', 'Deixe esfriar COMPLETAMENTE na assadeira antes de guardar — é ao esfriar que ela fica crocante.']::text[],
+  'Quem une e adoça aqui é a banana madura — mel é açúcar, e granola ''sem açúcar'' feita com mel seria enganar você. Compare com a do mercado: a industrializada costuma ter açúcar entre os três primeiros ingredientes.',
   61)
 on conflict (slug) do update set
   titulo=excluded.titulo, chamada=excluded.chamada,
@@ -1603,12 +1603,12 @@ insert into public.mercado_receitas
 values (
   'pao-integral-caseiro',
   'Pão integral caseiro',
-  'Quatro ingredientes contra os vinte do pão de forma da prateleira.',
+  'Cinco ingredientes contra os vinte do pão de forma da prateleira — e nenhum deles é açúcar.',
   array['vegetariana', 'vegana', 'economica']::text[],
-  120, 14, 60,
-  135.4, 4.2, 26.3, 2.2, 2.9,
-  '[{"item": "3 xícaras de farinha de trigo integral", "gramas": 360, "taco_id": null, "fonte": "extra:farinha_trigo_integral", "nome_tabela": "farinha_trigo_integral"}, {"item": "1 xícara de farinha de trigo comum", "gramas": 120, "taco_id": 35, "fonte": null, "nome_tabela": "Farinha, de trigo"}, {"item": "1 tablete de fermento biológico fresco", "gramas": 15, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}, {"item": "2 colheres de sopa de azeite", "gramas": 20, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "1 colher de sopa de mel", "gramas": 20, "taco_id": 507, "fonte": null, "nome_tabela": "Mel, de abelha"}, {"item": "300 ml de água morna e sal", "gramas": 300, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
-  array['Dissolva o fermento no mel com um pouco de água morna (morna, não quente: água fervendo mata o fermento).', 'Misture as farinhas, o sal, o azeite e a água e sove por 10 minutos, até a massa ficar lisa.', 'Deixe crescer coberto por 1 hora, até dobrar (tempo de espera).', 'Modele, ponha na forma, deixe crescer mais 30 minutos e asse a 200 °C por 35 minutos.']::text[],
+  120, 14, 58,
+  131.0, 4.2, 25.1, 2.2, 2.9,
+  '[{"item": "3 xícaras de farinha de trigo integral", "gramas": 360, "taco_id": null, "fonte": "extra:farinha_trigo_integral", "nome_tabela": "farinha_trigo_integral"}, {"item": "1 xícara de farinha de trigo comum", "gramas": 120, "taco_id": 35, "fonte": null, "nome_tabela": "Farinha, de trigo"}, {"item": "1 tablete de fermento biológico fresco", "gramas": 15, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}, {"item": "2 colheres de sopa de azeite", "gramas": 20, "taco_id": 260, "fonte": null, "nome_tabela": "Azeite, de oliva, extra virgem"}, {"item": "300 ml de água morna e sal", "gramas": 300, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Dissolva o fermento em um pouco da água morna (morna, não quente: água fervendo mata o fermento). Ele não precisa de açúcar para crescer — só leva uns minutos a mais.', 'Misture as farinhas, o sal, o azeite e a água e sove por 10 minutos, até a massa ficar lisa.', 'Deixe crescer coberto por 1 hora, até dobrar (tempo de espera).', 'Modele, ponha na forma, deixe crescer mais 30 minutos e asse a 200 °C por 35 minutos.']::text[],
   'Vire o pacote do pão de forma industrializado: além do açúcar e da gordura, ele traz conservante para durar 15 dias na prateleira. Este dura 4 — e é por isso que ele é pão.',
   67)
 on conflict (slug) do update set
@@ -1773,10 +1773,10 @@ values (
   'Leite dourado de cúrcuma',
   'A bebida quente do fim da noite, para quem quer largar o doce depois do jantar.',
   array['suco', 'vegetariana', 'detox']::text[],
-  5, 2, 206,
-  80.8, 6.8, 12.7, 0.4, 0.0,
-  '[{"item": "2 xícaras de leite desnatado", "gramas": 400, "taco_id": 457, "fonte": null, "nome_tabela": "Leite, de vaca, desnatado, UHT"}, {"item": "1 colher de chá de mel", "gramas": 7, "taco_id": 507, "fonte": null, "nome_tabela": "Mel, de abelha"}, {"item": "cúrcuma, canela e uma pitada de pimenta-do-reino", "gramas": 5, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
-  array['Aqueça o leite sem deixar ferver.', 'Junte a cúrcuma, a canela e a pimenta — a pimenta é o que faz a cúrcuma ser aproveitada pelo corpo.', 'Adoce com o mel fora do fogo e beba quente.']::text[],
+  5, 2, 204,
+  70.0, 6.8, 9.8, 0.4, 0.0,
+  '[{"item": "2 xícaras de leite desnatado", "gramas": 400, "taco_id": 457, "fonte": null, "nome_tabela": "Leite, de vaca, desnatado, UHT"}, {"item": "adoçante a gosto (opcional)", "gramas": 2, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}, {"item": "cúrcuma, canela e uma pitada de pimenta-do-reino", "gramas": 5, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Aqueça o leite sem deixar ferver.', 'Junte a cúrcuma, a canela e a pimenta — a pimenta é o que faz a cúrcuma ser aproveitada pelo corpo.', 'Se quiser adoçar, use adoçante, fora do fogo, e beba quente.']::text[],
   'Cúrcuma não cura nada sozinha e não substitui remédio nenhum. O que esta xícara faz de concreto é ocupar o lugar do doce das 22 h — e isso já é bastante.',
   74)
 on conflict (slug) do update set
@@ -1797,10 +1797,10 @@ values (
   'Picolé de iogurte com morango',
   'Três ingredientes, nenhum corante, e a criança nem desconfia que é fruta.',
   array['sobremesa', 'fruta', 'vegetariana', 'economica']::text[],
-  5, 6, 105,
-  59.8, 3.0, 7.7, 2.1, 0.6,
-  '[{"item": "2 potes de iogurte natural", "gramas": 400, "taco_id": 448, "fonte": null, "nome_tabela": "Iogurte, natural"}, {"item": "1 caixa de morangos", "gramas": 200, "taco_id": 239, "fonte": null, "nome_tabela": "Morango, cru"}, {"item": "1 colher de sopa de mel", "gramas": 30, "taco_id": 507, "fonte": null, "nome_tabela": "Mel, de abelha"}]'::jsonb,
-  array['Bata o iogurte com metade dos morangos e o mel.', 'Pique o resto dos morangos e misture com a colher, para ficar pedaço na mordida.', 'Encha as forminhas e leve ao congelador por cerca de 4 horas (tempo de espera, não de trabalho).']::text[],
+  5, 6, 100,
+  44.4, 3.0, 3.5, 2.1, 0.6,
+  '[{"item": "2 potes de iogurte natural", "gramas": 400, "taco_id": 448, "fonte": null, "nome_tabela": "Iogurte, natural"}, {"item": "1 caixa de morangos", "gramas": 200, "taco_id": 239, "fonte": null, "nome_tabela": "Morango, cru"}, {"item": "adoçante a gosto (opcional)", "gramas": 2, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Bata o iogurte com metade dos morangos (e o adoçante, se usar).', 'Pique o resto dos morangos e misture com a colher, para ficar pedaço na mordida.', 'Encha as forminhas e leve ao congelador por cerca de 4 horas (tempo de espera, não de trabalho).']::text[],
   'Picolé de fruta comprado costuma ser água, açúcar e aroma. Aqui a fruta é o ingrediente principal — e o iogurte ainda traz proteína.',
   75)
 on conflict (slug) do update set
@@ -2037,10 +2037,10 @@ values (
   'Mousse de maracujá com iogurte',
   'O sabor do mousse de leite condensado, sem a lata inteira de leite condensado.',
   array['sobremesa', 'vegetariana']::text[],
-  10, 4, 132,
-  129.9, 9.2, 12.6, 5.0, 0.1,
-  '[{"item": "2 potes de iogurte grego natural", "gramas": 400, "taco_id": null, "fonte": "extra:iogurte_grego", "nome_tabela": "iogurte_grego"}, {"item": "polpa de 2 maracujás", "gramas": 100, "taco_id": 233, "fonte": null, "nome_tabela": "Maracujá, polpa, congelada"}, {"item": "1 colher de sopa de mel", "gramas": 30, "taco_id": 507, "fonte": null, "nome_tabela": "Mel, de abelha"}]'::jsonb,
-  array['Bata o iogurte com metade da polpa e o mel até ficar aerado.', 'Distribua em taças e leve à geladeira por 1 hora (tempo de espera).', 'Cubra com o resto da polpa, com as sementes, na hora de servir.']::text[],
+  10, 4, 126,
+  106.7, 9.2, 6.3, 5.0, 0.1,
+  '[{"item": "2 potes de iogurte grego natural", "gramas": 400, "taco_id": null, "fonte": "extra:iogurte_grego", "nome_tabela": "iogurte_grego"}, {"item": "polpa de 2 maracujás", "gramas": 100, "taco_id": 233, "fonte": null, "nome_tabela": "Maracujá, polpa, congelada"}, {"item": "adoçante a gosto (opcional)", "gramas": 2, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Bata o iogurte com metade da polpa (e o adoçante, se usar) até ficar aerado.', 'Distribua em taças e leve à geladeira por 1 hora (tempo de espera).', 'Cubra com o resto da polpa, com as sementes, na hora de servir.']::text[],
   'O mousse tradicional leva uma lata de leite condensado para quatro porções — perto de 90 g de açúcar. Aqui a acidez do maracujá faz o trabalho que o açúcar fazia.',
   85)
 on conflict (slug) do update set
@@ -2278,10 +2278,10 @@ values (
   'O bolo de fubá da fazenda, no liquidificador, sem cobertura nenhuma.',
   array['sobremesa', 'economica', 'vegetariana']::text[],
   60, 12, 88,
-  237.6, 4.8, 36.6, 8.3, 1.2,
-  '[{"item": "2 xícaras de fubá", "gramas": 250, "taco_id": 43, "fonte": null, "nome_tabela": "Milho, fubá, cru"}, {"item": "1 xícara de farinha de trigo", "gramas": 100, "taco_id": 35, "fonte": null, "nome_tabela": "Farinha, de trigo"}, {"item": "3/4 de xícara de açúcar", "gramas": 150, "taco_id": 492, "fonte": null, "nome_tabela": "Açúcar, cristal"}, {"item": "3 ovos", "gramas": 150, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "1 xícara e meia de leite desnatado", "gramas": 300, "taco_id": 457, "fonte": null, "nome_tabela": "Leite, de vaca, desnatado, UHT"}, {"item": "1/3 de xícara de óleo", "gramas": 80, "taco_id": 272, "fonte": null, "nome_tabela": "Óleo, de soja"}, {"item": "1 colher de sopa de fermento e erva-doce", "gramas": 20, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
-  array['Bata no liquidificador os ovos, o leite, o óleo e o açúcar.', 'Passe para uma tigela e misture o fubá, a farinha e a erva-doce.', 'O fermento entra por último, mexendo com a colher.', 'Asse a 180 °C por cerca de 40 minutos, até o palito sair seco.']::text[],
-  'Uma fatia deste bolo tem menos açúcar que a maioria dos bolos de caixinha — e nenhum ingrediente com nome que você não saiba pronunciar. Mas continua sendo bolo: a fatia é uma, não o pedaço inteiro.',
+  189.3, 4.8, 24.1, 8.3, 1.2,
+  '[{"item": "2 xícaras de fubá", "gramas": 250, "taco_id": 43, "fonte": null, "nome_tabela": "Milho, fubá, cru"}, {"item": "1 xícara de farinha de trigo", "gramas": 100, "taco_id": 35, "fonte": null, "nome_tabela": "Farinha, de trigo"}, {"item": "3/4 de xícara de eritritol culinário (adoçante que vai ao forno)", "gramas": 150, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}, {"item": "3 ovos", "gramas": 150, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "1 xícara e meia de leite desnatado", "gramas": 300, "taco_id": 457, "fonte": null, "nome_tabela": "Leite, de vaca, desnatado, UHT"}, {"item": "1/3 de xícara de óleo", "gramas": 80, "taco_id": 272, "fonte": null, "nome_tabela": "Óleo, de soja"}, {"item": "1 colher de sopa de fermento e erva-doce", "gramas": 20, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Bata no liquidificador os ovos, o leite, o óleo e o eritritol.', 'Passe para uma tigela e misture o fubá, a farinha e a erva-doce.', 'O fermento entra por último, mexendo com a colher.', 'Asse a 180 °C por cerca de 40 minutos, até o palito sair seco.']::text[],
+  'Aqui o açúcar sai e entra eritritol, que vai ao forno e não sobe a glicose. Mas o fubá e a farinha continuam virando açúcar no sangue: continua sendo bolo, e a fatia é uma, não o pedaço inteiro.',
   95)
 on conflict (slug) do update set
   titulo=excluded.titulo, chamada=excluded.chamada,
@@ -2299,12 +2299,12 @@ insert into public.mercado_receitas
 values (
   'bolo-de-maca-integral',
   'Bolo de maçã integral',
-  'Metade da massa é maçã — e é ela que adoça, não a xícara de açúcar.',
+  'Metade da massa é maçã — e é ela que adoça, sem açúcar nenhum.',
   array['sobremesa', 'economica', 'vegetariana', 'fruta']::text[],
   60, 12, 87,
-  201.8, 5.2, 31.6, 7.1, 3.1,
-  '[{"item": "3 maçãs com casca", "gramas": 400, "taco_id": 222, "fonte": null, "nome_tabela": "Maçã, Fuji, com casca, crua"}, {"item": "2 xícaras de farinha de trigo integral", "gramas": 250, "taco_id": null, "fonte": "extra:farinha_trigo_integral", "nome_tabela": "farinha_trigo_integral"}, {"item": "1/2 xícara de aveia em flocos", "gramas": 60, "taco_id": 7, "fonte": null, "nome_tabela": "Aveia, flocos, crua"}, {"item": "3 ovos", "gramas": 150, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "1/2 xícara de açúcar mascavo", "gramas": 100, "taco_id": 493, "fonte": null, "nome_tabela": "Açúcar, mascavo"}, {"item": "1/4 de xícara de óleo", "gramas": 60, "taco_id": 272, "fonte": null, "nome_tabela": "Óleo, de soja"}, {"item": "1 colher de sopa de fermento e canela", "gramas": 20, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
-  array['Rale duas maçãs e reserve a terceira em fatias para cobrir.', 'Bata os ovos com o açúcar e o óleo e junte a maçã ralada.', 'Misture a farinha integral, a aveia e a canela, e o fermento por último.', 'Cubra com as fatias, polvilhe canela e asse a 180 °C por 45 minutos.']::text[],
+  171.1, 5.2, 23.7, 7.1, 3.1,
+  '[{"item": "3 maçãs com casca", "gramas": 400, "taco_id": 222, "fonte": null, "nome_tabela": "Maçã, Fuji, com casca, crua"}, {"item": "2 xícaras de farinha de trigo integral", "gramas": 250, "taco_id": null, "fonte": "extra:farinha_trigo_integral", "nome_tabela": "farinha_trigo_integral"}, {"item": "1/2 xícara de aveia em flocos", "gramas": 60, "taco_id": 7, "fonte": null, "nome_tabela": "Aveia, flocos, crua"}, {"item": "3 ovos", "gramas": 150, "taco_id": 489, "fonte": null, "nome_tabela": "Ovo, de galinha, inteiro, cru"}, {"item": "1/2 xícara de eritritol culinário (adoçante que vai ao forno)", "gramas": 100, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}, {"item": "1/4 de xícara de óleo", "gramas": 60, "taco_id": 272, "fonte": null, "nome_tabela": "Óleo, de soja"}, {"item": "1 colher de sopa de fermento e canela", "gramas": 20, "taco_id": null, "fonte": "extra:livre", "nome_tabela": "livre"}]'::jsonb,
+  array['Rale duas maçãs e reserve a terceira em fatias para cobrir.', 'Bata os ovos com o eritritol e o óleo e junte a maçã ralada.', 'Misture a farinha integral, a aveia e a canela, e o fermento por último.', 'Cubra com as fatias, polvilhe canela e asse a 180 °C por 45 minutos.']::text[],
   'A farinha integral pede um pouco mais de líquido e deixa o bolo mais denso — é assim mesmo. Bolo integral fofinho como o branco costuma ser integral só no nome.',
   96)
 on conflict (slug) do update set
