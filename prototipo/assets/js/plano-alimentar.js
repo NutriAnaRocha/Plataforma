@@ -1416,245 +1416,250 @@
       }
     },
     {
-      /* VERÃO — cardápio leve e refrescante para o calor.
-         Smoothie proteico de frutas vermelhas congeladas no café, suco verde
-         (couve, abacaxi, pepino, limão, gengibre e hortelã) no meio da manhã,
-         almoço em prato de salada com peixe, fruta gelada à tarde e "massa"
-         de abobrinha no jantar. As três opções alternativas trocam a refeição
-         do mesmo horário e não somam no dia: smoothie tropical de manga,
-         sorvete caseiro de banana com frutas vermelhas e lasanha de berinjela.
-         Receitas completas na biblioteca (tag "verão", migration 0078).
+      /* VERÃO — leve, refrescante e PRÁTICO para quem trabalha e tem rotina
+         puxada (pedido da Ana): nada que exija mais de 10-15 min ou utensílio
+         especial. Café com ovos cozidos (cozinha a dúzia no domingo) e suco
+         verde de 3 ingredientes (couve, abacaxi, limão + água e gelo); fruta
+         de levar na bolsa com castanha; almoço em marmita fria (salada de
+         lentilha com frango); melancia com queijo; peixe assado ou na
+         airfryer com salada e batata-doce. Opções (trocam a refeição do mesmo
+         horário e não somam no dia): smoothie proteico, salada de macarrão
+         com atum, sorvete de banana e macarrão de abobrinha com frango.
+         Receitas completas na biblioteca (tag "verão", migrations 0101/0102).
 
-         Proteína no café vem do whey + iogurte para o smoothie não ficar só
-         fruta. Whey e o mix de frutas vermelhas não estão na TACO (itens 614
-         e 615, com a fonte no próprio dado); no lugar do whey o substituto é
-         leite em pó desnatado. Lentilha no almoço em vez do feijão de panela:
-         fria, vai direto na salada — o feijão fica como substituto.
-         Totais (sem as opções): 1177 · 1482 · 1813 · 1988 kcal; proteína
-         121-160 g e fibra 24-40 g por dia. Em 1800 e 2000 entra ceia. */
+         Macarrão integral cozido e grão-de-bico cozido não estão na TACO
+         (itens 619 e 620, USDA, fonte no próprio dado), nem whey e o mix de
+         frutas vermelhas (614 e 615). Totais (sem as opções): 1181 · 1483 ·
+         1783 · 1992 kcal; proteína 104-157 g por dia. Em 1800 e 2000 entra
+         ceia. */
       id: "verao", ico: "☀️", nome: "Verão leve e refrescante",
-      objetivo: "Cardápio de verão leve, refrescante e com boa hidratação",
-      desc: "Smoothies, suco verde, saladas, macarrão de abobrinha, lasanha de berinjela e sorvete caseiro.",
+      objetivo: "Cardápio de verão leve, prático e com boa hidratação",
+      desc: "Ovos e suco verde no café, saladas de marmita (lentilha com frango, macarrão com atum), peixe e sorvete de banana.",
       variacoes: {
         1200: [
-          { nome: "Café da manhã — smoothie proteico de frutas vermelhas", hora: "07:30", itens: [
+          { nome: "Café da manhã — ovos cozidos e suco verde prático", hora: "07:30", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
+            { q: "couve, manteiga, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "abacaxi, cru", medida: "fatia", qtd: 1 },
+            { q: "limao, galego, suco", medida: "grama", qtd: 20 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 } ] },
+          { nome: "Lanche da manhã — fruta com castanha", hora: "10:00", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1, subs: [{ q: "maca, fuji, com casca, crua", medida: "unidade", qtd: 1 }] },
+            { q: "castanha-do-brasil, crua", medida: "unidade", qtd: 2 } ] },
+          { nome: "Almoço — salada de lentilha com frango", hora: "12:30", itens: [
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
+            { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "lentilha, cozida", medida: "concha", qtd: 1, subs: [{ q: "grao-de-bico, cozido", medida: "concha", qtd: 1 }] },
+            { q: "frango, peito, cozido, desfiado", medida: "colher de sopa", qtd: 6 },
+            { q: "azeite, de oliva", medida: "colher de cha", qtd: 2 } ] },
+          { nome: "Lanche da tarde — melancia com queijo", hora: "16:00", itens: [
+            { q: "melancia, crua", medida: "grama", qtd: 200, subs: [{ q: "melao, cru", medida: "grama", qtd: 200 }] },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 1, subs: [{ q: "queijo, ricota", medida: "fatia", qtd: 2 }] } ] },
+          { nome: "Jantar — peixe assado com salada e batata-doce", hora: "19:30", itens: [
+            { q: "merluza, file, assado", medida: "porcao", qtd: 1, subs: [{ q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 }] },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 4 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
+            { q: "azeite, de oliva", medida: "colher de cha", qtd: 2 } ] },
+          { nome: "Café da manhã (opção) — smoothie proteico de frutas vermelhas", hora: "07:30", alternativa: true, itens: [
             { q: "frutas vermelhas, mix, congeladas", medida: "xicara", qtd: 1, subs: [{ q: "morango, cru", medida: "unidade", qtd: 10 }] },
             { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
             { q: "whey protein, concentrado", medida: "dose (30 g)", qtd: 1, subs: [{ q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 2 }] },
             { q: "semente de chia", medida: "colher de cha", qtd: 1 } ] },
-          { nome: "Lanche da manhã — suco verde detox", hora: "10:00", itens: [
-            { q: "couve, manteiga, crua", medida: "colher de sopa", qtd: 2 },
-            { q: "abacaxi, cru", medida: "fatia", qtd: 1 },
-            { q: "limao, galego, suco", medida: "grama", qtd: 20 },
-            { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
-            { q: "gengibre, raiz, cru", medida: "fatia", qtd: 1 },
-            { q: "hortela, folhas, crua", medida: "folha", qtd: 6 } ] },
-          { nome: "Almoço — salada completa com peixe grelhado", hora: "12:30", itens: [
-            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
-            { q: "rucula, crua", medida: "pires", qtd: 1 },
+          { nome: "Almoço (opção) — salada de macarrão com atum", hora: "12:30", alternativa: true, itens: [
+            { q: "macarrao, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "atum, conserva em oleo", medida: "colher de sopa", qtd: 3, subs: [{ q: "sardinha, conserva em oleo", medida: "colher de sopa", qtd: 3 }] },
             { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
-            { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
             { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
-            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 3, subs: [{ q: "batata, doce, cozida", medida: "colher de sopa", qtd: 3 }] },
-            { q: "lentilha, cozida", medida: "concha", qtd: 1, subs: [{ q: "feijao, carioca, cozido", medida: "concha", qtd: 1 }] },
-            { q: "merluza, file, assado", medida: "porcao", qtd: 1, subs: [{ q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 }] },
-            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
-          { nome: "Lanche da tarde — melancia com queijo", hora: "16:00", itens: [
-            { q: "melancia, crua", medida: "grama", qtd: 200, subs: [{ q: "melao, cru", medida: "grama", qtd: 200 }] },
-            { q: "queijo, minas, frescal", medida: "fatia", qtd: 1, subs: [{ q: "queijo, ricota", medida: "fatia", qtd: 2 }] } ] },
-          { nome: "Jantar — macarrão de abobrinha com frango ao sugo", hora: "19:30", itens: [
-            { q: "abobrinha, italiana, crua", medida: "pires", qtd: 5 },
-            { q: "frango, peito, cozido, desfiado", medida: "colher de sopa", qtd: 5 },
-            { q: "tomate, pure", medida: "colher de sopa", qtd: 3 },
-            { q: "queijo, parmesao", medida: "colher de sopa", qtd: 1 },
-            { q: "azeite, de oliva", medida: "colher de cha", qtd: 1 } ] },
-          { nome: "Lanche da manhã (opção) — smoothie tropical de manga e coco", hora: "10:00", alternativa: true, itens: [
-            { q: "manga, tommy atkins, crua", medida: "fatia", qtd: 1 },
-            { q: "coco, agua de", medida: "copo (200 ml)", qtd: 1 },
-            { q: "hortela, folhas, crua", medida: "folha", qtd: 4 } ] },
-          { nome: "Lanche da tarde (opção) — sorvete caseiro de banana com frutas vermelhas", hora: "16:00", alternativa: true, itens: [
+            { q: "milho, verde, enlatado, drenado", medida: "colher de sopa", qtd: 1 },
+            { q: "rucula, crua", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de cha", qtd: 2 } ] },
+          { nome: "Lanche da tarde (opção) — sorvete de banana com frutas vermelhas", hora: "16:00", alternativa: true, itens: [
             { q: "banana, prata", medida: "unidade", qtd: 1 },
             { q: "frutas vermelhas, mix, congeladas", medida: "punhado", qtd: 1 },
             { q: "iogurte, natural, desnatado", medida: "colher de sopa", qtd: 3 },
             { q: "cacau, po, sem acucar", medida: "colher de cha", qtd: 1 } ] },
-          { nome: "Jantar (opção) — lasanha de berinjela", hora: "19:30", alternativa: true, itens: [
-            { q: "berinjela, cozida", medida: "pires", qtd: 4 },
-            { q: "carne, bovina, patinho, moido, cozido", medida: "colher de sopa", qtd: 4 },
-            { q: "queijo, ricota", medida: "fatia", qtd: 2 },
+          { nome: "Jantar (opção) — macarrão de abobrinha com frango", hora: "19:30", alternativa: true, itens: [
+            { q: "abobrinha, italiana, crua", medida: "pires", qtd: 5 },
+            { q: "frango, peito, cozido, desfiado", medida: "colher de sopa", qtd: 5 },
             { q: "tomate, pure", medida: "colher de sopa", qtd: 3 },
-            { q: "queijo, mozarela", medida: "fatia", qtd: 1 },
-            { q: "alface, crespa, crua", medida: "pires", qtd: 1 } ] }
+            { q: "queijo, parmesao", medida: "colher de sopa", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de cha", qtd: 2 } ] }
         ],
         1500: [
-          { nome: "Café da manhã — smoothie proteico de frutas vermelhas", hora: "07:30", itens: [
-            { q: "frutas vermelhas, mix, congeladas", medida: "xicara", qtd: 1, subs: [{ q: "morango, cru", medida: "unidade", qtd: 10 }] },
-            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
-            { q: "whey protein, concentrado", medida: "dose (30 g)", qtd: 1, subs: [{ q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 2 }] },
-            { q: "semente de chia", medida: "colher de cha", qtd: 1 },
-            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
-          { nome: "Lanche da manhã — suco verde detox", hora: "10:00", itens: [
+          { nome: "Café da manhã — ovos cozidos e suco verde prático", hora: "07:30", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 2 },
             { q: "couve, manteiga, crua", medida: "colher de sopa", qtd: 2 },
             { q: "abacaxi, cru", medida: "fatia", qtd: 1 },
             { q: "limao, galego, suco", medida: "grama", qtd: 20 },
-            { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
-            { q: "gengibre, raiz, cru", medida: "fatia", qtd: 1 },
-            { q: "hortela, folhas, crua", medida: "folha", qtd: 6 },
-            { q: "coco, agua de", medida: "copo (200 ml)", qtd: 1 } ] },
-          { nome: "Almoço — salada completa com peixe grelhado", hora: "12:30", itens: [
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 } ] },
+          { nome: "Lanche da manhã — fruta com castanha", hora: "10:00", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1, subs: [{ q: "maca, fuji, com casca, crua", medida: "unidade", qtd: 1 }] },
+            { q: "castanha-do-brasil, crua", medida: "unidade", qtd: 3 } ] },
+          { nome: "Almoço — salada de lentilha com frango", hora: "12:30", itens: [
             { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
-            { q: "rucula, crua", medida: "pires", qtd: 1 },
             { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
             { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
             { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
-            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4, subs: [{ q: "batata, doce, cozida", medida: "colher de sopa", qtd: 4 }] },
-            { q: "lentilha, cozida", medida: "concha", qtd: 1, subs: [{ q: "feijao, carioca, cozido", medida: "concha", qtd: 1 }] },
-            { q: "merluza, file, assado", medida: "porcao", qtd: 1, subs: [{ q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 }] },
+            { q: "lentilha, cozida", medida: "concha", qtd: 1, subs: [{ q: "grao-de-bico, cozido", medida: "concha", qtd: 1 }] },
+            { q: "frango, peito, cozido, desfiado", medida: "colher de sopa", qtd: 7 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 3 },
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
           { nome: "Lanche da tarde — melancia com queijo", hora: "16:00", itens: [
             { q: "melancia, crua", medida: "grama", qtd: 250, subs: [{ q: "melao, cru", medida: "grama", qtd: 250 }] },
             { q: "queijo, minas, frescal", medida: "fatia", qtd: 1, subs: [{ q: "queijo, ricota", medida: "fatia", qtd: 2 }] },
-            { q: "castanha-do-brasil, crua", medida: "unidade", qtd: 2 } ] },
-          { nome: "Jantar — macarrão de abobrinha com frango ao sugo", hora: "19:30", itens: [
-            { q: "abobrinha, italiana, crua", medida: "pires", qtd: 5 },
-            { q: "frango, peito, cozido, desfiado", medida: "colher de sopa", qtd: 6 },
-            { q: "tomate, pure", medida: "colher de sopa", qtd: 3 },
-            { q: "queijo, parmesao", medida: "colher de sopa", qtd: 1 },
-            { q: "azeite, de oliva", medida: "colher de cha", qtd: 1 } ] },
-          { nome: "Lanche da manhã (opção) — smoothie tropical de manga e coco", hora: "10:00", alternativa: true, itens: [
-            { q: "manga, tommy atkins, crua", medida: "fatia", qtd: 2 },
-            { q: "coco, agua de", medida: "copo (200 ml)", qtd: 1 },
-            { q: "hortela, folhas, crua", medida: "folha", qtd: 4 } ] },
-          { nome: "Lanche da tarde (opção) — sorvete caseiro de banana com frutas vermelhas", hora: "16:00", alternativa: true, itens: [
-            { q: "banana, prata", medida: "unidade", qtd: 1 },
-            { q: "frutas vermelhas, mix, congeladas", medida: "punhado", qtd: 1 },
-            { q: "iogurte, natural, desnatado", medida: "colher de sopa", qtd: 3 },
-            { q: "cacau, po, sem acucar", medida: "colher de cha", qtd: 1 },
-            { q: "whey protein, concentrado", medida: "dose (30 g)", qtd: 0.5 } ] },
-          { nome: "Jantar (opção) — lasanha de berinjela", hora: "19:30", alternativa: true, itens: [
-            { q: "berinjela, cozida", medida: "pires", qtd: 4 },
-            { q: "carne, bovina, patinho, moido, cozido", medida: "colher de sopa", qtd: 4 },
-            { q: "queijo, ricota", medida: "fatia", qtd: 2 },
-            { q: "tomate, pure", medida: "colher de sopa", qtd: 3 },
-            { q: "queijo, mozarela", medida: "fatia", qtd: 1 },
-            { q: "alface, crespa, crua", medida: "pires", qtd: 1 } ] }
-        ],
-        1800: [
-          { nome: "Café da manhã — smoothie proteico de frutas vermelhas", hora: "07:30", itens: [
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 } ] },
+          { nome: "Jantar — peixe assado com salada e batata-doce", hora: "19:30", itens: [
+            { q: "merluza, file, assado", medida: "porcao", qtd: 1, subs: [{ q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 }] },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 6 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
+            { q: "azeite, de oliva", medida: "colher de cha", qtd: 2 } ] },
+          { nome: "Café da manhã (opção) — smoothie proteico de frutas vermelhas", hora: "07:30", alternativa: true, itens: [
             { q: "frutas vermelhas, mix, congeladas", medida: "xicara", qtd: 1, subs: [{ q: "morango, cru", medida: "unidade", qtd: 10 }] },
             { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
             { q: "whey protein, concentrado", medida: "dose (30 g)", qtd: 1, subs: [{ q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 2 }] },
-            { q: "semente de chia", medida: "colher de cha", qtd: 2 },
-            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
-          { nome: "Lanche da manhã — suco verde detox", hora: "10:00", itens: [
-            { q: "couve, manteiga, crua", medida: "colher de sopa", qtd: 2 },
-            { q: "abacaxi, cru", medida: "fatia", qtd: 1 },
-            { q: "limao, galego, suco", medida: "grama", qtd: 20 },
-            { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
-            { q: "gengibre, raiz, cru", medida: "fatia", qtd: 1 },
-            { q: "hortela, folhas, crua", medida: "folha", qtd: 6 },
-            { q: "coco, agua de", medida: "copo (200 ml)", qtd: 1 },
-            { q: "castanha-do-brasil, crua", medida: "unidade", qtd: 2 } ] },
-          { nome: "Almoço — salada completa com peixe grelhado", hora: "12:30", itens: [
-            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
-            { q: "rucula, crua", medida: "pires", qtd: 1 },
+            { q: "semente de chia", medida: "colher de cha", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço (opção) — salada de macarrão com atum", hora: "12:30", alternativa: true, itens: [
+            { q: "macarrao, integral, cozido", medida: "colher de sopa", qtd: 5 },
+            { q: "atum, conserva em oleo", medida: "colher de sopa", qtd: 5, subs: [{ q: "sardinha, conserva em oleo", medida: "colher de sopa", qtd: 5 }] },
             { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
-            { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
             { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
-            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 5, subs: [{ q: "batata, doce, cozida", medida: "colher de sopa", qtd: 5 }] },
-            { q: "lentilha, cozida", medida: "concha", qtd: 1, subs: [{ q: "feijao, carioca, cozido", medida: "concha", qtd: 1 }] },
-            { q: "merluza, file, assado", medida: "porcao", qtd: 1, subs: [{ q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 }] },
+            { q: "milho, verde, enlatado, drenado", medida: "colher de sopa", qtd: 2 },
+            { q: "rucula, crua", medida: "pires", qtd: 1 },
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
-          { nome: "Lanche da tarde — melancia com queijo", hora: "16:00", itens: [
-            { q: "melancia, crua", medida: "grama", qtd: 250, subs: [{ q: "melao, cru", medida: "grama", qtd: 250 }] },
-            { q: "queijo, minas, frescal", medida: "fatia", qtd: 2, subs: [{ q: "queijo, ricota", medida: "fatia", qtd: 3 }] },
-            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 } ] },
-          { nome: "Jantar — macarrão de abobrinha com frango ao sugo", hora: "19:30", itens: [
+          { nome: "Lanche da tarde (opção) — sorvete de banana com frutas vermelhas", hora: "16:00", alternativa: true, itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "frutas vermelhas, mix, congeladas", medida: "punhado", qtd: 1 },
+            { q: "iogurte, natural, desnatado", medida: "colher de sopa", qtd: 3 },
+            { q: "cacau, po, sem acucar", medida: "colher de cha", qtd: 1 } ] },
+          { nome: "Jantar (opção) — macarrão de abobrinha com frango", hora: "19:30", alternativa: true, itens: [
             { q: "abobrinha, italiana, crua", medida: "pires", qtd: 5 },
             { q: "frango, peito, cozido, desfiado", medida: "colher de sopa", qtd: 6 },
             { q: "tomate, pure", medida: "colher de sopa", qtd: 3 },
             { q: "queijo, parmesao", medida: "colher de sopa", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de cha", qtd: 2 } ] }
+        ],
+        1800: [
+          { nome: "Café da manhã — ovos cozidos e suco verde prático", hora: "07:30", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "couve, manteiga, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "abacaxi, cru", medida: "fatia", qtd: 1 },
+            { q: "limao, galego, suco", medida: "grama", qtd: 20 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 } ] },
+          { nome: "Lanche da manhã — fruta com castanha", hora: "10:00", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1, subs: [{ q: "maca, fuji, com casca, crua", medida: "unidade", qtd: 1 }] },
+            { q: "castanha-do-brasil, crua", medida: "unidade", qtd: 3 } ] },
+          { nome: "Almoço — salada de lentilha com frango", hora: "12:30", itens: [
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
+            { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "lentilha, cozida", medida: "concha", qtd: 1.5, subs: [{ q: "grao-de-bico, cozido", medida: "concha", qtd: 1.5 }] },
+            { q: "frango, peito, cozido, desfiado", medida: "colher de sopa", qtd: 6 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde — melancia com queijo", hora: "16:00", itens: [
+            { q: "melancia, crua", medida: "grama", qtd: 250, subs: [{ q: "melao, cru", medida: "grama", qtd: 250 }] },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 2, subs: [{ q: "queijo, ricota", medida: "fatia", qtd: 4 }] },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 } ] },
+          { nome: "Jantar — peixe assado com salada e batata-doce", hora: "19:30", itens: [
+            { q: "merluza, file, assado", medida: "porcao", qtd: 1, subs: [{ q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 }] },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 6 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
             { q: "azeite, de oliva", medida: "colher de cha", qtd: 2 } ] },
           { nome: "Ceia — iogurte com frutas vermelhas", hora: "21:30", itens: [
             { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
             { q: "frutas vermelhas, mix, congeladas", medida: "punhado", qtd: 1 },
             { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 } ] },
-          { nome: "Lanche da manhã (opção) — smoothie tropical de manga e coco", hora: "10:00", alternativa: true, itens: [
-            { q: "manga, tommy atkins, crua", medida: "fatia", qtd: 3 },
-            { q: "coco, agua de", medida: "copo (200 ml)", qtd: 1 },
-            { q: "hortela, folhas, crua", medida: "folha", qtd: 4 },
-            { q: "castanha-do-brasil, crua", medida: "unidade", qtd: 2 } ] },
-          { nome: "Lanche da tarde (opção) — sorvete caseiro de banana com frutas vermelhas", hora: "16:00", alternativa: true, itens: [
-            { q: "banana, prata", medida: "unidade", qtd: 1 },
-            { q: "frutas vermelhas, mix, congeladas", medida: "punhado", qtd: 2 },
-            { q: "iogurte, natural, desnatado", medida: "colher de sopa", qtd: 3 },
-            { q: "cacau, po, sem acucar", medida: "colher de cha", qtd: 1 },
-            { q: "whey protein, concentrado", medida: "dose (30 g)", qtd: 1 } ] },
-          { nome: "Jantar (opção) — lasanha de berinjela", hora: "19:30", alternativa: true, itens: [
-            { q: "berinjela, cozida", medida: "pires", qtd: 4 },
-            { q: "carne, bovina, patinho, moido, cozido", medida: "colher de sopa", qtd: 5 },
-            { q: "queijo, ricota", medida: "fatia", qtd: 2 },
-            { q: "tomate, pure", medida: "colher de sopa", qtd: 3 },
-            { q: "queijo, mozarela", medida: "fatia", qtd: 1 },
-            { q: "alface, crespa, crua", medida: "pires", qtd: 1 } ] }
-        ],
-        2000: [
-          { nome: "Café da manhã — smoothie proteico de frutas vermelhas", hora: "07:30", itens: [
+          { nome: "Café da manhã (opção) — smoothie proteico de frutas vermelhas", hora: "07:30", alternativa: true, itens: [
             { q: "frutas vermelhas, mix, congeladas", medida: "xicara", qtd: 1, subs: [{ q: "morango, cru", medida: "unidade", qtd: 10 }] },
             { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
             { q: "whey protein, concentrado", medida: "dose (30 g)", qtd: 1, subs: [{ q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 2 }] },
             { q: "semente de chia", medida: "colher de cha", qtd: 2 },
-            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 2 } ] },
-          { nome: "Lanche da manhã — suco verde detox", hora: "10:00", itens: [
-            { q: "couve, manteiga, crua", medida: "colher de sopa", qtd: 2 },
-            { q: "abacaxi, cru", medida: "fatia", qtd: 1 },
-            { q: "limao, galego, suco", medida: "grama", qtd: 20 },
-            { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
-            { q: "gengibre, raiz, cru", medida: "fatia", qtd: 1 },
-            { q: "hortela, folhas, crua", medida: "folha", qtd: 6 },
-            { q: "coco, agua de", medida: "copo (200 ml)", qtd: 1 },
-            { q: "castanha-do-brasil, crua", medida: "unidade", qtd: 2 } ] },
-          { nome: "Almoço — salada completa com peixe grelhado", hora: "12:30", itens: [
-            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
-            { q: "rucula, crua", medida: "pires", qtd: 1 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Almoço (opção) — salada de macarrão com atum", hora: "12:30", alternativa: true, itens: [
+            { q: "macarrao, integral, cozido", medida: "colher de sopa", qtd: 6 },
+            { q: "atum, conserva em oleo", medida: "colher de sopa", qtd: 5, subs: [{ q: "sardinha, conserva em oleo", medida: "colher de sopa", qtd: 5 }] },
             { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
-            { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
             { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
-            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 7, subs: [{ q: "batata, doce, cozida", medida: "colher de sopa", qtd: 7 }] },
-            { q: "lentilha, cozida", medida: "concha", qtd: 1, subs: [{ q: "feijao, carioca, cozido", medida: "concha", qtd: 1 }] },
-            { q: "merluza, file, assado", medida: "porcao", qtd: 1, subs: [{ q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1 }] },
+            { q: "milho, verde, enlatado, drenado", medida: "colher de sopa", qtd: 2 },
+            { q: "rucula, crua", medida: "pires", qtd: 1 },
             { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
-          { nome: "Lanche da tarde — melancia com queijo", hora: "16:00", itens: [
-            { q: "melancia, crua", medida: "grama", qtd: 300, subs: [{ q: "melao, cru", medida: "grama", qtd: 300 }] },
-            { q: "queijo, minas, frescal", medida: "fatia", qtd: 2, subs: [{ q: "queijo, ricota", medida: "fatia", qtd: 3 }] },
-            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 } ] },
-          { nome: "Jantar — macarrão de abobrinha com frango ao sugo", hora: "19:30", itens: [
+          { nome: "Lanche da tarde (opção) — sorvete de banana com frutas vermelhas", hora: "16:00", alternativa: true, itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1 },
+            { q: "frutas vermelhas, mix, congeladas", medida: "punhado", qtd: 1 },
+            { q: "iogurte, natural, desnatado", medida: "colher de sopa", qtd: 3 },
+            { q: "cacau, po, sem acucar", medida: "colher de cha", qtd: 1 } ] },
+          { nome: "Jantar (opção) — macarrão de abobrinha com frango", hora: "19:30", alternativa: true, itens: [
             { q: "abobrinha, italiana, crua", medida: "pires", qtd: 5 },
             { q: "frango, peito, cozido, desfiado", medida: "colher de sopa", qtd: 7 },
             { q: "tomate, pure", medida: "colher de sopa", qtd: 3 },
             { q: "queijo, parmesao", medida: "colher de sopa", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de cha", qtd: 2 } ] }
+        ],
+        2000: [
+          { nome: "Café da manhã — ovos cozidos e suco verde prático", hora: "07:30", itens: [
+            { q: "ovo, de galinha, inteiro, cozido", medida: "unidade", qtd: 3 },
+            { q: "couve, manteiga, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "abacaxi, cru", medida: "fatia", qtd: 1 },
+            { q: "limao, galego, suco", medida: "grama", qtd: 20 },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 2 } ] },
+          { nome: "Lanche da manhã — fruta com castanha", hora: "10:00", itens: [
+            { q: "banana, prata", medida: "unidade", qtd: 1, subs: [{ q: "maca, fuji, com casca, crua", medida: "unidade", qtd: 1 }] },
+            { q: "castanha-do-brasil, crua", medida: "unidade", qtd: 3 } ] },
+          { nome: "Almoço — salada de lentilha com frango", hora: "12:30", itens: [
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
+            { q: "pepino, cru", medida: "colher de sopa", qtd: 2 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "lentilha, cozida", medida: "concha", qtd: 1.5, subs: [{ q: "grao-de-bico, cozido", medida: "concha", qtd: 1.5 }] },
+            { q: "frango, peito, cozido, desfiado", medida: "colher de sopa", qtd: 7 },
+            { q: "arroz, integral, cozido", medida: "colher de sopa", qtd: 4 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde — melancia com queijo", hora: "16:00", itens: [
+            { q: "melancia, crua", medida: "grama", qtd: 300, subs: [{ q: "melao, cru", medida: "grama", qtd: 300 }] },
+            { q: "queijo, minas, frescal", medida: "fatia", qtd: 2, subs: [{ q: "queijo, ricota", medida: "fatia", qtd: 4 }] },
+            { q: "pao, trigo, forma, integral", medida: "fatia", qtd: 1 } ] },
+          { nome: "Jantar — peixe assado com salada e batata-doce", hora: "19:30", itens: [
+            { q: "merluza, file, assado", medida: "porcao", qtd: 1.5, subs: [{ q: "frango, peito, sem pele, grelhado", medida: "porcao", qtd: 1.5 }] },
+            { q: "batata, doce, cozida", medida: "colher de sopa", qtd: 7 },
+            { q: "alface, crespa, crua", medida: "pires", qtd: 1 },
+            { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
             { q: "azeite, de oliva", medida: "colher de cha", qtd: 2 } ] },
           { nome: "Ceia — iogurte com frutas vermelhas", hora: "21:30", itens: [
             { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
             { q: "frutas vermelhas, mix, congeladas", medida: "punhado", qtd: 1 },
             { q: "linhaca, semente", medida: "colher de sopa", qtd: 1 } ] },
-          { nome: "Lanche da manhã (opção) — smoothie tropical de manga e coco", hora: "10:00", alternativa: true, itens: [
-            { q: "manga, tommy atkins, crua", medida: "fatia", qtd: 3 },
-            { q: "coco, agua de", medida: "copo (200 ml)", qtd: 1 },
-            { q: "hortela, folhas, crua", medida: "folha", qtd: 4 },
-            { q: "castanha-do-brasil, crua", medida: "unidade", qtd: 2 } ] },
-          { nome: "Lanche da tarde (opção) — sorvete caseiro de banana com frutas vermelhas", hora: "16:00", alternativa: true, itens: [
+          { nome: "Café da manhã (opção) — smoothie proteico de frutas vermelhas", hora: "07:30", alternativa: true, itens: [
+            { q: "frutas vermelhas, mix, congeladas", medida: "xicara", qtd: 1, subs: [{ q: "morango, cru", medida: "unidade", qtd: 10 }] },
+            { q: "iogurte, natural, desnatado", medida: "pote", qtd: 1 },
+            { q: "whey protein, concentrado", medida: "dose (30 g)", qtd: 1, subs: [{ q: "leite, de vaca, desnatado, po", medida: "colher de sopa", qtd: 2 }] },
+            { q: "semente de chia", medida: "colher de cha", qtd: 2 },
+            { q: "aveia, flocos, crua", medida: "colher de sopa", qtd: 3 } ] },
+          { nome: "Almoço (opção) — salada de macarrão com atum", hora: "12:30", alternativa: true, itens: [
+            { q: "macarrao, integral, cozido", medida: "colher de sopa", qtd: 7 },
+            { q: "atum, conserva em oleo", medida: "colher de sopa", qtd: 6, subs: [{ q: "sardinha, conserva em oleo", medida: "colher de sopa", qtd: 6 }] },
+            { q: "tomate, com semente, cru", medida: "grama", qtd: 60 },
+            { q: "cenoura, crua", medida: "colher de sopa", qtd: 2 },
+            { q: "milho, verde, enlatado, drenado", medida: "colher de sopa", qtd: 2 },
+            { q: "rucula, crua", medida: "pires", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de sopa", qtd: 1 } ] },
+          { nome: "Lanche da tarde (opção) — sorvete de banana com frutas vermelhas", hora: "16:00", alternativa: true, itens: [
             { q: "banana, prata", medida: "unidade", qtd: 1 },
-            { q: "frutas vermelhas, mix, congeladas", medida: "punhado", qtd: 2 },
+            { q: "frutas vermelhas, mix, congeladas", medida: "punhado", qtd: 1 },
             { q: "iogurte, natural, desnatado", medida: "colher de sopa", qtd: 3 },
-            { q: "cacau, po, sem acucar", medida: "colher de cha", qtd: 1 },
-            { q: "whey protein, concentrado", medida: "dose (30 g)", qtd: 1 } ] },
-          { nome: "Jantar (opção) — lasanha de berinjela", hora: "19:30", alternativa: true, itens: [
-            { q: "berinjela, cozida", medida: "pires", qtd: 4 },
-            { q: "carne, bovina, patinho, moido, cozido", medida: "colher de sopa", qtd: 6 },
-            { q: "queijo, ricota", medida: "fatia", qtd: 2 },
+            { q: "cacau, po, sem acucar", medida: "colher de cha", qtd: 1 } ] },
+          { nome: "Jantar (opção) — macarrão de abobrinha com frango", hora: "19:30", alternativa: true, itens: [
+            { q: "abobrinha, italiana, crua", medida: "pires", qtd: 5 },
+            { q: "frango, peito, cozido, desfiado", medida: "colher de sopa", qtd: 8 },
             { q: "tomate, pure", medida: "colher de sopa", qtd: 3 },
-            { q: "queijo, mozarela", medida: "fatia", qtd: 1 },
-            { q: "alface, crespa, crua", medida: "pires", qtd: 1 } ] }
+            { q: "queijo, parmesao", medida: "colher de sopa", qtd: 1 },
+            { q: "azeite, de oliva", medida: "colher de cha", qtd: 2 } ] }
         ]
       }
     }
