@@ -3078,8 +3078,14 @@
     var lib = libDe(_p);
     var alvo = lib.filter(byId(id))[0];
     if (!alvo) return;
-    var msg = 'Excluir o plano "' + (alvo.titulo || "Plano alimentar") + '"? Esta ação não pode ser desfeita.';
-    if (!window.confirm(msg)) return;
+    window.confirmarExclusao({
+      titulo: 'Apagar o plano "' + (alvo.titulo || "Plano alimentar") + '"?',
+      texto: (alvo.publicado ? "Este plano está LIBERADO: o paciente deixa de vê-lo no portal.\n" : "") +
+        "Se a ideia é só esconder do paciente, use o botão Liberado/Oculto.",
+      botao: "Apagar plano"
+    }).then(function (ok) { if (ok) apagarPlano(lib, alvo, id); });
+  }
+  function apagarPlano(lib, alvo, id) {
     var restante = lib.filter(function (x) { return x.id !== id; });
     // As fotos do plano excluído viram lixo (limparFotosLixo ainda confere se
     // outro plano não aponta para o mesmo arquivo antes de apagar).

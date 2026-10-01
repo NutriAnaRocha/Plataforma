@@ -237,12 +237,18 @@
   }
 
   function excluir(l) {
-    if (!window.confirm("Excluir este lançamento de " + brl(l.valor) + "?")) return;
-    window.NutriFinanceiro.remove(l.id).then(function () {
-      _lista = _lista.filter(function (x) { return x.id !== l.id; });
-      pintar();
-      toast("Lançamento excluído");
-    }).catch(function (e) { toast("Não foi possível excluir. " + (e && e.message ? e.message : ""), true); });
+    window.confirmarExclusao({
+      titulo: "Apagar o lançamento de " + brl(l.valor) + "?",
+      texto: "Ele sai do financeiro do paciente e dos relatórios.",
+      botao: "Apagar lançamento"
+    }).then(function (ok) {
+      if (!ok) return;
+      window.NutriFinanceiro.remove(l.id).then(function () {
+        _lista = _lista.filter(function (x) { return x.id !== l.id; });
+        pintar();
+        toast("Lançamento excluído");
+      }).catch(function (e) { toast("Não foi possível excluir. " + (e && e.message ? e.message : ""), true); });
+    });
   }
 
   /* ---------- Recibo ----------

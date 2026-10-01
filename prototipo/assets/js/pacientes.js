@@ -1161,11 +1161,17 @@
   }
 
   function confirmDelete(p) {
-    if (!window.confirm('Excluir o paciente "' + p.nome + '"? Esta ação não pode ser desfeita.')) return;
-    window.NutriPacientes.remove(p.id).then(function () {
-      closeProfile();
-      loadPatients();
-    }).catch(function () { alert("Não foi possível excluir. Tente novamente."); });
+    window.confirmarExclusao({
+      titulo: 'Apagar o paciente "' + p.nome + '"?',
+      texto: "Saem junto TODOS os dados dele: avaliações, planos, prontuário, exames, prescrições, arquivos e o acesso ao portal.\nSe a ideia é só parar o acompanhamento, mude o status para inativo em vez de apagar.",
+      botao: "Apagar paciente"
+    }).then(function (ok) {
+      if (!ok) return;
+      window.NutriPacientes.remove(p.id).then(function () {
+        closeProfile();
+        loadPatients();
+      }).catch(function () { alert("Não foi possível excluir. Tente novamente."); });
+    });
   }
 
   /* ---------- Modal de formulário ---------- */

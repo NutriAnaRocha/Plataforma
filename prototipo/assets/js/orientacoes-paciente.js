@@ -100,13 +100,18 @@
     var alvo = (_p.orientacoes || []).find(function (o) { return o.id === id; });
     // Dizer que sai também do histórico: é o mesmo registro nas duas listas,
     // e apagar sem avisar isso seria apagar prontuário sem ela saber.
-    if (!confirm('Apagar a orientação "' + ((alvo && alvo.titulo) || "") + '"?\n\n' +
-                 "Ela sai da ficha e do histórico do paciente. O PDF já entregue não muda.")) return;
-    var lista = (_p.orientacoes || []).filter(function (o) { return o.id !== id; });
-    salvar(lista).then(function (saved) {
-      if (_ctx.onSaved) _ctx.onSaved(saved);
-      if (_ctx.toast) _ctx.toast("Orientação apagada");
-    }).catch(function (e) { if (_ctx.toast) _ctx.toast("Não consegui remover. " + (e && e.message || ""), true); });
+    window.confirmarExclusao({
+      titulo: 'Apagar a orientação "' + ((alvo && alvo.titulo) || "") + '"?',
+      texto: "Ela sai da ficha e do histórico do paciente. O PDF já entregue não muda.",
+      botao: "Apagar orientação"
+    }).then(function (ok) {
+      if (!ok) return;
+      var lista = (_p.orientacoes || []).filter(function (o) { return o.id !== id; });
+      salvar(lista).then(function (saved) {
+        if (_ctx.onSaved) _ctx.onSaved(saved);
+        if (_ctx.toast) _ctx.toast("Orientação apagada");
+      }).catch(function (e) { if (_ctx.toast) _ctx.toast("Não consegui remover. " + (e && e.message || ""), true); });
+    });
   }
 
   /* ---------- PDF com a marca ---------- */

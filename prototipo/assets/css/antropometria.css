@@ -376,3 +376,27 @@
   }
   .antro-hist__acoes { justify-content: flex-end; margin-top: var(--sp-2); }
 }
+
+/* Comparativo completo (medida × avaliação), estilo WebDiet.
+   Rola na horizontal no celular: a primeira coluna (nome da medida) fica fixa. */
+.antro-comp { margin-top: var(--sp-5); }
+.antro-comp > summary { cursor: pointer; font-weight: 700; color: var(--cinza-escuro); padding: var(--sp-2) 0; }
+.antro-comp__tw { margin-top: var(--sp-3); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.antro-comp__tbl { border-collapse: collapse; font-size: var(--fs-sm); min-width: 100%; white-space: nowrap; }
+.antro-comp__tbl th, .antro-comp__tbl td { padding: 8px 12px; border-bottom: 1px solid var(--cinza-borda); text-align: right; }
+.antro-comp__tbl thead th { font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .5px; color: var(--texto-sutil); }
+.antro-comp__tbl th[scope="row"], .antro-comp__tbl thead th:first-child {
+  text-align: left; font-weight: 600; position: sticky; left: 0; background: var(--branco, #fff); z-index: 1;
+}
+.antro-comp__grupo th {
+  text-align: left; background: var(--cinza-claro, #F5F5F5); color: var(--vinho, #840B55);
+  font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .5px; position: sticky; left: 0;
+}
+.antro-comp__tbl td:last-child { font-weight: 600; }
+
+/* Cabeçalho do histórico com o botão "Nova avaliação". */
+.antro-hist__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
+.antro-hist__head .fsec__title { margin-bottom: 0; }
+/* Valor da avaliação anterior embaixo de cada campo. */
+.antro-ant { display: block; font-size: var(--fs-caption); color: var(--texto-sutil); margin-top: 4px; }
+.antro-ant[hidden] { display: none; }

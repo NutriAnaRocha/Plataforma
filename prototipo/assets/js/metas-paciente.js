@@ -177,8 +177,11 @@
     persistir(mt, mt.publicado ? "Metas liberadas para o paciente" : "Metas ocultadas do paciente");
   }
   function excluir() {
-    if (!window.confirm("Excluir o checklist de metas deste paciente?")) return;
-    persistir(null, "Metas excluídas");
+    window.confirmarExclusao({
+      titulo: "Apagar o checklist de metas deste paciente?",
+      texto: "O paciente deixa de ver as metas no portal e o progresso marcado se perde.",
+      botao: "Apagar metas"
+    }).then(function (ok) { if (ok) persistir(null, "Metas excluídas"); });
   }
 
   /* ---------- Portal (paciente) ----------

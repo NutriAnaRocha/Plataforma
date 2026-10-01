@@ -414,10 +414,12 @@
   async function excluir(id) {
     var o = todos.find(function (x) { return x.id === id; });
     if (!o || !o.editavel) return;
-    var msg = 'Excluir a formulação "' + semTags(o.nome) + '" do seu banco?\n\n' +
-      "As prescrições já feitas para as pacientes continuam como estão. " +
-      "Esta ação não pode ser desfeita.";
-    if (!window.confirm(msg)) return;
+    var ok = await window.confirmarExclusao({
+      titulo: 'Apagar a formulação "' + semTags(o.nome) + '" do seu banco?',
+      texto: "As prescrições já feitas para as pacientes continuam como estão.",
+      botao: "Apagar formulação"
+    });
+    if (!ok) return;
 
     db = db || (await window.NutriDBReady);
     var del = await db.from("ic_formulacoes").delete().eq("id", id);

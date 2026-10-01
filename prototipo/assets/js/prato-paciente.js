@@ -412,11 +412,17 @@
 
       var del = t.closest("[data-prato-apagar]");
       if (del) {
-        if (!window.confirm("Apagar este registro? A foto também sai.")) return;
-        del.disabled = true;
-        DB.removerPrato(del.getAttribute("data-prato-apagar"), del.getAttribute("data-prato-path"))
-          .then(carregar)
-          .catch(function () { del.disabled = false; });
+        window.confirmarExclusao({
+          titulo: "Apagar este registro?",
+          texto: "A foto do prato também sai.",
+          botao: "Apagar registro"
+        }).then(function (ok) {
+          if (!ok) return;
+          del.disabled = true;
+          DB.removerPrato(del.getAttribute("data-prato-apagar"), del.getAttribute("data-prato-path"))
+            .then(carregar)
+            .catch(function () { del.disabled = false; });
+        });
       }
     });
 

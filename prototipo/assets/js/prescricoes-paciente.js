@@ -161,12 +161,18 @@
   function remover(id) {
     var o = (_p.prescricoes || []).find(function (x) { return x.id === id; });
     var nome = o && o.titulo ? '"' + o.titulo + '"' : "esta prescrição";
-    if (!confirm("Excluir " + nome + " do paciente? Esta ação não pode ser desfeita.")) return;
-    var lista = (_p.prescricoes || []).filter(function (o) { return o.id !== id; });
-    salvar(lista).then(function (saved) {
-      if (_ctx.onSaved) _ctx.onSaved(saved);
-      if (_ctx.toast) _ctx.toast("Removida");
-    }).catch(function (e) { if (_ctx.toast) _ctx.toast("Não consegui remover. " + (e && e.message || ""), true); });
+    window.confirmarExclusao({
+      titulo: "Apagar " + nome + " do paciente?",
+      texto: "Se a ideia é só suspender, use Pausar: a prescrição fica guardada no histórico.",
+      botao: "Apagar prescrição"
+    }).then(function (ok) {
+      if (!ok) return;
+      var lista = (_p.prescricoes || []).filter(function (o) { return o.id !== id; });
+      salvar(lista).then(function (saved) {
+        if (_ctx.onSaved) _ctx.onSaved(saved);
+        if (_ctx.toast) _ctx.toast("Removida");
+      }).catch(function (e) { if (_ctx.toast) _ctx.toast("Não consegui remover. " + (e && e.message || ""), true); });
+    });
   }
 
   /* ---------- PDF com a marca ---------- */

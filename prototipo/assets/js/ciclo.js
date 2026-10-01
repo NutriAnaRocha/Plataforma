@@ -548,11 +548,17 @@
 
     if (t.closest("[data-cic-apagar]")) {
       if (!porData(_dia)) return;
-      if (!window.confirm("Apagar o registro de " + dataBR(_dia) + "?")) return;
-      window.NutriPacientes.removerCiclo(_p.id, _dia).then(function () {
-        _regs = _regs.filter(function (x) { return x.data !== _dia; });
-        pintar();
-      }).catch(function () { alert("Não foi possível apagar. Tente de novo."); });
+      var diaApagar = _dia;
+      window.confirmarExclusao({
+        titulo: "Apagar o registro de " + dataBR(diaApagar) + "?",
+        botao: "Apagar registro"
+      }).then(function (ok) {
+        if (!ok) return;
+        window.NutriPacientes.removerCiclo(_p.id, diaApagar).then(function () {
+          _regs = _regs.filter(function (x) { return x.data !== diaApagar; });
+          pintar();
+        }).catch(function () { alert("Não foi possível apagar. Tente de novo."); });
+      });
       return;
     }
 

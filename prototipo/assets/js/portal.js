@@ -633,8 +633,9 @@
   function renderEvolucao(p) {
     var dif = (p.pesoAtual != null && p.pesoInicial != null) ? (p.pesoAtual - p.pesoInicial) : null;
     var difTxt = dif == null ? "—" : (dif <= 0 ? "▼ " : "▲ ") + Math.abs(dif).toFixed(1) + " kg";
-    return '<div class="pcard"><div class="chart" id="weight-chart"></div></div>' +
-      '<div class="portal-stats">' +
+    return '<div class="pcard"><h2 class="pcard__title">Sua evolução nas avaliações</h2>' +
+        '<div id="evo-antro"><div class="chart" id="weight-chart"></div></div></div>' +
+      '<div class="portal-stats" id="evo-stats">' +
         stat("Peso atual", (p.pesoAtual != null ? p.pesoAtual + " kg" : "—")) +
         stat("Variação total", difTxt) +
         stat("Meta", (p.meta != null ? p.meta + " kg" : "Sem meta")) +
@@ -734,7 +735,51 @@
     document.body.appendChild(ov);
   });
 
+  /* Evolução de verdade: a série de avaliações que a nutri salvou
+     (paciente_avaliacoes, leitura liberada pela RLS para a dona da ficha),
+     com gráfico por medida, avaliações anteriores e o comparativo completo.
+     O campo antigo `evolucao` só entra se a série não puder ser lida. */
+  var _evoCarregada = null;   // id do paciente cuja série já está na tela
   function drawWeightChart(p) {
+    if (!p) return;
+    if (window.NutriAvaliacoes && window.Antropometria && window.Antropometria.montarEvolucao) {
+      var host = el("evo-antro");
+      if (!host || _evoCarregada === p.id) return;
+      _evoCarregada = p.id;
+      host.innerHTML = '<div class="empty-state">Carregando sua evolução…</div>';
+      window.NutriAvaliacoes.list(p.id).then(function (serie) {
+        if (!serie.length && p.evolucao && (p.evolucao.peso || []).length >= 2) {
+          host.innerHTML = '<div class="chart" id="weight-chart"></div>';
+          return graficoAntigo(p);
+        }
+        window.Antropometria.montarEvolucao(host, serie, { leitura: true });
+        atualizarStatsEvolucao(p, serie);
+      }).catch(function () {
+        _evoCarregada = null;
+        host.innerHTML = '<div class="chart" id="weight-chart"></div>';
+        graficoAntigo(p);
+      });
+      return;
+    }
+    graficoAntigo(p);
+  }
+  // Peso atual e variação vindos da série (a ficha pode estar sem peso_inicial).
+  function atualizarStatsEvolucao(p, serie) {
+    var box = el("evo-stats");
+    var pesos = serie.filter(function (a) { return a.peso != null; });
+    if (!box || !pesos.length) return;
+    var ult = pesos[pesos.length - 1].peso, pri = pesos[0].peso;
+    var dif = pesos.length >= 2 ? ult - pri : null;
+    var difTxt = dif == null ? "—" : (Math.abs(dif) < 0.05 ? "= " : dif < 0 ? "▼ " : "▲ ") + Math.abs(dif).toFixed(1).replace(".", ",") + " kg";
+    var ultImc = null;
+    for (var i = serie.length - 1; i >= 0; i--) if (serie[i].imc != null) { ultImc = serie[i].imc; break; }
+    box.innerHTML =
+      stat("Peso atual", String(ult).replace(".", ",") + " kg") +
+      stat("Variação total", difTxt) +
+      stat("Meta", (p.meta != null ? p.meta + " kg" : "Sem meta")) +
+      stat("IMC", ultImc != null ? ultImc.toFixed(1).replace(".", ",") : (p.imc != null ? String(p.imc) : "—"));
+  }
+  function graficoAntigo(p) {
     var host = el("weight-chart");
     if (!host || !p || !p.evolucao) return;
     var pts = p.evolucao.peso || [], labels = p.evolucao.labels || [];

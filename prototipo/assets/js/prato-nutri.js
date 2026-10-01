@@ -263,7 +263,12 @@
 
       var del = e.target.closest("[data-pn-apagar]");
       if (!del) return;
-      if (!window.confirm("Apagar este registro da paciente? A foto também sai.")) return;
+      window.confirmarExclusao({
+        titulo: "Apagar este registro da paciente?",
+        texto: "A foto do prato também sai, e ela deixa de ver o registro no app.",
+        botao: "Apagar registro"
+      }).then(function (ok) {
+      if (!ok) return;
       del.disabled = true;
       DB.removerPrato(del.getAttribute("data-pn-apagar"), del.getAttribute("data-pn-path"))
         .then(function () {
@@ -274,6 +279,7 @@
           del.disabled = false;
           if (opts.toast) opts.toast("Não foi possível apagar.", true);
         });
+      });
     });
 
     carregar();

@@ -330,12 +330,18 @@
   }
 
   function excluir(a) {
-    if (!window.confirm('Excluir "' + a.nome + '" desta ficha? O arquivo é apagado de vez.')) return;
-    window.NutriArquivos.remove(a).then(function () {
-      _lista = _lista.filter(function (x) { return x.id !== a.id; });
-      pintar();
-      toast("Arquivo excluído");
-    }).catch(function (e) { toast("Não foi possível excluir. " + (e && e.message ? e.message : ""), true); });
+    window.confirmarExclusao({
+      titulo: 'Apagar o arquivo "' + a.nome + '"?',
+      texto: "O arquivo é apagado de vez desta ficha.",
+      botao: "Apagar arquivo"
+    }).then(function (ok) {
+      if (!ok) return;
+      window.NutriArquivos.remove(a).then(function () {
+        _lista = _lista.filter(function (x) { return x.id !== a.id; });
+        pintar();
+        toast("Arquivo excluído");
+      }).catch(function (e) { toast("Não foi possível excluir. " + (e && e.message ? e.message : ""), true); });
+    });
   }
 
   function trocar(antigo, novo) {

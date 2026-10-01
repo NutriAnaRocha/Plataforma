@@ -83,6 +83,7 @@
     { key: "leguminosas", ico: "🫘", label: "Feijões & leguminosas", grupos: ["Leguminosas e derivados"] },
     { key: "nozes", ico: "🥜", label: "Castanhas & sementes", grupos: ["Nozes e sementes"] },
     { key: "oleos", ico: "🫒", label: "Óleos, azeites & temperos", grupos: ["Óleos e gorduras", "Gorduras e óleos", "Miscelâneas", "Alimentos preparados"] },
+    { key: "suplementos", ico: "💪", label: "Suplementos", grupos: [] },
     { key: "mercearia", ico: "🛒", label: "Mercearia", grupos: ["Outros alimentos industrializados"] },
     { key: "acucar", ico: "🍯", label: "Açúcares & doces", grupos: ["Açúcares e produtos de confeitaria", "Produtos açucarados"] },
     { key: "bebidas", ico: "🥤", label: "Bebidas", grupos: ["Bebidas (alcoólicas e não alcoólicas)"] }
@@ -100,6 +101,8 @@
      depois em "Outros". */
   var PISTAS = [
     // Exceções primeiro: nomes que enganariam uma pista mais abaixo.
+    { k: "suplementos", re: /\b(whey|colageno|creatina|albumina|proteina em po)\b/ },
+    { k: "acucar", re: /\b(doce de leite|pacoca|chocolate)\b/ },   // senão "leite" e "castanha" levam
     { k: "mercearia", re: /\b(leite de coco|leite condensado|leite de amendoa|leite vegetal|bebida vegetal)\b/ },
     { k: "laticinios", re: /\b(peito de peru|blanquet)\b/ },        // frios, não açougue
     { k: "legumes", re: /\b(milho verde|milho em conserva)\b/ },    // não é o grão de cereais

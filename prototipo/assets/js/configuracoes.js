@@ -1180,13 +1180,14 @@
 
   function excluirConta(btn) {
     if (!window.NutriLGPD) { toast("Exclusão indisponível.", true); return; }
-    var aviso = "ATENÇÃO: isto apaga DEFINITIVAMENTE sua conta e todos os dados " +
-      "(pacientes, prontuários, consultas, financeiro e acessos de portal). " +
-      "Não há como desfazer.\n\nRecomendamos exportar seus dados antes.\n\n" +
-      "Para confirmar, digite EXCLUIR abaixo:";
-    var resp = window.prompt(aviso, "");
-    if (resp == null) return;               // cancelou
-    if (resp.trim().toUpperCase() !== "EXCLUIR") { toast("Confirmação incorreta. Nada foi apagado."); return; }
+    window.confirmarExclusao({
+      titulo: "Apagar DEFINITIVAMENTE a sua conta?",
+      texto: "Saem todos os dados: perfil, pacientes, prontuários, consultas, financeiro e os acessos de portal.\n" +
+        "Antes, use Exportar meus dados para guardar uma cópia.",
+      botao: "Apagar minha conta"
+    }).then(function (ok) { if (ok) apagarConta(btn); });
+  }
+  function apagarConta(btn) {
     busy(btn, true, "Excluindo…");
     window.NutriLGPD.excluirConta().then(function () {
       alert("Sua conta e seus dados foram removidos. Você será desconectada.");

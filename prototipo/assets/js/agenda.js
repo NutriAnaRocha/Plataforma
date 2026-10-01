@@ -459,7 +459,14 @@
 
   function onDelete() {
     if (!editId) return;
-    if (!confirm("Excluir esta consulta? Esta ação não pode ser desfeita.")) return;
+    window.confirmarExclusao({
+      titulo: "Apagar esta consulta?",
+      texto: "Ela sai da agenda" + (window.NutriGoogle ? " e do Google Agenda, se estiver sincronizada." : "."),
+      botao: "Apagar consulta"
+    }).then(function (ok) { if (ok) apagarConsulta(); });
+  }
+  function apagarConsulta() {
+    if (!editId) return;
     var del = el("ag-del"); del.disabled = true;
     if (!window.NutriConsultas) { EVENTS = EVENTS.filter(function (x) { return x.id !== editId; }); finish(el("ag-data").value, del); return; }
     var removeId = editId;

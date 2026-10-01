@@ -314,8 +314,11 @@
     persistir(tr, tr.publicado ? "Treino liberado para o paciente" : "Treino ocultado do paciente");
   }
   function excluir() {
-    if (!window.confirm("Excluir o treino deste paciente? Esta ação não pode ser desfeita.")) return;
-    persistir(null, "Treino excluído");
+    window.confirmarExclusao({
+      titulo: "Apagar o treino deste paciente?",
+      texto: "Se a ideia é só tirar do portal, use Ocultar: o treino fica guardado.",
+      botao: "Apagar treino"
+    }).then(function (ok) { if (ok) persistir(null, "Treino excluído"); });
   }
 
   /* ============================================================
