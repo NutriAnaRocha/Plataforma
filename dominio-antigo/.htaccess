@@ -1,0 +1,35 @@
+# ============================================================
+#  app.nutrianaluisarocha.com — endereço antigo da NutriPlat
+#
+#  A plataforma mudou para https://nutriplat.com.br em 05/10/2026.
+#  Esta pasta é o que o alvo `app` do deploy publica agora: só
+#  redireciona. Os arquivos antigos continuam no servidor, mas
+#  nenhum deles é servido — tudo passa pelas regras abaixo.
+#
+#  Para publicar a plataforma, o alvo é `nutriplat`.
+# ============================================================
+
+<IfModule mod_headers.c>
+  <Files "sw.js">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </Files>
+</IfModule>
+
+Options -MultiViews
+RewriteEngine On
+
+# 1) Retorno do OAuth do Google (Agenda + Meet). O redirect URI registrado
+#    no Google continua sendo este domínio de propósito: trocar o endereço
+#    obrigaria a passar pela verificação do app de novo. A function devolve
+#    a nutri para nutriplat.com.br depois de trocar o código.
+RewriteRule ^google-callback/?$ https://btsqrpxzlkmucrfvsytl.supabase.co/functions/v1/google-oauth-callback [R=302,L]
+
+# 2) O service worker NÃO pode redirecionar: o navegador recusa um sw.js
+#    que vem de redirect e mantém o antigo, que serve o app velho do cache
+#    para sempre. Este responde 200 e se desinstala.
+RewriteRule ^sw\.js$ - [L]
+
+# 3) Todo o resto vai para o domínio novo, mesmo caminho e mesma query —
+#    os links de senha e de convite já enviados por e-mail carregam o token
+#    na query, e o navegador repassa o #fragmento sozinho.
+RewriteRule ^(.*)$ https://nutriplat.com.br/$1 [R=301,L]

@@ -98,5 +98,10 @@ Deno.serve(async (req) => {
   const { data, error } = await admin.rpc("mercado_painel", { p_dias: dias });
   if (error) return json({ error: "erro_painel", detail: error.message }, 500);
 
-  return json({ ok: true, quem: perfil.nome || perfil.email, dados: data });
+  // Origem por anúncio (migração 0104). Vem de uma RPC à parte; se ela
+  // falhar, o resto do painel continua de pé com a lista vazia.
+  const { data: anuncios } = await admin.rpc("mercado_painel_anuncios", { p_dias: dias });
+  const dados = { ...(data as Record<string, unknown>), anuncios: anuncios ?? [] };
+
+  return json({ ok: true, quem: perfil.nome || perfil.email, dados });
 });

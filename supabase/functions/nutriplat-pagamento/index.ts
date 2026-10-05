@@ -31,7 +31,7 @@ const json = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...CORS, "Content-Type": "application/json" } });
 
 const HANDLE = "analuisarocha";
-const VOLTA = "https://app.nutrianaluisarocha.com/assinatura";
+const VOLTA = "https://nutriplat.com.br/assinatura";
 const WEBHOOK = "https://btsqrpxzlkmucrfvsytl.supabase.co/functions/v1/nutriplat-pagamento?webhook=1";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 // O parcelado repassa juros ao comprador (paga MAIS); aceitar até 5% a menos

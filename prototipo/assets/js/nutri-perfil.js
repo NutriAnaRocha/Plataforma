@@ -44,7 +44,7 @@
     var meta = document.querySelector('meta[name="description"]');
     if (meta) meta.setAttribute("content", desc);
     var can = document.querySelector('link[rel="canonical"]');
-    if (can) can.setAttribute("href", "https://app.nutrianaluisarocha.com/nutri/" + n.slug);
+    if (can) can.setAttribute("href", "https://nutriplat.com.br/nutri/" + n.slug);
 
     var local = [n.atende_presencial ? n.bairro : "", n.cidade, n.estado].filter(Boolean).join(" · ");
     var areas = Array.isArray(n.area_atuacao) ? n.area_atuacao : [];

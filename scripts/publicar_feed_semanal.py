@@ -112,12 +112,12 @@ def main():
     git("add", ALVO, *HTMLS)
     git("commit", "-m", "Feed cientifico: publica " + nova.split("/", 1)[1], "--", ALVO, *HTMLS)
 
-    r = subprocess.run([sys.executable, DEPLOY, "app", "--aplicar"], cwd=RAIZ,
+    r = subprocess.run([sys.executable, DEPLOY, "nutriplat", "--aplicar"], cwd=RAIZ,
                        capture_output=True, text=True, encoding="utf-8")
     if r.returncode != 0:
         log("ERRO no deploy: " + (r.stderr or r.stdout).strip()[-500:])
         return 1
-    log("publicado no app.nutrianaluisarocha.com")
+    log("publicado no nutriplat.com.br")
 
     push = subprocess.run(["git", "push", "origin", "HEAD:main"], cwd=RAIZ, capture_output=True, text=True)
     if push.returncode != 0:

@@ -26,7 +26,7 @@ O que está esperando publicação (commits no `main`):
 
 3. **Publicar o app na Hostinger**
    ```
-   python "H:/Meu Drive/Skills/Skills Autorais/Gerar-Site-Nutri/scripts/deploy.py" app --aplicar
+   python "H:/Meu Drive/Skills/Skills Autorais/Gerar-Site-Nutri/scripts/deploy.py" nutriplat --aplicar
    ```
    (É o mesmo comando que `scripts/publicar_feed_semanal.py` usa.)
 
@@ -46,7 +46,7 @@ O que está esperando publicação (commits no `main`):
    ```
    (Se o passo 2 não mudou nada, pule este passo.)
 
-6. **Conferir no ar** (app.nutrianaluisarocha.com, recarregar com Ctrl+Shift+R):
+6. **Conferir no ar** (nutriplat.com.br, recarregar com Ctrl+Shift+R):
    - apagar qualquer item pede para digitar **APAGAR**;
    - na ficha de uma paciente, Antropometria abre com o gráfico no topo e o botão
      **＋ Nova avaliação**;

@@ -22,7 +22,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const json = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { "Content-Type": "application/json" } });
 
-const APP = "https://app.nutrianaluisarocha.com";
+const APP = "https://nutriplat.com.br";
 const LINK = `${APP}/assinatura?renovar=1`;
 const SUPORTE = "nutrianalrocha@gmail.com";
 

@@ -18,7 +18,7 @@ const CLIENT_ID = Deno.env.get("GOOGLE_CLIENT_ID") || "";
 const CLIENT_SECRET = Deno.env.get("GOOGLE_CLIENT_SECRET") || "";
 // Mesmo valor do google-oauth-start (domínio próprio → 302 do .htaccess p/ cá).
 const REDIRECT_URI = "https://app.nutrianaluisarocha.com/google-callback";
-const FALLBACK_RETURN = "https://app.nutrianaluisarocha.com/configuracoes.html";
+const FALLBACK_RETURN = "https://nutriplat.com.br/configuracoes";
 const CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.events";
 
 // Redireciona o navegador de volta à plataforma, sinalizando sucesso/erro.
@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
   const nonce = sepIdx >= 0 ? state.slice(0, sepIdx) : state;
   const rawReturn = sepIdx >= 0 ? state.slice(sepIdx + 1) : "";
   // Mesma regra do start: só volta para o domínio da plataforma (evita open redirect).
-  const returnTo = /^https:\/\/app\.nutrianaluisarocha\.com\//.test(rawReturn) ? rawReturn : FALLBACK_RETURN;
+  const returnTo = /^https:\/\/(nutriplat\.com\.br|app\.nutrianaluisarocha\.com)\//.test(rawReturn) ? rawReturn : FALLBACK_RETURN;
 
   if (oauthErr) return backTo(returnTo, "erro", oauthErr);
   if (!code || !nonce) return backTo(returnTo, "erro", "faltou code/state");

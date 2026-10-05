@@ -59,7 +59,7 @@ async function enviarEmail(nome: string, email: string, plano: string): Promise<
       <p>Plano escolhido: <strong>${plano}</strong>. O acesso à plataforma libera assim que o pagamento é confirmado.</p>
       <p>Enquanto isso, você já pode entrar na plataforma e completar o seu perfil —
          foto e apresentação são o que fazem o paciente clicar.</p>
-      <p><a href="https://app.nutrianaluisarocha.com/">app.nutrianaluisarocha.com</a></p>
+      <p><a href="https://nutriplat.com.br/">nutriplat.com.br</a></p>
       <p style="color:#6b7c85;font-size:13px">NutriPlat · plataforma de gestão para nutricionistas</p>
     </div>`;
 

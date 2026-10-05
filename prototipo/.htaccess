@@ -1,5 +1,5 @@
 # ============================================================
-#  app.nutrianaluisarocha.com — política de cache
+#  nutriplat.com.br — política de cache
 #
 #  O problema que isto resolve: a Hostinger servia TUDO com
 #  max-age de 7 dias. Como o HTML também ficava preso, publicar
@@ -40,7 +40,15 @@
 Options -MultiViews
 RewriteEngine On
 
+# 0) www -> endereço sem www, permanente. Sem isto o site abria duplicado
+#    nos dois nomes e só o canonical dizia ao Google qual era o certo.
+RewriteCond %{HTTP_HOST} ^www\.nutriplat\.com\.br$ [NC]
+RewriteRule ^(.*)$ https://nutriplat.com.br/$1 [R=301,L]
+
 # 1) link velho com .html -> endereço sem extensão, permanente.
+#    Exceção: o arquivo de verificação do Search Console (google<hash>.html)
+#    tem de responder 200 no endereço exato; com redirect o Google não verifica.
+RewriteCond %{REQUEST_URI} !^/google[0-9a-f]+\.html$
 RewriteCond %{THE_REQUEST} \s/+([^?\s]+)\.html[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L]
 

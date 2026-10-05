@@ -1,4 +1,4 @@
-# app.nutrianaluisarocha.com
+# nutriplat.com.br
 # Só a vitrine pública é para o buscador. O resto do endereço é app logado:
 # indexar tela de prontuário ou de paciente não traz visita e ainda expõe a
 # estrutura interna na busca.
@@ -39,4 +39,4 @@ Disallow: /consentimento
 Disallow: /entrar
 Disallow: /_teste-portal
 
-Sitemap: https://app.nutrianaluisarocha.com/sitemap.xml
+Sitemap: https://nutriplat.com.br/sitemap.xml

@@ -671,7 +671,7 @@
         panel.className = "cfg-panel"; panel.setAttribute("data-panel", "indicacoes"); panel.id = "panel-indicacoes";
         panels.appendChild(panel);
 
-        var link = "https://app.nutrianaluisarocha.com/seja-indicada?cupom=" + encodeURIComponent(d.cupom);
+        var link = "https://nutriplat.com.br/seja-indicada?cupom=" + encodeURIComponent(d.cupom);
         var ativas = d.indicadas.filter(function (i) { return i.ativa; }).length;
         var resumo =
           '<div class="cfg-convites">' +

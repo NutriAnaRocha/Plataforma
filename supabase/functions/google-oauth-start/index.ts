@@ -52,11 +52,12 @@ Deno.serve(async (req) => {
   // 2) De onde a nutri veio (p/ voltar à mesma tela depois). Só aceitamos o
   //    domínio da plataforma, senão caímos no padrão. Quem vier da versão
   //    antiga (github.io) cai no padrão e já aterrissa no domínio novo.
-  let returnTo = "https://app.nutrianaluisarocha.com/configuracoes.html";
+  //    O domínio antigo segue aceito durante a transição para nutriplat.com.br.
+  let returnTo = "https://nutriplat.com.br/configuracoes";
   try {
     const body = await req.json();
     const rt = String(body?.returnTo || "");
-    if (/^https:\/\/app\.nutrianaluisarocha\.com\//.test(rt)) returnTo = rt;
+    if (/^https:\/\/(nutriplat\.com\.br|app\.nutrianaluisarocha\.com)\//.test(rt)) returnTo = rt;
   } catch { /* corpo opcional */ }
 
   // 3) Cria o nonce (service role) que o callback vai consumir.
