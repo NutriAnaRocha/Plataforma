@@ -19,7 +19,7 @@ window.FEED_DATA = {
   semana: {
     eyebrow: "Atualização da Semana",
     title: "9 estudos reais que mexem na sua conduta",
-    texto: "Uma rede de meta-análise mostra que cada protocolo de jejum intermitente ajuda de um jeito diferente na esteatose hepática (MASLD), uma revisão com 38 estudos reforça quais dietas realmente ajudam na SOP/PMOS, uma meta-análise mais ampla que a do vôlei encontra efeito pequeno da cafeína em atletas mulheres de esportes coletivos, o programa Mind-Eat supera a educação em alimentação intuitiva no comer emocional (sem diferença de peso), a maior meta-análise sobre o tema derruba a promessa de que probióticos aumentam a diversidade da microbiota em gente saudável, uma rede de meta-análise sobre sarcopenia lista suplementos proteicos promissores mas pede cautela com o ranqueamento, um ensaio brasileiro (NutrirCom) não vence a dieta isolada em peso mas reduz mais a ansiedade, apps de mHealth melhoram a autoeficácia materna em amamentação sem ainda provar ganho em exclusividade ou duração, e a maior síntese sobre educação nutricional em diálise confirma ganho de conhecimento e qualidade de vida, com queda modesta de fósforo e potássio. Cada card abre a leitura completa com o link do estudo original."
+    texto: "Uma meta-análise com avaliação GRADE separa a folha de oliveira (melhora o perfil lipídico) do bagaço de oliva (sem benefício cardiometabólico) como suplementos derivados da oliveira, um ensaio randomizado associa suplementação de ferro a maior taxa de gravidez em mulheres em FIV, uma rede de meta-análise mostra que creatina, proteína e ômega-3 se destacam cada um em um desfecho diferente (força, resistência e recuperação) em atletas treinados, um ensaio brasileiro mostra que um programa de dissonância cognitiva supera uma abordagem educacional para alimentação intuitiva e imagem corporal, com ganho mantido por até 48 semanas, uma revisão sistemática encontra que pró/pré/simbióticos modulam a microbiota de lactentes sem sinal de efeito no eixo intestino-cérebro ou no neurodesenvolvimento, uma revisão rápida de 19 meta-análises sobre multivitamínico/mineral encontra benefício em cognição e pressão arterial mas nenhum em mortalidade, o ensaio DELISH mostra que um padrão mediterrâneo adaptado não supera a restrição calórica tradicional em perda de peso — mas melhora mais a qualidade da dieta —, um grande ensaio em Bangladesh mostra que suplemento de energia-proteína fortificado não reduz restrição de crescimento fetal frente ao suplemento padrão de micronutrientes, e um estudo confirma o ângulo de fase por bioimpedância como preditor moderado de sobrevida em 5 anos na hemodiálise. Cada card abre a leitura completa com o link do estudo original."
   },
 
   /* Categorias (chips do feed) */
@@ -32,411 +32,412 @@ window.FEED_DATA = {
   cards: [
     /* ------------------------------------------------------------------ */
     {
-      id: "jejum-intermitente-esteatose-hepatica-rede",
+      id: "folha-oliveira-bagaco-oliva-cardiometabolico",
       categoria: "Clínica",
-      areas: ["Clínica", "Funcional"],
-      data: "24 jun 2026",
-      title: "Rede de meta-análise compara protocolos de jejum intermitente na esteatose hepática (MASLD) e mostra que cada um ajuda de um jeito diferente",
-      resumo: "Revisão sistemática com meta-análise em rede (frequentista) de ensaios clínicos randomizados comparou alimentação com restrição de horário (TRE), jejum em dias alternados (ADF) e o protocolo 5:2 em adultos com esteatose hepática associada à disfunção metabólica (MASLD): a TRE liderou na redução da gordura no fígado, o ADF liderou em perda de peso e foi o único a melhorar a resistência à insulina, e nenhum protocolo melhorou a rigidez hepática.",
-      mudou: "Em vez de tratar 'jejum intermitente' como uma estratégia única, esta rede de meta-análise mostra perfis de efeito diferentes entre os protocolos na MASLD — a TRE parece melhor para gordura no fígado, o ADF para peso e resistência à insulina — e nenhum deles, isoladamente, mudou a rigidez/fibrose hepática.",
-      aplicar: "Ao indicar jejum intermitente para um paciente com MASLD, escolha o protocolo pelo desfecho prioritário: TRE quando o foco é reduzir esteatose, ADF quando o foco é perda de peso e resistência à insulina — e deixe claro que a evidência ainda não mostra melhora da rigidez hepática só com dieta, então o acompanhamento com hepatologia continua necessário.",
+      areas: ["Clínica"],
+      data: "01 out 2026",
+      title: "Meta-análise com avaliação GRADE mostra que a folha de oliveira melhora o perfil lipídico, mas o bagaço de oliva não traz benefício cardiometabólico consistente",
+      resumo: "Revisão sistemática com meta-análise de 30 ensaios clínicos randomizados (1.726 participantes) avaliou 21 marcadores cardiometabólicos e antropométricos com suplementação de folha de oliveira (olive leaf) ou bagaço/resíduo de oliva (olive pomace): a folha de oliveira melhorou colesterol total, LDL, triglicerídeos e ApoB, sem efeito sobre controle glicêmico; o bagaço de oliva não mostrou benefício cardiometabólico ou antropométrico consistente.",
+      mudou: "Até aqui, folha de oliveira e bagaço de oliva eram frequentemente tratados como opções intercambiáveis de suplementação derivada da oliveira — esta meta-análise com avaliação GRADE separa os dois: só a folha de oliveira tem respaldo consistente para melhora do perfil lipídico, enquanto o bagaço de oliva não mostrou o mesmo benefício.",
+      aplicar: "Ao considerar suplementação derivada da oliveira para melhorar o perfil lipídico, priorize produtos de folha de oliveira (olive leaf) com respaldo nesta meta-análise, e não espere o mesmo efeito de suplementos de bagaço de oliva — e não prometa impacto sobre glicemia só com esse suplemento, já que esse desfecho não melhorou com nenhum dos dois.",
       evidencia: 5,
-      link: "https://doi.org/10.1016/j.clnesp.2026.103415",
+      link: "https://pubmed.ncbi.nlm.nih.gov/42303499/",
       fonte: {
-        autores: "Abu Suilik e cols.",
-        revista: "Clinical Nutrition ESPEN",
+        autores: "Mansouri e cols.",
+        revista: "Nutrition, Metabolism and Cardiovascular Diseases",
         ano: "2026",
-        desenho: "Revisão sistemática com meta-análise em rede (frequentista) de ensaios clínicos randomizados",
-        amostra: "Ensaios clínicos randomizados comparando protocolos de jejum intermitente (TRE, ADF, 5:2) em adultos com MASLD",
-        doi: "10.1016/j.clnesp.2026.103415",
-        pubmed: "42342126",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados, com avaliação de certeza da evidência pelo sistema GRADE",
+        amostra: "30 ECRs, 1.726 participantes, 21 biomarcadores cardiometabólicos e antropométricos avaliados",
+        doi: "10.1016/j.numecd.2026.104821",
+        pubmed: "42303499",
         acesso: "Resumo livre; texto completo por assinatura"
       },
       leitura: [
         {
           h: "A pergunta do estudo",
-          p: "O jejum intermitente é cada vez mais indicado para pacientes com MASLD, mas 'jejum intermitente' engloba protocolos bem diferentes — alimentação com restrição de horário (TRE), jejum em dias alternados (ADF) e o protocolo 5:2. Faltava uma comparação direta entre eles para saber qual traz mais benefício para o fígado e para o metabolismo."
+          p: "Suplementos derivados da oliveira — folha (olive leaf) e bagaço/resíduo da prensagem (olive pomace) — são frequentemente promovidos juntos como fontes de compostos fenólicos anti-inflamatórios e cardioprotetores. Faltava uma meta-análise que avaliasse os dois separadamente, com avaliação formal da certeza da evidência, para saber se ambos merecem a mesma confiança clínica."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Revisão sistemática com meta-análise em rede (frequentista) reuniu ensaios clínicos randomizados que testaram TRE, ADF, 5:2 ou dieta padrão/controle em adultos com MASLD, avaliando desfechos hepáticos (esteatose por elastografia/CAP, enzimas ALT e AST, rigidez hepática), antropométricos (peso, cintura, gordura corporal) e metabólicos (resistência à insulina pelo HOMA-IR)."
+          p: "Revisão sistemática com meta-análise reuniu 30 ensaios clínicos randomizados (1.726 participantes) testando suplementação com folha de oliveira ou bagaço de oliva versus placebo/controle, avaliando 21 biomarcadores — perfil lipídico, inflamação, controle glicêmico, sensibilidade à insulina, antropometria e pressão arterial. A certeza da evidência para cada desfecho foi classificada pelo sistema GRADE."
         },
         {
           h: "O que foi encontrado",
-          p: "A TRE foi o protocolo mais eficaz para reduzir a esteatose hepática (diferença média de -23,32 dB/m no CAP), seguida pelo 5:2. O ADF trouxe as maiores reduções de peso, cintura e gordura corporal, e foi o único protocolo com melhora significativa da resistência à insulina. Tanto o 5:2 quanto a TRE reduziram significativamente ALT e AST. Nenhum protocolo melhorou de forma significativa a rigidez hepática."
+          p: "A suplementação com folha de oliveira melhorou marcadores do perfil lipídico — colesterol total, triglicerídeos, LDL, ApoB e LDL oxidada — mas não teve efeito significativo sobre controle glicêmico. Já o bagaço de oliva não mostrou benefício cardiometabólico ou antropométrico consistente, com sinal de possível aumento de um marcador inflamatório (IL-8) em parte dos estudos."
         },
         {
           h: "O que isso não responde",
-          p: "Como é uma meta-análise em rede, a robustez de cada comparação depende do número de ensaios diretos disponíveis para aquele par de protocolos, ainda limitado para MASLD. O seguimento dos estudos tende a ser curto, o que não permite saber se essas diferenças entre TRE, ADF e 5:2 se mantêm a longo prazo, nem se a ausência de efeito sobre rigidez hepática se confirma com mais tempo de tratamento."
+          p: "A certeza da evidência (GRADE) variou de muito baixa a alta entre os diferentes desfechos, rebaixada em vários casos por heterogeneidade e imprecisão — e o número de ensaios disponíveis para o bagaço de oliva é bem menor que para a folha, o que limita a confiança nas conclusões sobre esse subproduto especificamente. O estudo também não avalia desfechos clínicos duros (eventos cardiovasculares), apenas marcadores intermediários."
         },
         {
           h: "Na prática do consultório",
-          p: "Ao indicar jejum intermitente para MASLD, escolha o protocolo pelo desfecho prioritário do paciente: TRE para reduzir gordura no fígado, ADF para perda de peso e melhora da resistência à insulina. Em qualquer protocolo, deixe claro que a evidência atual não mostra melhora da rigidez/fibrose hepática só com jejum intermitente — o acompanhamento com hepatologia continua sendo necessário."
+          p: "Se for considerar suplementação derivada da oliveira para apoiar o perfil lipídico, priorize produtos à base de folha de oliveira, que têm respaldo mais consistente nesta meta-análise — e não estenda a mesma expectativa a suplementos de bagaço de oliva. Em ambos os casos, não prometa impacto sobre glicemia ou peso corporal apenas com o suplemento."
         }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "revisao-nutricao-pcos-pmos-2026",
+      id: "suplementacao-ferro-fertilidade-fiv",
       categoria: "Saúde da Mulher",
-      areas: ["Saúde da Mulher", "Fertilidade", "Funcional"],
-      data: "29 jun 2026",
-      title: "Revisão sistemática com 38 estudos mapeia quais dietas realmente melhoram parâmetros metabólicos e hormonais na SOP/PMOS",
-      resumo: "Revisão sistemática (protocolo registrado no PROSPERO) reuniu 38 estudos, publicados entre 2015 e 2025, sobre dietas com restrição calórica, baixo índice/carga glicêmica, cetogênica, jejum intermitente e outros padrões em mulheres com síndrome dos ovários policísticos (SOP/PMOS): de forma consistente, dietas de baixo índice glicêmico, ricas em fibra e ômega-3, o padrão mediterrâneo e abordagens anti-inflamatórias apareceram associadas a melhora de sensibilidade à insulina e equilíbrio hormonal.",
-      mudou: "Em vez de recomendar 'dieta saudável' de forma genérica para SOP/PMOS, esta revisão reforça que o tipo de dieta importa: baixo índice glicêmico, fibra, ômega-3 e padrão mediterrâneo aparecem repetidamente associados a melhora de insulina e hormônios entre os 38 estudos incluídos.",
-      aplicar: "Priorize, na prescrição para SOP/PMOS, os padrões alimentares com mais respaldo nesta revisão — baixo índice/carga glicêmica, fibra e ômega-3 adequados, padrão mediterrâneo — individualizando conforme preferência e adesão da paciente, já que a revisão reúne estudos heterogêneos sem apontar uma dieta única superior a todas as outras.",
-      evidencia: 5,
-      link: "https://doi.org/10.1007/s00394-026-04030-7",
+      areas: ["Saúde da Mulher", "Fertilidade"],
+      data: "15 fev 2026",
+      title: "Ensaio randomizado associa suplementação de ferro a maior taxa de gravidez em mulheres em fertilização in vitro",
+      resumo: "Ensaio clínico randomizado, duplo-cego e controlado, com 112 mulheres de 20-39 anos em fertilização in vitro (FIV), comparou suplementação de ferro com placebo: o grupo que recebeu ferro teve taxa de gravidez maior (50% vs. 28,5%; p=0,020) e mais embriões obtidos, sem diferença estatisticamente significativa na qualidade embrionária.",
+      mudou: "Sugere, num primeiro ensaio randomizado sobre o tema, que corrigir o estado de ferro pode se relacionar com melhores desfechos reprodutivos em mulheres em FIV — não apenas com indicadores laboratoriais de anemia, que costumam ser o foco tradicional da suplementação de ferro.",
+      aplicar: "Avalie e corrija o estado de ferro de pacientes em preparo para FIV como parte do acompanhamento nutricional pré-tratamento — mas, por ser um único ensaio pequeno e sem detalhes de dose ou duração ideal no resumo disponível, não prometa aumento da taxa de gravidez apenas com a suplementação, e individualize a indicação pelo status de ferro real da paciente.",
+      evidencia: 4,
+      link: "https://acta.tums.ac.ir/index.php/acta/article/view/11414",
       fonte: {
-        autores: "Akbaş e cols.",
-        revista: "European Journal of Nutrition",
+        autores: "Hojjati, Nakhaei e cols.",
+        revista: "Acta Medica Iranica",
         ano: "2026",
-        desenho: "Revisão sistemática (protocolo registrado no PROSPERO, seguindo PRISMA), sem meta-análise formal de efeito agrupado",
-        amostra: "38 estudos sobre intervenções dietéticas em mulheres com SOP/PMOS, publicados entre fev/2015 e fev/2025",
-        doi: "10.1007/s00394-026-04030-7",
-        acesso: "Resumo livre; texto completo por assinatura"
+        desenho: "Ensaio clínico randomizado, duplo-cego, controlado por placebo",
+        amostra: "112 mulheres de 20-39 anos em tratamento de fertilização in vitro (FIV)",
+        acesso: "Acesso aberto (texto completo livre)"
       },
       leitura: [
         {
           h: "A pergunta do estudo",
-          p: "Diversas dietas já foram testadas isoladamente em mulheres com SOP/PMOS — restrição calórica, baixo índice glicêmico, cetogênica, jejum intermitente, entre outras — mas faltava reunir essa evidência dispersa numa única revisão para orientar qual abordagem dietética tem mais respaldo para melhorar parâmetros metabólicos, hormonais e inflamatórios."
+          p: "A deficiência de ferro é comum em mulheres em idade reprodutiva, mas a maior parte da evidência sobre suplementação de ferro foca em corrigir anemia, não em desfechos reprodutivos. Este ensaio testou se suplementar ferro durante o tratamento de fertilização in vitro (FIV) se associa a melhores taxas de gravidez e qualidade embrionária."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Revisão sistemática com protocolo registrado no PROSPERO e busca em oito bases (incluindo PubMed, Cochrane Library e Web of Science) por estudos publicados entre fevereiro de 2015 e fevereiro de 2025 sobre intervenções dietéticas em mulheres com SOP/PMOS, avaliando parâmetros antropométricos, metabólicos, hormonais, inflamatórios e de estresse oxidativo. Foram incluídos 38 estudos."
+          p: "Ensaio clínico randomizado, duplo-cego e controlado por placebo incluiu 112 mulheres de 20 a 39 anos em tratamento de FIV, comparando suplementação de ferro com placebo durante o protocolo de estimulação ovariana, com avaliação de taxa de gravidez, número de embriões obtidos e qualidade embrionária."
         },
         {
           h: "O que foi encontrado",
-          p: "De forma consistente entre os estudos, dietas de baixo índice/carga glicêmica, ricas em fibra e ômega-3, o padrão mediterrâneo e abordagens anti-inflamatórias e antioxidantes melhoraram sensibilidade à insulina e equilíbrio hormonal; a dieta cetogênica e o jejum intermitente também apareceram entre as estratégias com resultado favorável em parte dos estudos."
+          p: "A taxa de gravidez foi significativamente maior no grupo que recebeu ferro (50%) do que no grupo placebo (28,5%; p=0,020). O grupo ferro também obteve mais embriões em média, mas não houve diferença estatisticamente significativa na qualidade embrionária entre os grupos (p=0,055, no limite da significância)."
         },
         {
           h: "O que isso não responde",
-          p: "É uma revisão sistemática qualitativa (sem meta-análise de efeito agrupado), reunindo estudos com desenhos, durações e populações heterogêneos — isso impede afirmar 'qual dieta é a melhor' de forma definitiva, e a síntese apresentada não aprofunda desfechos reprodutivos (ovulação, taxas de gravidez)."
+          p: "É um ensaio único e relativamente pequeno (112 mulheres), sem detalhamento claro, no resumo disponível, sobre a dose de ferro usada, a duração da suplementação ou se as participantes já tinham deficiência de ferro confirmada antes de entrar no estudo — isso limita saber para quem, exatamente, a suplementação faz mais diferença, e os próprios autores pedem mais pesquisa sobre dose e efeitos de longo prazo."
         },
         {
           h: "Na prática do consultório",
-          p: "Use esta revisão para priorizar, na prescrição para SOP/PMOS, padrões alimentares com respaldo mais consistente — baixo índice/carga glicêmica, fibra e ômega-3 adequados, padrão mediterrâneo — individualizando pela preferência e adesão da paciente, já que a evidência não aponta uma dieta única superior a todas as outras para essa população."
+          p: "Inclua a avaliação do estado de ferro (ferritina, hemoglobina) no acompanhamento nutricional de mulheres em preparo para FIV, e corrija deficiências identificadas — mas não venda a suplementação de ferro como garantia de aumento da taxa de gravidez: é um achado de um único ensaio, que precisa ser confirmado por estudos maiores antes de embasar uma recomendação padronizada."
         }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "cafeina-atletas-mulheres-esportes-coletivos",
+      id: "proteina-creatina-omega3-rede-atletas",
       categoria: "Esportiva",
       areas: ["Esportiva"],
-      data: "24 jul 2026",
-      title: "Meta-análise de três níveis com 26 estudos confirma efeito pequeno, porém real, da cafeína no desempenho de atletas mulheres de esportes coletivos",
-      resumo: "Meta-análise de três níveis reunindo 26 ensaios clínicos randomizados, crossover e controlados por placebo, encontrou efeito geral pequeno da cafeína aguda sobre desempenho físico, esportivo específico, fisiológico, perceptivo e cognitivo em atletas mulheres de esportes coletivos (g de Hedges = 0,24; IC95% 0,13-0,35), mais consistente para desempenho físico e redução da percepção de esforço; para habilidades técnicas específicas e desfechos cognitivos, a evidência ainda é incerta.",
-      mudou: "Ao contrário do achado recente específico para vôlei (sem efeito ergogênico claro), esta meta-análise mais ampla — que reúne atletas de vários esportes coletivos — encontra um efeito pequeno, porém estatisticamente significativo, da cafeína sobre desempenho físico e percepção de esforço, ainda que a evidência para habilidades técnicas e cognição permaneça incerta.",
-      aplicar: "Para atletas mulheres de esportes coletivos em geral, a cafeína aguda pode trazer ganho pequeno em desempenho físico e sensação de esforço mais leve — mas não presuma o mesmo para habilidades técnicas específicas do esporte ou desempenho cognitivo, onde a evidência ainda é escassa, e avalie sempre a resposta individual antes de padronizar a estratégia para o time.",
+      data: "13 mar 2026",
+      title: "Rede de meta-análise compara proteína, creatina e ômega-3 em atletas treinados: cada suplemento se destaca em um desfecho diferente",
+      resumo: "Revisão sistemática com meta-análise em rede reuniu 35 ensaios clínicos randomizados (1.211 participantes com pelo menos 6 meses de treino estruturado) comparando suplementação de proteína, creatina e ômega-3: a creatina liderou em força muscular, a proteína em desempenho de resistência (endurance) e o ômega-3 em recuperação, sem divergência relevante entre evidência direta e indireta na rede.",
+      mudou: "Em vez de perguntar 'qual suplemento é o melhor' para atletas de forma genérica, esta rede de meta-análise reforça que a resposta depende do desfecho prioritário: cada um dos três suplementos — creatina, proteína e ômega-3 — se destacou em uma finalidade diferente, sem um 'vencedor' único entre eles.",
+      aplicar: "Oriente a escolha do suplemento pelo objetivo do atleta: creatina quando a prioridade é força muscular, proteína quando é desempenho de resistência, e ômega-3 quando é recuperação pós-exercício — e lembre que as comparações entre os três vieram majoritariamente de uma rede de evidência indireta, então trate o ranqueamento como orientador, não como hierarquia definitiva.",
       evidencia: 5,
-      link: "https://doi.org/10.3390/nu18152429",
+      link: "https://pubmed.ncbi.nlm.nih.gov/41901084/",
       fonte: {
-        autores: "Li e cols.",
+        autores: "Wang, Qin e Kim",
         revista: "Nutrients",
-        ano: "2026",
-        desenho: "Revisão sistemática com meta-análise de três níveis de ensaios clínicos randomizados, crossover, cegos e controlados por placebo",
-        amostra: "26 estudos (ensaios randomizados crossover), atletas mulheres de esportes coletivos",
-        doi: "10.3390/nu18152429",
-        pubmed: "42588052",
-        acesso: "Acesso aberto (texto completo livre)"
-      },
-      leitura: [
-        {
-          h: "A pergunta do estudo",
-          p: "A maior parte da evidência sobre cafeína e desempenho esportivo vem de homens ou de esportes específicos isolados. Esta meta-análise reuniu estudos com atletas mulheres de esportes coletivos em geral para quantificar o efeito agudo da cafeína sobre desempenho físico, habilidades técnicas específicas do esporte, respostas fisiológicas, percepção de esforço e desempenho cognitivo, além de investigar possíveis moderadores do efeito."
-        },
-        {
-          h: "Como o estudo foi feito",
-          p: "Revisão sistemática com meta-análise de três níveis, usando modelo de efeitos correlacionados e hierárquicos com estimativa de variância robusta por cluster, reuniu 26 ensaios clínicos randomizados, crossover, cegos e controlados por placebo com cafeína aguda em atletas mulheres de esportes coletivos. Os tamanhos de efeito foram sintetizados separadamente por domínio (físico, técnico-esportivo, fisiológico, perceptivo, cognitivo)."
-        },
-        {
-          h: "O que foi encontrado",
-          p: "Quando todos os domínios disponíveis foram agrupados, a cafeína aguda teve efeito geral pequeno (g de Hedges = 0,24; IC95% 0,13-0,35). O efeito foi mais consistente para desempenho físico e para redução da percepção de esforço. Para habilidades técnicas específicas do esporte e desempenho cognitivo, a evidência permaneceu incerta, por haver poucos estudos disponíveis em cada domínio."
-        },
-        {
-          h: "O que isso não responde",
-          p: "Por agregar esportes coletivos diferentes, o resultado geral pode mascarar variações entre modalidades específicas — como já mostrou, por exemplo, a meta-análise focada só em vôlei, que não encontrou efeito ergogênico. A escassez de estudos por domínio (sobretudo técnico e cognitivo) limita conclusões mais específicas sobre em que tarefa a cafeína realmente ajuda essas atletas."
-        },
-        {
-          h: "Na prática do consultório",
-          p: "Para atletas mulheres de esportes coletivos em geral, é razoável testar a cafeína aguda esperando um ganho pequeno em desempenho físico e uma sensação de esforço mais leve — mas sem prometer o mesmo para habilidades técnicas específicas do esporte ou desempenho cognitivo, e sempre avaliando resposta individual e efeitos colaterais antes de padronizar a estratégia para o time."
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "mind-eat-programa-comer-emocional-obesidade",
-      categoria: "Comportamental",
-      areas: ["Comportamental", "Estética"],
-      data: "21 mai 2026",
-      title: "Programa Mind-Eat reduz mais o comer emocional e externo do que um programa já validado de alimentação intuitiva",
-      resumo: "Ensaio clínico randomizado unicêntrico comparou o Mind-Eat, programa estruturado baseado em mindfulness, com um programa de educação terapêutica orientado por alimentação intuitiva (tratamento padrão) em 66 adultos com sobrepeso ou obesidade: o Mind-Eat levou a reduções maiores no comer emocional e externo, com melhora de comer consciente e intuitivo, mas sem diferença de peso corporal no curto prazo entre os grupos.",
-      mudou: "Mostra que um programa de mindfulness estruturado pode superar um programa já validado de alimentação intuitiva em desfechos comportamentais específicos (comer emocional e externo) — mesmo sem se traduzir, ainda, em diferença de peso corporal no curto prazo.",
-      aplicar: "Considere o Mind-Eat (ou princípios equivalentes de mindfulness estruturado) como opção complementar ao trabalho de alimentação intuitiva já feito com pacientes com sobrepeso/obesidade e comer emocional/externo proeminente, mas calibre a expectativa: o ganho observado foi comportamental, não de perda de peso a curto prazo.",
-      evidencia: 4,
-      link: "https://doi.org/10.1186/s12966-026-01931-y",
-      fonte: {
-        autores: "Van Beekum e cols.",
-        revista: "International Journal of Behavioral Nutrition and Physical Activity",
-        ano: "2026",
-        desenho: "Ensaio clínico randomizado unicêntrico (1:1)",
-        amostra: "66 adultos com sobrepeso ou obesidade randomizados (46 analisados por intenção de tratar modificada)",
-        doi: "10.1186/s12966-026-01931-y",
-        pubmed: "42163359",
-        acesso: "Acesso aberto (texto completo livre)"
-      },
-      leitura: [
-        {
-          h: "A pergunta do estudo",
-          p: "Programas de alimentação intuitiva já são usados como tratamento comportamental de referência para adultos com sobrepeso/obesidade. Este ensaio testou se um programa estruturado baseado em mindfulness (Mind-Eat) traz benefício adicional frente a um programa de educação terapêutica já validado, orientado por princípios de alimentação intuitiva."
-        },
-        {
-          h: "Como o estudo foi feito",
-          p: "Ensaio clínico randomizado unicêntrico (1:1) incluiu 66 adultos com sobrepeso ou obesidade; 56 completaram a avaliação inicial e 46 tiveram avaliação basal e ao menos uma avaliação pós-intervenção, entrando na análise por intenção de tratar modificada. Um grupo recebeu o programa Mind-Eat e o outro, um programa de educação terapêutica orientado por alimentação intuitiva (tratamento padrão do serviço)."
-        },
-        {
-          h: "O que foi encontrado",
-          p: "Frente ao programa de alimentação intuitiva, o Mind-Eat levou a reduções maiores no comer emocional e no comer externo, além de melhora de comer consciente (mindful eating) e de comer intuitivo. Não houve diferença significativa de peso corporal entre os grupos no curto prazo."
-        },
-        {
-          h: "O que isso não responde",
-          p: "A amostra final é pequena (46 participantes analisados) e de centro único, o que limita a generalização. Por ser um desfecho de curto prazo, o estudo não mostra se as mudanças comportamentais observadas se sustentam ao longo do tempo nem se, com mais tempo, elas se traduzem em diferença de peso frente ao programa de alimentação intuitiva."
-        },
-        {
-          h: "Na prática do consultório",
-          p: "Para pacientes com sobrepeso/obesidade e comer emocional ou externo proeminente, considere incorporar elementos de mindfulness estruturado (como os do Mind-Eat) ao trabalho já feito com alimentação intuitiva — mas calibre a expectativa: o ganho demonstrado aqui foi comportamental, não uma perda de peso maior no curto prazo."
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "probioticos-diversidade-microbiota-populacoes-saudaveis",
-      categoria: "Microbiota",
-      areas: ["Clínica", "Funcional"],
-      data: "07 jan 2026",
-      title: "Maior meta-análise sobre o tema encontra que probióticos não aumentam a diversidade da microbiota intestinal em pessoas saudáveis",
-      resumo: "Revisão sistemática com meta-análise identificou 47 estudos elegíveis, dos quais 22 (1.068 participantes) entraram na meta-análise de diversidade da microbiota intestinal em populações saudáveis: a suplementação de probióticos não produziu alteração estatisticamente significativa nos índices de diversidade microbiana nessa população.",
-      mudou: "Contraria uma suposição comum de marketing e de prática clínica — a de que tomar probióticos 'aumenta a diversidade' da microbiota intestinal — pelo menos em pessoas saudáveis, sem disbiose ou doença de base já estabelecida.",
-      aplicar: "Não use 'aumento da diversidade da microbiota' como justificativa para indicar probióticos a um paciente saudável sem outra indicação clínica específica; reserve essa expectativa para populações com disbiose documentada, onde a resposta pode ser diferente.",
-      evidencia: 5,
-      link: "https://doi.org/10.1186/s12916-025-04602-0",
-      fonte: {
-        autores: "Éliás e cols.",
-        revista: "BMC Medicine",
-        ano: "2026",
-        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
-        amostra: "47 estudos elegíveis; 22 estudos (1.068 participantes) na meta-análise de diversidade da microbiota, populações saudáveis",
-        doi: "10.1186/s12916-025-04602-0",
-        acesso: "Acesso aberto (texto completo livre)"
-      },
-      leitura: [
-        {
-          h: "A pergunta do estudo",
-          p: "Um dos argumentos mais usados para indicar probióticos é que eles 'aumentam a diversidade' da microbiota intestinal — um marcador geralmente associado a mais resiliência e saúde. Esta revisão testou se essa promessa se sustenta especificamente em pessoas saudáveis, sem uma condição de base que já altere a microbiota."
-        },
-        {
-          h: "Como o estudo foi feito",
-          p: "Revisão sistemática com meta-análise buscou em MEDLINE, Embase e Cochrane ensaios clínicos randomizados testando suplementação de probióticos versus placebo/controle em populações saudáveis, com desfecho de diversidade da microbiota intestinal (índices como Shannon e Simpson). Foram identificados 47 estudos elegíveis, dos quais 22 (1.068 participantes) tinham dados suficientes para a meta-análise de diversidade."
-        },
-        {
-          h: "O que foi encontrado",
-          p: "A meta-análise não encontrou alteração estatisticamente significativa nos índices de diversidade da microbiota intestinal com a suplementação de probióticos em populações saudáveis, comparada a placebo/controle."
-        },
-        {
-          h: "O que isso não responde",
-          p: "O resultado é específico para diversidade da microbiota em pessoas saudáveis — não avalia se os probióticos trazem benefício clínico por outras vias (função de barreira, metabólitos, sintomas digestivos) nem se o efeito é diferente em populações com disbiose já estabelecida, uso de antibióticos ou doenças gastrointestinais, onde outras revisões mostram respostas distintas."
-        },
-        {
-          h: "Na prática do consultório",
-          p: "Não use 'aumento da diversidade da microbiota' como justificativa para indicar probióticos a um paciente saudável sem outra indicação clínica específica — segundo esta meta-análise, esse efeito não se confirma nessa população. Reserve essa expectativa para contextos em que a disbiose já está documentada, onde a resposta pode ser diferente."
-        }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "suplementacao-proteica-exercicio-sarcopenia-rede",
-      categoria: "Suplementação",
-      areas: ["Clínica", "Funcional"],
-      data: "12 ago 2026",
-      title: "Rede de meta-análise compara tipos de suplementação proteica combinada a exercício na sarcopenia, mas pede cautela com o ranqueamento",
-      resumo: "Revisão sistemática com meta-análise em rede reuniu 18 ensaios clínicos randomizados (1.341 participantes) comparando estratégias de suplementação proteica ou relacionada à proteína (whey, leucina, HMB, aminoácidos essenciais com vitamina D, entre outras) combinadas a treino resistido ou funcional em idosos com sarcopenia ou alto risco: HMB, proteína enriquecida com whey/leucina e whey/aminoácidos essenciais com vitamina D associaram-se a ganho significativo de força de preensão frente ao controle, mas os próprios autores classificam o ranqueamento como exploratório, dada a rede de evidência esparsa e a certeza muito baixa.",
-      mudou: "Reforça que combinar suplementação proteica com exercício resistido/funcional ajuda a força de preensão na sarcopenia — mas a tentativa de apontar 'qual suplemento é melhor' esbarra em evidência ainda frágil, então qualquer ranqueamento entre HMB, whey/leucina ou combinações com vitamina D deve ser visto com cautela.",
-      aplicar: "Para pacientes idosos com sarcopenia ou alto risco, mantenha a combinação de suplementação proteica (whey, leucina ou HMB, conforme tolerância e custo) com treino resistido ou funcional como base da conduta — mas não prometa que um tipo específico de suplemento é comprovadamente superior aos demais, já que a certeza da evidência aqui é muito baixa.",
-      evidencia: 5,
-      link: "https://doi.org/10.3389/fnut.2026.1892302",
-      fonte: {
-        autores: "Yang e cols.",
-        revista: "Frontiers in Nutrition",
         ano: "2026",
         desenho: "Revisão sistemática com meta-análise em rede (network meta-analysis) de ensaios clínicos randomizados",
-        amostra: "18 ECRs, 1.341 participantes idosos com sarcopenia ou alto risco de sarcopenia",
-        doi: "10.3389/fnut.2026.1892302",
+        amostra: "35 ECRs, 1.211 participantes com pelo menos 6 meses de treino estruturado",
+        doi: "10.3390/nu18060909",
+        pubmed: "41901084",
         acesso: "Acesso aberto (texto completo livre)"
       },
       leitura: [
         {
           h: "A pergunta do estudo",
-          p: "Proteína e compostos relacionados (whey, leucina, HMB, aminoácidos essenciais, às vezes combinados a vitamina D) são recomendados junto ao treino resistido para sarcopenia, mas faltava comparar diretamente essas diferentes estratégias de suplementação entre si para saber se alguma se destaca."
+          p: "Proteína, creatina e ômega-3 são os suplementos mais usados por atletas treinados, mas raramente foram comparados diretamente entre si quanto ao efeito sobre força, resistência e recuperação. Esta rede de meta-análise buscou colocar os três lado a lado para orientar qual se destaca em cada desfecho."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Revisão sistemática com meta-análise em rede reuniu 18 ensaios clínicos randomizados (1.341 participantes) que testaram diferentes suplementações proteicas ou relacionadas à proteína, combinadas a treino resistido ou funcional, em idosos com sarcopenia ou alto risco. Os desfechos avaliados foram força de preensão manual, índice de massa muscular apendicular (ASMI) e desempenho no teste timed up-and-go (TUG), com ranqueamento das estratégias pelo método SUCRA."
+          p: "Revisão sistemática com meta-análise em rede buscou em seis bases de dados ensaios clínicos randomizados testando proteína, creatina ou ômega-3 em pessoas com pelo menos 6 meses de treino estruturado, reunindo 35 ensaios e 1.211 participantes. Os desfechos avaliados foram força muscular, desempenho de resistência (endurance) e recuperação pós-exercício, com ranqueamento pelo método SUCRA."
         },
         {
           h: "O que foi encontrado",
-          p: "Frente ao controle, estratégias baseadas em HMB, proteína enriquecida com whey/leucina e a combinação de whey/aminoácidos essenciais com vitamina D associaram-se a ganho estatisticamente significativo de força de preensão manual. Os próprios autores destacam que a rede de evidência é esparsa e a certeza é muito baixa, e que o ranqueamento SUCRA deve ser lido como exploratório, não como hierarquia definitiva entre as estratégias."
+          p: "A creatina teve o maior efeito sobre força muscular, a proteína sobre desempenho de resistência, e o ômega-3 sobre recuperação (SUCRA de 88,7% para recuperação). A avaliação de consistência da rede não encontrou divergência relevante entre as comparações diretas e indiretas em nenhum dos desfechos."
         },
         {
           h: "O que isso não responde",
-          p: "Com apenas 18 ensaios divididos entre várias estratégias de suplementação, o número de comparações diretas por par de intervenções é pequeno, o que fragiliza as estimativas da rede. A certeza da evidência foi classificada como muito baixa, então o estudo não permite afirmar com segurança qual suplementação é superior às demais — apenas que combinar proteína/composto relacionado ao treino tende a ajudar mais do que treino isolado."
+          p: "Como é uma rede de meta-análise, boa parte das comparações entre os três suplementos é indireta (não vêm de ensaios que testaram os três ao mesmo tempo nas mesmas pessoas), o que é uma limitação inerente ao método. O estudo também não avalia o que acontece quando os três são combinados, nem diferencia populações por sexo, idade ou modalidade esportiva."
         },
         {
           h: "Na prática do consultório",
-          p: "Para idosos com sarcopenia ou alto risco, mantenha a combinação de suplementação proteica (whey, leucina ou HMB, conforme tolerância, preferência e custo) com treino resistido ou funcional como base da conduta — mas não prometa que um tipo específico de suplemento é comprovadamente superior aos demais, já que a certeza da evidência para esse ranqueamento ainda é muito baixa."
+          p: "Use esta hierarquia por desfecho para orientar a prescrição: creatina como prioridade para ganho de força, proteína para desempenho de resistência, e ômega-3 quando o foco é recuperação pós-treino — mas comunique ao atleta que o ranqueamento vem de comparações majoritariamente indiretas entre os suplementos, não de testes cabeça a cabeça."
         }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "nutrircom-abordagem-multicomponente-obesidade",
+      id: "dissonancia-cognitiva-alimentacao-intuitiva-ecr",
+      categoria: "Comportamental",
+      areas: ["Comportamental"],
+      data: "01 set 2026",
+      title: "Programa baseado em dissonância cognitiva aumenta alimentação intuitiva e imagem corporal positiva em mulheres brasileiras, com ganhos mantidos por até 48 semanas",
+      resumo: "Ensaio clínico randomizado com 110 mulheres brasileiras de 18-35 anos comparou um programa baseado em dissonância cognitiva com um programa educacional e um grupo controle passivo: o grupo de dissonância cognitiva teve maior aumento de apreciação corporal, orientação corporal interna e motivação à saúde para exercício, além de redução da alimentação restritiva — com ganhos sustentados nos acompanhamentos de 24 e 48 semanas.",
+      mudou: "Mostra que um programa estruturado de dissonância cognitiva pode superar tanto uma intervenção educacional quanto a ausência de intervenção para melhorar alimentação intuitiva e imagem corporal em mulheres jovens brasileiras, com efeito que se mantém por quase um ano — não é só um ganho de curto prazo.",
+      aplicar: "Considere técnicas de dissonância cognitiva (questionar ativamente, em grupo, crenças e ideais de corpo irreais) como estratégia estruturada para trabalhar imagem corporal e alimentação intuitiva com pacientes mulheres jovens, além da educação nutricional tradicional — os ganhos aparecem já no curto prazo e se sustentam por até 48 semanas neste estudo.",
+      evidencia: 4,
+      link: "https://pubmed.ncbi.nlm.nih.gov/42259168/",
+      fonte: {
+        autores: "Resende e cols.",
+        revista: "Body Image",
+        ano: "2026",
+        desenho: "Ensaio clínico randomizado controlado, de três braços (dissonância cognitiva, educacional, controle passivo)",
+        amostra: "110 mulheres brasileiras, 18-35 anos",
+        doi: "10.1016/j.bodyim.2026.102129",
+        pubmed: "42259168",
+        acesso: "Resumo livre; texto completo por assinatura"
+      },
+      leitura: [
+        {
+          h: "A pergunta do estudo",
+          p: "Programas baseados em dissonância cognitiva — que levam a pessoa a questionar ativamente, em grupo, ideais de corpo magro e crenças sobre dieta — já mostraram resultado na prevenção de transtornos alimentares. Este ensaio testou se um programa desse tipo, desenvolvido para mulheres brasileiras, também melhora alimentação intuitiva, imagem corporal e motivação para exercício, comparado a um programa educacional e à ausência de intervenção."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Ensaio clínico randomizado controlado, de três braços, incluiu 110 mulheres brasileiras de 18 a 35 anos, distribuídas entre o programa de dissonância cognitiva, um programa educacional sobre alimentação e corpo, e um grupo controle passivo. Os desfechos — alimentação intuitiva, apreciação corporal, orientação corporal interna, motivação à saúde para exercício físico e alimentação restritiva/descontrolada/emocional — foram medidos antes, depois e em acompanhamentos de 24 e 48 semanas."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "O grupo de dissonância cognitiva teve ganhos maiores que os outros dois grupos em apreciação corporal, orientação corporal interna e motivação à saúde para exercício físico, além de redução mais acentuada da alimentação restritiva logo após a intervenção. Nos acompanhamentos de 24 e 48 semanas, os ganhos se mantiveram em todos os desfechos, com queda sustentada também nos escores de alimentação restritiva, descontrolada e emocional."
+        },
+        {
+          h: "O que isso não responde",
+          p: "A amostra é formada só por mulheres jovens brasileiras, o que limita a generalização para homens, outras faixas etárias ou outros contextos culturais. O resumo disponível não detalha claramente as perdas de seguimento ao longo das 48 semanas, o que pode influenciar a robustez dos resultados de longo prazo."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Para pacientes mulheres jovens com dificuldade em sair de um padrão restritivo ou com imagem corporal negativa, considere incorporar elementos de dissonância cognitiva — discussão ativa e em grupo sobre ideais de corpo e crenças alimentares — ao trabalho de alimentação intuitiva já feito, já que este estudo mostra ganho mantido por quase um ano, superior a uma abordagem puramente educacional."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "probioticos-eixo-intestino-cerebro-lactentes",
+      categoria: "Microbiota",
+      areas: ["Materno Infantil", "Funcional"],
+      data: "18 jun 2026",
+      title: "Revisão sistemática mostra que pró, pré e simbióticos modulam a microbiota de lactentes, mas sem sinal claro de efeito no eixo intestino-cérebro",
+      resumo: "Revisão sistemática de 6 ensaios clínicos randomizados (1.148 lactentes de 0 a 36 meses) avaliou intervenções com probióticos, prebióticos ou simbióticos voltadas ao eixo intestino-cérebro: houve modulação localizada da microbiota e da imunidade mucosa (como enriquecimento de Bifidobacterium e Lactobacillus), mas citocinas sistêmicas, calprotectina fecal, marcadores de permeabilidade, cortisol salivar basal e desfechos de neurodesenvolvimento permaneceram inalterados.",
+      mudou: "Contraria a expectativa, cada vez mais difundida, de que modular a microbiota no início da vida já basta para influenciar o eixo intestino-cérebro e o neurodesenvolvimento — esta revisão mostra efeito local na microbiota e na mucosa, mas sem sinal de propagação para marcadores sistêmicos neuroimunes ou para desfechos de neurodesenvolvimento em lactentes saudáveis ou levemente sintomáticos.",
+      aplicar: "Não prometa aos pais/cuidadores que um probiótico, prebiótico ou simbiótico vai 'ajudar o desenvolvimento cerebral' do lactente com base no eixo intestino-cérebro — a evidência atual mostra efeito sobre a microbiota local, mas não sobre marcadores neuroimunes sistêmicos ou neurodesenvolvimento nessa população.",
+      evidencia: 4,
+      link: "https://pubmed.ncbi.nlm.nih.gov/42330779/",
+      fonte: {
+        autores: "Carnazzo, Vitello e cols.",
+        revista: "Journal of Neuroimmunology",
+        ano: "2026",
+        desenho: "Revisão sistemática de ensaios clínicos randomizados (sem meta-análise quantitativa agrupada)",
+        amostra: "6 ECRs, 1.148 lactentes randomizados (0-36 meses); 923 com dados em ao menos um biomarcador do eixo intestino-cérebro",
+        doi: "10.1016/j.jneuroim.2026.579005",
+        pubmed: "42330779",
+        acesso: "Resumo livre; texto completo por assinatura"
+      },
+      leitura: [
+        {
+          h: "A pergunta do estudo",
+          p: "Intervenções com probióticos, prebióticos e simbióticos no início da vida são promovidas, cada vez mais, com a promessa de beneficiar o 'eixo intestino-cérebro' e o neurodesenvolvimento do lactente. Esta revisão buscou reunir a evidência de ensaios randomizados para checar se essa modulação da microbiota realmente se traduz em efeitos neuroimunes ou de neurodesenvolvimento mensuráveis."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Revisão sistemática buscou em PubMed/MEDLINE, Scopus e Web of Science ensaios clínicos randomizados que testaram probióticos, prebióticos ou simbióticos em lactentes de 0 a 36 meses, com desfechos relacionados ao eixo intestino-cérebro — citocinas sistêmicas, calprotectina fecal, marcadores de permeabilidade intestinal, cortisol salivar basal e neurodesenvolvimento. Foram incluídos 6 ensaios elegíveis, com 1.148 participantes randomizados."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "Os estudos mostraram modulação localizada da microbiota e da imunidade mucosa — como enriquecimento seletivo de Bifidobacterium e Lactobacillus e mudanças modestas no pH fecal e na IgA secretora. No entanto, citocinas sistêmicas, calprotectina fecal, marcadores de permeabilidade, cortisol salivar basal e desfechos de neurodesenvolvimento permaneceram inalterados entre os grupos."
+        },
+        {
+          h: "O que isso não responde",
+          p: "Apenas 6 ensaios foram elegíveis, uma base pequena e heterogênea (populações, tipos de intervenção e tempos de acompanhamento diferentes), sem meta-análise quantitativa agrupada. A revisão também avaliou majoritariamente lactentes saudáveis ou levemente sintomáticos — não respondeu se o efeito seria diferente em populações de maior risco (prematuridade, disbiose documentada, exposição a antibióticos)."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Ao orientar famílias sobre probióticos, prebióticos ou simbióticos para lactentes, não use 'benefício para o eixo intestino-cérebro' ou 'apoio ao neurodesenvolvimento' como justificativa — a evidência atual mostra modulação da microbiota local, mas nenhum sinal consistente de efeito em marcadores neuroimunes sistêmicos ou em desfechos de neurodesenvolvimento nessa faixa etária."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "multivitaminico-mineral-revisao-meta-analises",
+      categoria: "Suplementação",
+      areas: ["Clínica", "Funcional"],
+      data: "25 nov 2025",
+      title: "Revisão rápida de 19 meta-análises sobre multivitamínicos/minerais encontra benefício em cognição e pressão arterial, mas nenhum em mortalidade",
+      resumo: "Revisão rápida reuniu 19 meta-análises (publicadas entre 2000 e 2025) sobre uso de suplementos multivitamínicos/minerais (MVM): em ensaios randomizados, houve melhora de cognição global, memória episódica e lembrança imediata em adultos idosos ou cognitivamente íntegros, redução de sintomas psicológicos em pessoas saudáveis e queda da pressão arterial sistólica em populações de risco — sem benefício para mortalidade por todas as causas, desfechos de covid-19, acuidade visual ou vários outros domínios cognitivos.",
+      mudou: "Em vez de tratar multivitamínico/mineral como 'sem evidência' ou como panaceia, esta revisão rápida de 19 meta-análises mostra um padrão mais específico: benefício real em alguns desfechos (cognição, pressão arterial sistólica, sintomas psicológicos), mas nenhum ganho em mortalidade — o efeito depende claramente de qual desfecho, população e contexto de saúde se está olhando.",
+      aplicar: "Ao conversar sobre suplementação multivitamínica/mineral com pacientes, seja específico sobre o que a evidência sustenta — possível benefício cognitivo em idosos e para pressão arterial sistólica em grupos de risco — e não deixe o paciente esperar impacto em mortalidade ou em saúde geral só com o MVM; a indicação deve seguir sendo individualizada pela necessidade nutricional real.",
+      evidencia: 5,
+      link: "https://pubmed.ncbi.nlm.nih.gov/41308839/",
+      fonte: {
+        autores: "Wang, Wazny, Mahadzir e Maier",
+        revista: "Ageing Research Reviews",
+        ano: "2026",
+        desenho: "Revisão rápida (rapid review) de meta-análises de ensaios randomizados e estudos observacionais",
+        amostra: "19 meta-análises elegíveis, publicadas entre 2000 e 2025",
+        doi: "10.1016/j.arr.2025.102965",
+        pubmed: "41308839",
+        acesso: "Resumo livre; texto completo por assinatura"
+      },
+      leitura: [
+        {
+          h: "A pergunta do estudo",
+          p: "Suplementos multivitamínicos/minerais (MVM) estão entre os mais vendidos no mundo, mas a literatura sobre seus efeitos é fragmentada em dezenas de meta-análises com desfechos muito diferentes. Esta revisão rápida buscou reunir essas meta-análises numa síntese única para mapear em quais desfechos, de fato, há evidência de benefício."
+        },
+        {
+          h: "Como o estudo foi feito",
+          p: "Revisão rápida (rapid review) buscou em MEDLINE e EMBASE meta-análises sobre uso de MVM publicadas entre 2000 e 2025, reunindo 19 meta-análises elegíveis que avaliaram desfechos de ensaios clínicos randomizados e de estudos observacionais, cobrindo cognição, pressão arterial, mortalidade, risco de câncer, doença cardíaca, covid-19, acuidade visual e outros."
+        },
+        {
+          h: "O que foi encontrado",
+          p: "Em ensaios randomizados, o uso de MVM se associou a melhora de cognição global, memória episódica e lembrança imediata em adultos idosos ou cognitivamente íntegros, a redução de sintomas psicológicos em pessoas saudáveis, e a queda da pressão arterial sistólica em populações de risco. Não houve benefício para mortalidade por todas as causas, desfechos de covid-19, acuidade visual ou vários outros domínios cognitivos. Nos estudos observacionais, os achados foram mistos, com associação para alguns tipos de câncer e doença cardíaca, mas não para câncer de mama, próstata, AVC ou mortalidade geral."
+        },
+        {
+          h: "O que isso não responde",
+          p: "A definição de 'MVM' variou muito entre as 19 meta-análises incluídas (composição, dose, população), o que dificulta uma recomendação única. Vale registrar que este estudo foi financiado pela Haleon, fabricante de suplementos, e pela National University of Singapore — uma fonte de financiamento que merece ser considerada ao interpretar conclusões favoráveis ao uso de MVM. Boa parte da evidência observacional também é sujeita a fatores de confusão (quem toma MVM pode ter outros hábitos de saúde diferentes)."
+        },
+        {
+          h: "Na prática do consultório",
+          p: "Use esta revisão para ser específico, não genérico, ao discutir multivitamínico/mineral com pacientes: existe sinal de benefício para cognição em idosos e para pressão arterial sistólica em grupos de risco, mas nenhum para mortalidade ou saúde geral — e, como o estudo tem financiamento de uma fabricante de suplementos, vale ler as conclusões com esse contexto em mente, sem deixar de considerar os achados em si."
+        }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "delish-dieta-mediterranea-perda-peso-ecr",
       categoria: "Obesidade",
       areas: ["Clínica", "Comportamental"],
-      data: "27 jan 2026",
-      title: "Ensaio brasileiro testa abordagem multicomponente (NutrirCom) em mulheres com obesidade: sem diferença extra no peso, mas queda maior de ansiedade",
-      resumo: "Ensaio clínico randomizado de três braços, com 89 mulheres com obesidade da atenção primária em Viçosa (MG), comparou dieta hipocalórica personalizada isolada com duas versões do NutrirCom — abordagem multicomponente que integra estratégias nutricionais, psicoemocionais, comportamentais e sociais: todos os grupos reduziram cintura, glicemia de jejum e gordura corporal e ganharam massa magra, sem diferença significativa entre eles nesses desfechos após ajuste; a ansiedade caiu significativamente apenas nos grupos NutrirCom, não no grupo de dieta isolada.",
-      mudou: "Mostra que uma abordagem multicomponente com foco psicoemocional pode não superar a dieta hipocalórica isolada em peso e metabolismo no curto prazo, mas traz um benefício comportamental que a dieta isolada não trouxe: redução da ansiedade.",
-      aplicar: "Ao tratar mulheres com obesidade, considere incorporar estratégias psicoemocionais e comportamentais (como as do NutrirCom) ao acompanhamento nutricional não pela promessa de emagrecimento adicional, e sim pelo potencial de melhorar bem-estar emocional — um desfecho que, segundo este ensaio, a dieta isolada não entrega.",
+      data: "20 ago 2026",
+      title: "Ensaio DELISH: programa de perda de peso com padrão mediterrâneo adaptado não supera o programa de restrição calórica em peso, mas melhora mais a qualidade da dieta",
+      resumo: "Ensaio clínico randomizado (DELISH) com 360 adultos com obesidade (IMC ≥30) na atenção primária da Carolina do Norte (EUA) comparou um programa de perda de peso baseado em padrão alimentar mediterrâneo adaptado culturalmente com um programa controle focado em restrição calórica: em 24 meses, a variação percentual de peso corporal foi semelhante entre os grupos (-3,40% vs. -3,51%; diferença não significativa), mas o grupo do padrão mediterrâneo teve melhora significativamente maior na qualidade geral da dieta.",
+      mudou: "Mostra que adaptar culturalmente um padrão mediterrâneo para perda de peso não supera a restrição calórica tradicional em peso corporal no longo prazo (24 meses) — mas entrega, com peso semelhante, uma dieta de melhor qualidade geral, o que é um argumento a favor do padrão mediterrâneo que vai além da balança.",
+      aplicar: "Ao escolher entre um programa de restrição calórica tradicional e um programa de padrão mediterrâneo adaptado para perda de peso, não decida só pela expectativa de perda de peso — que tende a ser semelhante no longo prazo — e considere o padrão mediterrâneo quando a prioridade adicional do paciente for melhorar a qualidade geral da alimentação, não apenas o número da balança.",
       evidencia: 4,
-      link: "https://doi.org/10.3390/nu18030414",
+      link: "https://pubmed.ncbi.nlm.nih.gov/42623075/",
       fonte: {
-        autores: "Araújo Gonçalves e cols.",
-        revista: "Nutrients",
+        autores: "Keyserling, Wu, Ammerman e cols.",
+        revista: "JAMA Network Open",
         ano: "2026",
-        desenho: "Ensaio clínico randomizado, paralelo, aberto, de três braços",
-        amostra: "89 mulheres com obesidade, atenção primária em Viçosa (MG), Brasil",
-        doi: "10.3390/nu18030414",
-        pubmed: "41683238",
+        desenho: "Ensaio clínico randomizado (DELISH), seguimento de 24 meses",
+        amostra: "360 adultos com obesidade (IMC ≥30), 18-75 anos, randomizados; 118 avaliados no desfecho de 24 meses",
+        doi: "10.1001/jamanetworkopen.2026.29006",
+        pubmed: "42623075",
         acesso: "Acesso aberto (texto completo livre)"
       },
       leitura: [
         {
           h: "A pergunta do estudo",
-          p: "Estratégias multicomponentes que somam apoio nutricional, psicoemocional, comportamental e social vêm sendo propostas como alternativa mais humanizada à dieta hipocalórica tradicional para obesidade. Este ensaio testou se o NutrirCom — protocolo brasileiro com essas quatro dimensões — supera a dieta hipocalórica personalizada isolada em desfechos antropométricos, metabólicos e psicoemocionais."
+          p: "Programas de perda de peso baseados no padrão mediterrâneo são promovidos como alternativa mais sustentável e culturalmente flexível à restrição calórica tradicional. O ensaio DELISH testou se um programa de padrão mediterrâneo adaptado culturalmente ao sudeste dos EUA produz mais perda de peso e melhor qualidade de dieta do que um programa controle focado apenas em redução calórica, em adultos com obesidade atendidos na atenção primária."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Ensaio clínico randomizado, paralelo e aberto, de três braços, incluiu 89 mulheres com obesidade da atenção primária em Viçosa (MG): um grupo recebeu dieta hipocalórica personalizada (déficit de 500 a 1000 kcal/dia); outro recebeu 10 sessões individuais baseadas no NutrirCom; o terceiro combinou as sessões individuais do NutrirCom com encontros mensais em grupo para suporte social, ao longo de 6 meses."
+          p: "Ensaio clínico randomizado incluiu 360 adultos com obesidade (IMC ≥30), de 18 a 75 anos, recrutados em uma clínica acadêmica e seis clínicas comunitárias de atenção primária na Carolina do Norte central. Um grupo recebeu um programa comportamental de perda de peso baseado em padrão alimentar mediterrâneo adaptado culturalmente; o outro, um programa controle focado em restrição calórica. O desfecho primário foi avaliado em 24 meses de seguimento."
         },
         {
           h: "O que foi encontrado",
-          p: "Após ajuste, não houve diferença significativa entre os três grupos nos desfechos antropométricos e metabólicos — todos reduziram circunferência da cintura, glicemia de jejum e gordura corporal total, e ganharam massa magra. A ansiedade permaneceu inalterada no grupo de dieta isolada, mas caiu significativamente nos dois grupos que receberam o NutrirCom."
+          p: "Em 24 meses, a variação percentual média ajustada do peso corporal foi de -3,40% no grupo do padrão mediterrâneo e -3,51% no grupo controle — uma diferença de -0,11 pontos percentuais, sem significância estatística (IC95% -1,79 a 1,57; p=0,90). O grupo do padrão mediterrâneo teve melhora significativamente maior na qualidade geral da dieta, mesmo com perda de peso semelhante ao grupo controle."
         },
         {
           h: "O que isso não responde",
-          p: "A amostra é pequena (89 mulheres, de um único município) e o estudo é aberto (sem cegamento), o que pode influenciar desfechos autorrelatados como ansiedade. Não fica claro se a diferença na ansiedade se sustenta além dos 6 meses de seguimento, nem se o mesmo padrão se repete em outras populações e contextos de atenção primária."
+          p: "Dos 360 participantes randomizados, apenas 118 tiveram o desfecho avaliado em 24 meses — uma perda de seguimento relevante ao longo dos dois anos de estudo, que pode limitar a generalização dos achados. A elegibilidade também dependeu de triagem e indicação de médicos de atenção primária, o que pode introduzir viés de seleção."
         },
         {
           h: "Na prática do consultório",
-          p: "Ao propor uma abordagem multicomponente como o NutrirCom para mulheres com obesidade, não a venda pela promessa de emagrecimento adicional frente à dieta hipocalórica tradicional — neste estudo, o ganho extra apareceu no bem-estar emocional (queda da ansiedade), não no peso ou nos marcadores metabólicos, o que já é um argumento válido para incluir a dimensão psicoemocional no acompanhamento."
+          p: "Ao propor um programa de padrão mediterrâneo adaptado para perda de peso em pacientes com obesidade, não prometa perda de peso maior do que a de um programa de restrição calórica tradicional — neste ensaio, os resultados de peso foram equivalentes. Use, em vez disso, o argumento da qualidade da dieta: o padrão mediterrâneo entregou uma alimentação de melhor qualidade geral com perda de peso semelhante, o que pode ser um critério de escolha relevante para o paciente."
         }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "mhealth-aplicativos-amamentacao-meta-analise",
+      id: "bep-fortificado-gestacao-bangladesh-ecr",
       categoria: "Materno Infantil",
       areas: ["Saúde da Mulher", "Pediatria"],
-      data: "17 ago 2026",
-      title: "Revisão global com 13 ECRs mostra que aplicativos de mHealth aumentam a autoeficácia em amamentação, mas o efeito sobre exclusividade e duração ainda é incerto",
-      resumo: "Revisão sistemática global com meta-análise de 13 ensaios clínicos randomizados (3.269 gestantes e puérperas, 38,5% em países de baixa e média renda) avaliou aplicativos de mHealth — geralmente combinados a mensagens de texto ou telelactação — para promover amamentação: houve aumento da autoeficácia em amamentação (g de Hedges = 1,08; IC95% 0,07-2,1), mas com heterogeneidade muito alta entre os estudos, e evidência mais fraca para início, exclusividade e duração da amamentação.",
-      mudou: "Reforça que apps de amamentação funcionam melhor para fortalecer confiança e conhecimento materno do que para mudar diretamente taxas de amamentação exclusiva ou sua duração — um resultado mais modesto do que o marketing desses aplicativos costuma sugerir.",
-      aplicar: "Recomende aplicativos de apoio à amamentação como ferramenta para reforçar autoeficácia e conhecimento da mãe, associados a suporte humano (mensagens personalizadas, telelactação) — mas não prometa, só com base no app, aumento de amamentação exclusiva ou maior duração, pois a evidência para esses desfechos ainda é fraca e heterogênea.",
-      evidencia: 5,
-      link: "https://doi.org/10.1111/mcn.70230",
+      data: "01 jun 2026",
+      title: "Ensaio com 3.390 gestantes em Bangladesh: suplemento de energia-proteína balanceada fortificado não reduz restrição de crescimento fetal frente ao suplemento padrão de micronutrientes",
+      resumo: "Ensaio de efetividade com randomização por cluster, em área rural de Bangladesh com alta prevalência de desnutrição materna, comparou suplementação antenatal com energia-proteína balanceada (BEP) fortificada — direcionada ou não por risco nutricional — com o suplemento padrão de múltiplos micronutrientes (MMS) em 3.390 gestantes: nem o BEP não direcionado nem o BEP direcionado diferiram do MMS isolado nos desfechos primários (peso ao nascer, baixo peso ao nascer, pequeno para a idade gestacional).",
+      mudou: "Questiona a expectativa de que fortificar e intensificar a suplementação antenatal com energia e proteína (além dos micronutrientes já padrão) traga, por si só, redução adicional de restrição de crescimento fetal em contextos de alta desnutrição materna — pelo menos nesta população e neste desenho de suplemento, o ganho extra não apareceu frente ao MMS isolado.",
+      aplicar: "Não assuma automaticamente que adicionar suplementação de energia-proteína balanceada ao suplemento padrão de micronutrientes antenatal vai reduzir baixo peso ao nascer ou pequeno-para-idade-gestacional — segundo este ensaio, em população com alta desnutrição materna, isso não se confirmou; mantenha o suplemento padrão de micronutrientes como base e avalie a necessidade de energia/proteína extra caso a caso, não como protocolo padrão.",
+      evidencia: 4,
+      link: "https://pubmed.ncbi.nlm.nih.gov/42349909/",
       fonte: {
-        autores: "Yau e cols.",
-        revista: "Maternal & Child Nutrition",
+        autores: "Christian e cols.",
+        revista: "BMJ Global Health",
         ano: "2026",
-        desenho: "Revisão sistemática global com meta-análise de ensaios clínicos randomizados",
-        amostra: "13 ECRs, 3.269 gestantes/puérperas (38,5% em países de baixa e média renda)",
-        doi: "10.1111/mcn.70230",
-        pubmed: "42607106",
+        desenho: "Ensaio de efetividade com randomização por cluster, 4 braços",
+        amostra: "3.390 gestantes recrutadas; 2.950 mulheres com 2.976 nascidos vivos, 2.674 bebês medidos até 72h de vida, em Bangladesh rural",
+        doi: "10.1136/bmjgh-2026-023766",
+        pubmed: "42349909",
         acesso: "Acesso aberto (texto completo livre)"
       },
       leitura: [
         {
           h: "A pergunta do estudo",
-          p: "Aplicativos de saúde móvel (mHealth) para apoiar a amamentação se popularizaram nos últimos anos, mas faltava uma síntese global e atualizada sobre o que, de fato, eles conseguem melhorar: conhecimento e confiança da mãe, ou desfechos mais concretos como início, exclusividade e duração da amamentação."
+          p: "Em contextos de alta prevalência de desnutrição materna, suplementos antenatais de energia-proteína balanceada (BEP) são propostos como complemento à suplementação padrão de múltiplos micronutrientes (MMS), na expectativa de reduzir restrição de crescimento fetal e baixo peso ao nascer. Este ensaio testou se um BEP fortificado — oferecido a todas as gestantes ou direcionado por risco nutricional — reduz esses desfechos frente ao MMS isolado."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Revisão sistemática global com meta-análise identificou, entre 3.102 registros triados, 13 ensaios clínicos randomizados (3.269 gestantes e puérperas, 38,5% delas em países de baixa e média renda) testando aplicativos de mHealth — geralmente combinados a mensagens de texto ou telelactação — com duração de 6 semanas a 12 meses. Os desfechos incluíram amamentação exclusiva até 6 meses e em outros momentos, duração total da amamentação e autoeficácia materna."
+          p: "Ensaio de efetividade com randomização por cluster (por setor), em área rural de Bangladesh, teve 4 braços: MMS isolado (controle), BEP fortificado oferecido a todas as gestantes, BEP direcionado por IMC pré-gestacional baixo, e BEP direcionado por IMC baixo combinado a ganho de peso gestacional inadequado. Foram recrutadas 3.390 gestantes, com 2.950 mulheres e 2.976 nascidos vivos incluídos na análise, e 2.674 bebês com medidas antropométricas colhidas até 72 horas de vida."
         },
         {
           h: "O que foi encontrado",
-          p: "A meta-análise mostrou aumento da autoeficácia em amamentação com os aplicativos (g de Hedges = 1,08; IC95% 0,07-2,1; p=0,04), mas com heterogeneidade muito alta entre os estudos (I²=90,7%). A síntese qualitativa apontou benefício mais consistente para autoeficácia, conhecimento e confiança materna, e evidência mais fraca para início, exclusividade e duração da amamentação. Intervenções com suporte interativo ou personalizado tiveram os melhores resultados gerais."
+          p: "No grupo controle (MMS isolado), o peso médio ao nascer foi 2.763 g, com 41,4% dos bebês pequenos para a idade gestacional e 23,4% com baixo peso ao nascer — refletindo a alta carga de desnutrição da população estudada. Nem o BEP não direcionado nem o BEP direcionado (isoladamente ou combinado a ganho de peso gestacional inadequado) diferiram do MMS isolado nos desfechos primários (peso ao nascer, baixo peso ao nascer, pequeno para idade gestacional) nem nos secundários. Houve sinais exploratórios de subgrupo — como possível maior benefício em mulheres com anemia —, mas os próprios autores tratam esses achados como hipótese-geradores, não confirmatórios."
         },
         {
           h: "O que isso não responde",
-          p: "A heterogeneidade muito alta entre os 13 estudos (populações, tipos de app, contextos socioculturais diferentes) limita a confiança no tamanho exato do efeito sobre autoeficácia, e a evidência para desfechos mais 'duros' — exclusividade e duração da amamentação — ainda não é forte o suficiente para afirmar que o app, isoladamente, muda esses resultados. Fatores maternos, socioculturais e estruturais também afetam o engajamento com o aplicativo."
+          p: "Os achados de subgrupo (por exemplo, em mulheres com anemia) são exploratórios e não devem ser lidos como confirmação de benefício nesses subgrupos — os próprios autores pedem cautela. O estudo também é específico de uma população rural de Bangladesh com perfil nutricional particular, o que limita a extrapolação direta para outros contextos de desnutrição materna."
         },
         {
           h: "Na prática do consultório",
-          p: "Recomende aplicativos de apoio à amamentação como ferramenta complementar para fortalecer confiança e conhecimento da mãe — de preferência os que oferecem suporte interativo ou personalizado (mensagens, telelactação) — mas não prometa, só com base no app, aumento de amamentação exclusiva ou maior duração: para esses desfechos, mantenha o acompanhamento humano como parte central do plano."
+          p: "Em contextos de alta desnutrição materna, mantenha a suplementação padrão de múltiplos micronutrientes como base do cuidado antenatal, e não assuma que adicionar um suplemento fortificado de energia-proteína vai, por si só, reduzir baixo peso ao nascer ou restrição de crescimento fetal — segundo este ensaio de grande porte, esse ganho extra não se confirmou. A decisão de complementar com energia/proteína extra deve seguir sendo individualizada, não um protocolo padrão para toda gestante desnutrida."
         }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "educacao-nutricional-dialise-desfechos",
+      id: "angulo-fase-sobrevida-hemodialise",
       categoria: "Clínica",
       areas: ["Renal", "Clínica"],
-      data: "22 abr 2026",
-      title: "Maior revisão já feita sobre educação nutricional em diálise confirma ganho de conhecimento e qualidade de vida, com redução modesta de fósforo e potássio",
-      resumo: "Revisão sistemática com meta-análise de 44 estudos (4.106 participantes, combinando ensaios randomizados e não randomizados) avaliou intervenções de educação nutricional em pacientes em diálise: houve melhora consistente do conhecimento e da qualidade de vida relacionada à saúde, com redução modesta de fósforo e potássio séricos frente aos grupos controle.",
-      mudou: "É a maior síntese já publicada sobre educação nutricional em diálise — reforça que orientar sistematicamente o paciente (não só prescrever a dieta) traz ganho mensurável de conhecimento e qualidade de vida, além de um efeito modesto sobre marcadores bioquímicos.",
-      aplicar: "Estruture a educação nutricional em diálise como intervenção formal e repetida (não uma conversa única), já que o ganho mais consistente foi em conhecimento e qualidade de vida — trate a redução de fósforo e potássio como benefício adicional possível, não como resultado garantido.",
-      evidencia: 4,
-      link: "https://doi.org/10.1080/07853890.2026.2660389",
+      data: "01 mai 2026",
+      title: "Ângulo de fase por bioimpedância prediz sobrevida em 5 anos de pacientes em hemodiálise, com ponto de corte de 4°",
+      resumo: "Estudo observacional retrospectivo com 140 pacientes em hemodiálise avaliou o ângulo de fase (marcador de bioimpedância elétrica ligado ao estado nutricional e à integridade celular) como preditor de sobrevida em 5 anos: pacientes sobreviventes tiveram ângulo de fase médio maior (4,55° vs. 3,97°), com ponto de corte ideal de 4° (AUC 0,686) separando melhor e piores prognósticos; a sobrevida global em 1, 3 e 5 anos foi de 88%, 66% e 57%.",
+      mudou: "Reforça o ângulo de fase como ferramenta prática e de baixo custo (obtida por bioimpedância) para estratificar risco nutricional e prognóstico em hemodiálise, com um ponto de corte específico (4°) que pode orientar decisões clínicas — mas o poder discriminativo (AUC de 0,686) é apenas moderado, não altíssimo.",
+      aplicar: "Incorpore a medida do ângulo de fase por bioimpedância na avaliação nutricional de rotina de pacientes em hemodiálise, usando o ponto de corte de 4° como um sinal de alerta adicional para maior risco de mortalidade em 5 anos — mas use-o como mais uma peça do quadro nutricional, não como teste isolado e definitivo, já que seu poder discriminativo é moderado.",
+      evidencia: 3,
+      link: "https://pubmed.ncbi.nlm.nih.gov/42269447/",
       fonte: {
-        autores: "Sarmadi e cols.",
-        revista: "Annals of Medicine",
+        autores: "Ruperto, Giorgi, Quiroga, Sánchez-Horrillo e Bajo",
+        revista: "Nutrition",
         ano: "2026",
-        desenho: "Revisão sistemática com meta-análise de estudos randomizados e não randomizados (certeza avaliada pelo GRADE)",
-        amostra: "44 estudos (randomizados e não randomizados), 4.106 participantes adultos em diálise",
-        doi: "10.1080/07853890.2026.2660389",
-        pubmed: "42015790",
-        acesso: "Acesso aberto (texto completo livre)"
+        desenho: "Estudo observacional retrospectivo, com análise de sobrevida (Kaplan-Meier e regressão de Cox)",
+        amostra: "140 pacientes em hemodiálise, idade mediana de 74 anos, 46,5% homens",
+        doi: "10.1016/j.nut.2026.113271",
+        pubmed: "42269447",
+        acesso: "Resumo livre; texto completo por assinatura"
       },
       leitura: [
         {
           h: "Por que este estudo importa",
-          p: "Pacientes em diálise recebem, com frequência, uma lista de restrições alimentares sem muito investimento em explicar o porquê. Esta é a maior síntese já publicada sobre o efeito de programas estruturados de educação nutricional — e não apenas prescrição de dieta — nos desfechos desses pacientes."
+          p: "O ângulo de fase, obtido por bioimpedância elétrica, é um marcador de integridade de membrana celular e estado nutricional/muscular cada vez mais usado em nefrologia. Este estudo testou formalmente sua capacidade de prever sobrevida em 5 anos em pacientes em hemodiálise, buscando um ponto de corte prático para uso clínico."
         },
         {
           h: "Como o estudo foi feito",
-          p: "Revisão sistemática com meta-análise buscou em sete bases (incluindo MEDLINE, Embase e CENTRAL) até abril de 2026 por estudos randomizados e não randomizados que avaliassem intervenções de educação nutricional em adultos em diálise, totalizando 44 estudos e 4.106 participantes. Risco de viés foi avaliado por RoB-2 (randomizados) e ROBINS-I (não randomizados), com certeza da evidência graduada pelo GRADE e meta-análises de efeitos aleatórios."
+          p: "Estudo observacional retrospectivo incluiu 140 pacientes em hemodiálise (idade mediana de 74 anos, 46,5% homens), com medida do ângulo de fase e do ângulo de fase padronizado por bioimpedância, seguidos para avaliação de sobrevida em 1, 3 e 5 anos por curvas de Kaplan-Meier e regressão de Cox."
         },
         {
           h: "O que foi encontrado",
-          p: "A educação nutricional melhorou de forma consistente o conhecimento dos pacientes sobre a própria dieta e a qualidade de vida relacionada à saúde, além de reduzir modestamente os níveis séricos de fósforo e potássio frente aos grupos controle."
+          p: "O ângulo de fase médio foi maior entre os sobreviventes (4,55° ± 0,93) do que entre os não sobreviventes (3,97° ± 0,99). O ponto de corte ideal identificado foi de 4°, com área sob a curva (AUC) de 0,686; para o ângulo de fase padronizado, o corte foi de -1,89, com AUC de 0,654. A sobrevida global foi de 88% em 1 ano, 66% em 3 anos e 57% em 5 anos."
         },
         {
           h: "O que isso não responde",
-          p: "A revisão mistura estudos randomizados e não randomizados, o que reduz a certeza geral da evidência mesmo com o uso do GRADE; a intensidade, o formato e a duração dos programas de educação variaram muito entre os 44 estudos, o que dificulta apontar 'qual formato funciona melhor'. Também não fica claro se o efeito sobre fósforo e potássio se mantém a longo prazo."
+          p: "A amostra é pequena (140 pacientes) e de um único centro, o que limita a generalização do ponto de corte encontrado. As áreas sob a curva (0,654-0,686) indicam poder discriminativo apenas moderado — o ângulo de fase ajuda a estratificar risco, mas não é, isoladamente, um preditor forte de sobrevida. Por ser observacional, o estudo também não testa se intervir sobre o estado nutricional (e, consequentemente, sobre o ângulo de fase) muda a sobrevida."
         },
         {
           h: "Na prática do consultório",
-          p: "Estruture a educação nutricional em diálise como uma intervenção formal e repetida — não uma orientação única no início do tratamento — já que o ganho mais consistente mostrado aqui foi em conhecimento e qualidade de vida; trate a redução de fósforo e potássio como um benefício adicional possível, não como resultado garantido só com educação."
+          p: "Use o ângulo de fase por bioimpedância como mais um dado na avaliação nutricional de pacientes em hemodiálise — um valor abaixo de 4° pode servir de alerta adicional para maior risco de mortalidade em 5 anos — mas combine sempre com outros marcadores nutricionais e clínicos, já que seu poder discriminativo isolado é moderado, não altíssimo."
         }
       ]
     }
