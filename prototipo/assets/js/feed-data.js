@@ -19,7 +19,7 @@ window.FEED_DATA = {
   semana: {
     eyebrow: "Atualização da Semana",
     title: "9 estudos reais para atualizar sua conduta nesta semana",
-    texto: "Uma meta-análise atualizada de 11 ECRs confirma que a dieta mediterrânea reduz de forma discreta, porém real, a HbA1c e a glicemia de jejum no diabetes tipo 2, uma meta-análise de 78 estudos associa nutracêuticos como vitamina D, inositol e quercetina a melhora de marcadores metabólicos e hormonais na síndrome dos ovários policísticos, uma rede de meta-análise com 35 ECRs mostra que proteína, creatina e beta-alanina têm efeitos distintos sobre força, salto e velocidade de sprint em atletas — mas nenhum aumenta massa muscular —, um ensaio cruzado mostra que a textura dos alimentos ultraprocessados que reduz a velocidade de mastigação diminui a ingestão calórica em cerca de 369 kcal/dia por duas semanas, sem alterar o peso corporal nesse período curto, uma meta-análise de 9 ECRs mostra que a dieta mediterrânea melhora HbA1c, LDL e triglicerídeos em adultos de risco cardiometabólico, com mudanças na microbiota sintetizadas apenas de forma descritiva, uma revisão sistemática de ECRs não encontra efeito anti-inflamatório consistente da creatina sobre PCR ou IL-6, o seguimento de 12 meses de um ECR espanhol mostra que o horário da janela alimentar no jejum intermitente (manhã ou tarde) ajuda a manter a perda de peso após o fim do programa, uma meta-análise de 19 ECRs mostra que a suplementação pré-natal com múltiplos micronutrientes melhora o tamanho ao nascer e o crescimento até os 6 meses frente a ferro e ácido fólico isolados, e uma coorte israelense de 15 anos associa ingestão proteica abaixo de 1,0 g/kg/dia a menor risco de iniciar diálise em doença renal crônica não dialítica, sem sinal de piora nutricional. Cada card abre a leitura completa com o link do estudo original."
+    texto: "Um ensaio clínico randomizado de 2 anos (eBioMedicine) mostra que a suplementação de DHA em alta dose chega ao cérebro de idosos de risco para Alzheimer, mas não melhora memória nem retarda a atrofia do hipocampo. Um ECR multicêntrico australiano (Kidney360, estudo TeleKinesis) mostra que acrescentar um aplicativo de orientação nutricional ao cuidado padrão não reduz o fósforo sérico de forma significativa em pacientes em diálise aos 3 meses, ainda que haja um sinal de melhora sustentada aos 6 meses. Uma meta-análise de 9 estudos (Clinical Endocrinology) mostra que a resposta bioquímica ao inositol na síndrome dos ovários policísticos depende do fenótipo metabólico da paciente, sendo mais consistente em mulheres com peso normal. Uma meta-análise de 23 ECRs (Frontiers in Nutrition) mostra que a suplementação de proteína combinada ao treino de força aumenta o ganho de força em adultos jovens, mas o tamanho do benefício depende da duração do programa e do momento da ingestão. Um ensaio piloto cruzado da UCSF (JAMA Psychiatry) com 20 adultos com depressão sugere que reduzir ultraprocessados por 4 semanas pode melhorar sintomas depressivos, com os próprios autores classificando o achado como exploratório. Uma prova de conceito com 8 adultos (Frontiers in Nutrition) testa se escolher o tipo de fibra pela capacidade fermentativa individual do microbioma aumenta a produção de ácidos graxos de cadeia curta, com resultado positivo em apenas parte dos participantes. Um ECR de 12 semanas (Journal of the International Society of Sports Nutrition) mostra que a creatina aumenta massa magra e força em adultos de 45-65 anos mesmo sem programa estruturado de exercício, com ganhos maiores quando combinada a treino e dieta. O ensaio SWITCH, de 2 anos (British Journal of Nutrition), mostra que bebidas dietéticas adoçadas artificialmente têm efeito equivalente à água sobre a perda de peso dentro de um programa comportamental estruturado. E um ECR com 98 gestantes de risco (Frontiers in Endocrinology) mostra que a suplementação de fibra solúvel não reduziu a incidência de diabetes gestacional, mas melhorou picos de glicose e o ganho de peso gestacional. Cada card abre a leitura completa com o link do estudo original."
   },
 
   /* Categorias (chips do feed) */
@@ -32,274 +32,273 @@ window.FEED_DATA = {
   cards: [
     /* ------------------------------------------------------------------ */
     {
-      id: "dieta-mediterranea-diabetes-tipo2-meta-analise",
+      id: "dha-omega3-alzheimer-prevencao-ecr",
       categoria: "Clínica",
-      areas: ["Clínica", "Diabetes"],
-      data: "13 dez 2025",
-      title: "Meta-análise atualizada de 11 ECRs confirma melhora discreta, porém real, do controle glicêmico com a dieta mediterrânea no diabetes tipo 2",
-      resumo: "Revisão sistemática com meta-análise de 11 ensaios clínicos randomizados (10 publicações) comparou a dieta mediterrânea a dietas-controle em adultos com diabetes tipo 2: o grupo em padrão mediterrâneo teve redução adicional média de HbA1c de -0,307 pontos percentuais (IC95% -0,451 a -0,163) e de glicemia de jejum de -0,845 mmol/L (IC95% -1,307 a -0,384) em relação ao controle.",
-      mudou: "Atualiza, com busca estendida até agosto de 2025, uma síntese de ECRs sobre dieta mediterrânea em diabetes tipo 2 que não era revisada de forma abrangente desde 2015, confirmando um efeito glicêmico real — ainda que modesto — somado aos já conhecidos benefícios sobre peso e perfil lipídico.",
-      aplicar: "Use esse dado para reforçar, com respaldo atualizado, a indicação da dieta mediterrânea como estratégia alimentar de primeira linha no diabetes tipo 2 — mas seja honesto com o paciente de que o efeito isolado sobre a HbA1c é pequeno e funciona melhor somado a manejo de peso, atividade física e adesão ao tratamento medicamentoso, não como substituto deles.",
-      evidencia: 5,
-      link: "https://www.mdpi.com/2072-6643/17/24/3908",
-      fonte: {
-        autores: "Wu, Hung, Yong, Ching e Hsu",
-        revista: "Nutrients",
-        ano: "2025",
-        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados (dieta mediterrânea vs. dietas-controle), seguindo PRISMA 2020",
-        amostra: "11 ECRs (10 publicações) em adultos com diabetes tipo 2, com busca em PubMed, Web of Science e Embase desde a criação das bases até 17 ago 2025",
-        doi: "10.3390/nu17243908",
-        acesso: "Acesso aberto (texto completo livre)"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "A última meta-análise abrangente de ensaios clínicos randomizados sobre dieta mediterrânea e controle glicêmico/IMC em diabetes tipo 2 datava de 2015. Os autores buscaram uma síntese atualizada, incorporando a década de novos ensaios publicados desde então, para reavaliar o tamanho real do efeito glicêmico, do IMC, do perfil lipídico e da pressão arterial." },
-        { h: "Como o estudo foi feito", p: "Revisão sistemática com meta-análise reuniu 11 ensaios clínicos randomizados (10 publicações) que compararam a dieta mediterrânea a dietas-controle em adultos com diabetes tipo 2, com busca em PubMed, Web of Science e Embase desde a criação das bases até 17 de agosto de 2025, seguindo as diretrizes PRISMA 2020." },
-        { h: "O que foi encontrado", p: "O grupo em dieta mediterrânea apresentou redução média adicional de HbA1c de -0,307 pontos percentuais (IC95% -0,451 a -0,163) e de glicemia de jejum de -0,845 mmol/L (IC95% -1,307 a -0,384) em relação ao grupo-controle. IMC, perfil lipídico e pressão arterial também foram avaliados como desfechos secundários da revisão." },
-        { h: "O que isso não responde", p: "Os resumos consultados não detalham o número exato de participantes incluídos na análise final, nem a duração média das intervenções, o que dificulta avaliar a consistência dos achados entre estudos. A magnitude do efeito sobre HbA1c, embora estatisticamente significativa, é pequena e pode ter relevância clínica limitada quando usada isoladamente." },
-        { h: "Na prática do consultório", p: "Mantenha a dieta mediterrânea (azeite de oliva, hortaliças, leguminosas, grãos integrais, peixes, redução de carnes processadas e ultraprocessados) como base da orientação alimentar no diabetes tipo 2, explicando ao paciente que o impacto sobre a HbA1c é real, porém discreto — o resultado melhora quando combinado a manejo de peso, atividade física regular e adesão ao tratamento medicamentoso." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "nutraceuticos-sop-saude-reprodutiva-meta-analise",
-      categoria: "Saúde da Mulher",
-      areas: ["Saúde da Mulher", "SOP"],
-      data: "24 nov 2025",
-      title: "Meta-análise de 78 estudos associa nutracêuticos (vitamina D, inositol, quercetina) a melhora de marcadores metabólicos e hormonais na síndrome dos ovários policísticos",
-      resumo: "Revisão sistemática com meta-análise de 78 estudos (ensaios clínicos randomizados e quase-experimentais, 2013-2024) avaliou o efeito de nutracêuticos — entre eles vitamina D, inositol e quercetina — sobre desfechos reprodutivos e metabólicos em mulheres com síndrome dos ovários policísticos (SOP), encontrando redução da insulina de jejum (DM -2,14 μUI/mL) e do LH (DM -1,34 mUI/mL), além de aumento da SHBG (DM +3,72 nmol/L), com a vitamina D mostrando os efeitos mais consistentes.",
-      mudou: "Amplia a evidência de que certos nutracêuticos vão além do efeito metabólico já conhecido sobre resistência à insulina, parecendo também modular marcadores hormonais associados à SOP (LH, SHBG) — mas os resultados sobre contagem de folículos ovarianos e sangramento menstrual permaneceram inconsistentes entre os estudos.",
-      aplicar: "Considere a avaliação e correção do status de vitamina D como parte do manejo nutricional de pacientes com SOP, e discuta o inositol como opção adjuvante quando pertinente — com a ressalva de que a revisão mistura ensaios randomizados e estudos quase-experimentais (maior heterogeneidade) e que o efeito sobre desfechos menstruais não foi consistente, então o nutracêutico deve complementar, nunca substituir, mudança alimentar, manejo de peso quando indicado e acompanhamento médico/ginecológico.",
+      areas: ["Clínica", "Envelhecimento"],
+      data: "19 jun 2026",
+      title: "ECR de 2 anos: suplementação de DHA em alta dose chega ao cérebro de idosos de risco para Alzheimer, mas não melhora memória nem retarda a atrofia do hipocampo",
+      resumo: "Ensaio clínico randomizado, duplo-cego e controlado por placebo com 365 adultos de 55-80 anos que raramente consumiam peixe (quase metade portadora do alelo APOE4) testou 2.000 mg/dia de DHA por 2 anos: o DHA elevou os níveis de ômega-3 no cérebro, mas não produziu melhora de memória, de desempenho cognitivo nem proteção contra a atrofia do hipocampo em relação ao placebo.",
+      mudou: "Contesta, com um ECR de 2 anos e amostra relevante, a expectativa de que suplementos de óleo de peixe protegeriam o cérebro contra o declínio cognitivo e o Alzheimer — mesmo demonstrando que o DHA de fato chega ao tecido cerebral, não houve benefício clínico mensurável.",
+      aplicar: "Ao conversar com pacientes (especialmente idosos preocupados com risco de Alzheimer) que suplementam óleo de peixe esperando proteção cognitiva, explique que este ECR não sustenta esse benefício isolado — reforce a obtenção de ômega-3 por padrão alimentar (peixes, fontes vegetais) como parte de uma dieta de proteção cardiovascular geral, sem prometer efeito específico sobre memória ou progressão do Alzheimer com a suplementação isolada.",
       evidencia: 4,
-      link: "https://doi.org/10.1111/dom.70307",
+      link: "https://doi.org/10.1016/j.ebiom.2026.106316",
       fonte: {
-        autores: "Çelik e cols.",
-        revista: "Diabetes, Obesity and Metabolism",
+        autores: "Yassine e cols. (Keck School of Medicine, University of Southern California)",
+        revista: "eBioMedicine",
         ano: "2026",
-        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados e estudos quase-experimentais, registrada no PROSPERO (CRD42024521879), seguindo PRISMA 2020",
-        amostra: "78 estudos elegíveis em mulheres com SOP, com buscas em PubMed, Embase, Cochrane Library, Web of Science e bases regionais, de janeiro/2013 a dezembro/2024, avaliando nutracêuticos como vitamina D, inositol e quercetina",
-        doi: "10.1111/dom.70307",
-        acesso: "Resumo livre; texto completo por assinatura"
+        desenho: "Ensaio clínico randomizado, duplo-cego, controlado por placebo",
+        amostra: "365 adultos de 55-80 anos que raramente consumiam peixe, cerca de 47% portadores do alelo APOE4; suplementação de 2.000 mg/dia de DHA por 2 anos",
+        doi: "10.1016/j.ebiom.2026.106316",
+        acesso: "Resumo e cobertura especializada consultados; verificar acesso ao texto completo no site da revista"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "A síndrome dos ovários policísticos (SOP) é frequentemente abordada com intervenções nutricionais e nutracêuticos, mas faltava uma síntese abrangente do efeito específico desses suplementos — como vitamina D, inositol e quercetina — sobre desfechos reprodutivos e metabólicos, e não apenas sobre resistência à insulina isoladamente." },
-        { h: "Como o estudo foi feito", p: "Revisão sistemática com meta-análise, registrada a priori no PROSPERO e seguindo PRISMA 2020, buscou em PubMed, Embase, Cochrane Library, Web of Science e bases regionais estudos (ensaios clínicos randomizados e quase-experimentais) publicados entre janeiro de 2013 e dezembro de 2024 que testaram nutracêuticos em mulheres com SOP, reunindo 78 estudos elegíveis." },
-        { h: "O que foi encontrado", p: "A suplementação com nutracêuticos associou-se a redução da insulina de jejum (DM -2,14 μUI/mL) e do LH (DM -1,34 mUI/mL), além de aumento da SHBG (DM +3,72 nmol/L). Entre os nutracêuticos avaliados, a vitamina D apresentou os efeitos metabólicos e hormonais mais robustos; já os resultados sobre contagem de folículos ovarianos e sangramento menstrual foram inconsistentes entre os estudos incluídos." },
-        { h: "O que isso não responde", p: "A revisão mistura ensaios clínicos randomizados com estudos quase-experimentais, o que aumenta a heterogeneidade metodológica e reduz a certeza da evidência agrupada. Os resumos consultados também não trazem de forma conclusiva o efeito sobre testosterona/hirsutismo, nem especificam dose e duração ideais para cada nutracêutico avaliado." },
-        { h: "Na prática do consultório", p: "Avalie e corrija a deficiência de vitamina D em pacientes com SOP como parte do manejo nutricional, e considere o inositol como adjuvante quando indicado — mas comunique que a evidência agrupada envolve estudos heterogêneos, que o efeito sobre desfechos menstruais ainda é incerto, e que os nutracêuticos complementam, não substituem, a mudança de hábitos alimentares e o acompanhamento médico/ginecológico contínuo." }
+        { h: "A pergunta do estudo", p: "Milhões de pessoas tomam óleo de peixe esperando proteção cerebral, e estudos observacionais já associaram maior consumo de ômega-3 a menor risco de declínio cognitivo. Faltava um ensaio randomizado de longo prazo, em população de risco (idosos que comem pouco peixe, muitos portadores do APOE4), testando se a suplementação isolada de DHA realmente protege memória e estrutura cerebral." },
+        { h: "Como o estudo foi feito", p: "365 adultos de 55 a 80 anos, que raramente consumiam peixe e tinham risco aumentado de Alzheimer (quase metade com o alelo APOE4), foram randomizados para receber 2.000 mg/dia de DHA ou placebo por 2 anos, em desenho duplo-cego. Os pesquisadores mediram a concentração de ômega-3 no sistema nervoso central, o desempenho em testes cognitivos e o volume do hipocampo por imagem." },
+        { h: "O que foi encontrado", p: "O DHA elevou de fato os níveis de ômega-3 no cérebro, confirmando que o suplemento atingiu o tecido-alvo. Apesar disso, não houve diferença significativa entre os grupos em memória, outras habilidades cognitivas ou na perda de volume do hipocampo (a região-chave de memória afetada no Alzheimer) ao final dos 2 anos." },
+        { h: "O que isso não responde", p: "O estudo não avalia se uma intervenção dietética mais ampla (padrão alimentar rico em peixe, azeite, oleaginosas) teria efeito diferente de um suplemento isolado, nem testa populações com consumo basal de peixe já adequado. Também não exclui benefício em prazos ainda mais longos ou em subgrupos específicos não detalhados nos resumos consultados." },
+        { h: "Na prática do consultório", p: "Ao atender pacientes que já tomam ou perguntam sobre óleo de peixe para 'proteger o cérebro', explique que este ECR robusto não encontrou esse benefício isolado — e direcione a conversa para o padrão alimentar global (peixes, azeite, hortaliças, oleaginosas) como estratégia de proteção cardiovascular e metabólica, sem prometer efeito específico sobre memória ou Alzheimer a partir da suplementação isolada de DHA." }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "proteina-creatina-beta-alanina-forca-salto-sprint-atletas",
-      categoria: "Esportiva",
-      areas: ["Esportiva", "Suplementação"],
-      data: "09 jul 2025",
-      title: "Rede de meta-análise com 35 ECRs mostra que proteína, creatina e beta-alanina têm efeitos distintos sobre força, salto e velocidade — mas nenhum aumenta massa muscular",
-      resumo: "Revisão sistemática com meta-análise em rede de 35 ensaios clínicos randomizados (991 atletas) avaliou suplementos (proteína, creatina, beta-alanina, HMB, vitamina D, cafeína, entre outros) combinados a treinamento de condicionamento: a proteína teve o maior efeito sobre força (SMD 0,64, certeza muito baixa), a beta-alanina liderou no desempenho de salto (SMD 0,41) e a creatina reduziu o tempo de sprint (SMD -0,42, SUCRA 94,57%) — nenhum suplemento aumentou significativamente a massa muscular magra.",
-      mudou: "Mostra que, numa mesma rede estatística com múltiplos suplementos comparados entre si, o 'melhor' suplemento depende do desfecho de desempenho perseguido (força, salto ou velocidade) — e que, mesmo assim, nenhum deles se mostrou eficaz para aumentar massa muscular, contrariando uma expectativa comum sobre suplementação esportiva.",
-      aplicar: "Oriente a escolha do suplemento pelo objetivo de desempenho do atleta (proteína para força, beta-alanina e creatina para salto, creatina para velocidade de sprint), mas não prometa ganho de massa muscular com base nesses suplementos isoladamente — e lembre que a certeza da evidência variou de muito baixa a moderada entre os desfechos, com risco de viés em quase 90% dos estudos incluídos, então trate o ranqueamento como orientador, não definitivo.",
-      evidencia: 5,
-      link: "https://www.frontiersin.org/articles/10.3389/fnut.2025.1636970/full",
-      fonte: {
-        autores: "Deng e cols.",
-        revista: "Frontiers in Nutrition",
-        ano: "2025",
-        desenho: "Revisão sistemática com meta-análise em rede (network meta-analysis) de ensaios clínicos randomizados",
-        amostra: "35 ECRs, 991 atletas, comparando múltiplos suplementos (proteína, creatina, beta-alanina, HMB, vitamina D, cafeína, entre outros) combinados a treinamento de condicionamento",
-        doi: "10.3389/fnut.2025.1636970",
-        acesso: "Acesso aberto (texto completo livre)"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "Diferentes suplementos esportivos (proteína, creatina, beta-alanina, HMB, vitamina D, cafeína, entre outros) raramente foram comparados entre si, dentro do mesmo modelo estatístico, quanto ao efeito sobre força, salto, velocidade de sprint e massa muscular em atletas. Esta revisão buscou colocar os principais suplementos lado a lado para identificar qual se destaca em cada desfecho de desempenho." },
-        { h: "Como o estudo foi feito", p: "Revisão sistemática com meta-análise em rede reuniu 35 ensaios clínicos randomizados (991 atletas) que testaram suplementos combinados a treinamento de condicionamento, avaliando força muscular, desempenho de salto, velocidade de sprint e massa muscular, com ranqueamento dos suplementos pelo método SUCRA." },
-        { h: "O que foi encontrado", p: "A proteína teve o maior efeito sobre força muscular (SMD 0,64), mas com certeza de evidência muito baixa. No desempenho de salto, a beta-alanina liderou (SMD 0,41) e a creatina também ajudou (SMD 0,30), ambos com certeza moderada. Para velocidade de sprint, a creatina reduziu o tempo (SMD -0,42, SUCRA 94,57%), também com certeza moderada. Nenhum suplemento aumentou de forma significativa a massa muscular magra." },
-        { h: "O que isso não responde", p: "Cerca de 89% dos estudos incluídos tinham algum grau de preocupação ou alto risco de viés, o que reduz a confiança nos resultados — especialmente no achado de força, classificado como de certeza muito baixa. Por ser uma rede de meta-análise, boa parte das comparações entre suplementos é indireta, e o estudo não testa o efeito de combinar suplementos entre si." },
-        { h: "Na prática do consultório", p: "Use esta hierarquia por desfecho para orientar a escolha do suplemento conforme a prioridade do atleta — proteína quando o foco é força, beta-alanina e creatina para salto, creatina para velocidade de sprint —, mas não venda nenhum desses suplementos como estratégia para ganho de massa muscular isoladamente, e comunique ao atleta que boa parte da evidência, sobretudo para força, ainda é de certeza baixa a muito baixa." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "velocidade-mastigacao-textura-ultraprocessados-ingestao-calorica",
-      categoria: "Comportamental",
-      areas: ["Comportamental", "Comportamento Alimentar"],
-      data: "01 abr 2026",
-      title: "Textura dos alimentos ultraprocessados que reduz a velocidade de mastigação diminui a ingestão calórica por 2 semanas, sem alterar o peso corporal nesse período",
-      resumo: "Ensaio clínico randomizado cruzado (crossover) com 41 adultos comparou 14 dias de dieta de textura 'rápida' a 14 dias de dieta de textura 'lenta', ambas compostas por mais de 90% de alimentos ultraprocessados e equivalentes em densidade energética e porções oferecidas: a dieta de textura que reduziu a velocidade de mastigação levou a uma ingestão calórica média cerca de 369 kcal/dia menor, efeito que se manteve estável ao longo das duas semanas, sem diferença de peso corporal entre as duas dietas nesse período curto.",
-      mudou: "Mostra que a textura do alimento — e não apenas sua classificação como ultraprocessado — modula de forma sustentada a ingestão calórica espontânea, sugerindo que a velocidade de mastigação é um mecanismo comportamental independente, manipulável mesmo dentro de uma dieta rica em ultraprocessados.",
-      aplicar: "Como estratégia comportamental complementar (nunca substituta à redução de ultraprocessados), pode-se sugerir trocar por versões mais firmes/consistentes dos alimentos que o paciente já consome, o que tende a reduzir naturalmente a velocidade de mastigação e o volume ingerido; cautela: é um único ECR, com amostra pequena (n=41) e curta duração (2 semanas, sem mudança detectável no peso corporal), então não prometa efeito sobre a balança com base só nisso.",
-      evidencia: 4,
-      link: "https://pubmed.ncbi.nlm.nih.gov/41314613/",
-      fonte: {
-        autores: "Forde e cols.",
-        revista: "The American Journal of Clinical Nutrition (AJCN)",
-        ano: "2026",
-        desenho: "Ensaio clínico randomizado cruzado (crossover), com alimentação ad libitum controlada ao longo de 2 dietas de 14 dias",
-        amostra: "41 adultos; duas dietas de 14 dias cada (textura associada a ingestão rápida vs. lenta, ambas com mais de 90% da energia proveniente de alimentos ultraprocessados)",
-        pubmed: "41314613",
-        acesso: "Resumo livre; texto completo por assinatura"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "Estudos anteriores já mostravam que comer mais rápido aumenta a ingestão calórica em uma única refeição. Faltava saber se esse efeito se mantém por semanas, dentro de uma dieta baseada majoritariamente em ultraprocessados, ou se o corpo 'se adapta' e o efeito desaparece." },
-        { h: "Como o estudo foi feito", p: "41 adultos receberam, em ordem cruzada, duas dietas de 14 dias compostas por mais de 90% de alimentos ultraprocessados, equivalentes em densidade energética e porções oferecidas — a diferença principal era a textura dos alimentos, que naturalmente acelera ou desacelera a mastigação. A ingestão foi medida de forma ad libitum (o quanto a pessoa realmente escolheu comer)." },
-        { h: "O que foi encontrado", p: "Na dieta de textura que reduzia a velocidade de mastigação, os participantes ingeriram, em média, cerca de 369 kcal/dia menos do que na dieta de textura que acelerava a mastigação — e essa diferença não diminuiu ao longo das duas semanas. Não houve diferença de peso corporal entre as duas dietas nesse período de 14 dias." },
-        { h: "O que isso não responde", p: "A amostra é pequena (41 pessoas) e o acompanhamento é de apenas duas semanas — tempo curto demais para que uma diferença de peso apareça mesmo com a redução calórica observada. Também não se sabe se o efeito se mantém em dietas mais variadas (não majoritariamente ultraprocessadas) ou por períodos mais longos." },
-        { h: "Na prática do consultório", p: "Pode ser uma ferramenta comportamental adicional — por exemplo, sugerir versões mais firmes de alimentos que o paciente já consome no dia a dia — mas não prometa perda de peso com base neste estudo (que não mostrou diferença de peso em 2 semanas) nem substitua a orientação central de reduzir a proporção de ultraprocessados na dieta, que continua sendo a prioridade com maior corpo de evidência." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "dieta-mediterranea-microbiota-risco-cardiometabolico",
-      categoria: "Microbiota",
-      areas: ["Microbiota", "Cardiometabólico"],
-      data: "03 nov 2025",
-      title: "Meta-análise de 9 ECRs: dieta mediterrânea melhora HbA1c, LDL e triglicerídeos em adultos de risco cardiometabólico, com mudanças apenas descritivas na microbiota intestinal",
-      resumo: "Revisão sistemática com meta-análise de 9 ECRs (1.337 participantes) comparou dietas no padrão mediterrâneo a dietas-controle em adultos com risco aumentado de diabetes tipo 2 ou doença cardiovascular; houve redução significativa de HbA1c (diferença média -0,18%; IC95% -0,35 a -0,01) e melhora de LDL-colesterol e triglicerídeos, sem efeito significativo sobre glicemia de jejum, insulina, HOMA-IR, colesterol total ou HDL, enquanto os dados de microbiota — sintetizados apenas de forma descritiva, não estatisticamente agrupada, por grande heterogeneidade de métodos entre os estudos — mostraram aumento da diversidade alfa e maior presença de táxons como Akkermansia muciniphila e Roseburia spp.",
-      mudou: "Reforça, com base em ECRs agrupados, que a dieta mediterrânea melhora marcadores metabólicos relevantes (HbA1c, LDL, triglicerídeos) neste público de risco, mas evidencia que a ligação causal entre as alterações na microbiota e esses benefícios metabólicos ainda não pode ser tratada como estabelecida — os próprios autores só conseguiram sintetizar os dados de microbiota de forma descritiva.",
-      aplicar: "Pode-se recomendar o padrão mediterrâneo com razoável confiança para melhorar HbA1c e perfil lipídico em pacientes de risco cardiometabólico, mas evite, na conversa com o paciente, atribuir esse benefício diretamente a 'mudanças na microbiota' como se fosse um mecanismo comprovado — essa parte da evidência ainda é qualitativa/exploratória, não um achado causal consolidado.",
-      evidencia: 5,
-      link: "https://pubmed.ncbi.nlm.nih.gov/41381307/",
-      fonte: {
-        autores: "Lauria e cols.",
-        revista: "Nutrition, Metabolism and Cardiovascular Diseases",
-        ano: "2026",
-        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados (protocolo PROSPERO CRD42023428016)",
-        amostra: "9 ECRs; 1.337 participantes adultos com risco aumentado de diabetes tipo 2 ou doença cardiovascular",
-        doi: "10.1016/j.numecd.2025.104433",
-        pubmed: "41381307",
-        acesso: "Resumo livre; texto completo por assinatura"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "A dieta mediterrânea já é associada a menor risco cardiometabólico, e estudos menores sugeriam que parte desse efeito passaria por mudanças na microbiota intestinal. Faltava reunir os ensaios clínicos randomizados disponíveis para checar, ao mesmo tempo, marcadores metabólicos e microbiota em pessoas de risco para diabetes tipo 2 e doença cardiovascular." },
-        { h: "Como o estudo foi feito", p: "Os autores buscaram em cinco bases de dados (até outubro de 2024) ensaios clínicos randomizados que comparassem dietas no padrão mediterrâneo a dietas-controle em adultos de risco cardiometabólico, reunindo 9 estudos com 1.337 participantes. Os desfechos metabólicos foram agrupados estatisticamente; os de microbiota, medidos de formas muito diferentes entre os estudos, foram descritos de forma qualitativa." },
-        { h: "O que foi encontrado", p: "A dieta mediterrânea reduziu significativamente a HbA1c (diferença média -0,18%; IC95% -0,35 a -0,01) e melhorou LDL-colesterol e triglicerídeos versus controle, sem diferença significativa em glicemia de jejum, insulina, HOMA-IR, colesterol total ou HDL. Na análise descritiva da microbiota, os estudos relataram aumento da diversidade alfa e maior abundância de táxons como Akkermansia muciniphila e Roseburia spp." },
-        { h: "O que isso não responde", p: "Como os dados de microbiota não foram agrupados estatisticamente (métodos de sequenciamento e relato de táxons muito variados entre os estudos), não é possível afirmar que a mudança na microbiota seja causa das melhoras metabólicas — pode ser apenas uma alteração associada. Os próprios autores pedem estudos mais longos e abordagens multi-ômicas." },
-        { h: "Na prática do consultório", p: "Use a dieta mediterrânea como recomendação com bom suporte de ECRs para melhorar HbA1c e lipídios em pacientes de risco cardiometabólico, mas seja cauteloso ao explicar o 'porquê' ao paciente — atribuir o benefício à microbiota ainda é uma hipótese exploratória, não um mecanismo comprovado." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "creatina-marcadores-inflamatorios-meta-analise",
-      categoria: "Suplementação",
-      areas: ["Suplementação", "Desempenho Físico"],
-      data: "19 fev 2026",
-      title: "Meta-análise de ECRs não encontra efeito anti-inflamatório consistente da suplementação de creatina em humanos",
-      resumo: "Revisão sistemática com meta-análise de 8 ensaios clínicos randomizados, duplo-cegos e controlados por placebo avaliou o efeito da suplementação de creatina sobre marcadores inflamatórios (PCR, IL-6, IL-1β, TNF-α e PGE2); não houve redução significativa da PCR, nem no efeito agudo (SMD 0,32; p=0,30) nem no crônico (SMD -0,11; IC95% -0,69 a 0,48; p=0,73), tampouco da IL-6 (SMD -0,06; IC95% -0,64 a 0,53; p=0,84).",
-      mudou: "Contesta a ideia, popular entre praticantes de atividade física, de que a creatina teria efeito anti-inflamatório relevante em humanos — a evidência atual de ECRs não sustenta essa alegação, ainda que a creatina continue com evidência sólida para desempenho e força muscular (desfecho fora do escopo desta revisão).",
-      aplicar: "Ao conversar com pacientes que suplementam creatina esperando benefício anti-inflamatório (ex.: recuperação pós-exercício), explique que a evidência atual de ECRs não confirma esse efeito sobre PCR e IL-6 — a indicação de creatina deve continuar sendo baseada em desempenho físico e força, não em um suposto efeito anti-inflamatório.",
-      evidencia: 5,
-      link: "https://www.frontiersin.org/journals/immunology/articles/10.3389/fimmu.2026.1743603/full",
-      fonte: {
-        autores: "Grupo de pesquisa da Unesp (Marília), com apoio da FAPESP",
-        revista: "Frontiers in Immunology",
-        ano: "2026",
-        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados, duplo-cegos, controlados por placebo, registrada no PROSPERO (CRD420251027784)",
-        amostra: "8 ECRs em humanos (populações saudáveis, atléticas e clínicas)",
-        doi: "10.3389/fimmu.2026.1743603",
-        acesso: "Acesso aberto (texto completo livre)"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "A creatina é amplamente usada para ganho de força e desempenho, e circula a ideia de que também teria efeito anti-inflamatório. Os autores quiseram reunir os ensaios clínicos randomizados e controlados por placebo que testaram esse efeito especificamente sobre marcadores inflamatórios no sangue." },
-        { h: "Como o estudo foi feito", p: "Foram incluídos 8 ensaios clínicos randomizados, duplo-cegos e controlados por placebo, em populações saudáveis, atléticas e clínicas, avaliando marcadores como PCR, IL-6, IL-1β, TNF-α e PGE2, tanto em contextos agudos (pós-exercício) quanto crônicos (suplementação prolongada)." },
-        { h: "O que foi encontrado", p: "Não houve redução significativa da PCR, nem no efeito agudo (SMD 0,32; p=0,30) nem no crônico (SMD -0,11; IC95% -0,69 a 0,48; p=0,73), e também não houve redução significativa da IL-6 (SMD -0,06; IC95% -0,64 a 0,53; p=0,84). Os autores notaram benefícios pontuais em contextos de exercício de endurance intenso, mas de forma inconsistente entre as populações estudadas." },
-        { h: "O que isso não responde", p: "O número de ensaios incluídos é pequeno (8 estudos) e heterogêneo em população e protocolo, então não se exclui que subgrupos específicos (ex.: atletas de endurance) possam ter alguma resposta anti-inflamatória; a revisão também não avalia os efeitos já bem estabelecidos da creatina sobre força e desempenho, que não eram o foco aqui." },
-        { h: "Na prática do consultório", p: "Continue recomendando creatina com base em sua evidência consolidada para força, massa muscular e desempenho, mas não a posicione como suplemento anti-inflamatório para o paciente — essa narrativa, popular nas redes sociais, não é sustentada pelos ECRs reunidos nesta revisão." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "jejum-intermitente-restricao-horaria-manutencao-peso-12-meses",
-      categoria: "Obesidade",
-      areas: ["Comportamental", "Clínica"],
-      data: "18 jul 2026",
-      title: "Horário da janela alimentar no jejum intermitente (16:8) influencia a manutenção da perda de peso 12 meses após o fim do programa, mostra ECR",
-      resumo: "Seguimento de 12 meses de um ensaio clínico randomizado espanhol comparou, em 99 adultos de 30-60 anos com sobrepeso ou obesidade, quatro padrões de 12 semanas (horário habitual/controle, janela de 8h iniciada antes das 10h, janela de 8h iniciada após as 13h, e janela de 8h autosselecionada, todos com orientação de padrão mediterrâneo): um ano após o fim do programa (65 dos 99 participantes reavaliados), o grupo de horário habitual voltou a ganhar peso, enquanto os grupos de janela matinal e vespertina mantiveram a perda alcançada nas 12 semanas — mesmo com só cerca de 26% dos participantes ainda seguindo formalmente a restrição horária nesse momento.",
-      mudou: "Sugere que o horário escolhido para a janela alimentar — não apenas a restrição horária em si — pode influenciar a manutenção da perda de peso no longo prazo, e que parte do benefício persiste mesmo entre quem abandona a restrição formal após o fim do programa.",
-      aplicar: "Ao indicar jejum intermitente/restrição horária para manutenção de peso, considere orientar uma janela alimentar fixa (de manhã ou de tarde) em vez de deixar o horário totalmente livre — mas trate esse achado como preliminar: é uma análise secundária de um ensaio pequeno, com perda relevante de seguimento (65 de 99 participantes avaliados em 12 meses).",
-      evidencia: 4,
-      link: "https://doi.org/10.1016/j.clnu.2026.106706",
-      fonte: {
-        autores: "Camacho-Cardenosa e cols.",
-        revista: "Clinical Nutrition",
-        ano: "2026",
-        desenho: "Análise secundária de ensaio clínico randomizado, com seguimento de 12 meses após intervenção de 12 semanas",
-        amostra: "99 adultos de 30-60 anos com sobrepeso ou obesidade randomizados em 4 grupos (controle de horário habitual, janela de 8h matinal, janela de 8h vespertina, janela de 8h autosselecionada); 65 reavaliados no seguimento de 12 meses",
-        doi: "10.1016/j.clnu.2026.106706",
-        acesso: "Resumo livre; texto completo por assinatura"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "Jejum intermitente com restrição horária da alimentação (time-restricted eating) costuma mostrar perda de peso ao final de programas de curto prazo, mas a dúvida recorrente é se esse resultado se mantém depois que o programa termina — e se o horário escolhido para a janela alimentar (mais cedo ou mais tarde no dia) faz diferença para essa manutenção." },
-        { h: "Como o estudo foi feito", p: "Este é o seguimento de 12 meses de um ensaio clínico randomizado espanhol que, por 12 semanas, comparou quatro grupos em 99 adultos de 30-60 anos com sobrepeso ou obesidade: horário habitual de alimentação (controle), janela de 8 horas iniciada antes das 10h (early), janela de 8 horas iniciada depois das 13h (late), e janela de 8 horas escolhida livremente pelo participante (self-selected), todos com orientação de padrão alimentar mediterrâneo. Peso foi reavaliado 1 ano após o fim do programa, com 65 dos 99 participantes completando essa avaliação final." },
-        { h: "O que foi encontrado", p: "Um ano após o fim das 12 semanas de intervenção, o grupo de horário habitual (controle) voltou a ganhar peso, enquanto os grupos de janela matinal (early) e vespertina (late) mantiveram a perda de peso alcançada durante o programa. Na reavaliação, apenas cerca de 26% dos participantes ainda seguiam formalmente a restrição horária — ainda assim, o benefício de peso persistiu nos grupos de horário fixo." },
-        { h: "O que isso não responde", p: "É uma análise secundária de um ensaio pequeno (99 participantes randomizados, apenas 65 reavaliados em 12 meses), o que limita a precisão das estimativas e abre espaço para viés de quem permaneceu no seguimento. O estudo também não isola completamente o efeito do horário da janela do efeito da própria restrição calórica implícita na restrição horária." },
-        { h: "Na prática do consultório", p: "Ao indicar jejum intermitente/restrição horária para manutenção de peso no longo prazo, considere orientar uma janela alimentar fixa (de manhã ou de tarde) em vez de deixar a escolha do horário totalmente livre — mas trate esse achado como hipótese-gerador, dado o tamanho pequeno da amostra e a perda relevante de seguimento, e continue individualizando a indicação pela rotina e preferência real do paciente." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "mms-pre-natal-vs-ferro-folico-crescimento-infantil",
-      categoria: "Materno Infantil",
-      areas: ["Saúde da Mulher", "Pediatria"],
-      data: "28 abr 2025",
-      title: "Suplementação pré-natal com múltiplos micronutrientes melhora o tamanho ao nascer e o crescimento infantil até os 6 meses, frente a ferro e ácido fólico isolados",
-      resumo: "Revisão sistemática com meta-análise de 19 ensaios clínicos randomizados comparou suplementação pré-natal com múltiplos micronutrientes (MMS) com a suplementação padrão de ferro e ácido fólico (IFA): MMS associou-se a maior comprimento/estatura e peso do nascimento até os 6 meses, maior perímetro cefálico até os 12 meses e maior circunferência do braço até os 3 meses, mas as diferenças não persistiram além desses períodos.",
-      mudou: "Reforça a suplementação pré-natal com múltiplos micronutrientes — e não apenas ferro e ácido fólico isolados — como estratégia com respaldo de meta-análise para melhorar o tamanho ao nascer e o crescimento inicial do bebê, ainda que esse ganho se atenue com o tempo após os primeiros meses.",
-      aplicar: "Em gestantes atendidas em contextos onde a suplementação de múltiplos micronutrientes está disponível e indicada (conforme diretriz local e prescrição médica), reforce a adesão a essa suplementação em vez de apenas ferro e ácido fólico isolados, e, quando possível, discuta a continuidade de algum suporte nutricional no pós-parto para tentar sustentar o ganho de crescimento do bebê além dos 6 meses.",
-      evidencia: 5,
-      link: "https://pubmed.ncbi.nlm.nih.gov/40306386/",
-      fonte: {
-        autores: "Gomes e cols.",
-        revista: "The American Journal of Clinical Nutrition (AJCN)",
-        ano: "2025",
-        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados, registrada no PROSPERO (CRD42024551864)",
-        amostra: "19 ECRs incluídos, comparando suplementação pré-natal com múltiplos micronutrientes (MMS) vs. ferro e ácido fólico (IFA), com desfechos de tamanho ao nascer e crescimento até 24 meses de idade",
-        doi: "10.1016/j.ajcnut.2025.04.022",
-        pubmed: "40306386",
-        acesso: "Acesso aberto (texto completo livre)"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "Suplementos pré-natais de múltiplos micronutrientes (MMS) são promovidos como alternativa à suplementação padrão de ferro e ácido fólico (IFA) isolados na gestação, mas faltava uma síntese atualizada, reunindo os ensaios randomizados disponíveis, sobre se o MMS de fato melhora o tamanho do bebê ao nascer e o crescimento infantil nos primeiros dois anos de vida, frente ao IFA isolado." },
-        { h: "Como o estudo foi feito", p: "Revisão sistemática com meta-análise reuniu 19 ensaios clínicos randomizados que compararam suplementação pré-natal com múltiplos micronutrientes (MMS) à suplementação padrão de ferro e ácido fólico (IFA), avaliando medidas antropométricas do bebê ao nascer e em visitas de acompanhamento até os 24 meses de idade (comprimento/estatura, peso, perímetro cefálico e circunferência do braço)." },
-        { h: "O que foi encontrado", p: "Comparado ao IFA isolado, o MMS pré-natal associou-se a maior comprimento e peso do nascimento até os 6 meses de idade, maior crescimento do perímetro cefálico até os 12 meses, e maior circunferência do braço até os 3 meses — além de menor risco de retardo de crescimento (stunting) e baixo peso nos primeiros meses. Os autores concluem que o benefício do MMS sobre o tamanho ao nascer e o crescimento infantil é mais consistente até cerca de 6 meses de idade, atenuando-se depois disso." },
-        { h: "O que isso não responde", p: "A revisão reúne ensaios com populações, doses e contextos nutricionais variados (incluindo diferentes prevalências de baixo peso ao nascer), e o próprio padrão de atenuação do benefício ao longo do tempo sugere que a continuidade da suplementação (inclusive no pós-parto) pode ser necessária para sustentar o ganho — algo que a revisão não testa diretamente como intervenção própria." },
-        { h: "Na prática do consultório", p: "Em serviços e contextos onde a suplementação de múltiplos micronutrientes na gestação está disponível e indicada (sempre seguindo diretriz local e prescrição médica), esta meta-análise reforça a prioridade do MMS sobre o ferro e ácido fólico isolados para apoiar o tamanho ao nascer e o crescimento inicial do bebê — e abre a discussão sobre manter algum suporte nutricional também no pós-parto, já que o benefício isolado da suplementação pré-natal tende a se atenuar depois dos 6 meses." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "ingestao-proteica-baixa-dialise-drc-coorte",
+      id: "app-digital-controle-fosfato-dialise-ecr",
       categoria: "Clínica",
       areas: ["Renal", "Clínica"],
-      data: "28 abr 2026",
-      title: "Ingestão proteica abaixo de 1,0 g/kg/dia associa-se a menor risco de desfechos renais e de diálise em doença renal crônica não dialítica, mostra coorte israelense de 15 anos",
-      resumo: "Estudo de coorte retrospectivo com 1.441 adultos com doença renal crônica (DRC) não dialítica, estágios 3-4, acompanhados por até 15 anos no sistema de saúde Clalit (Israel), estimou a ingestão proteica por excreção de nitrogênio ureico em urina de 24h; na análise pareada por escore de propensão, ingestão proteica abaixo de 1,0 g/kg/dia associou-se a menor risco do desfecho composto (queda ≥50% do TFGe, início de diálise ou óbito; razão de risco 0,77, IC95% 0,62-0,97; ajustada 0,75, IC95% 0,60-0,93) e, isoladamente, a menor risco de iniciar diálise (razão de risco 0,65, IC95% 0,42-0,99), sem diferença significativa na velocidade de queda do TFGe nem em marcadores nutricionais.",
-      mudou: "Em dados observacionais robustos e de seguimento longo, reforça que uma restrição proteica moderada (abaixo de 1,0 g/kg/dia) pode se associar a menor necessidade de diálise em DRC avançada não dialítica sem sinal de piora nutricional — mas é um estudo observacional, não um ensaio randomizado, e não houve efeito estatisticamente significativo isolado sobre a velocidade de queda do TFGe.",
-      aplicar: "No acompanhamento de pacientes com DRC estágios 3-4, reforce junto à equipe nefrológica metas de ingestão proteica moderada (em torno de 0,8-1,0 g/kg/dia) como parte do plano para retardar a necessidade de diálise, mas monitore de perto marcadores nutricionais (albumina, peso, massa muscular) e individualize a conduta, já que o desenho observacional não permite afirmar causalidade.",
-      evidencia: 3,
-      link: "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2848230",
+      data: "17 ago 2026",
+      title: "ECR multicêntrico australiano (TeleKinesis): app de orientação nutricional não reduz o fósforo sérico de forma significativa frente ao cuidado padrão em diálise, mas mostra sinal de melhora aos 6 meses",
+      resumo: "Ensaio clínico randomizado multicêntrico em 23 serviços de diálise na Austrália recrutou 190 pacientes e randomizou 99 para usar, além do cuidado padrão, um aplicativo de orientação nutricional sobre fósforo durante os 3 primeiros meses de um acompanhamento de 6 meses: a diferença entre grupos na variação do fósforo sérico aos 3 meses não foi significativa (queda de 6% no cuidado padrão vs. 7% no grupo do app), e o declínio progressivo de 9% observado no grupo do app aos 6 meses também não atingiu significância estatística.",
+      mudou: "Mostra que, nesse desenho e período, somar um aplicativo digital de orientação nutricional ao cuidado padrão não garante controle superior do fósforo sérico em diálise — mas o sinal de melhora sustentada e crescente aos 6 meses no grupo do app sugere que um seguimento mais longo poderia revelar benefício ainda não confirmado estatisticamente.",
+      aplicar: "Continue priorizando a orientação nutricional individualizada (presencial ou por telefone) como base do manejo do fósforo em diálise, e veja ferramentas digitais como possível complemento — não substituto — enquanto a evidência de benefício ainda não é estatisticamente robusta; para pacientes com boa adesão a aplicativos, o sinal de melhora tardia pode justificar manter a ferramenta por mais tempo antes de julgar seu efeito.",
+      evidencia: 4,
+      link: "https://pubmed.ncbi.nlm.nih.gov/42606901/",
       fonte: {
-        autores: "Beberashvili e cols.",
-        revista: "JAMA Network Open",
+        autores: "Beer, Jacques, Lambert, Lim e Boudville",
+        revista: "Kidney360",
         ano: "2026",
-        desenho: "Estudo de coorte retrospectivo com pareamento por escore de propensão",
-        amostra: "1.441 adultos com DRC não dialítica estágios 3-4, dados do Clalit Health Services, Israel, seguimento de até 15 anos",
-        doi: "10.1001/jamanetworkopen.2026.9575",
-        pubmed: "42048078",
-        acesso: "Acesso aberto (texto completo livre)"
+        desenho: "Ensaio clínico randomizado multicêntrico (estudo TeleKinesis)",
+        amostra: "190 pacientes em diálise recrutados em 23 serviços na Austrália; 99 randomizados para o braço com aplicativo digital de orientação nutricional, seguimento de 6 meses",
+        doi: "10.34067/KID.0000001328",
+        pubmed: "42606901",
+        acesso: "Resumo livre; verificar acesso ao texto completo no site da revista"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "A quantidade ideal de proteína na dieta de pacientes com doença renal crônica (DRC) avançada ainda divide a literatura: restringir demais pode piorar o estado nutricional, mas ingestões mais altas são associadas, em alguns estudos, a progressão mais rápida da doença. Este estudo buscou avaliar, com dados de vida real e seguimento muito longo, se a ingestão proteica efetivamente consumida se associa a desfechos renais — incluindo início de diálise — em adultos com DRC não dialítica, estágios 3 e 4." },
-        { h: "Como o estudo foi feito", p: "Estudo de coorte retrospectivo usou dados do sistema de saúde Clalit (Israel) para acompanhar 1.441 adultos com DRC estágios 3-4 por até 15 anos. A ingestão proteica foi estimada de forma objetiva pela excreção de nitrogênio ureico em urina de 24 horas, normalizada pelo peso corporal, e os participantes foram classificados em ingestão mais baixa (<1,0 g/kg/dia) ou mais alta (≥1,0 g/kg/dia). Pareamento por escore de propensão equilibrou características basais entre os grupos para a análise comparativa principal." },
-        { h: "O que foi encontrado", p: "No grupo pareado, a ingestão proteica abaixo de 1,0 g/kg/dia associou-se a menor risco do desfecho composto (queda de pelo menos 50% da taxa de filtração glomerular estimada, início de diálise de longo prazo ou óbito por qualquer causa; razão de risco 0,77, IC95% 0,62-0,97, ajustada para 0,75, IC95% 0,60-0,93), impulsionado principalmente por menor risco de iniciar diálise (razão de risco de 0,65, IC95% 0,42-0,99). Não houve diferença estatisticamente significativa entre os grupos na velocidade de queda da função renal nem em marcadores nutricionais — ou seja, sem sinal de que a ingestão mais baixa prejudicou o estado nutricional." },
-        { h: "O que isso não responde", p: "Por ser um estudo observacional, mesmo com pareamento por escore de propensão, não é possível afirmar causalidade — pacientes que naturalmente comem menos proteína podem diferir de outras formas não totalmente capturadas pelo pareamento. O estudo também não encontrou efeito estatisticamente significativo isolado sobre a velocidade de queda da função renal, o que concentra a força da conclusão principalmente no desfecho de início de diálise." },
-        { h: "Na prática do consultório", p: "No acompanhamento de pacientes com DRC estágios 3-4, este estudo reforça — sem substituir a individualização caso a caso — a relevância de discutir metas de ingestão proteica moderada (em torno de 0,8 a 1,0 g/kg/dia) junto à equipe nefrológica como parte do plano para retardar a necessidade de diálise, sempre monitorando de perto marcadores de estado nutricional (albumina, peso, força/massa muscular) para evitar o risco oposto de desnutrição proteico-calórica." }
+        { h: "A pergunta do estudo", p: "O controle do fósforo sérico em pacientes de diálise depende fortemente da adesão à dieta e aos quelantes, e a orientação nutricional presencial nem sempre está disponível com a frequência necessária. Os autores quiseram testar se um aplicativo de orientação nutricional, usado como complemento ao cuidado padrão, melhora o controle do fósforo." },
+        { h: "Como o estudo foi feito", p: "O estudo TeleKinesis recrutou 190 pacientes em diálise em 23 serviços na Austrália. Noventa e nove foram randomizados para usar o aplicativo de orientação nutricional durante os 3 primeiros meses de um acompanhamento total de 6 meses, além do cuidado padrão recebido por todos; o desfecho primário foi a variação do fósforo sérico aos 3 meses." },
+        { h: "O que foi encontrado", p: "Aos 3 meses, a queda do fósforo sérico foi semelhante entre os grupos (6% no cuidado padrão vs. 7% no grupo do app), sem diferença estatisticamente significativa. Como sinal secundário, apenas o grupo do aplicativo mostrou um declínio progressivo e sustentado que chegou a 9% aos 6 meses — mas essa diferença também não atingiu significância estatística." },
+        { h: "O que isso não responde", p: "O estudo não esclarece se um período de uso do aplicativo mais longo que 3 meses, ou uma amostra maior, revelaria um benefício estatisticamente significativo a partir do sinal observado aos 6 meses. Também não é possível, com os dados disponíveis, identificar quais pacientes (por adesão ou perfil) teriam mais chance de se beneficiar da ferramenta digital." },
+        { h: "Na prática do consultório", p: "Use este resultado para calibrar expectativas sobre apps de orientação nutricional no manejo do fósforo em diálise: eles podem ser um complemento razoável ao cuidado padrão, mas, com a evidência atual, não substituem a orientação nutricional individualizada nem garantem controle superior do fósforo no curto prazo — o sinal de melhora aos 6 meses é um motivo para acompanhar de perto, não para prometer resultado." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "inositol-fenotipo-metabolico-sop-meta-analise",
+      categoria: "Saúde da Mulher",
+      areas: ["Saúde da Mulher", "SOP"],
+      data: "07 abr 2026",
+      title: "Meta-análise mostra que a resposta bioquímica ao inositol na síndrome dos ovários policísticos depende do fenótipo metabólico da paciente",
+      resumo: "Revisão sistemática com meta-análise de 9 estudos prospectivos intervencionistas (440 mulheres com SOP; 225 com inositol e 215 com placebo ou ácido fólico) encontrou redução significativa da testosterona total com a suplementação de inositol (SMD -1,30), com a resposta bioquímica mais consistente em mulheres de peso normal; mulheres com sobrepeso/obesidade ou resistência insulínica não mostraram melhora significativa nos marcadores avaliados.",
+      mudou: "Refina a visão de que o inositol 'funciona' de forma uniforme na SOP, mostrando que o fenótipo metabólico e o peso da paciente modulam a magnitude da resposta bioquímica (testosterona, SHBG), e não apenas se a paciente usa ou não o nutracêutico.",
+      aplicar: "Ao indicar inositol para SOP, calibre a expectativa conforme o fenótipo da paciente: há maior chance de resposta hormonal consistente em mulheres com peso normal; em pacientes com sobrepeso/obesidade ou resistência insulínica mais marcada, comunique que o inositol isolado pode não ser suficiente e priorize o manejo de peso e estilo de vida como base do tratamento.",
+      evidencia: 4,
+      link: "https://doi.org/10.1111/cen.70140",
+      fonte: {
+        autores: "Tienforti e cols. (Università degli Studi dell'Aquila)",
+        revista: "Clinical Endocrinology",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de estudos prospectivos intervencionistas",
+        amostra: "9 estudos, 440 mulheres com SOP (225 com inositol, 215 com placebo ou ácido fólico)",
+        doi: "10.1111/cen.70140",
+        pubmed: "41947399",
+        acesso: "Acesso aberto (CC BY 4.0)"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "Revisões anteriores já sugeriam que o inositol melhora marcadores metabólicos e hormonais na síndrome dos ovários policísticos (SOP), mas a resposta entre estudos é heterogênea. Os autores quiseram testar se o fenótipo metabólico da paciente (sobretudo peso corporal e resistência insulínica) explica parte dessa heterogeneidade na resposta bioquímica ao inositol." },
+        { h: "Como o estudo foi feito", p: "Revisão sistemática com meta-análise reuniu 9 estudos prospectivos intervencionistas com 440 mulheres com SOP, comparando inositol (225 mulheres) a placebo ou ácido fólico (215 mulheres), e estratificou a análise por fenótipo metabólico (peso normal vs. sobrepeso/obesidade; com ou sem resistência insulínica)." },
+        { h: "O que foi encontrado", p: "A suplementação de inositol reduziu significativamente a testosterona total em relação ao controle (SMD -1,30). Essa resposta bioquímica foi mais consistente e homogênea em mulheres com peso normal; já em mulheres com sobrepeso ou obesidade, e nas com resistência insulínica avaliada isoladamente do IMC, não houve melhora significativa nos marcadores analisados." },
+        { h: "O que isso não responde", p: "A amostra total (440 mulheres) é pequena para uma meta-análise estratificada por subgrupo, o que reduz a precisão das estimativas dentro de cada fenótipo. Os resumos consultados também não detalham se doses diferentes de inositol (ou a proporção myo-inositol/D-chiro-inositol) explicam parte da variação de resposta entre os subgrupos." },
+        { h: "Na prática do consultório", p: "Use o inositol como parte do manejo nutricional da SOP com uma expectativa calibrada pelo fenótipo da paciente: em mulheres com peso normal, a chance de resposta hormonal consistente é maior; em pacientes com sobrepeso/obesidade ou resistência insulínica mais marcada, explique que o inositol isolado tende a ter efeito menor e reforce o manejo de peso, padrão alimentar e atividade física como base do tratamento, com o inositol como adjuvante." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "proteina-treino-forca-jovens-adultos-meta-analise",
+      categoria: "Esportiva",
+      areas: ["Esportiva", "Suplementação"],
+      data: "14 out 2026",
+      title: "Meta-análise de 23 ECRs: proteína combinada ao treino de força aumenta o ganho de força em adultos jovens, mas o benefício depende da duração do programa e do momento da ingestão",
+      resumo: "Revisão sistemática com meta-análise de 23 ensaios clínicos randomizados (611 adultos jovens saudáveis, buscas até 1º de abril de 2026) comparou treino de força com e sem suplementação de proteína: o grupo proteína+treino teve ganho adicional médio de força no supino (~2,63 kg) e no agachamento (~7,40 kg) frente ao treino isolado, com o efeito no agachamento concentrado em intervenções de até 12 semanas e quando a proteína era consumida próxima ao treino ou antes de dormir.",
+      mudou: "Reforça que a proteína suplementar somada ao treino de força traz ganho real de força em adultos jovens, mas mostra que a magnitude desse benefício não é fixa — depende de moderadores como duração da intervenção, momento da ingestão, histórico de treino e ingestão proteica basal do indivíduo.",
+      aplicar: "Priorize garantir a ingestão proteica adequada distribuída ao redor do treino (próxima à sessão e antes de dormir), sobretudo em programas de até 12 semanas, e ajuste a expectativa de ganho de força conforme o histórico de treino e a ingestão proteica basal do paciente ou atleta, em vez de prometer o mesmo incremento para todos os perfis.",
+      evidencia: 5,
+      link: "https://doi.org/10.3389/fnut.2026.1946052",
+      fonte: {
+        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
+        revista: "Frontiers in Nutrition",
+        ano: "2026",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
+        amostra: "23 ECRs, 611 adultos jovens saudáveis, buscas em bases de dados até 1º de abril de 2026",
+        doi: "10.3389/fnut.2026.1946052",
+        acesso: "Acesso aberto (texto completo livre, Frontiers)"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "A suplementação de proteína combinada ao treino de força é amplamente recomendada, mas estudos individuais mostram respostas bastante variáveis entre indivíduos e programas. Os autores buscaram reunir os ensaios clínicos randomizados disponíveis em adultos jovens para quantificar o ganho de força adicional e identificar quais fatores explicam a variação da resposta." },
+        { h: "Como o estudo foi feito", p: "Revisão sistemática com meta-análise reuniu 23 ensaios clínicos randomizados, com busca em bases de dados até 1º de abril de 2026, comparando treino de força isolado a treino de força combinado com suplementação de proteína em 611 adultos jovens saudáveis. Os autores calcularam diferenças médias ponderadas (WMD) para força no supino e no agachamento, e testaram moderadores como duração da intervenção e momento da ingestão proteica." },
+        { h: "O que foi encontrado", p: "O grupo proteína+treino teve ganho adicional médio de força de cerca de 2,63 kg no supino e 7,40 kg no agachamento, ambos estatisticamente significativos frente ao treino isolado. O efeito sobre o agachamento foi mais evidente em intervenções de até 12 semanas e quando a proteína era consumida próxima ao treino e/ou antes de dormir; a duração da intervenção foi um moderador significativo, e o momento da ingestão teve significância limítrofe." },
+        { h: "O que isso não responde", p: "Os resumos consultados não detalham a dose exata de proteína utilizada nos estudos incluídos nem a ingestão proteica basal dos participantes de forma padronizada entre os 23 ECRs, o que dificulta recomendar uma dose única. Também não está claro se o efeito se mantém em programas mais longos que 12 semanas, já que o moderador de duração favoreceu intervenções mais curtas." },
+        { h: "Na prática do consultório", p: "Ao prescrever suplementação de proteína para pacientes/atletas em treino de força, priorize garantir a ingestão em torno da sessão de treino e antes de dormir, especialmente em programas de até 12 semanas, e communique que o tamanho do ganho de força varia conforme o histórico de treino e a ingestão proteica basal — não é um efeito uniforme e garantido para todos os perfis." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "reducao-ultraprocessados-sintomas-depressao-ecr-piloto",
+      categoria: "Comportamental",
+      areas: ["Comportamental", "Saúde Mental"],
+      data: "23 set 2026",
+      title: "Ensaio piloto cruzado da UCSF: reduzir ultraprocessados por 4 semanas melhora sintomas depressivos, mas o próprio grupo de pesquisa classifica o achado como exploratório",
+      resumo: "Ensaio clínico randomizado cruzado, aberto e piloto, com 20 adultos com depressão (idade média 44 anos, 70% mulheres, a maioria com IMC elevado e ao menos uma condição metabólica), comparou 4 semanas de dieta habitual a 4 semanas com redução acentuada de ultraprocessados (ordem randomizada): os participantes reduziram o consumo de ultraprocessados em mais de 85% e apresentaram melhora de moderada a grande em três escalas de depressão, além de melhora discreta na ansiedade — mas os próprios autores tratam os desfechos de humor como exploratórios, já que o estudo foi desenhado para testar viabilidade e aceitabilidade, não eficácia.",
+      mudou: "Fornece a primeira evidência experimental (ainda que piloto) de que reduzir ultraprocessados pode melhorar sintomas depressivos em poucas semanas, complementando estudos observacionais anteriores que já associavam maior consumo de ultraprocessados a maior risco de depressão — mas o desenho, o tamanho da amostra e a ausência de cegamento limitam fortemente a conclusão.",
+      aplicar: "Considere a redução de ultraprocessados como estratégia alimentar adjuvante — nunca substituta ao tratamento psiquiátrico — ao orientar pacientes com sintomas depressivos leves a moderados, mas seja transparente de que o próprio grupo de pesquisa classifica o achado sobre humor como exploratório e gerador de hipótese, não como eficácia comprovada; o estudo teve apenas 20 participantes e focou em viabilidade, não em desfecho clínico definitivo.",
+      evidencia: 2,
+      link: "https://doi.org/10.1001/jamapsychiatry.2026.2320",
+      fonte: {
+        autores: "Chagwedera, Kim, Chiu e cols. (autor sênior Andrew Krystal, UCSF)",
+        revista: "JAMA Psychiatry (Research Letter)",
+        ano: "2026",
+        desenho: "Ensaio clínico randomizado cruzado, aberto, piloto de viabilidade",
+        amostra: "20 adultos com depressão (idade média 44 anos, 70% mulheres, 14 com ansiedade, maioria com IMC elevado e ao menos uma condição metabólica); 4 semanas de dieta habitual vs. 4 semanas com redução de ultraprocessados, em ordem randomizada",
+        doi: "10.1001/jamapsychiatry.2026.2320",
+        acesso: "Resumo e cobertura especializada consultados; verificar acesso ao texto completo no site da revista"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "Estudos observacionais já associam maior consumo de alimentos ultraprocessados a maior risco de depressão, mas faltava um ensaio experimental testando se reduzir esse consumo, de forma deliberada e em curto prazo, realmente muda sintomas depressivos — e se esse tipo de intervenção é viável de se testar em pacientes que já têm o diagnóstico." },
+        { h: "Como o estudo foi feito", p: "20 adultos com depressão, a maioria com IMC elevado e ao menos uma condição metabólica, participaram de um ensaio cruzado: cada um passou 4 semanas em dieta habitual e 4 semanas com redução acentuada de ultraprocessados, em ordem randomizada. O objetivo primário era testar viabilidade e aceitabilidade da intervenção; os escores de depressão e ansiedade foram desfechos exploratórios." },
+        { h: "O que foi encontrado", p: "Os participantes conseguiram reduzir o consumo de ultraprocessados em mais de 85% durante o período de intervenção. Nesse período, os escores de depressão (avaliados por três escalas diferentes) mostraram melhora de moderada a grande em relação ao período de dieta habitual, com melhora discreta também na ansiedade." },
+        { h: "O que isso não responde", p: "O estudo não teve cegamento (os participantes sabiam em qual fase estavam), a amostra é muito pequena (20 pessoas) e o consumo de ultraprocessados foi autorrelatado. Os autores também não conseguiram determinar se a melhora de humor se relaciona a mudanças de macronutrientes, calorias, contaminantes do processamento ou aditivos alimentares especificamente — os próprios pesquisadores chamam o achado de 'exploratório e gerador de hipótese, na melhor das hipóteses'." },
+        { h: "Na prática do consultório", p: "Pode-se discutir a redução de ultraprocessados como estratégia alimentar adjuvante ao cuidado de pacientes com sintomas depressivos leves a moderados — nunca como substituto ao acompanhamento psiquiátrico/psicológico — mas comunique com clareza que esse achado específico sobre humor vem de um estudo piloto pequeno e aberto, desenhado para testar viabilidade, e que um ensaio maior já está planejado pelos próprios autores." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "fibra-personalizada-fermentacao-microbiota-prova-conceito",
+      categoria: "Microbiota",
+      areas: ["Microbiota", "Comportamento Alimentar"],
+      data: "03 set 2026",
+      title: "Prova de conceito: escolher o tipo de fibra pela capacidade fermentativa individual do microbioma aumenta ácidos graxos de cadeia curta em parte dos participantes",
+      resumo: "Ensaio cruzado piloto (prova de conceito) com 8 adultos japoneses saudáveis testou uma ferramenta de triagem ex vivo (My Dietary Fiber Finder) que ranqueia tipos de fibra pela capacidade fermentativa do microbioma de cada indivíduo: a fibra selecionada como 'personalizada' elevou ácidos graxos voláteis fecais acima da linha de base em 2 dos 8 participantes (e ácidos graxos de cadeia curta totais em 1 deles), enquanto a fibra 'não personalizada' não elevou esses marcadores em nenhum participante; não houve mudança detectável na composição geral da comunidade microbiana (16S rRNA) em nível de grupo.",
+      mudou: "É a primeira prova de conceito de que testar, fora do corpo (ex vivo), qual fibra fermenta melhor no microbioma de uma pessoa específica pode, em tese, direcionar a escolha individualizada do tipo de fibra — mas a amostra é extremamente pequena e a resposta foi inconsistente entre os próprios participantes.",
+      aplicar: "Trate este achado como hipótese inicial de pesquisa, não como recomendação pronta para a prática clínica — ainda não existe uma ferramenta validada e acessível para 'testar' qual fibra fermenta melhor no microbioma de um paciente específico; continue orientando variedade de fontes de fibra (frutas, verduras, leguminosas, grãos integrais) como abordagem padrão enquanto essa linha de pesquisa avança.",
+      evidencia: 1,
+      link: "https://doi.org/10.3389/fnut.2026.1907988",
+      fonte: {
+        autores: "Osawa, Inoue, Fukuda, Shirai e Kodama",
+        revista: "Frontiers in Nutrition",
+        ano: "2026",
+        desenho: "Ensaio cruzado piloto (prova de conceito), com triagem ex vivo da capacidade fermentativa individual do microbioma",
+        amostra: "8 adultos japoneses saudáveis",
+        doi: "10.3389/fnut.2026.1907988",
+        acesso: "Acesso aberto (texto completo livre, Frontiers)"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "Diferentes pessoas fermentam o mesmo tipo de fibra de formas muito diferentes, dependendo da composição do próprio microbioma intestinal. Os autores quiseram testar se é possível prever, com um teste feito fora do corpo (ex vivo), qual tipo de fibra vai fermentar melhor no microbioma de uma pessoa específica — e se escolher a fibra dessa forma personalizada realmente aumenta a produção de ácidos graxos de cadeia curta no intestino dela." },
+        { h: "Como o estudo foi feito", p: "Os pesquisadores desenvolveram uma ferramenta de triagem ex vivo (My Dietary Fiber Finder, MyDFF) que ranqueia diferentes tipos de fibra por um índice de sacarificação, estimando qual fibra o microbioma de cada indivíduo fermenta melhor. Em um ensaio cruzado com 8 adultos japoneses saudáveis, cada participante consumiu, em momentos diferentes, a fibra apontada como 'personalizada' pelo teste e uma fibra 'não personalizada', medindo-se ácidos graxos voláteis fecais antes e depois de cada fase." },
+        { h: "O que foi encontrado", p: "A fibra personalizada elevou os ácidos graxos voláteis fecais acima da linha de base em 2 dos 8 participantes, e os ácidos graxos de cadeia curta totais em 1 deles; a fibra não personalizada não produziu esse aumento em nenhum participante. Em nível de grupo, o sequenciamento 16S rRNA não mostrou mudança na composição geral da comunidade microbiana, e a diferença no índice de sacarificação entre as fibras não se correlacionou com o tamanho da resposta observada em cada pessoa." },
+        { h: "O que isso não responde", p: "A amostra é extremamente pequena (8 pessoas) e a resposta positiva ocorreu em apenas 1 a 2 participantes, o que impede qualquer conclusão sobre eficácia — este é um estudo mecanístico de prova de conceito, não um teste de desfecho clínico. Também não há, nos resumos consultados, indicação de que essa ferramenta de triagem (MyDFF) esteja disponível ou validada para uso fora do contexto de pesquisa." },
+        { h: "Na prática do consultório", p: "Não há, por ora, uma ferramenta acessível ou validada para 'testar' qual fibra fermenta melhor no microbioma de um paciente específico — trate este estudo como uma hipótese de pesquisa em estágio inicial. Continue recomendando variedade de fontes de fibra (frutas, verduras, leguminosas, grãos integrais) como abordagem padrão para saúde do microbioma, já que é essa a estratégia com respaldo de evidência mais robusto até o momento." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "creatina-massa-magra-forca-meia-idade-sem-treino-ecr",
+      categoria: "Suplementação",
+      areas: ["Suplementação", "Envelhecimento"],
+      data: "21 ago 2026",
+      title: "ECR de 12 semanas: creatina aumenta massa magra e força em adultos de 45-65 anos mesmo sem programa estruturado de exercício, com ganhos maiores quando combinada a treino e dieta",
+      resumo: "Ensaio clínico randomizado, controlado por placebo, testou 10 g/dia de creatina monohidratada por 12 semanas em adultos de 45-65 anos, divididos em subgrupos com e sem programa estruturado de exercício e dieta: no subgrupo sem exercício estruturado, a creatina já aumentou massa magra e força em relação ao placebo; no subgrupo que combinou creatina com treino de força e dieta hipocalórica, os ganhos de massa magra e força foram maiores, com redução adicional do percentual de gordura corporal; desfechos cognitivos e de biomarcadores foram tratados pelos próprios autores como exploratórios.",
+      mudou: "Sugere que a creatina pode trazer benefício sobre massa magra e força em adultos de meia-idade mesmo na ausência de um programa estruturado de exercício — até aqui, a maior parte da evidência sólida de creatina dependia da combinação com treino de força.",
+      aplicar: "Considere a creatina monohidratada (na dose de 10 g/dia usada no estudo) como estratégia nutricional adjuvante para preservação de massa magra em pacientes de meia-idade com baixa adesão a programas estruturados de exercício — mas reforce que o benefício é maior quando combinada a treino de força e ajuste dietético, e que os achados cognitivos e de biomarcadores ainda são exploratórios, não confirmados.",
+      evidencia: 4,
+      link: "https://doi.org/10.1080/15502783.2026.2716273",
+      fonte: {
+        autores: "Chun e cols. (Exercise & Sport Nutrition Lab, Texas A&M University; autor sênior Richard B. Kreider)",
+        revista: "Journal of the International Society of Sports Nutrition",
+        ano: "2026",
+        desenho: "Ensaio clínico randomizado, controlado por placebo",
+        amostra: "64 adultos de 45-65 anos, em subgrupos com e sem treino de força estruturado/dieta hipocalórica, recebendo 10 g/dia de creatina monohidratada ou placebo por 12 semanas",
+        doi: "10.1080/15502783.2026.2716273",
+        acesso: "Resumo livre; verificar acesso ao texto completo no site da revista"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "A creatina tem evidência consolidada para ganho de força e massa muscular quando combinada a treino de força, mas era menos claro se a suplementação isolada — sem um programa estruturado de exercício — também traria benefício em adultos de meia-idade, população em risco de perda progressiva de massa magra (sarcopenia)." },
+        { h: "Como o estudo foi feito", p: "64 adultos de 45 a 65 anos foram randomizados para receber 10 g/dia de creatina monohidratada ou placebo por 12 semanas, divididos em subgrupos: um sem programa estruturado de exercício, e outro combinando a suplementação com treino de força e dieta hipocalórica. Os desfechos incluíram composição corporal (massa magra, percentual de gordura), força, resistência muscular e, de forma exploratória, função cognitiva e biomarcadores de saúde." },
+        { h: "O que foi encontrado", p: "Mesmo no subgrupo sem programa estruturado de exercício, a creatina aumentou massa magra e força em relação ao placebo. No subgrupo que combinou creatina com treino de força e dieta hipocalórica, os ganhos de massa magra e força foram maiores, acompanhados de maior redução do percentual de gordura corporal. A suplementação foi bem tolerada, e os desfechos cognitivos e de biomarcadores foram classificados pelos próprios autores como exploratórios." },
+        { h: "O que isso não responde", p: "Os subgrupos (com e sem exercício estruturado) são pequenos dentro da amostra total de 64 participantes, o que limita a precisão das estimativas, principalmente para quem não fez exercício estruturado. Os achados cognitivos e de biomarcadores, por serem exploratórios, não devem ser tomados como efeito comprovado da creatina sobre cognição nesta faixa etária." },
+        { h: "Na prática do consultório", p: "Para pacientes de 45-65 anos com baixa adesão a programas estruturados de exercício, a creatina monohidratada (em torno de 10 g/dia, dose usada no estudo) pode ser discutida como estratégia nutricional adjuvante para preservação de massa magra e força — mas comunique que o benefício é maior quando ela é combinada a treino de força e ajuste dietético, e que os efeitos sobre cognição e biomarcadores ainda não estão confirmados." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "bebidas-dietas-vs-agua-perda-peso-dois-anos-ecr",
+      categoria: "Obesidade",
+      areas: ["Obesidade", "Comportamental"],
+      data: "02 out 2026",
+      title: "Ensaio SWITCH (2 anos): bebidas dietéticas adoçadas artificialmente têm efeito equivalente à água na perda de peso dentro de um programa comportamental estruturado",
+      resumo: "Ensaio clínico randomizado de 2 anos (estudo SWITCH, Universidade de Liverpool) com 493 adultos com sobrepeso ou obesidade comparou o consumo de água ao de bebidas adoçadas artificialmente (aspartame, acessulfame-K ou sucralose) dentro de um programa comportamental estruturado de perda de peso (12 semanas de perda ativa, 40 semanas de manutenção assistida e até 52 semanas opcionais sem suporte): ao final de 104 semanas, a perda de peso foi semelhante entre os grupos (bebidas dietéticas: -4,8 kg; água: -3,7 kg; diferença não significativa), com melhora de circunferência da cintura e marcadores metabólicos em ambos os grupos, porém com alta perda de seguimento ao longo do estudo.",
+      mudou: "Em um ensaio de longo prazo e dentro de um programa estruturado de perda de peso, bebidas dietéticas adoçadas artificialmente não se mostraram inferiores à água para a perda de peso — contrariando a preocupação de que adoçantes não calóricos prejudicariam o controle de peso no longo prazo quando usados como substituto de bebidas açucaradas.",
+      aplicar: "Ao orientar pacientes que preferem bebidas dietéticas no lugar de refrigerantes açucarados, dentro de um programa estruturado de perda de peso, pode-se dizer que este ECR de 2 anos não mostra desvantagem das bebidas dietéticas frente à água nesse contexto — mas lembre que o estudo teve financiamento da indústria de bebidas e alta perda de seguimento, então trate o resultado como 'equivalência quando a troca já seria feita', não como incentivo a maximizar o consumo de adoçantes.",
+      evidencia: 4,
+      link: "https://doi.org/10.1017/S0007114526108150",
+      fonte: {
+        autores: "Harrold e cols. (Universidade de Liverpool; investigador principal Jason Halford)",
+        revista: "British Journal of Nutrition",
+        ano: "2026",
+        desenho: "Ensaio clínico randomizado de longo prazo (estudo SWITCH), dentro de programa comportamental estruturado de perda de peso",
+        amostra: "493 adultos com sobrepeso ou obesidade, seguimento de 104 semanas",
+        doi: "10.1017/S0007114526108150",
+        acesso: "Resumo livre; verificar acesso ao texto completo no site da revista"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "Bebidas dietéticas adoçadas artificialmente são frequentemente recomendadas como substituto de refrigerantes açucarados em programas de perda de peso, mas persiste a dúvida sobre se o consumo de adoçantes não calóricos no longo prazo poderia, de alguma forma, prejudicar o controle de peso — por exemplo, por manter preferência por sabor adocicado. Faltava um ensaio de longo prazo comparando diretamente bebidas dietéticas à água dentro de um programa estruturado de perda de peso." },
+        { h: "Como o estudo foi feito", p: "O ensaio SWITCH, da Universidade de Liverpool, randomizou 493 adultos com sobrepeso ou obesidade para consumir água ou bebidas adoçadas artificialmente (aspartame, acessulfame-K ou sucralose) ao longo de um programa comportamental estruturado de perda de peso, conduzido em três fases: 12 semanas de perda ativa, 40 semanas de manutenção assistida e até 52 semanas adicionais opcionais sem suporte do programa, totalizando 104 semanas de acompanhamento." },
+        { h: "O que foi encontrado", p: "Ao final de 104 semanas, a perda de peso foi semelhante entre os grupos — em média 4,8 kg no grupo de bebidas dietéticas e 3,7 kg no grupo de água, diferença não estatisticamente significativa. Ambos os grupos também apresentaram melhora de circunferência da cintura e de marcadores metabólicos ao longo do estudo." },
+        { h: "O que isso não responde", p: "O estudo teve alta perda de seguimento ao longo dos 2 anos, o que reduz a precisão da estimativa final e pode introduzir viés (quem permaneceu até o fim pode diferir de quem saiu). O financiamento pelo setor de bebidas, mesmo com controle independente da análise pelos pesquisadores, é um fator a considerar na interpretação. O estudo também não testa o efeito de bebidas dietéticas fora do contexto de um programa estruturado de perda de peso com suporte comportamental." },
+        { h: "Na prática do consultório", p: "Para pacientes que já pretendem substituir refrigerantes açucarados por versões dietéticas dentro de um programa estruturado de perda de peso, esta evidência de 2 anos permite dizer que a troca não prejudica o resultado de peso em comparação à água — mas continue priorizando água como primeira escolha, e seja transparente sobre a alta perda de seguimento e o financiamento do estudo ao discutir esses dados com o paciente." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "fibra-soluvel-risco-diabetes-gestacional-microbiota-ecr",
+      categoria: "Materno Infantil",
+      areas: ["Saúde da Mulher", "Materno Infantil"],
+      data: "30 mar 2026",
+      title: "ECR com 98 gestantes de risco: fibra solúvel não reduz a incidência de diabetes gestacional, mas melhora picos de glicose e ganho de peso gestacional",
+      resumo: "Ensaio clínico randomizado unicêntrico com 98 gestantes de risco elevado para diabetes gestacional (DMG), randomizadas entre 20 e 24+6 semanas para suplemento diário de fibra solúvel ou cuidado padrão por 5 semanas: a incidência de DMG não diferiu significativamente entre os grupos (10 de 48 no grupo fibra vs. 13 de 50 no controle; p=0,546), mas o grupo fibra teve excursões glicêmicas menores no teste oral de tolerância à glicose (glicemia de 1h: 8,09 vs. 8,88 mmol/L) e menor ganho de peso gestacional no período (1,83 vs. 2,54 kg; p=0,016), sem partos prematuros em nenhum grupo; análise de microbiota por sequenciamento 16S sugeriu menos vias inflamatórias preditas no grupo fibra.",
+      mudou: "Mesmo sem reduzir estatisticamente a incidência de DMG neste estudo pequeno, a fibra solúvel melhorou marcadores glicêmicos intermediários e o ganho de peso gestacional durante o período de suplementação — os próprios autores tratam a ligação com mudanças na microbiota como associação exploratória, não causal.",
+      aplicar: "Pode-se considerar a suplementação de fibra solúvel como estratégia adjuvante em gestantes de risco para DMG, visando melhora de excursões glicêmicas e controle do ganho de peso gestacional — mas seja claro de que, neste ECR, ela não reduziu estatisticamente o diagnóstico de DMG; é um estudo pequeno e unicêntrico, então individualize sempre conforme orientação obstétrica e evite prometer prevenção do diagnóstico com base apenas nesse resultado.",
+      evidencia: 3,
+      link: "https://doi.org/10.3389/fendo.2026.1794560",
+      fonte: {
+        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
+        revista: "Frontiers in Endocrinology",
+        ano: "2026",
+        desenho: "Ensaio clínico randomizado unicêntrico",
+        amostra: "98 gestantes com risco elevado de diabetes gestacional, randomizadas entre 20 e 24+6 semanas de gestação, suplementação por 5 semanas",
+        doi: "10.3389/fendo.2026.1794560",
+        acesso: "Acesso aberto (texto completo livre, Frontiers)"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "A fibra solúvel já é associada, em estudos observacionais, a melhor controle glicêmico e a mudanças favoráveis na microbiota intestinal. Faltava testar, em um ensaio randomizado, se a suplementação de fibra solúvel durante a gestação reduz a incidência de diabetes gestacional (DMG) em mulheres já identificadas como de risco elevado, e se isso se relaciona a mudanças mensuráveis na microbiota." },
+        { h: "Como o estudo foi feito", p: "98 gestantes com risco elevado de DMG foram randomizadas, entre 20 e 24 semanas e 6 dias de gestação, para receber um suplemento diário de fibra solúvel ou manter o cuidado padrão, por 5 semanas. Os desfechos incluíram o diagnóstico de DMG pelo teste oral de tolerância à glicose (TOTG), o ganho de peso gestacional no período, desfechos de parto e, em subanálise, a composição da microbiota intestinal por sequenciamento 16S rRNA." },
+        { h: "O que foi encontrado", p: "A incidência de DMG não diferiu significativamente entre os grupos (10 de 48 no grupo fibra vs. 13 de 50 no controle; p=0,546). Ainda assim, o grupo fibra teve excursões glicêmicas menores no TOTG (por exemplo, glicemia de 1 hora de 8,09 vs. 8,88 mmol/L) e menor ganho de peso gestacional no período de 5 semanas (1,83 vs. 2,54 kg; p=0,016), sem nenhum parto prematuro registrado em qualquer grupo. A análise preditiva de funções da microbiota apontou menos vias relacionadas à inflamação no grupo fibra." },
+        { h: "O que isso não responde", p: "O estudo é pequeno, unicêntrico e com apenas 5 semanas de intervenção, o que limita a capacidade de detectar diferença na incidência de DMG (desfecho que exigiria amostra maior) e não permite avaliar efeitos no restante da gestação. A própria equipe de pesquisa trata a ligação entre as mudanças de microbiota e os desfechos clínicos como uma associação exploratória, baseada em achados de estudos anteriores, não como mecanismo causal comprovado neste ensaio." },
+        { h: "Na prática do consultório", p: "Em gestantes com risco elevado de DMG, a suplementação de fibra solúvel pode ser discutida como estratégia adjuvante para melhorar excursões glicêmicas e ajudar no controle do ganho de peso gestacional — sempre dentro da orientação obstétrica vigente — mas não a apresente como forma comprovada de evitar o diagnóstico de DMG, já que esse desfecho específico não melhorou de forma estatisticamente significativa neste ECR pequeno." }
       ]
     }
   ]
