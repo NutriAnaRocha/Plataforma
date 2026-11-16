@@ -19,7 +19,7 @@ window.FEED_DATA = {
   semana: {
     eyebrow: "Atualização da Semana",
     title: "9 estudos reais para atualizar sua conduta nesta semana",
-    texto: "Um ensaio clínico randomizado de 2 anos (eBioMedicine) mostra que a suplementação de DHA em alta dose chega ao cérebro de idosos de risco para Alzheimer, mas não melhora memória nem retarda a atrofia do hipocampo. Um ECR multicêntrico australiano (Kidney360, estudo TeleKinesis) mostra que acrescentar um aplicativo de orientação nutricional ao cuidado padrão não reduz o fósforo sérico de forma significativa em pacientes em diálise aos 3 meses, ainda que haja um sinal de melhora sustentada aos 6 meses. Uma meta-análise de 9 estudos (Clinical Endocrinology) mostra que a resposta bioquímica ao inositol na síndrome dos ovários policísticos depende do fenótipo metabólico da paciente, sendo mais consistente em mulheres com peso normal. Uma meta-análise de 23 ECRs (Frontiers in Nutrition) mostra que a suplementação de proteína combinada ao treino de força aumenta o ganho de força em adultos jovens, mas o tamanho do benefício depende da duração do programa e do momento da ingestão. Um ensaio piloto cruzado da UCSF (JAMA Psychiatry) com 20 adultos com depressão sugere que reduzir ultraprocessados por 4 semanas pode melhorar sintomas depressivos, com os próprios autores classificando o achado como exploratório. Uma prova de conceito com 8 adultos (Frontiers in Nutrition) testa se escolher o tipo de fibra pela capacidade fermentativa individual do microbioma aumenta a produção de ácidos graxos de cadeia curta, com resultado positivo em apenas parte dos participantes. Um ECR de 12 semanas (Journal of the International Society of Sports Nutrition) mostra que a creatina aumenta massa magra e força em adultos de 45-65 anos mesmo sem programa estruturado de exercício, com ganhos maiores quando combinada a treino e dieta. O ensaio SWITCH, de 2 anos (British Journal of Nutrition), mostra que bebidas dietéticas adoçadas artificialmente têm efeito equivalente à água sobre a perda de peso dentro de um programa comportamental estruturado. E um ECR com 98 gestantes de risco (Frontiers in Endocrinology) mostra que a suplementação de fibra solúvel não reduziu a incidência de diabetes gestacional, mas melhorou picos de glicose e o ganho de peso gestacional. Cada card abre a leitura completa com o link do estudo original."
+    texto: "Um estudo observacional em enfermarias de medicina interna (Frontiers in Nutrition) mostra que quase metade dos pacientes internados está em risco nutricional, mas que 74% desses pacientes não recebem nenhuma intervenção nutricional durante a internação — reforçando a lacuna entre triagem e conduta efetiva. Uma coorte coreana de 15 anos (estudo KNOW-CKD, JAMA Network Open) mostra que ingestão de proteína abaixo de 0,6 g/kg/dia associa-se a maior risco de falência renal e de morte em pacientes com doença renal crônica não dialítica, contrariando a ideia de que restringir ao máximo sempre protege o rim. Uma meta-análise de 11 estudos (Clinical Nutrition) mostra que a dieta cetogênica muito baixa em carboidrato melhora peso, resistência insulínica e perfil hormonal em mulheres com SOP e sobrepeso, mas os próprios autores pedem ensaios mais longos antes de recomendá-la como conduta padrão. Uma meta-análise de 7 ECRs (Journal of the International Society of Sports Nutrition) mostra que a creatina traz ganho pequeno, porém real, de massa magra e força em mulheres na pós-menopausa, principalmente quando combinada a treino de força. Um ensaio randomizado na Índia (Frontiers in Nutrition) mostra que o consumo diário de amêndoas por 20 semanas melhora a qualidade percebida do sono, com a ressalva de que o estudo foi financiado pela indústria de amêndoas. O ensaio BIOME (British Journal of Nutrition, financiado pela empresa ZOE) mostra que uma mistura de mais de 30 alimentos vegetais muda mais a composição da microbiota do que um probiótico de cepa única em apenas 6 semanas. Um estudo de coorte da Columbia University (Frontiers in Nutrition) mostra que somar ômega-3 às vitaminas pré-natais associa-se a menor taxa de parto prematuro em gestantes nulíparas, ainda que sem provar causalidade. O ensaio cluster randomizado H2GO! (JAMA Network Open) mostra que um programa comunitário de 6 semanas focado em reduzir bebidas açucaradas melhora o escore z de IMC de crianças de 8-13 anos ao longo de 12 meses. E o ensaio multicêntrico ABA-feed (BMJ) mostra que um programa intensivo de suporte de pares não aumenta as taxas de amamentação além do que o cuidado padrão já entrega no Reino Unido. Cada card abre a leitura completa com o link do estudo original."
   },
 
   /* Categorias (chips do feed) */
@@ -32,273 +32,271 @@ window.FEED_DATA = {
   cards: [
     /* ------------------------------------------------------------------ */
     {
-      id: "dha-omega3-alzheimer-prevencao-ecr",
+      id: "triagem-nutricional-hospitalar-oportunidades-perdidas-coorte",
       categoria: "Clínica",
-      areas: ["Clínica", "Envelhecimento"],
-      data: "19 jun 2026",
-      title: "ECR de 2 anos: suplementação de DHA em alta dose chega ao cérebro de idosos de risco para Alzheimer, mas não melhora memória nem retarda a atrofia do hipocampo",
-      resumo: "Ensaio clínico randomizado, duplo-cego e controlado por placebo com 365 adultos de 55-80 anos que raramente consumiam peixe (quase metade portadora do alelo APOE4) testou 2.000 mg/dia de DHA por 2 anos: o DHA elevou os níveis de ômega-3 no cérebro, mas não produziu melhora de memória, de desempenho cognitivo nem proteção contra a atrofia do hipocampo em relação ao placebo.",
-      mudou: "Contesta, com um ECR de 2 anos e amostra relevante, a expectativa de que suplementos de óleo de peixe protegeriam o cérebro contra o declínio cognitivo e o Alzheimer — mesmo demonstrando que o DHA de fato chega ao tecido cerebral, não houve benefício clínico mensurável.",
-      aplicar: "Ao conversar com pacientes (especialmente idosos preocupados com risco de Alzheimer) que suplementam óleo de peixe esperando proteção cognitiva, explique que este ECR não sustenta esse benefício isolado — reforce a obtenção de ômega-3 por padrão alimentar (peixes, fontes vegetais) como parte de uma dieta de proteção cardiovascular geral, sem prometer efeito específico sobre memória ou progressão do Alzheimer com a suplementação isolada.",
-      evidencia: 4,
-      link: "https://doi.org/10.1016/j.ebiom.2026.106316",
+      areas: ["Clínica", "Gestão"],
+      data: "13 mai 2026",
+      title: "Estudo em enfermarias de clínica médica: quase metade dos pacientes internados está em risco nutricional, e 74% deles não recebe nenhuma intervenção nutricional",
+      resumo: "Estudo observacional em enfermarias de medicina interna avaliou pacientes adultos triados por risco nutricional (NRS-2002) nas primeiras 48 horas de internação: cerca de 42% foram classificados em risco nutricional, mas 74,4% desses pacientes de risco não receberam nenhuma intervenção nutricional durante a internação; os poucos que receberam suplementação nutricional mostraram tendência a menor mortalidade do que os que não receberam, uma associação consistente com benefício, mas que não prova causalidade.",
+      mudou: "Reforça, com dados hospitalares recentes, que a lacuna entre identificar o risco nutricional e efetivamente agir sobre ele continua grande na prática — quase 3 em cada 4 pacientes de risco ficam sem intervenção, mesmo quando a triagem já aponta a necessidade.",
+      aplicar: "Use este dado para reforçar, junto à equipe multiprofissional, que a triagem nutricional (NRS-2002 ou equivalente) só tem valor se estiver acoplada a um fluxo claro de encaminhamento e intervenção — proponha ou participe de auditorias que garantam que todo paciente identificado em risco nas primeiras 48h realmente receba avaliação e conduta nutricional, não apenas o registro do escore no prontuário.",
+      evidencia: 3,
+      link: "https://doi.org/10.3389/fnut.2026.1755750",
       fonte: {
-        autores: "Yassine e cols. (Keck School of Medicine, University of Southern California)",
-        revista: "eBioMedicine",
+        autores: "Marinho, Craveiro, Ferreira, Carolino, Lopes, Correia, Marinho e Santos",
+        revista: "Frontiers in Nutrition",
         ano: "2026",
-        desenho: "Ensaio clínico randomizado, duplo-cego, controlado por placebo",
-        amostra: "365 adultos de 55-80 anos que raramente consumiam peixe, cerca de 47% portadores do alelo APOE4; suplementação de 2.000 mg/dia de DHA por 2 anos",
-        doi: "10.1016/j.ebiom.2026.106316",
-        acesso: "Resumo e cobertura especializada consultados; verificar acesso ao texto completo no site da revista"
+        desenho: "Estudo observacional de coorte em enfermarias de medicina interna",
+        amostra: "Pacientes adultos internados, triados por risco nutricional (NRS-2002) nas primeiras 48 horas de internação",
+        doi: "10.3389/fnut.2026.1755750",
+        acesso: "Acesso aberto (texto completo livre, Frontiers)"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "Milhões de pessoas tomam óleo de peixe esperando proteção cerebral, e estudos observacionais já associaram maior consumo de ômega-3 a menor risco de declínio cognitivo. Faltava um ensaio randomizado de longo prazo, em população de risco (idosos que comem pouco peixe, muitos portadores do APOE4), testando se a suplementação isolada de DHA realmente protege memória e estrutura cerebral." },
-        { h: "Como o estudo foi feito", p: "365 adultos de 55 a 80 anos, que raramente consumiam peixe e tinham risco aumentado de Alzheimer (quase metade com o alelo APOE4), foram randomizados para receber 2.000 mg/dia de DHA ou placebo por 2 anos, em desenho duplo-cego. Os pesquisadores mediram a concentração de ômega-3 no sistema nervoso central, o desempenho em testes cognitivos e o volume do hipocampo por imagem." },
-        { h: "O que foi encontrado", p: "O DHA elevou de fato os níveis de ômega-3 no cérebro, confirmando que o suplemento atingiu o tecido-alvo. Apesar disso, não houve diferença significativa entre os grupos em memória, outras habilidades cognitivas ou na perda de volume do hipocampo (a região-chave de memória afetada no Alzheimer) ao final dos 2 anos." },
-        { h: "O que isso não responde", p: "O estudo não avalia se uma intervenção dietética mais ampla (padrão alimentar rico em peixe, azeite, oleaginosas) teria efeito diferente de um suplemento isolado, nem testa populações com consumo basal de peixe já adequado. Também não exclui benefício em prazos ainda mais longos ou em subgrupos específicos não detalhados nos resumos consultados." },
-        { h: "Na prática do consultório", p: "Ao atender pacientes que já tomam ou perguntam sobre óleo de peixe para 'proteger o cérebro', explique que este ECR robusto não encontrou esse benefício isolado — e direcione a conversa para o padrão alimentar global (peixes, azeite, hortaliças, oleaginosas) como estratégia de proteção cardiovascular e metabólica, sem prometer efeito específico sobre memória ou Alzheimer a partir da suplementação isolada de DHA." }
+        { h: "A pergunta do estudo", p: "A triagem de risco nutricional ao internar é amplamente recomendada, mas é comum que o escore seja registrado sem disparar um encaminhamento real. Os autores quiseram quantificar, em enfermarias de medicina interna, quantos pacientes de risco de fato não recebem nenhuma intervenção nutricional, e se isso se relaciona a desfechos como mortalidade." },
+        { h: "Como o estudo foi feito", p: "Pacientes adultos internados em enfermarias de medicina interna foram triados quanto ao risco nutricional pelo NRS-2002 nas primeiras 48 horas de internação. Os pesquisadores acompanharam quais desses pacientes de risco receberam alguma forma de intervenção nutricional (como suplementação oral) durante a internação, e compararam desfechos entre quem recebeu e quem não recebeu." },
+        { h: "O que foi encontrado", p: "Cerca de 42% dos pacientes internados foram classificados em risco nutricional. Entre esses, 74,4% não receberam nenhuma intervenção nutricional durante a internação. Os pacientes de risco que receberam suplementação nutricional apresentaram tendência a menor mortalidade do que os que não receberam, embora essa associação não comprove causalidade." },
+        { h: "O que isso não responde", p: "Os resumos consultados não detalham o tamanho exato da amostra, o período de coleta nem se o desenho foi prospectivo ou retrospectivo, o que limita uma avaliação mais fina da robustez estatística. Também não é possível, a partir da associação observada, afirmar que a suplementação nutricional por si só reduziu a mortalidade — pacientes que recebem intervenção podem diferir sistematicamente dos que não recebem." },
+        { h: "Na prática do consultório", p: "Use este achado para reforçar, junto à equipe hospitalar multiprofissional, que a triagem nutricional só cumpre sua função quando acoplada a um fluxo claro de ação — proponha ou participe de auditorias que verifiquem se todo paciente identificado em risco nas primeiras 48h realmente recebe avaliação e conduta nutricional subsequente, e não apenas o registro do escore no prontuário." }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "app-digital-controle-fosfato-dialise-ecr",
+      id: "proteina-baixa-risco-falencia-renal-know-ckd-coorte",
       categoria: "Clínica",
       areas: ["Renal", "Clínica"],
-      data: "17 ago 2026",
-      title: "ECR multicêntrico australiano (TeleKinesis): app de orientação nutricional não reduz o fósforo sérico de forma significativa frente ao cuidado padrão em diálise, mas mostra sinal de melhora aos 6 meses",
-      resumo: "Ensaio clínico randomizado multicêntrico em 23 serviços de diálise na Austrália recrutou 190 pacientes e randomizou 99 para usar, além do cuidado padrão, um aplicativo de orientação nutricional sobre fósforo durante os 3 primeiros meses de um acompanhamento de 6 meses: a diferença entre grupos na variação do fósforo sérico aos 3 meses não foi significativa (queda de 6% no cuidado padrão vs. 7% no grupo do app), e o declínio progressivo de 9% observado no grupo do app aos 6 meses também não atingiu significância estatística.",
-      mudou: "Mostra que, nesse desenho e período, somar um aplicativo digital de orientação nutricional ao cuidado padrão não garante controle superior do fósforo sérico em diálise — mas o sinal de melhora sustentada e crescente aos 6 meses no grupo do app sugere que um seguimento mais longo poderia revelar benefício ainda não confirmado estatisticamente.",
-      aplicar: "Continue priorizando a orientação nutricional individualizada (presencial ou por telefone) como base do manejo do fósforo em diálise, e veja ferramentas digitais como possível complemento — não substituto — enquanto a evidência de benefício ainda não é estatisticamente robusta; para pacientes com boa adesão a aplicativos, o sinal de melhora tardia pode justificar manter a ferramenta por mais tempo antes de julgar seu efeito.",
-      evidencia: 4,
-      link: "https://pubmed.ncbi.nlm.nih.gov/42606901/",
+      data: "02 nov 2026",
+      title: "Coorte coreana KNOW-CKD (15 anos): ingestão de proteína abaixo de 0,6 g/kg/dia associa-se a maior risco de falência renal e de morte em pacientes com DRC não dialítica",
+      resumo: "Estudo de coorte prospectivo coreano (KNOW-CKD) acompanhou 1.861 pacientes com doença renal crônica não dialítica por mediana de 9,3 anos: quem consumia menos de 0,6 g/kg/dia de proteína teve cerca de 42% mais risco de evoluir para falência renal com necessidade de terapia renal substitutiva, e risco de mortalidade por todas as causas mais que o dobro, em comparação com quem tinha ingestão proteica mais alta.",
+      mudou: "Contraria a ideia de que 'quanto menos proteína, melhor' para preservar a função renal — neste estudo, a restrição proteica muito acentuada (abaixo de 0,6 g/kg/dia) associou-se a pior desfecho renal e maior mortalidade, não a proteção.",
+      aplicar: "Ao prescrever dieta hipoproteica para pacientes com DRC não dialítica, evite restringir abaixo de 0,6 g/kg/dia sem forte justificativa clínica e acompanhamento nutricional rigoroso — as diretrizes atuais (como KDIGO 2024) seguem recomendando algo em torno de 0,8 g/kg/dia para a maioria dos adultos com DRC; lembre-se também que este é um estudo observacional, então trate a associação com cautela e individualize conforme estágio da doença, estado nutricional e comorbidades.",
+      evidencia: 3,
+      link: "https://doi.org/10.1001/jamanetworkopen.2026.34568",
       fonte: {
-        autores: "Beer, Jacques, Lambert, Lim e Boudville",
-        revista: "Kidney360",
+        autores: "Suh, Choi, Kim e cols.; investigadores do estudo KNOW-CKD",
+        revista: "JAMA Network Open",
         ano: "2026",
-        desenho: "Ensaio clínico randomizado multicêntrico (estudo TeleKinesis)",
-        amostra: "190 pacientes em diálise recrutados em 23 serviços na Austrália; 99 randomizados para o braço com aplicativo digital de orientação nutricional, seguimento de 6 meses",
-        doi: "10.34067/KID.0000001328",
-        pubmed: "42606901",
-        acesso: "Resumo livre; verificar acesso ao texto completo no site da revista"
+        desenho: "Estudo de coorte prospectivo (KNOW-CKD)",
+        amostra: "1.861 pacientes coreanos com doença renal crônica não dialítica (estágios 3-5), seguimento de mediana de 9,3 anos",
+        doi: "10.1001/jamanetworkopen.2026.34568",
+        acesso: "Acesso aberto (JAMA Network Open)"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "O controle do fósforo sérico em pacientes de diálise depende fortemente da adesão à dieta e aos quelantes, e a orientação nutricional presencial nem sempre está disponível com a frequência necessária. Os autores quiseram testar se um aplicativo de orientação nutricional, usado como complemento ao cuidado padrão, melhora o controle do fósforo." },
-        { h: "Como o estudo foi feito", p: "O estudo TeleKinesis recrutou 190 pacientes em diálise em 23 serviços na Austrália. Noventa e nove foram randomizados para usar o aplicativo de orientação nutricional durante os 3 primeiros meses de um acompanhamento total de 6 meses, além do cuidado padrão recebido por todos; o desfecho primário foi a variação do fósforo sérico aos 3 meses." },
-        { h: "O que foi encontrado", p: "Aos 3 meses, a queda do fósforo sérico foi semelhante entre os grupos (6% no cuidado padrão vs. 7% no grupo do app), sem diferença estatisticamente significativa. Como sinal secundário, apenas o grupo do aplicativo mostrou um declínio progressivo e sustentado que chegou a 9% aos 6 meses — mas essa diferença também não atingiu significância estatística." },
-        { h: "O que isso não responde", p: "O estudo não esclarece se um período de uso do aplicativo mais longo que 3 meses, ou uma amostra maior, revelaria um benefício estatisticamente significativo a partir do sinal observado aos 6 meses. Também não é possível, com os dados disponíveis, identificar quais pacientes (por adesão ou perfil) teriam mais chance de se beneficiar da ferramenta digital." },
-        { h: "Na prática do consultório", p: "Use este resultado para calibrar expectativas sobre apps de orientação nutricional no manejo do fósforo em diálise: eles podem ser um complemento razoável ao cuidado padrão, mas, com a evidência atual, não substituem a orientação nutricional individualizada nem garantem controle superior do fósforo no curto prazo — o sinal de melhora aos 6 meses é um motivo para acompanhar de perto, não para prometer resultado." }
+        { h: "A pergunta do estudo", p: "A restrição de proteína é uma das condutas mais tradicionais no manejo da doença renal crônica (DRC), mas o quanto restringir, e até que ponto isso realmente protege a função renal sem prejudicar outros desfechos, ainda gera debate. Os autores quiseram testar, em uma coorte coreana de longo prazo, se a ingestão de proteína muito baixa (abaixo de 0,6 g/kg/dia) traz benefício ou risco para pacientes com DRC não dialítica." },
+        { h: "Como o estudo foi feito", p: "A coorte prospectiva KNOW-CKD acompanhou 1.861 pacientes coreanos com DRC não dialítica (estágios 3 a 5) por uma mediana de 9,3 anos. A ingestão de proteína foi estimada a partir de medidas objetivas na linha de base, e os pesquisadores compararam o risco de falência renal com necessidade de terapia renal substitutiva e de mortalidade por todas as causas entre diferentes faixas de ingestão proteica." },
+        { h: "O que foi encontrado", p: "Pacientes que consumiam menos de 0,6 g/kg/dia de proteína tiveram cerca de 42% mais risco de evoluir para falência renal com necessidade de diálise ou transplante, e risco de mortalidade por todas as causas mais que o dobro, em comparação com os que tinham ingestão proteica mais alta." },
+        { h: "O que isso não responde", p: "Por ser observacional, o estudo não prova causalidade — pacientes com ingestão proteica muito baixa podem já estar mais debilitados ou desnutridos por outros motivos (causalidade reversa). A estimativa de proteína veio de uma coleta pontual na linha de base, sem distinguir proteína animal de vegetal, nem controlar totalmente para o uso crescente de inibidores de SGLT2 ao longo do seguimento." },
+        { h: "Na prática do consultório", p: "Ao prescrever dieta hipoproteica para pacientes com DRC não dialítica, evite restringir abaixo de 0,6 g/kg/dia sem forte justificativa clínica e acompanhamento nutricional rigoroso — isso está alinhado com diretrizes atuais (KDIGO 2024), que recomendam algo próximo de 0,8 g/kg/dia para a maioria dos adultos com DRC. Trate este estudo como reforço para não exagerar na restrição proteica, individualizando sempre conforme estágio da doença, estado nutricional e comorbidades do paciente." }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "inositol-fenotipo-metabolico-sop-meta-analise",
+      id: "dieta-cetogenica-pcos-peso-insulina-meta-analise",
       categoria: "Saúde da Mulher",
-      areas: ["Saúde da Mulher", "SOP"],
-      data: "07 abr 2026",
-      title: "Meta-análise mostra que a resposta bioquímica ao inositol na síndrome dos ovários policísticos depende do fenótipo metabólico da paciente",
-      resumo: "Revisão sistemática com meta-análise de 9 estudos prospectivos intervencionistas (440 mulheres com SOP; 225 com inositol e 215 com placebo ou ácido fólico) encontrou redução significativa da testosterona total com a suplementação de inositol (SMD -1,30), com a resposta bioquímica mais consistente em mulheres de peso normal; mulheres com sobrepeso/obesidade ou resistência insulínica não mostraram melhora significativa nos marcadores avaliados.",
-      mudou: "Refina a visão de que o inositol 'funciona' de forma uniforme na SOP, mostrando que o fenótipo metabólico e o peso da paciente modulam a magnitude da resposta bioquímica (testosterona, SHBG), e não apenas se a paciente usa ou não o nutracêutico.",
-      aplicar: "Ao indicar inositol para SOP, calibre a expectativa conforme o fenótipo da paciente: há maior chance de resposta hormonal consistente em mulheres com peso normal; em pacientes com sobrepeso/obesidade ou resistência insulínica mais marcada, comunique que o inositol isolado pode não ser suficiente e priorize o manejo de peso e estilo de vida como base do tratamento.",
-      evidencia: 4,
-      link: "https://doi.org/10.1111/cen.70140",
+      areas: ["Saúde da Mulher", "Obesidade"],
+      data: "03 dez 2025",
+      title: "Meta-análise: dieta cetogênica muito baixa em carboidrato melhora peso, resistência insulínica e perfil hormonal em mulheres com SOP e sobrepeso ou obesidade",
+      resumo: "Revisão sistemática com meta-análise de 12 estudos (11 incluídos na quantitativa) sobre dieta cetogênica muito baixa em carboidrato (VLCKD) em mulheres com síndrome dos ovários policísticos encontrou reduções significativas de IMC (diferença média -3,38 kg/m², IC95% 2,53-4,23) e de peso corporal (diferença média -10,77 kg, IC95% 8,73-12,81), com melhora também de marcadores de resistência insulínica e do perfil hormonal reprodutivo em mulheres com IMC acima de 25 kg/m².",
+      mudou: "Reforça, com uma síntese maior do que estudos isolados anteriores, que a VLCKD pode ser uma estratégia dietética eficaz para melhorar peso, resistência insulínica e hormônios reprodutivos na SOP — mas os próprios autores pedem ensaios maiores e de seguimento mais longo antes de recomendá-la como conduta padrão, já que a maioria dos estudos incluídos é de curto prazo.",
+      aplicar: "Considere a VLCKD como opção dietética para mulheres com SOP e IMC acima de 25 kg/m² que não respondem bem a abordagens convencionais, mas discuta previamente a exigência de adesão rigorosa e a falta de dados de longo prazo — monitore função renal, perfil lipídico e estado nutricional durante o acompanhamento, e reavalie a estratégia se a resposta não for satisfatória.",
+      evidencia: 5,
+      link: "https://doi.org/10.1016/j.clnu.2025.11.019",
       fonte: {
-        autores: "Tienforti e cols. (Università degli Studi dell'Aquila)",
-        revista: "Clinical Endocrinology",
-        ano: "2026",
-        desenho: "Revisão sistemática com meta-análise de estudos prospectivos intervencionistas",
-        amostra: "9 estudos, 440 mulheres com SOP (225 com inositol, 215 com placebo ou ácido fólico)",
-        doi: "10.1111/cen.70140",
-        pubmed: "41947399",
-        acesso: "Acesso aberto (CC BY 4.0)"
+        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
+        revista: "Clinical Nutrition",
+        ano: "2026 (publicado on-line em dezembro de 2025)",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos",
+        amostra: "12 estudos (11 incluídos na meta-análise quantitativa) em mulheres com SOP",
+        doi: "10.1016/j.clnu.2025.11.019",
+        acesso: "Verificar acesso ao texto completo no site da revista"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "Revisões anteriores já sugeriam que o inositol melhora marcadores metabólicos e hormonais na síndrome dos ovários policísticos (SOP), mas a resposta entre estudos é heterogênea. Os autores quiseram testar se o fenótipo metabólico da paciente (sobretudo peso corporal e resistência insulínica) explica parte dessa heterogeneidade na resposta bioquímica ao inositol." },
-        { h: "Como o estudo foi feito", p: "Revisão sistemática com meta-análise reuniu 9 estudos prospectivos intervencionistas com 440 mulheres com SOP, comparando inositol (225 mulheres) a placebo ou ácido fólico (215 mulheres), e estratificou a análise por fenótipo metabólico (peso normal vs. sobrepeso/obesidade; com ou sem resistência insulínica)." },
-        { h: "O que foi encontrado", p: "A suplementação de inositol reduziu significativamente a testosterona total em relação ao controle (SMD -1,30). Essa resposta bioquímica foi mais consistente e homogênea em mulheres com peso normal; já em mulheres com sobrepeso ou obesidade, e nas com resistência insulínica avaliada isoladamente do IMC, não houve melhora significativa nos marcadores analisados." },
-        { h: "O que isso não responde", p: "A amostra total (440 mulheres) é pequena para uma meta-análise estratificada por subgrupo, o que reduz a precisão das estimativas dentro de cada fenótipo. Os resumos consultados também não detalham se doses diferentes de inositol (ou a proporção myo-inositol/D-chiro-inositol) explicam parte da variação de resposta entre os subgrupos." },
-        { h: "Na prática do consultório", p: "Use o inositol como parte do manejo nutricional da SOP com uma expectativa calibrada pelo fenótipo da paciente: em mulheres com peso normal, a chance de resposta hormonal consistente é maior; em pacientes com sobrepeso/obesidade ou resistência insulínica mais marcada, explique que o inositol isolado tende a ter efeito menor e reforce o manejo de peso, padrão alimentar e atividade física como base do tratamento, com o inositol como adjuvante." }
+        { h: "A pergunta do estudo", p: "Estudos individuais já sugeriam que a dieta cetogênica muito baixa em carboidrato (VLCKD) poderia melhorar parâmetros metabólicos e hormonais na síndrome dos ovários policísticos (SOP), mas os resultados eram heterogêneos e vinham de amostras pequenas. Os autores reuniram os ensaios disponíveis para estimar, de forma mais robusta, o efeito da VLCKD sobre peso, resistência insulínica e hormônios reprodutivos em mulheres com SOP." },
+        { h: "Como o estudo foi feito", p: "A revisão sistemática identificou 12 estudos sobre VLCKD em mulheres com SOP, dos quais 11 entraram na meta-análise quantitativa. Os desfechos avaliados incluíram IMC, peso corporal, marcadores de resistência insulínica (como HOMA-IR) e hormônios reprodutivos, principalmente em mulheres com IMC acima de 25 kg/m²." },
+        { h: "O que foi encontrado", p: "A VLCKD associou-se a reduções significativas de IMC (diferença média de -3,38 kg/m²) e de peso corporal (diferença média de -10,77 kg) em relação aos grupos de comparação, com heterogeneidade baixa entre os estudos (I²=0% em ambos os desfechos). Também houve melhora de marcadores de resistência insulínica e do perfil hormonal reprodutivo." },
+        { h: "O que isso não responde", p: "A maioria dos estudos incluídos tem seguimento de curto prazo, o que não permite avaliar sustentabilidade do efeito, adesão a longo prazo nem segurança cardiovascular e renal de uma dieta tão restritiva em carboidrato ao longo de anos. Os próprios autores pedem ensaios maiores e mais longos antes de recomendar a VLCKD como conduta padrão." },
+        { h: "Na prática do consultório", p: "Considere a VLCKD como uma opção dietética para mulheres com SOP e IMC acima de 25 kg/m² que não respondem bem a abordagens convencionais, mas discuta com a paciente a exigência de adesão rigorosa e a falta de dados de longo prazo antes de indicar — monitore função renal, perfil lipídico e estado nutricional ao longo do acompanhamento, e reavalie a estratégia se a adesão ou a resposta não forem satisfatórias." }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "proteina-treino-forca-jovens-adultos-meta-analise",
+      id: "creatina-mulheres-pos-menopausa-massa-magra-forca-meta-analise",
       categoria: "Esportiva",
       areas: ["Esportiva", "Suplementação"],
-      data: "14 out 2026",
-      title: "Meta-análise de 23 ECRs: proteína combinada ao treino de força aumenta o ganho de força em adultos jovens, mas o benefício depende da duração do programa e do momento da ingestão",
-      resumo: "Revisão sistemática com meta-análise de 23 ensaios clínicos randomizados (611 adultos jovens saudáveis, buscas até 1º de abril de 2026) comparou treino de força com e sem suplementação de proteína: o grupo proteína+treino teve ganho adicional médio de força no supino (~2,63 kg) e no agachamento (~7,40 kg) frente ao treino isolado, com o efeito no agachamento concentrado em intervenções de até 12 semanas e quando a proteína era consumida próxima ao treino ou antes de dormir.",
-      mudou: "Reforça que a proteína suplementar somada ao treino de força traz ganho real de força em adultos jovens, mas mostra que a magnitude desse benefício não é fixa — depende de moderadores como duração da intervenção, momento da ingestão, histórico de treino e ingestão proteica basal do indivíduo.",
-      aplicar: "Priorize garantir a ingestão proteica adequada distribuída ao redor do treino (próxima à sessão e antes de dormir), sobretudo em programas de até 12 semanas, e ajuste a expectativa de ganho de força conforme o histórico de treino e a ingestão proteica basal do paciente ou atleta, em vez de prometer o mesmo incremento para todos os perfis.",
-      evidencia: 5,
-      link: "https://doi.org/10.3389/fnut.2026.1946052",
-      fonte: {
-        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
-        revista: "Frontiers in Nutrition",
-        ano: "2026",
-        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
-        amostra: "23 ECRs, 611 adultos jovens saudáveis, buscas em bases de dados até 1º de abril de 2026",
-        doi: "10.3389/fnut.2026.1946052",
-        acesso: "Acesso aberto (texto completo livre, Frontiers)"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "A suplementação de proteína combinada ao treino de força é amplamente recomendada, mas estudos individuais mostram respostas bastante variáveis entre indivíduos e programas. Os autores buscaram reunir os ensaios clínicos randomizados disponíveis em adultos jovens para quantificar o ganho de força adicional e identificar quais fatores explicam a variação da resposta." },
-        { h: "Como o estudo foi feito", p: "Revisão sistemática com meta-análise reuniu 23 ensaios clínicos randomizados, com busca em bases de dados até 1º de abril de 2026, comparando treino de força isolado a treino de força combinado com suplementação de proteína em 611 adultos jovens saudáveis. Os autores calcularam diferenças médias ponderadas (WMD) para força no supino e no agachamento, e testaram moderadores como duração da intervenção e momento da ingestão proteica." },
-        { h: "O que foi encontrado", p: "O grupo proteína+treino teve ganho adicional médio de força de cerca de 2,63 kg no supino e 7,40 kg no agachamento, ambos estatisticamente significativos frente ao treino isolado. O efeito sobre o agachamento foi mais evidente em intervenções de até 12 semanas e quando a proteína era consumida próxima ao treino e/ou antes de dormir; a duração da intervenção foi um moderador significativo, e o momento da ingestão teve significância limítrofe." },
-        { h: "O que isso não responde", p: "Os resumos consultados não detalham a dose exata de proteína utilizada nos estudos incluídos nem a ingestão proteica basal dos participantes de forma padronizada entre os 23 ECRs, o que dificulta recomendar uma dose única. Também não está claro se o efeito se mantém em programas mais longos que 12 semanas, já que o moderador de duração favoreceu intervenções mais curtas." },
-        { h: "Na prática do consultório", p: "Ao prescrever suplementação de proteína para pacientes/atletas em treino de força, priorize garantir a ingestão em torno da sessão de treino e antes de dormir, especialmente em programas de até 12 semanas, e communique que o tamanho do ganho de força varia conforme o histórico de treino e a ingestão proteica basal — não é um efeito uniforme e garantido para todos os perfis." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "reducao-ultraprocessados-sintomas-depressao-ecr-piloto",
-      categoria: "Comportamental",
-      areas: ["Comportamental", "Saúde Mental"],
-      data: "23 set 2026",
-      title: "Ensaio piloto cruzado da UCSF: reduzir ultraprocessados por 4 semanas melhora sintomas depressivos, mas o próprio grupo de pesquisa classifica o achado como exploratório",
-      resumo: "Ensaio clínico randomizado cruzado, aberto e piloto, com 20 adultos com depressão (idade média 44 anos, 70% mulheres, a maioria com IMC elevado e ao menos uma condição metabólica), comparou 4 semanas de dieta habitual a 4 semanas com redução acentuada de ultraprocessados (ordem randomizada): os participantes reduziram o consumo de ultraprocessados em mais de 85% e apresentaram melhora de moderada a grande em três escalas de depressão, além de melhora discreta na ansiedade — mas os próprios autores tratam os desfechos de humor como exploratórios, já que o estudo foi desenhado para testar viabilidade e aceitabilidade, não eficácia.",
-      mudou: "Fornece a primeira evidência experimental (ainda que piloto) de que reduzir ultraprocessados pode melhorar sintomas depressivos em poucas semanas, complementando estudos observacionais anteriores que já associavam maior consumo de ultraprocessados a maior risco de depressão — mas o desenho, o tamanho da amostra e a ausência de cegamento limitam fortemente a conclusão.",
-      aplicar: "Considere a redução de ultraprocessados como estratégia alimentar adjuvante — nunca substituta ao tratamento psiquiátrico — ao orientar pacientes com sintomas depressivos leves a moderados, mas seja transparente de que o próprio grupo de pesquisa classifica o achado sobre humor como exploratório e gerador de hipótese, não como eficácia comprovada; o estudo teve apenas 20 participantes e focou em viabilidade, não em desfecho clínico definitivo.",
-      evidencia: 2,
-      link: "https://doi.org/10.1001/jamapsychiatry.2026.2320",
-      fonte: {
-        autores: "Chagwedera, Kim, Chiu e cols. (autor sênior Andrew Krystal, UCSF)",
-        revista: "JAMA Psychiatry (Research Letter)",
-        ano: "2026",
-        desenho: "Ensaio clínico randomizado cruzado, aberto, piloto de viabilidade",
-        amostra: "20 adultos com depressão (idade média 44 anos, 70% mulheres, 14 com ansiedade, maioria com IMC elevado e ao menos uma condição metabólica); 4 semanas de dieta habitual vs. 4 semanas com redução de ultraprocessados, em ordem randomizada",
-        doi: "10.1001/jamapsychiatry.2026.2320",
-        acesso: "Resumo e cobertura especializada consultados; verificar acesso ao texto completo no site da revista"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "Estudos observacionais já associam maior consumo de alimentos ultraprocessados a maior risco de depressão, mas faltava um ensaio experimental testando se reduzir esse consumo, de forma deliberada e em curto prazo, realmente muda sintomas depressivos — e se esse tipo de intervenção é viável de se testar em pacientes que já têm o diagnóstico." },
-        { h: "Como o estudo foi feito", p: "20 adultos com depressão, a maioria com IMC elevado e ao menos uma condição metabólica, participaram de um ensaio cruzado: cada um passou 4 semanas em dieta habitual e 4 semanas com redução acentuada de ultraprocessados, em ordem randomizada. O objetivo primário era testar viabilidade e aceitabilidade da intervenção; os escores de depressão e ansiedade foram desfechos exploratórios." },
-        { h: "O que foi encontrado", p: "Os participantes conseguiram reduzir o consumo de ultraprocessados em mais de 85% durante o período de intervenção. Nesse período, os escores de depressão (avaliados por três escalas diferentes) mostraram melhora de moderada a grande em relação ao período de dieta habitual, com melhora discreta também na ansiedade." },
-        { h: "O que isso não responde", p: "O estudo não teve cegamento (os participantes sabiam em qual fase estavam), a amostra é muito pequena (20 pessoas) e o consumo de ultraprocessados foi autorrelatado. Os autores também não conseguiram determinar se a melhora de humor se relaciona a mudanças de macronutrientes, calorias, contaminantes do processamento ou aditivos alimentares especificamente — os próprios pesquisadores chamam o achado de 'exploratório e gerador de hipótese, na melhor das hipóteses'." },
-        { h: "Na prática do consultório", p: "Pode-se discutir a redução de ultraprocessados como estratégia alimentar adjuvante ao cuidado de pacientes com sintomas depressivos leves a moderados — nunca como substituto ao acompanhamento psiquiátrico/psicológico — mas comunique com clareza que esse achado específico sobre humor vem de um estudo piloto pequeno e aberto, desenhado para testar viabilidade, e que um ensaio maior já está planejado pelos próprios autores." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "fibra-personalizada-fermentacao-microbiota-prova-conceito",
-      categoria: "Microbiota",
-      areas: ["Microbiota", "Comportamento Alimentar"],
-      data: "03 set 2026",
-      title: "Prova de conceito: escolher o tipo de fibra pela capacidade fermentativa individual do microbioma aumenta ácidos graxos de cadeia curta em parte dos participantes",
-      resumo: "Ensaio cruzado piloto (prova de conceito) com 8 adultos japoneses saudáveis testou uma ferramenta de triagem ex vivo (My Dietary Fiber Finder) que ranqueia tipos de fibra pela capacidade fermentativa do microbioma de cada indivíduo: a fibra selecionada como 'personalizada' elevou ácidos graxos voláteis fecais acima da linha de base em 2 dos 8 participantes (e ácidos graxos de cadeia curta totais em 1 deles), enquanto a fibra 'não personalizada' não elevou esses marcadores em nenhum participante; não houve mudança detectável na composição geral da comunidade microbiana (16S rRNA) em nível de grupo.",
-      mudou: "É a primeira prova de conceito de que testar, fora do corpo (ex vivo), qual fibra fermenta melhor no microbioma de uma pessoa específica pode, em tese, direcionar a escolha individualizada do tipo de fibra — mas a amostra é extremamente pequena e a resposta foi inconsistente entre os próprios participantes.",
-      aplicar: "Trate este achado como hipótese inicial de pesquisa, não como recomendação pronta para a prática clínica — ainda não existe uma ferramenta validada e acessível para 'testar' qual fibra fermenta melhor no microbioma de um paciente específico; continue orientando variedade de fontes de fibra (frutas, verduras, leguminosas, grãos integrais) como abordagem padrão enquanto essa linha de pesquisa avança.",
-      evidencia: 1,
-      link: "https://doi.org/10.3389/fnut.2026.1907988",
-      fonte: {
-        autores: "Osawa, Inoue, Fukuda, Shirai e Kodama",
-        revista: "Frontiers in Nutrition",
-        ano: "2026",
-        desenho: "Ensaio cruzado piloto (prova de conceito), com triagem ex vivo da capacidade fermentativa individual do microbioma",
-        amostra: "8 adultos japoneses saudáveis",
-        doi: "10.3389/fnut.2026.1907988",
-        acesso: "Acesso aberto (texto completo livre, Frontiers)"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "Diferentes pessoas fermentam o mesmo tipo de fibra de formas muito diferentes, dependendo da composição do próprio microbioma intestinal. Os autores quiseram testar se é possível prever, com um teste feito fora do corpo (ex vivo), qual tipo de fibra vai fermentar melhor no microbioma de uma pessoa específica — e se escolher a fibra dessa forma personalizada realmente aumenta a produção de ácidos graxos de cadeia curta no intestino dela." },
-        { h: "Como o estudo foi feito", p: "Os pesquisadores desenvolveram uma ferramenta de triagem ex vivo (My Dietary Fiber Finder, MyDFF) que ranqueia diferentes tipos de fibra por um índice de sacarificação, estimando qual fibra o microbioma de cada indivíduo fermenta melhor. Em um ensaio cruzado com 8 adultos japoneses saudáveis, cada participante consumiu, em momentos diferentes, a fibra apontada como 'personalizada' pelo teste e uma fibra 'não personalizada', medindo-se ácidos graxos voláteis fecais antes e depois de cada fase." },
-        { h: "O que foi encontrado", p: "A fibra personalizada elevou os ácidos graxos voláteis fecais acima da linha de base em 2 dos 8 participantes, e os ácidos graxos de cadeia curta totais em 1 deles; a fibra não personalizada não produziu esse aumento em nenhum participante. Em nível de grupo, o sequenciamento 16S rRNA não mostrou mudança na composição geral da comunidade microbiana, e a diferença no índice de sacarificação entre as fibras não se correlacionou com o tamanho da resposta observada em cada pessoa." },
-        { h: "O que isso não responde", p: "A amostra é extremamente pequena (8 pessoas) e a resposta positiva ocorreu em apenas 1 a 2 participantes, o que impede qualquer conclusão sobre eficácia — este é um estudo mecanístico de prova de conceito, não um teste de desfecho clínico. Também não há, nos resumos consultados, indicação de que essa ferramenta de triagem (MyDFF) esteja disponível ou validada para uso fora do contexto de pesquisa." },
-        { h: "Na prática do consultório", p: "Não há, por ora, uma ferramenta acessível ou validada para 'testar' qual fibra fermenta melhor no microbioma de um paciente específico — trate este estudo como uma hipótese de pesquisa em estágio inicial. Continue recomendando variedade de fontes de fibra (frutas, verduras, leguminosas, grãos integrais) como abordagem padrão para saúde do microbioma, já que é essa a estratégia com respaldo de evidência mais robusto até o momento." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "creatina-massa-magra-forca-meia-idade-sem-treino-ecr",
-      categoria: "Suplementação",
-      areas: ["Suplementação", "Envelhecimento"],
-      data: "21 ago 2026",
-      title: "ECR de 12 semanas: creatina aumenta massa magra e força em adultos de 45-65 anos mesmo sem programa estruturado de exercício, com ganhos maiores quando combinada a treino e dieta",
-      resumo: "Ensaio clínico randomizado, controlado por placebo, testou 10 g/dia de creatina monohidratada por 12 semanas em adultos de 45-65 anos, divididos em subgrupos com e sem programa estruturado de exercício e dieta: no subgrupo sem exercício estruturado, a creatina já aumentou massa magra e força em relação ao placebo; no subgrupo que combinou creatina com treino de força e dieta hipocalórica, os ganhos de massa magra e força foram maiores, com redução adicional do percentual de gordura corporal; desfechos cognitivos e de biomarcadores foram tratados pelos próprios autores como exploratórios.",
-      mudou: "Sugere que a creatina pode trazer benefício sobre massa magra e força em adultos de meia-idade mesmo na ausência de um programa estruturado de exercício — até aqui, a maior parte da evidência sólida de creatina dependia da combinação com treino de força.",
-      aplicar: "Considere a creatina monohidratada (na dose de 10 g/dia usada no estudo) como estratégia nutricional adjuvante para preservação de massa magra em pacientes de meia-idade com baixa adesão a programas estruturados de exercício — mas reforce que o benefício é maior quando combinada a treino de força e ajuste dietético, e que os achados cognitivos e de biomarcadores ainda são exploratórios, não confirmados.",
+      data: "16 mai 2026",
+      title: "Meta-análise de 7 ECRs: creatina traz ganho pequeno, porém consistente, de massa magra e força em mulheres na pós-menopausa, especialmente combinada a treino de força",
+      resumo: "Revisão sistemática com meta-análise de 7 ensaios clínicos randomizados controlados por placebo (608 mulheres, a maioria por volta dos 62 anos) encontrou ganho adicional médio de massa magra de 0,37 kg com a suplementação de creatina (IC95% 0,05-0,69) e ganho de força no leg press, com benefício mais consistente quando a dose era de pelo menos 5 g/dia associada a treino de força; o intervalo de predição de 95% (-0,10 a +0,84 kg) cruza o zero, indicando que o efeito pode não se repetir em todos os contextos.",
+      mudou: "Consolida, com uma meta-análise específica para mulheres na pós-menopausa, que a creatina pode trazer benefício pequeno, porém real, sobre massa magra e força nessa fase — uma população historicamente sub-representada nos estudos de creatina, que se concentravam mais em homens jovens atletas.",
+      aplicar: "Para mulheres na pós-menopausa, considere a creatina (a partir de 5 g/dia) como adjuvante ao treino de força para ganho de massa magra e força, comunicando que o efeito médio é pequeno e que a resposta pode variar entre indivíduas — reforce que o treino de força continua sendo o pilar da intervenção, com a creatina como complemento, não substituto.",
       evidencia: 4,
-      link: "https://doi.org/10.1080/15502783.2026.2716273",
+      link: "https://doi.org/10.1080/15502783.2026.2668435",
       fonte: {
-        autores: "Chun e cols. (Exercise & Sport Nutrition Lab, Texas A&M University; autor sênior Richard B. Kreider)",
+        autores: "Naddafha, Antonio, Kreider e Stout",
         revista: "Journal of the International Society of Sports Nutrition",
         ano: "2026",
-        desenho: "Ensaio clínico randomizado, controlado por placebo",
-        amostra: "64 adultos de 45-65 anos, em subgrupos com e sem treino de força estruturado/dieta hipocalórica, recebendo 10 g/dia de creatina monohidratada ou placebo por 12 semanas",
-        doi: "10.1080/15502783.2026.2716273",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados controlados por placebo",
+        amostra: "7 ECRs, 608 mulheres na pós-menopausa (idade média em torno de 62 anos)",
+        doi: "10.1080/15502783.2026.2668435",
         acesso: "Resumo livre; verificar acesso ao texto completo no site da revista"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "A creatina tem evidência consolidada para ganho de força e massa muscular quando combinada a treino de força, mas era menos claro se a suplementação isolada — sem um programa estruturado de exercício — também traria benefício em adultos de meia-idade, população em risco de perda progressiva de massa magra (sarcopenia)." },
-        { h: "Como o estudo foi feito", p: "64 adultos de 45 a 65 anos foram randomizados para receber 10 g/dia de creatina monohidratada ou placebo por 12 semanas, divididos em subgrupos: um sem programa estruturado de exercício, e outro combinando a suplementação com treino de força e dieta hipocalórica. Os desfechos incluíram composição corporal (massa magra, percentual de gordura), força, resistência muscular e, de forma exploratória, função cognitiva e biomarcadores de saúde." },
-        { h: "O que foi encontrado", p: "Mesmo no subgrupo sem programa estruturado de exercício, a creatina aumentou massa magra e força em relação ao placebo. No subgrupo que combinou creatina com treino de força e dieta hipocalórica, os ganhos de massa magra e força foram maiores, acompanhados de maior redução do percentual de gordura corporal. A suplementação foi bem tolerada, e os desfechos cognitivos e de biomarcadores foram classificados pelos próprios autores como exploratórios." },
-        { h: "O que isso não responde", p: "Os subgrupos (com e sem exercício estruturado) são pequenos dentro da amostra total de 64 participantes, o que limita a precisão das estimativas, principalmente para quem não fez exercício estruturado. Os achados cognitivos e de biomarcadores, por serem exploratórios, não devem ser tomados como efeito comprovado da creatina sobre cognição nesta faixa etária." },
-        { h: "Na prática do consultório", p: "Para pacientes de 45-65 anos com baixa adesão a programas estruturados de exercício, a creatina monohidratada (em torno de 10 g/dia, dose usada no estudo) pode ser discutida como estratégia nutricional adjuvante para preservação de massa magra e força — mas comunique que o benefício é maior quando ela é combinada a treino de força e ajuste dietético, e que os efeitos sobre cognição e biomarcadores ainda não estão confirmados." }
+        { h: "A pergunta do estudo", p: "A maior parte da evidência sobre creatina e composição corporal vem de estudos com homens jovens treinados, deixando uma lacuna sobre o efeito em mulheres na pós-menopausa — fase da vida marcada por perda progressiva de massa magra e força. Os autores reuniram os ensaios randomizados disponíveis nessa população específica." },
+        { h: "Como o estudo foi feito", p: "Revisão sistemática com meta-análise reuniu 7 ensaios clínicos randomizados, controlados por placebo, com 608 mulheres na pós-menopausa (idade média em torno de 62 anos), testando suplementação de creatina com e sem treino de força associado. Os desfechos incluíram massa magra e força (por exemplo, no leg press)." },
+        { h: "O que foi encontrado", p: "A creatina produziu ganho adicional médio de massa magra de 0,37 kg (IC95% 0,05-0,69 kg) em relação ao placebo, além de ganho de força no leg press. O benefício foi mais consistente quando a dose era de pelo menos 5 g/dia e a suplementação vinha associada a treino de força. O intervalo de predição de 95% (-0,10 a +0,84 kg), porém, cruza o zero, sinalizando que o efeito pode não se repetir em todos os contextos ou estudos futuros." },
+        { h: "O que isso não responde", p: "A amostra total (608 mulheres) ainda é pequena para uma meta-análise definitiva, e a revisão não foi registrada prospectivamente, o que pode introduzir viés de seleção de desfechos. Os resumos consultados também não detalham se há diferença de efeito conforme tempo desde a menopausa ou uso de terapia hormonal." },
+        { h: "Na prática do consultório", p: "Para mulheres na pós-menopausa engajadas em treino de força, considere a creatina (a partir de 5 g/dia) como adjuvante razoável para ganho de massa magra e força, comunicando que o efeito médio é pequeno e pode variar entre indivíduas — reforce que o treino de força continua sendo o pilar da intervenção, com a creatina como complemento, não substituto." }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "bebidas-dietas-vs-agua-perda-peso-dois-anos-ecr",
-      categoria: "Obesidade",
-      areas: ["Obesidade", "Comportamental"],
-      data: "02 out 2026",
-      title: "Ensaio SWITCH (2 anos): bebidas dietéticas adoçadas artificialmente têm efeito equivalente à água na perda de peso dentro de um programa comportamental estruturado",
-      resumo: "Ensaio clínico randomizado de 2 anos (estudo SWITCH, Universidade de Liverpool) com 493 adultos com sobrepeso ou obesidade comparou o consumo de água ao de bebidas adoçadas artificialmente (aspartame, acessulfame-K ou sucralose) dentro de um programa comportamental estruturado de perda de peso (12 semanas de perda ativa, 40 semanas de manutenção assistida e até 52 semanas opcionais sem suporte): ao final de 104 semanas, a perda de peso foi semelhante entre os grupos (bebidas dietéticas: -4,8 kg; água: -3,7 kg; diferença não significativa), com melhora de circunferência da cintura e marcadores metabólicos em ambos os grupos, porém com alta perda de seguimento ao longo do estudo.",
-      mudou: "Em um ensaio de longo prazo e dentro de um programa estruturado de perda de peso, bebidas dietéticas adoçadas artificialmente não se mostraram inferiores à água para a perda de peso — contrariando a preocupação de que adoçantes não calóricos prejudicariam o controle de peso no longo prazo quando usados como substituto de bebidas açucaradas.",
-      aplicar: "Ao orientar pacientes que preferem bebidas dietéticas no lugar de refrigerantes açucarados, dentro de um programa estruturado de perda de peso, pode-se dizer que este ECR de 2 anos não mostra desvantagem das bebidas dietéticas frente à água nesse contexto — mas lembre que o estudo teve financiamento da indústria de bebidas e alta perda de seguimento, então trate o resultado como 'equivalência quando a troca já seria feita', não como incentivo a maximizar o consumo de adoçantes.",
-      evidencia: 4,
-      link: "https://doi.org/10.1017/S0007114526108150",
+      id: "amendoas-qualidade-sono-ecr",
+      categoria: "Comportamental",
+      areas: ["Comportamental", "Suplementação"],
+      data: "03 ago 2026",
+      title: "ECR na Índia: consumo diário de 60 g de amêndoas por 20 semanas melhora a qualidade percebida do sono em adultos com sono ruim",
+      resumo: "Ensaio clínico randomizado, aberto, paralelo, com avaliação de desfecho cegada, conduzido na região metropolitana de Mumbai, randomizou 209 adultos de 21-55 anos com má qualidade de sono para consumir 60 g/dia de amêndoas cruas ou um lanche salgado calórico equivalente; dos 175 que completaram as 20 semanas, o grupo das amêndoas apresentou melhor qualidade percebida do sono, maior eficiência do sono e menor tempo para adormecer (esta última diferença só foi significativa após ajuste para valores basais e sexo), além de níveis mais altos de melatonina ao final do estudo.",
+      mudou: "Fornece um ensaio randomizado (não apenas observacional) testando um alimento específico — amêndoas — como possível estratégia alimentar para melhorar o sono percebido, complementando evidências anteriores menores sobre o tema; os próprios autores alertam para não equiparar sono percebido a sono medido objetivamente.",
+      aplicar: "Pode-se sugerir o consumo diário de cerca de 60 g de amêndoas como estratégia alimentar adjuvante para pacientes que relatam má qualidade de sono, deixando claro que o desfecho medido foi a percepção subjetiva do sono (não polissonografia) e que o estudo foi financiado pela indústria de amêndoas (Almond Board of California), o que pede cautela na interpretação.",
+      evidencia: 3,
+      link: "https://doi.org/10.3389/fnut.2026.1892442",
       fonte: {
-        autores: "Harrold e cols. (Universidade de Liverpool; investigador principal Jason Halford)",
+        autores: "Desai, Pinto, Halbe, Vaidya, Udipi e Kalita",
+        revista: "Frontiers in Nutrition",
+        ano: "2026",
+        desenho: "Ensaio clínico randomizado, aberto, paralelo, comunitário, com avaliação de desfecho cegada",
+        amostra: "209 adultos de 21-55 anos com má qualidade de sono na região metropolitana de Mumbai; 175 completaram as 20 semanas de acompanhamento",
+        doi: "10.3389/fnut.2026.1892442",
+        acesso: "Acesso aberto (texto completo livre, Frontiers); financiado pelo Almond Board of California"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "Alimentos específicos já foram associados a melhor qualidade de sono em estudos observacionais, e as amêndoas contêm nutrientes relacionados à síntese de melatonina e magnésio. Faltava um ensaio randomizado maior testando se o consumo diário de amêndoas realmente melhora a qualidade do sono percebida por adultos com sono ruim." },
+        { h: "Como o estudo foi feito", p: "O ensaio, conduzido na região metropolitana de Mumbai entre 2023 e 2025, randomizou 209 adultos de 21 a 55 anos com má qualidade de sono para consumir 60 g/dia de amêndoas cruas ou um lanche salgado calórico equivalente, por 20 semanas, em desenho aberto e comunitário, mas com avaliação de desfecho cegada. Qualidade de sono, eficiência do sono, tempo para adormecer e níveis de melatonina foram medidos ao final do estudo." },
+        { h: "O que foi encontrado", p: "Dos 209 randomizados, 175 completaram as 20 semanas. O grupo das amêndoas apresentou melhor qualidade percebida do sono, maior eficiência do sono e menor tempo para adormecer (esta última diferença só foi significativa após ajuste para valores basais e sexo), além de níveis mais altos de melatonina ao final do estudo em relação ao grupo controle." },
+        { h: "O que isso não responde", p: "O desfecho principal foi a qualidade de sono autorrelatada (percebida), não medida objetivamente por polissonografia ou actigrafia — os próprios autores alertam para não equiparar os dois tipos de medida. O estudo foi conduzido em uma população urbana indiana específica, o que limita a generalização para outros contextos, e foi financiado pelo Almond Board of California, entidade com interesse comercial direto no resultado." },
+        { h: "Na prática do consultório", p: "Pode-se sugerir o consumo diário de cerca de 60 g de amêndoas como estratégia alimentar adjuvante para pacientes que relatam má qualidade de sono, deixando claro que o desfecho medido foi a percepção subjetiva do sono, não um exame objetivo, e que o financiamento do estudo pela indústria de amêndoas pede uma leitura cautelosa dos resultados." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "mistura-vegetal-microbiota-vs-probiotico-ecr",
+      categoria: "Microbiota",
+      areas: ["Microbiota", "Comportamental"],
+      data: "16 jul 2026",
+      title: "Ensaio BIOME: mistura de mais de 30 alimentos vegetais muda mais a composição da microbiota do que um probiótico de cepa única em 6 semanas",
+      resumo: "Ensaio clínico randomizado com 399 adultos saudáveis do Reino Unido (35-65 anos) comparou uma mistura em pó de mais de 30 alimentos vegetais (30 g/dia), um probiótico de cepa única (Lactobacillus rhamnosus, 15 bilhões UFC/dia) e um controle de croutons de pão (28 g/dia) por 6 semanas: a mistura vegetal alterou a abundância relativa de 57 espécies bacterianas, contra 14 no grupo controle e 4 no grupo probiótico (p<0,001 para ambas as comparações), além de mais relatos de melhora de indigestão, prisão de ventre, azia e flatulência do que no grupo controle; não houve redução da glicemia pós-prandial em um subestudo com refeição rica em carboidrato.",
+      mudou: "Sugere que a diversidade de fibras e compostos de múltiplas fontes vegetais pode remodelar a microbiota intestinal de forma mais ampla do que a suplementação de uma única cepa probiótica isolada — reforçando a ideia de 'diversidade vegetal' como estratégia preferencial sobre o 'probiótico isolado' para saúde da microbiota em adultos saudáveis.",
+      aplicar: "Ao orientar pacientes saudáveis preocupados com saúde intestinal, priorize recomendar variedade de alimentos vegetais (leguminosas, grãos integrais, hortaliças, frutas, oleaginosas) como primeira estratégia para a microbiota, em vez de depender de um único probiótico — mas informe que o estudo foi financiado pela empresa que comercializa a mistura testada (ZOE), o que é um conflito de interesse relevante a considerar na leitura dos resultados.",
+      evidencia: 4,
+      link: "https://doi.org/10.1017/S0007114526107703",
+      fonte: {
+        autores: "Berry e cols. (King's College London, em parceria com a ZOE)",
         revista: "British Journal of Nutrition",
         ano: "2026",
-        desenho: "Ensaio clínico randomizado de longo prazo (estudo SWITCH), dentro de programa comportamental estruturado de perda de peso",
-        amostra: "493 adultos com sobrepeso ou obesidade, seguimento de 104 semanas",
-        doi: "10.1017/S0007114526108150",
-        acesso: "Resumo livre; verificar acesso ao texto completo no site da revista"
+        desenho: "Ensaio clínico randomizado de 3 braços",
+        amostra: "399 adultos saudáveis do Reino Unido, 35-65 anos, 6 semanas de intervenção",
+        doi: "10.1017/S0007114526107703",
+        acesso: "Resumo livre; verificar acesso ao texto completo no site da revista; estudo financiado pela ZOE Ltd"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "Bebidas dietéticas adoçadas artificialmente são frequentemente recomendadas como substituto de refrigerantes açucarados em programas de perda de peso, mas persiste a dúvida sobre se o consumo de adoçantes não calóricos no longo prazo poderia, de alguma forma, prejudicar o controle de peso — por exemplo, por manter preferência por sabor adocicado. Faltava um ensaio de longo prazo comparando diretamente bebidas dietéticas à água dentro de um programa estruturado de perda de peso." },
-        { h: "Como o estudo foi feito", p: "O ensaio SWITCH, da Universidade de Liverpool, randomizou 493 adultos com sobrepeso ou obesidade para consumir água ou bebidas adoçadas artificialmente (aspartame, acessulfame-K ou sucralose) ao longo de um programa comportamental estruturado de perda de peso, conduzido em três fases: 12 semanas de perda ativa, 40 semanas de manutenção assistida e até 52 semanas adicionais opcionais sem suporte do programa, totalizando 104 semanas de acompanhamento." },
-        { h: "O que foi encontrado", p: "Ao final de 104 semanas, a perda de peso foi semelhante entre os grupos — em média 4,8 kg no grupo de bebidas dietéticas e 3,7 kg no grupo de água, diferença não estatisticamente significativa. Ambos os grupos também apresentaram melhora de circunferência da cintura e de marcadores metabólicos ao longo do estudo." },
-        { h: "O que isso não responde", p: "O estudo teve alta perda de seguimento ao longo dos 2 anos, o que reduz a precisão da estimativa final e pode introduzir viés (quem permaneceu até o fim pode diferir de quem saiu). O financiamento pelo setor de bebidas, mesmo com controle independente da análise pelos pesquisadores, é um fator a considerar na interpretação. O estudo também não testa o efeito de bebidas dietéticas fora do contexto de um programa estruturado de perda de peso com suporte comportamental." },
-        { h: "Na prática do consultório", p: "Para pacientes que já pretendem substituir refrigerantes açucarados por versões dietéticas dentro de um programa estruturado de perda de peso, esta evidência de 2 anos permite dizer que a troca não prejudica o resultado de peso em comparação à água — mas continue priorizando água como primeira escolha, e seja transparente sobre a alta perda de seguimento e o financiamento do estudo ao discutir esses dados com o paciente." }
+        { h: "A pergunta do estudo", p: "Probióticos de cepa única são amplamente comercializados para saúde intestinal, mas a diversidade de fibras e compostos de múltiplas fontes vegetais também é apontada, por estudos observacionais, como benéfica para a microbiota. Faltava um ensaio randomizado comparando diretamente uma mistura de múltiplos alimentos vegetais a um probiótico de cepa única." },
+        { h: "Como o estudo foi feito", p: "399 adultos saudáveis do Reino Unido, de 35 a 65 anos, foram randomizados em 3 braços por 6 semanas: uma mistura em pó de mais de 30 alimentos vegetais (30 g/dia), um probiótico de cepa única (Lactobacillus rhamnosus, 15 bilhões UFC/dia) ou um controle de croutons de pão (28 g/dia). Os pesquisadores sequenciaram a microbiota fecal antes e depois da intervenção e registraram sintomas gastrointestinais autorrelatados; um subestudo também testou o efeito sobre a glicemia pós-prandial." },
+        { h: "O que foi encontrado", p: "A mistura vegetal alterou a abundância relativa de 57 espécies bacterianas, contra 14 no grupo controle e apenas 4 no grupo probiótico (p<0,001 para ambas as comparações). Participantes do grupo da mistura vegetal relataram menos indigestão, prisão de ventre, azia e flatulência do que o grupo controle. No subestudo de glicemia, a mistura vegetal não reduziu a glicemia pós-prandial após uma refeição rica em carboidrato." },
+        { h: "O que isso não responde", p: "O estudo foi financiado e conduzido em parceria com a empresa que comercializa a mistura testada (ZOE), e parte da equipe de pesquisa inclui cofundadores da empresa — um conflito de interesse relevante. Os sintomas gastrointestinais foram autorrelatados, e o estudo não acompanhou desfechos clínicos de longo prazo (como risco cardiometabólico) além da composição da microbiota em 6 semanas." },
+        { h: "Na prática do consultório", p: "Ao orientar pacientes saudáveis preocupados com saúde intestinal, priorize recomendar variedade de alimentos vegetais (leguminosas, grãos integrais, hortaliças, frutas, oleaginosas) como estratégia de primeira linha para a microbiota, em vez de depender de um único probiótico isolado — mas, ao citar este estudo específico, deixe claro o financiamento da empresa que vende o produto testado." }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "fibra-soluvel-risco-diabetes-gestacional-microbiota-ecr",
-      categoria: "Materno Infantil",
-      areas: ["Saúde da Mulher", "Materno Infantil"],
-      data: "30 mar 2026",
-      title: "ECR com 98 gestantes de risco: fibra solúvel não reduz a incidência de diabetes gestacional, mas melhora picos de glicose e ganho de peso gestacional",
-      resumo: "Ensaio clínico randomizado unicêntrico com 98 gestantes de risco elevado para diabetes gestacional (DMG), randomizadas entre 20 e 24+6 semanas para suplemento diário de fibra solúvel ou cuidado padrão por 5 semanas: a incidência de DMG não diferiu significativamente entre os grupos (10 de 48 no grupo fibra vs. 13 de 50 no controle; p=0,546), mas o grupo fibra teve excursões glicêmicas menores no teste oral de tolerância à glicose (glicemia de 1h: 8,09 vs. 8,88 mmol/L) e menor ganho de peso gestacional no período (1,83 vs. 2,54 kg; p=0,016), sem partos prematuros em nenhum grupo; análise de microbiota por sequenciamento 16S sugeriu menos vias inflamatórias preditas no grupo fibra.",
-      mudou: "Mesmo sem reduzir estatisticamente a incidência de DMG neste estudo pequeno, a fibra solúvel melhorou marcadores glicêmicos intermediários e o ganho de peso gestacional durante o período de suplementação — os próprios autores tratam a ligação com mudanças na microbiota como associação exploratória, não causal.",
-      aplicar: "Pode-se considerar a suplementação de fibra solúvel como estratégia adjuvante em gestantes de risco para DMG, visando melhora de excursões glicêmicas e controle do ganho de peso gestacional — mas seja claro de que, neste ECR, ela não reduziu estatisticamente o diagnóstico de DMG; é um estudo pequeno e unicêntrico, então individualize sempre conforme orientação obstétrica e evite prometer prevenção do diagnóstico com base apenas nesse resultado.",
+      id: "omega3-vitaminas-pre-natais-parto-prematuro-coorte",
+      categoria: "Suplementação",
+      areas: ["Suplementação", "Materno Infantil"],
+      data: "06 jan 2026",
+      title: "Estudo de coorte: somar ômega-3 às vitaminas pré-natais associa-se a menor taxa de parto prematuro em gestantes nulíparas",
+      resumo: "Estudo de coorte observacional da Columbia University Irving Medical Center comparou gestantes nulíparas que usaram vitaminas pré-natais associadas a ômega-3 extra com as que usaram apenas vitaminas pré-natais: a taxa de parto prematuro foi de 5,04% no grupo com ômega-3 extra versus 8,41% no grupo sem, com chance de parto prematuro cerca de 36% menor após ajuste (OR ajustado 0,64); os próprios autores destacam que o desenho observacional não permite afirmar causalidade e que ensaios randomizados ainda são necessários.",
+      mudou: "Acrescenta um sinal observacional relativamente forte a favor da suplementação de ômega-3 somada às vitaminas pré-natais para redução do risco de parto prematuro, mas não resolve a questão de causalidade — revisões anteriores com ensaios randomizados já mostravam benefício mais consistente em mulheres com baixo status basal de ômega-3, e este estudo não distingue esse subgrupo.",
+      aplicar: "Pode-se discutir com gestantes a adição de ômega-3 às vitaminas pré-natais como estratégia nutricional razoável para tentar reduzir o risco de parto prematuro, especialmente em mulheres com baixo consumo de peixe — mas seja transparente de que a evidência aqui é observacional, sujeita a fatores de confusão não totalmente controlados, e sempre dentro da orientação obstétrica vigente.",
       evidencia: 3,
-      link: "https://doi.org/10.3389/fendo.2026.1794560",
+      link: "https://doi.org/10.3389/fnut.2025.1693844",
       fonte: {
-        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
-        revista: "Frontiers in Endocrinology",
-        ano: "2026",
-        desenho: "Ensaio clínico randomizado unicêntrico",
-        amostra: "98 gestantes com risco elevado de diabetes gestacional, randomizadas entre 20 e 24+6 semanas de gestação, suplementação por 5 semanas",
-        doi: "10.3389/fendo.2026.1794560",
+        autores: "Yakah, Haas, Grobman e cols. (Columbia University Irving Medical Center)",
+        revista: "Frontiers in Nutrition",
+        ano: "2026 (publicado on-line em janeiro de 2026)",
+        desenho: "Estudo de coorte observacional",
+        amostra: "Gestantes nulíparas em uso de vitaminas pré-natais, com ou sem suplementação adicional de ômega-3",
+        doi: "10.3389/fnut.2025.1693844",
         acesso: "Acesso aberto (texto completo livre, Frontiers)"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "A fibra solúvel já é associada, em estudos observacionais, a melhor controle glicêmico e a mudanças favoráveis na microbiota intestinal. Faltava testar, em um ensaio randomizado, se a suplementação de fibra solúvel durante a gestação reduz a incidência de diabetes gestacional (DMG) em mulheres já identificadas como de risco elevado, e se isso se relaciona a mudanças mensuráveis na microbiota." },
-        { h: "Como o estudo foi feito", p: "98 gestantes com risco elevado de DMG foram randomizadas, entre 20 e 24 semanas e 6 dias de gestação, para receber um suplemento diário de fibra solúvel ou manter o cuidado padrão, por 5 semanas. Os desfechos incluíram o diagnóstico de DMG pelo teste oral de tolerância à glicose (TOTG), o ganho de peso gestacional no período, desfechos de parto e, em subanálise, a composição da microbiota intestinal por sequenciamento 16S rRNA." },
-        { h: "O que foi encontrado", p: "A incidência de DMG não diferiu significativamente entre os grupos (10 de 48 no grupo fibra vs. 13 de 50 no controle; p=0,546). Ainda assim, o grupo fibra teve excursões glicêmicas menores no TOTG (por exemplo, glicemia de 1 hora de 8,09 vs. 8,88 mmol/L) e menor ganho de peso gestacional no período de 5 semanas (1,83 vs. 2,54 kg; p=0,016), sem nenhum parto prematuro registrado em qualquer grupo. A análise preditiva de funções da microbiota apontou menos vias relacionadas à inflamação no grupo fibra." },
-        { h: "O que isso não responde", p: "O estudo é pequeno, unicêntrico e com apenas 5 semanas de intervenção, o que limita a capacidade de detectar diferença na incidência de DMG (desfecho que exigiria amostra maior) e não permite avaliar efeitos no restante da gestação. A própria equipe de pesquisa trata a ligação entre as mudanças de microbiota e os desfechos clínicos como uma associação exploratória, baseada em achados de estudos anteriores, não como mecanismo causal comprovado neste ensaio." },
-        { h: "Na prática do consultório", p: "Em gestantes com risco elevado de DMG, a suplementação de fibra solúvel pode ser discutida como estratégia adjuvante para melhorar excursões glicêmicas e ajudar no controle do ganho de peso gestacional — sempre dentro da orientação obstétrica vigente — mas não a apresente como forma comprovada de evitar o diagnóstico de DMG, já que esse desfecho específico não melhorou de forma estatisticamente significativa neste ECR pequeno." }
+        { h: "A pergunta do estudo", p: "Vitaminas pré-natais costumam conter pouco ou nenhum ômega-3, nutriente já associado, em estudos observacionais, a menor risco de parto prematuro. Os autores quiseram comparar, em gestantes nulíparas, as taxas de parto prematuro entre quem usava vitaminas pré-natais sozinhas e quem somava ômega-3 extra a elas." },
+        { h: "Como o estudo foi feito", p: "Estudo de coorte observacional da Columbia University Irving Medical Center comparou gestantes nulíparas em uso de vitaminas pré-natais associadas a ômega-3 adicional com gestantes em uso apenas de vitaminas pré-natais, registrando a ocorrência de parto prematuro e calculando a razão de chances ajustada para fatores de confusão conhecidos." },
+        { h: "O que foi encontrado", p: "A taxa de parto prematuro foi de 5,04% no grupo com ômega-3 extra, contra 8,41% no grupo sem ômega-3 adicional. Após ajuste para fatores de confusão, a chance de parto prematuro foi cerca de 36% menor no grupo que usava ômega-3 extra (OR ajustado de 0,64)." },
+        { h: "O que isso não responde", p: "Por ser observacional, o estudo não prova causalidade — mulheres que optam por suplementação adicional de ômega-3 podem diferir sistematicamente (em renda, acesso a cuidado pré-natal, outros hábitos de saúde) das que não optam, mesmo após ajuste estatístico. Os próprios autores afirmam que ensaios clínicos randomizados ainda são necessários para confirmar causalidade." },
+        { h: "Na prática do consultório", p: "Pode-se discutir com gestantes a adição de ômega-3 às vitaminas pré-natais como estratégia nutricional razoável, especialmente para aquelas com baixo consumo de peixe, mas comunique que a evidência aqui vem de um estudo observacional, não de um ensaio randomizado — e mantenha a decisão sempre alinhada à orientação obstétrica vigente." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "h2go-reducao-bebidas-acucaradas-imc-criancas-ecr",
+      categoria: "Obesidade",
+      areas: ["Obesidade", "Materno Infantil"],
+      data: "09 out 2026",
+      title: "Ensaio cluster randomizado H2GO!: programa comunitário para reduzir bebidas açucaradas melhora o escore z de IMC em crianças de 8-13 anos",
+      resumo: "Ensaio clínico cluster randomizado testou o programa comunitário H2GO! — 6 semanas com 12 sessões em grupo, conduzidas em unidades do Boys & Girls Clubs — com 437 crianças de 8-13 anos e um cuidador, focado em reduzir o consumo de bebidas açucaradas e aumentar o consumo de água: em 12 meses, as crianças do grupo intervenção tiveram redução significativamente maior do escore z de IMC do que as do grupo comparação, com cerca de 30% das crianças do grupo intervenção migrando para uma categoria de IMC mais baixa (vs. 18% no comparação), chegando a 47,5% entre as que começaram com obesidade (vs. 36,7% no comparação).",
+      mudou: "Mostra que um programa comunitário relativamente breve (6 semanas), focado especificamente em bebidas açucaradas e entregue por equipe de organizações comunitárias (não só por profissionais de saúde), pode gerar redução mensurável do IMC em crianças ao longo de 12 meses — um modelo de intervenção escalável fora do consultório tradicional.",
+      aplicar: "Ao orientar famílias de crianças com sobrepeso/obesidade, priorize a redução do consumo de bebidas açucaradas e o aumento da ingestão de água como meta concreta e de fácil mensuração — e, onde disponível, considere encaminhar famílias para programas comunitários estruturados (como os oferecidos por organizações extracurriculares) como complemento ao acompanhamento nutricional individual.",
+      evidencia: 4,
+      link: "https://doi.org/10.1001/jamanetworkopen.2026.38188",
+      fonte: {
+        autores: "Wang e cols. (Boston University)",
+        revista: "JAMA Network Open",
+        ano: "2026",
+        desenho: "Ensaio clínico cluster randomizado (programa H2GO!)",
+        amostra: "437 crianças de 8-13 anos e um cuidador, recrutadas em unidades do Boys & Girls Clubs; seguimento de 12 meses",
+        doi: "10.1001/jamanetworkopen.2026.38188",
+        acesso: "Acesso aberto (JAMA Network Open)"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "Programas de prevenção de obesidade infantil conduzidos dentro do sistema de saúde nem sempre alcançam as famílias que mais precisam, e organizações comunitárias (como clubes recreativos) são um canal alternativo pouco estudado em ensaios randomizados de boa qualidade. Os autores testaram se um programa de 6 semanas focado em reduzir bebidas açucaradas, entregue nesse formato comunitário, reduz o IMC de crianças ao longo de 12 meses." },
+        { h: "Como o estudo foi feito", p: "O ensaio cluster randomizado H2GO! recrutou 437 crianças de 8 a 13 anos, cada uma com um cuidador, em unidades do Boys & Girls Clubs. O programa consistiu em 6 semanas com 12 sessões em grupo, conduzidas por equipe treinada da própria organização comunitária, focadas em reduzir o consumo de bebidas açucaradas e aumentar o consumo de água. O desfecho principal foi a mudança no escore z de IMC em 12 meses." },
+        { h: "O que foi encontrado", p: "As crianças do grupo intervenção tiveram redução significativamente maior do escore z de IMC em 12 meses do que as do grupo comparação. Cerca de 30% das crianças do grupo intervenção migraram para uma categoria de IMC mais baixa, contra 18% no grupo comparação; entre as crianças que começaram o estudo com obesidade, 47,5% do grupo intervenção melhoraram de categoria de IMC, contra 36,7% no grupo comparação." },
+        { h: "O que isso não responde", p: "Os resumos consultados não detalham a magnitude exata (em kg/m² ou unidades de escore z) da diferença entre os grupos, nem se o efeito se mantém além dos 12 meses de seguimento. Também não está claro, pelos dados disponíveis, qual componente específico do programa (educação, suporte do grupo, mudança de disponibilidade de bebidas em casa) mais contribuiu para o resultado." },
+        { h: "Na prática do consultório", p: "Ao orientar famílias de crianças com sobrepeso ou obesidade, priorize a redução do consumo de bebidas açucaradas e o aumento da ingestão de água como meta concreta, de fácil mensuração e com respaldo deste ensaio — e, onde houver organizações comunitárias locais (clubes, ONGs, programas extracurriculares) dispostas a implementar abordagens semelhantes, considere isso como um complemento valioso ao acompanhamento nutricional individual." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "aba-feed-suporte-pares-amamentacao-ecr",
+      categoria: "Materno Infantil",
+      areas: ["Materno Infantil", "Comportamental"],
+      data: "31 mar 2026",
+      title: "ECR multicêntrico do Reino Unido (ABA-feed): suporte intensivo de pares não aumenta as taxas de amamentação em relação ao cuidado padrão",
+      resumo: "Ensaio clínico randomizado multicêntrico no Reino Unido comparou um programa intensivo de suporte de pares para amamentação (ABA-feed, 1.458 participantes) ao cuidado padrão (1.017 participantes): a taxa de qualquer amamentação em 8 semanas foi semelhante entre os grupos (69,8% vs. 68,8%; diferença de risco ajustada de 0,01, IC95% -0,03 a 0,04), sem diferença também em iniciação da amamentação (94,2% vs. 92,5%) nem nos demais desfechos secundários em 8, 16 e 24 semanas, exceto um ganho transitório de suporte social percebido às 8 semanas no grupo intervenção, que não se sustentou às 16 semanas.",
+      mudou: "Contraria, neste contexto populacional específico do Reino Unido (com taxa basal de amamentação já alta, próxima de 69%), a expectativa de que um programa intensivo e estruturado de suporte de pares aumentaria as taxas de amamentação acima do que o cuidado padrão já entrega — os próprios autores concluem que esse programa, nesse formato, não deveria ser implementado nesse contexto sem evidência adicional de efetividade local.",
+      aplicar: "Antes de recomendar ou implementar um programa específico de suporte de pares para amamentação, considere que a efetividade pode depender muito do contexto local (taxa basal de amamentação, estrutura do cuidado padrão já oferecido) — avalie evidência de efetividade no contexto onde o programa será aplicado antes de assumir benefício automático, e continue oferecendo suporte individualizado baseado nas necessidades específicas de cada binômio mãe-bebê.",
+      evidencia: 4,
+      link: "https://doi.org/10.1136/bmj-2025-086558",
+      fonte: {
+        autores: "Jolly e cols.",
+        revista: "The BMJ",
+        ano: "2026",
+        desenho: "Ensaio clínico randomizado multicêntrico, paralelo",
+        amostra: "2.475 gestantes/puérperas no Reino Unido (1.458 no grupo ABA-feed, 1.017 no cuidado padrão)",
+        doi: "10.1136/bmj-2025-086558",
+        acesso: "Acesso aberto (BMJ)"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "Programas de suporte de pares (mulheres que já amamentaram orientando outras mães) são frequentemente recomendados para aumentar as taxas de amamentação, mas sua efetividade real, testada em ensaios grandes e bem desenhados, ainda é incerta — especialmente em contextos onde o cuidado padrão já é relativamente robusto. Os autores testaram um programa intensivo de suporte de pares (ABA-feed) contra o cuidado padrão no Reino Unido." },
+        { h: "Como o estudo foi feito", p: "Ensaio clínico randomizado multicêntrico, paralelo, no Reino Unido, alocou 1.458 participantes para o programa intensivo de suporte de pares ABA-feed e 1.017 para o cuidado padrão de amamentação. O desfecho primário foi qualquer amamentação em 8 semanas pós-parto; desfechos secundários incluíram iniciação da amamentação, amamentação exclusiva, práticas de uso de fórmula, ansiedade, suporte social percebido e utilização de serviços de saúde, avaliados em 8, 16 e 24 semanas." },
+        { h: "O que foi encontrado", p: "A taxa de qualquer amamentação em 8 semanas foi semelhante entre os grupos (69,8% no ABA-feed vs. 68,8% no cuidado padrão; diferença de risco ajustada de 0,01, IC95% -0,03 a 0,04). A iniciação da amamentação também foi semelhante (94,2% vs. 92,5%). Entre os desfechos secundários, a única diferença encontrada foi um ganho transitório de suporte social percebido às 8 semanas no grupo intervenção, que não se sustentou na avaliação de 16 semanas." },
+        { h: "O que isso não responde", p: "A taxa basal de amamentação no cuidado padrão já era alta (quase 69%), mais alta do que o esperado no planejamento do estudo — isso pode ter reduzido a margem para o programa de suporte de pares mostrar benefício adicional detectável. O estudo não testa se o mesmo programa traria benefício em contextos com taxas basais de amamentação mais baixas." },
+        { h: "Na prática do consultório", p: "Antes de recomendar ou apoiar a implementação de um programa específico de suporte de pares para amamentação, considere que a efetividade pode depender muito do contexto local — avalie a taxa basal de amamentação e a qualidade do cuidado padrão já oferecido antes de assumir benefício automático de um programa estruturado, e continue priorizando o suporte individualizado conforme as necessidades específicas de cada binômio mãe-bebê." }
       ]
     }
   ]
