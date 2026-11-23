@@ -18,8 +18,8 @@ window.FEED_DATA = {
   /* Resumo da rodada atual */
   semana: {
     eyebrow: "Atualização da Semana",
-    title: "9 estudos reais para atualizar sua conduta nesta semana",
-    texto: "Um estudo observacional em enfermarias de medicina interna (Frontiers in Nutrition) mostra que quase metade dos pacientes internados está em risco nutricional, mas que 74% desses pacientes não recebem nenhuma intervenção nutricional durante a internação — reforçando a lacuna entre triagem e conduta efetiva. Uma coorte coreana de 15 anos (estudo KNOW-CKD, JAMA Network Open) mostra que ingestão de proteína abaixo de 0,6 g/kg/dia associa-se a maior risco de falência renal e de morte em pacientes com doença renal crônica não dialítica, contrariando a ideia de que restringir ao máximo sempre protege o rim. Uma meta-análise de 11 estudos (Clinical Nutrition) mostra que a dieta cetogênica muito baixa em carboidrato melhora peso, resistência insulínica e perfil hormonal em mulheres com SOP e sobrepeso, mas os próprios autores pedem ensaios mais longos antes de recomendá-la como conduta padrão. Uma meta-análise de 7 ECRs (Journal of the International Society of Sports Nutrition) mostra que a creatina traz ganho pequeno, porém real, de massa magra e força em mulheres na pós-menopausa, principalmente quando combinada a treino de força. Um ensaio randomizado na Índia (Frontiers in Nutrition) mostra que o consumo diário de amêndoas por 20 semanas melhora a qualidade percebida do sono, com a ressalva de que o estudo foi financiado pela indústria de amêndoas. O ensaio BIOME (British Journal of Nutrition, financiado pela empresa ZOE) mostra que uma mistura de mais de 30 alimentos vegetais muda mais a composição da microbiota do que um probiótico de cepa única em apenas 6 semanas. Um estudo de coorte da Columbia University (Frontiers in Nutrition) mostra que somar ômega-3 às vitaminas pré-natais associa-se a menor taxa de parto prematuro em gestantes nulíparas, ainda que sem provar causalidade. O ensaio cluster randomizado H2GO! (JAMA Network Open) mostra que um programa comunitário de 6 semanas focado em reduzir bebidas açucaradas melhora o escore z de IMC de crianças de 8-13 anos ao longo de 12 meses. E o ensaio multicêntrico ABA-feed (BMJ) mostra que um programa intensivo de suporte de pares não aumenta as taxas de amamentação além do que o cuidado padrão já entrega no Reino Unido. Cada card abre a leitura completa com o link do estudo original."
+    title: "8 estudos reais para atualizar sua conduta nesta semana",
+    texto: "Um estudo nacional japonês com dados de 51.580 internações em UTI (Clinical Nutrition) mostra que apenas 53,5% dos pacientes críticos têm status nutricional classificável pelos critérios GLIM, e que a desnutrição identificada eleva em 23% o risco de morte em 30 dias — pacientes sem avaliação documentada também tiveram mortalidade mais alta. Um ensaio randomizado em mulheres com SOP (Nature Medicine) mostra que o jejum intermitente de 6 horas emagrece tanto quanto a restrição calórica diária, mas só o jejum reduziu o índice de andrógeno livre. Um ensaio de 6 meses (European Journal of Clinical Nutrition) mostra que diferentes estratégias dietéticas reduzem em média 3% do peso em adultos com sobrepeso, sem diferença significativa de eficácia entre as dietas testadas. Um ensaio robusto em lactentes (JAMA Network Open) mostra que fórmula infantil enriquecida com MFGM não melhora significativamente a cognição aos 12 meses frente à fórmula padrão, contrariando ensaios menores anteriores. Uma análise secundária de 3 ECRs em idosos mostra que mais proteína durante a perda de peso preserva mais massa magra apendicular, mas não se traduz em mais força ou função física. Uma meta-análise dose-resposta (Nutrients) mostra que doses baixas de cafeína (1,3-3 mg/kg) já melhoram o desempenho aeróbico em contrarrelógio, sem necessidade de doses mais altas. Um ensaio de viabilidade brasileiro, conduzido no Hospital de Clínicas de Porto Alegre (Lancet Regional Health – Americas), mostra que um programa online de alimentação consciente para pacientes com obesidade e ansiedade não mudou o controle inibitório alimentar medido objetivamente, mas trouxe ganhos psicológicos autorrelatados. E uma meta-análise de 9 ECRs mostra que a dieta mediterrânea melhora HbA1c, LDL e triglicerídeos no diabetes tipo 2, mas o efeito sobre a microbiota intestinal ainda não pôde ser quantificado por falta de padronização entre os estudos. Cada card abre a leitura completa com o link do estudo original."
   },
 
   /* Categorias (chips do feed) */
@@ -32,271 +32,241 @@ window.FEED_DATA = {
   cards: [
     /* ------------------------------------------------------------------ */
     {
-      id: "triagem-nutricional-hospitalar-oportunidades-perdidas-coorte",
+      id: "glim-malnutricao-mortalidade-uti-dpc-japao-coorte",
       categoria: "Clínica",
       areas: ["Clínica", "Gestão"],
-      data: "13 mai 2026",
-      title: "Estudo em enfermarias de clínica médica: quase metade dos pacientes internados está em risco nutricional, e 74% deles não recebe nenhuma intervenção nutricional",
-      resumo: "Estudo observacional em enfermarias de medicina interna avaliou pacientes adultos triados por risco nutricional (NRS-2002) nas primeiras 48 horas de internação: cerca de 42% foram classificados em risco nutricional, mas 74,4% desses pacientes de risco não receberam nenhuma intervenção nutricional durante a internação; os poucos que receberam suplementação nutricional mostraram tendência a menor mortalidade do que os que não receberam, uma associação consistente com benefício, mas que não prova causalidade.",
-      mudou: "Reforça, com dados hospitalares recentes, que a lacuna entre identificar o risco nutricional e efetivamente agir sobre ele continua grande na prática — quase 3 em cada 4 pacientes de risco ficam sem intervenção, mesmo quando a triagem já aponta a necessidade.",
-      aplicar: "Use este dado para reforçar, junto à equipe multiprofissional, que a triagem nutricional (NRS-2002 ou equivalente) só tem valor se estiver acoplada a um fluxo claro de encaminhamento e intervenção — proponha ou participe de auditorias que garantam que todo paciente identificado em risco nas primeiras 48h realmente receba avaliação e conduta nutricional, não apenas o registro do escore no prontuário.",
+      data: "20 ago 2026",
+      title: "Estudo nacional japonês: apenas 53,5% dos pacientes críticos têm status nutricional classificável pelo GLIM, e a desnutrição identificada eleva em 23% o risco de morte em 30 dias",
+      resumo: "Coorte retrospectiva nacional japonesa, com dados do banco DPC, analisou 51.580 internações de adultos em UTI entre junho de 2024 e setembro de 2025: apenas 53,5% (27.613 pacientes) tiveram status nutricional classificável pelos critérios GLIM, e entre esses, 10,2% foram classificados como desnutridos; a desnutrição associou-se a maior mortalidade hospitalar em 30 dias frente a pacientes não desnutridos (razão de risco ajustada de 1,23, IC95% 1,08-1,41), e pacientes sem avaliação documentada também apresentaram mortalidade mais alta do que os não desnutridos.",
+      mudou: "Reforça, com dados nacionais recentes, que a adoção do GLIM na prática real de UTI ainda tem grande lacuna de documentação — quase metade dos pacientes críticos não tem status nutricional classificável — e sugere que a própria ausência de avaliação já é um sinal de risco, não apenas um problema de registro.",
+      aplicar: "Nas equipes de terapia intensiva, defenda a aplicação e o registro completo do GLIM para todo paciente internado, já que os dados sugerem que pacientes sem avaliação documentada podem representar um grupo de risco elevado que passa despercebido nos indicadores habituais do serviço.",
       evidencia: 3,
-      link: "https://doi.org/10.3389/fnut.2026.1755750",
+      link: "https://doi.org/10.1016/j.clnu.2026.106765",
       fonte: {
-        autores: "Marinho, Craveiro, Ferreira, Carolino, Lopes, Correia, Marinho e Santos",
-        revista: "Frontiers in Nutrition",
-        ano: "2026",
-        desenho: "Estudo observacional de coorte em enfermarias de medicina interna",
-        amostra: "Pacientes adultos internados, triados por risco nutricional (NRS-2002) nas primeiras 48 horas de internação",
-        doi: "10.3389/fnut.2026.1755750",
-        acesso: "Acesso aberto (texto completo livre, Frontiers)"
+        autores: "Shimizu Akio, Yoshida Minoru, Tomata Yasutake, Momosaki Ryo e Shimizu Sayuri",
+        revista: "Clinical Nutrition",
+        ano: "2026 (publicado on-line em 20 de agosto de 2026)",
+        desenho: "Coorte retrospectiva nacional, banco de dados DPC (Diagnosis Procedure Combination) do Japão",
+        amostra: "51.580 internações de adultos em UTI no Japão, junho de 2024 a setembro de 2025",
+        doi: "10.1016/j.clnu.2026.106765",
+        acesso: "Verificar acesso ao texto completo no site da revista (Elsevier)"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "A triagem de risco nutricional ao internar é amplamente recomendada, mas é comum que o escore seja registrado sem disparar um encaminhamento real. Os autores quiseram quantificar, em enfermarias de medicina interna, quantos pacientes de risco de fato não recebem nenhuma intervenção nutricional, e se isso se relaciona a desfechos como mortalidade." },
-        { h: "Como o estudo foi feito", p: "Pacientes adultos internados em enfermarias de medicina interna foram triados quanto ao risco nutricional pelo NRS-2002 nas primeiras 48 horas de internação. Os pesquisadores acompanharam quais desses pacientes de risco receberam alguma forma de intervenção nutricional (como suplementação oral) durante a internação, e compararam desfechos entre quem recebeu e quem não recebeu." },
-        { h: "O que foi encontrado", p: "Cerca de 42% dos pacientes internados foram classificados em risco nutricional. Entre esses, 74,4% não receberam nenhuma intervenção nutricional durante a internação. Os pacientes de risco que receberam suplementação nutricional apresentaram tendência a menor mortalidade do que os que não receberam, embora essa associação não comprove causalidade." },
-        { h: "O que isso não responde", p: "Os resumos consultados não detalham o tamanho exato da amostra, o período de coleta nem se o desenho foi prospectivo ou retrospectivo, o que limita uma avaliação mais fina da robustez estatística. Também não é possível, a partir da associação observada, afirmar que a suplementação nutricional por si só reduziu a mortalidade — pacientes que recebem intervenção podem diferir sistematicamente dos que não recebem." },
-        { h: "Na prática do consultório", p: "Use este achado para reforçar, junto à equipe hospitalar multiprofissional, que a triagem nutricional só cumpre sua função quando acoplada a um fluxo claro de ação — proponha ou participe de auditorias que verifiquem se todo paciente identificado em risco nas primeiras 48h realmente recebe avaliação e conduta nutricional subsequente, e não apenas o registro do escore no prontuário." }
+        { h: "A pergunta do estudo", p: "O GLIM (Global Leadership Initiative on Malnutrition) é o critério mais recomendado para diagnosticar desnutrição, mas pouco se sabe sobre o quanto ele é efetivamente aplicado e documentado na rotina real de unidades de terapia intensiva. Os autores quiseram medir essa lacuna de documentação em escala nacional e verificar se ela se relaciona com a mortalidade dos pacientes." },
+        { h: "Como o estudo foi feito", p: "Usando o banco de dados nacional japonês Diagnosis Procedure Combination (DPC), os pesquisadores identificaram 51.580 internações de adultos em UTI entre junho de 2024 e setembro de 2025. Eles verificaram quantos pacientes tinham um status nutricional classificável pelos critérios GLIM e compararam a mortalidade hospitalar em 30 dias entre pacientes desnutridos, não desnutridos e sem avaliação documentada." },
+        { h: "O que foi encontrado", p: "Apenas 53,5% dos pacientes (27.613) tiveram status nutricional classificável; entre esses, 10,2% foram classificados como desnutridos pelo GLIM. A desnutrição associou-se a maior mortalidade hospitalar em 30 dias em comparação com pacientes não desnutridos (razão de risco ajustada de 1,23, IC95% 1,08-1,41). Pacientes cujo status não foi avaliado ou documentado também apresentaram mortalidade mais alta do que os não desnutridos." },
+        { h: "O que isso não responde", p: "Por ser observacional e baseado em registros administrativos, o estudo não permite afirmar que melhorar a documentação por si só reduziria a mortalidade — pacientes mais graves podem ser menos frequentemente avaliados por razões assistenciais que o banco de dados não captura. O estudo também não detalha quais fatores explicam a baixa taxa de classificação (53,5%)." },
+        { h: "Na prática do consultório", p: "Para profissionais que atuam em terapia intensiva ou hospitais, use este achado para reforçar junto à equipe multiprofissional a importância de aplicar e registrar o GLIM em todo paciente internado — e trate a ausência de avaliação documentada como um possível sinal de alerta, não apenas como uma falha de preenchimento de prontuário." }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "proteina-baixa-risco-falencia-renal-know-ckd-coorte",
-      categoria: "Clínica",
-      areas: ["Renal", "Clínica"],
-      data: "02 nov 2026",
-      title: "Coorte coreana KNOW-CKD (15 anos): ingestão de proteína abaixo de 0,6 g/kg/dia associa-se a maior risco de falência renal e de morte em pacientes com DRC não dialítica",
-      resumo: "Estudo de coorte prospectivo coreano (KNOW-CKD) acompanhou 1.861 pacientes com doença renal crônica não dialítica por mediana de 9,3 anos: quem consumia menos de 0,6 g/kg/dia de proteína teve cerca de 42% mais risco de evoluir para falência renal com necessidade de terapia renal substitutiva, e risco de mortalidade por todas as causas mais que o dobro, em comparação com quem tinha ingestão proteica mais alta.",
-      mudou: "Contraria a ideia de que 'quanto menos proteína, melhor' para preservar a função renal — neste estudo, a restrição proteica muito acentuada (abaixo de 0,6 g/kg/dia) associou-se a pior desfecho renal e maior mortalidade, não a proteção.",
-      aplicar: "Ao prescrever dieta hipoproteica para pacientes com DRC não dialítica, evite restringir abaixo de 0,6 g/kg/dia sem forte justificativa clínica e acompanhamento nutricional rigoroso — as diretrizes atuais (como KDIGO 2024) seguem recomendando algo em torno de 0,8 g/kg/dia para a maioria dos adultos com DRC; lembre-se também que este é um estudo observacional, então trate a associação com cautela e individualize conforme estágio da doença, estado nutricional e comorbidades.",
-      evidencia: 3,
-      link: "https://doi.org/10.1001/jamanetworkopen.2026.34568",
-      fonte: {
-        autores: "Suh, Choi, Kim e cols.; investigadores do estudo KNOW-CKD",
-        revista: "JAMA Network Open",
-        ano: "2026",
-        desenho: "Estudo de coorte prospectivo (KNOW-CKD)",
-        amostra: "1.861 pacientes coreanos com doença renal crônica não dialítica (estágios 3-5), seguimento de mediana de 9,3 anos",
-        doi: "10.1001/jamanetworkopen.2026.34568",
-        acesso: "Acesso aberto (JAMA Network Open)"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "A restrição de proteína é uma das condutas mais tradicionais no manejo da doença renal crônica (DRC), mas o quanto restringir, e até que ponto isso realmente protege a função renal sem prejudicar outros desfechos, ainda gera debate. Os autores quiseram testar, em uma coorte coreana de longo prazo, se a ingestão de proteína muito baixa (abaixo de 0,6 g/kg/dia) traz benefício ou risco para pacientes com DRC não dialítica." },
-        { h: "Como o estudo foi feito", p: "A coorte prospectiva KNOW-CKD acompanhou 1.861 pacientes coreanos com DRC não dialítica (estágios 3 a 5) por uma mediana de 9,3 anos. A ingestão de proteína foi estimada a partir de medidas objetivas na linha de base, e os pesquisadores compararam o risco de falência renal com necessidade de terapia renal substitutiva e de mortalidade por todas as causas entre diferentes faixas de ingestão proteica." },
-        { h: "O que foi encontrado", p: "Pacientes que consumiam menos de 0,6 g/kg/dia de proteína tiveram cerca de 42% mais risco de evoluir para falência renal com necessidade de diálise ou transplante, e risco de mortalidade por todas as causas mais que o dobro, em comparação com os que tinham ingestão proteica mais alta." },
-        { h: "O que isso não responde", p: "Por ser observacional, o estudo não prova causalidade — pacientes com ingestão proteica muito baixa podem já estar mais debilitados ou desnutridos por outros motivos (causalidade reversa). A estimativa de proteína veio de uma coleta pontual na linha de base, sem distinguir proteína animal de vegetal, nem controlar totalmente para o uso crescente de inibidores de SGLT2 ao longo do seguimento." },
-        { h: "Na prática do consultório", p: "Ao prescrever dieta hipoproteica para pacientes com DRC não dialítica, evite restringir abaixo de 0,6 g/kg/dia sem forte justificativa clínica e acompanhamento nutricional rigoroso — isso está alinhado com diretrizes atuais (KDIGO 2024), que recomendam algo próximo de 0,8 g/kg/dia para a maioria dos adultos com DRC. Trate este estudo como reforço para não exagerar na restrição proteica, individualizando sempre conforme estágio da doença, estado nutricional e comorbidades do paciente." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "dieta-cetogenica-pcos-peso-insulina-meta-analise",
+      id: "jejum-intermitente-tre-pcos-peso-androgenos-ecr",
       categoria: "Saúde da Mulher",
       areas: ["Saúde da Mulher", "Obesidade"],
-      data: "03 dez 2025",
-      title: "Meta-análise: dieta cetogênica muito baixa em carboidrato melhora peso, resistência insulínica e perfil hormonal em mulheres com SOP e sobrepeso ou obesidade",
-      resumo: "Revisão sistemática com meta-análise de 12 estudos (11 incluídos na quantitativa) sobre dieta cetogênica muito baixa em carboidrato (VLCKD) em mulheres com síndrome dos ovários policísticos encontrou reduções significativas de IMC (diferença média -3,38 kg/m², IC95% 2,53-4,23) e de peso corporal (diferença média -10,77 kg, IC95% 8,73-12,81), com melhora também de marcadores de resistência insulínica e do perfil hormonal reprodutivo em mulheres com IMC acima de 25 kg/m².",
-      mudou: "Reforça, com uma síntese maior do que estudos isolados anteriores, que a VLCKD pode ser uma estratégia dietética eficaz para melhorar peso, resistência insulínica e hormônios reprodutivos na SOP — mas os próprios autores pedem ensaios maiores e de seguimento mais longo antes de recomendá-la como conduta padrão, já que a maioria dos estudos incluídos é de curto prazo.",
-      aplicar: "Considere a VLCKD como opção dietética para mulheres com SOP e IMC acima de 25 kg/m² que não respondem bem a abordagens convencionais, mas discuta previamente a exigência de adesão rigorosa e a falta de dados de longo prazo — monitore função renal, perfil lipídico e estado nutricional durante o acompanhamento, e reavalie a estratégia se a resposta não for satisfatória.",
-      evidencia: 5,
-      link: "https://doi.org/10.1016/j.clnu.2025.11.019",
+      data: "27 mar 2026",
+      title: "ECR em mulheres com SOP: jejum intermitente de 6 horas emagrece tanto quanto a restrição calórica diária, mas só o jejum reduz o índice de andrógeno livre",
+      resumo: "Ensaio clínico randomizado com 76 mulheres com síndrome dos ovários policísticos (SOP) comparou, por 6 meses, uma janela de alimentação de 6 horas (jejum intermitente, refeições entre 13h e 19h, sem contagem de calorias), restrição calórica diária de 25% e um grupo controle sem mudança na dieta: a perda de peso foi semelhante entre jejum intermitente (cerca de 4,3%) e restrição calórica (cerca de 4,7%), sem diferença significativa entre os dois grupos ativos, mas apenas o jejum intermitente reduziu o índice de andrógeno livre; não houve eventos adversos graves em nenhum grupo.",
+      mudou: "Oferece, em um ensaio controlado, uma alternativa de igual eficácia à contagem de calorias tradicional para perda de peso em mulheres com SOP, e sugere um possível benefício hormonal adicional específico do jejum intermitente (redução do andrógeno livre) que não foi observado com a restrição calórica.",
+      aplicar: "Pode-se apresentar a janela de alimentação de 6 horas como opção dietética válida para pacientes com SOP e sobrepeso que não se adaptam bem à contagem de calorias, deixando claro que este é um ensaio único e relativamente pequeno (76 mulheres), e que o achado sobre o andrógeno livre precisa de confirmação em estudos maiores e mais longos.",
+      evidencia: 4,
+      link: "https://doi.org/10.1038/s41591-026-04316-7",
       fonte: {
-        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
-        revista: "Clinical Nutrition",
-        ano: "2026 (publicado on-line em dezembro de 2025)",
-        desenho: "Revisão sistemática com meta-análise de ensaios clínicos",
-        amostra: "12 estudos (11 incluídos na meta-análise quantitativa) em mulheres com SOP",
-        doi: "10.1016/j.clnu.2025.11.019",
+        autores: "Corapi S, Runchey MC, Lyons J, Alonso de Leon M, Pavlou V, Lin S, Ezpeleta M, Gabel K, Tussing-Humphreys L, Oddo VM, Alexandria SJ, Sanchez J, Vidmar AP, Varady KA e Cienfuegos S",
+        revista: "Nature Medicine",
+        ano: "2026 (publicado on-line em 27 de março de 2026; edição impressa de junho de 2026, volume 32(6), p. 2155-2163)",
+        desenho: "Ensaio clínico randomizado de 3 braços",
+        amostra: "76 mulheres com síndrome dos ovários policísticos, seguimento de 6 meses",
+        doi: "10.1038/s41591-026-04316-7",
         acesso: "Verificar acesso ao texto completo no site da revista"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "Estudos individuais já sugeriam que a dieta cetogênica muito baixa em carboidrato (VLCKD) poderia melhorar parâmetros metabólicos e hormonais na síndrome dos ovários policísticos (SOP), mas os resultados eram heterogêneos e vinham de amostras pequenas. Os autores reuniram os ensaios disponíveis para estimar, de forma mais robusta, o efeito da VLCKD sobre peso, resistência insulínica e hormônios reprodutivos em mulheres com SOP." },
-        { h: "Como o estudo foi feito", p: "A revisão sistemática identificou 12 estudos sobre VLCKD em mulheres com SOP, dos quais 11 entraram na meta-análise quantitativa. Os desfechos avaliados incluíram IMC, peso corporal, marcadores de resistência insulínica (como HOMA-IR) e hormônios reprodutivos, principalmente em mulheres com IMC acima de 25 kg/m²." },
-        { h: "O que foi encontrado", p: "A VLCKD associou-se a reduções significativas de IMC (diferença média de -3,38 kg/m²) e de peso corporal (diferença média de -10,77 kg) em relação aos grupos de comparação, com heterogeneidade baixa entre os estudos (I²=0% em ambos os desfechos). Também houve melhora de marcadores de resistência insulínica e do perfil hormonal reprodutivo." },
-        { h: "O que isso não responde", p: "A maioria dos estudos incluídos tem seguimento de curto prazo, o que não permite avaliar sustentabilidade do efeito, adesão a longo prazo nem segurança cardiovascular e renal de uma dieta tão restritiva em carboidrato ao longo de anos. Os próprios autores pedem ensaios maiores e mais longos antes de recomendar a VLCKD como conduta padrão." },
-        { h: "Na prática do consultório", p: "Considere a VLCKD como uma opção dietética para mulheres com SOP e IMC acima de 25 kg/m² que não respondem bem a abordagens convencionais, mas discuta com a paciente a exigência de adesão rigorosa e a falta de dados de longo prazo antes de indicar — monitore função renal, perfil lipídico e estado nutricional ao longo do acompanhamento, e reavalie a estratégia se a adesão ou a resposta não forem satisfatórias." }
+        { h: "A pergunta do estudo", p: "O jejum intermitente vem sendo estudado como alternativa à restrição calórica tradicional para perda de peso, mas faltavam ensaios randomizados comparando diretamente as duas estratégias especificamente em mulheres com síndrome dos ovários policísticos (SOP), uma população com particularidades metabólicas e hormonais próprias." },
+        { h: "Como o estudo foi feito", p: "76 mulheres com SOP foram randomizadas para 6 meses de: alimentação restrita a uma janela de 6 horas (13h às 19h, sem contagem de calorias), restrição calórica diária de 25% das necessidades energéticas, ou um grupo controle sem mudança na dieta. Os desfechos incluíram peso corporal, índice de andrógeno livre e segurança (eventos adversos)." },
+        { h: "O que foi encontrado", p: "A perda de peso em 6 meses foi semelhante entre os dois grupos ativos: cerca de 4,3% com o jejum intermitente e cerca de 4,7% com a restrição calórica, sem diferença estatisticamente significativa entre eles. Apenas o grupo de jejum intermitente apresentou redução do índice de andrógeno livre. Não houve eventos adversos graves em nenhum dos grupos." },
+        { h: "O que isso não responde", p: "A amostra de 76 mulheres é pequena para um ensaio definitivo, e o estudo não acompanhou desfechos reprodutivos de longo prazo (como regularidade menstrual ou fertilidade) de forma conclusiva. Também não está claro se o benefício sobre o andrógeno livre se mantém além dos 6 meses ou se traduz em melhora clínica perceptível para a paciente." },
+        { h: "Na prática do consultório", p: "Para pacientes com SOP e sobrepeso que têm dificuldade com contagem de calorias, a janela de alimentação de 6 horas pode ser apresentada como alternativa de eficácia equivalente para perda de peso — mas comunique que a amostra é pequena, que o achado hormonal é preliminar, e que a estratégia deve ser adaptada à rotina e preferência de cada paciente." }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "creatina-mulheres-pos-menopausa-massa-magra-forca-meta-analise",
-      categoria: "Esportiva",
-      areas: ["Esportiva", "Suplementação"],
-      data: "16 mai 2026",
-      title: "Meta-análise de 7 ECRs: creatina traz ganho pequeno, porém consistente, de massa magra e força em mulheres na pós-menopausa, especialmente combinada a treino de força",
-      resumo: "Revisão sistemática com meta-análise de 7 ensaios clínicos randomizados controlados por placebo (608 mulheres, a maioria por volta dos 62 anos) encontrou ganho adicional médio de massa magra de 0,37 kg com a suplementação de creatina (IC95% 0,05-0,69) e ganho de força no leg press, com benefício mais consistente quando a dose era de pelo menos 5 g/dia associada a treino de força; o intervalo de predição de 95% (-0,10 a +0,84 kg) cruza o zero, indicando que o efeito pode não se repetir em todos os contextos.",
-      mudou: "Consolida, com uma meta-análise específica para mulheres na pós-menopausa, que a creatina pode trazer benefício pequeno, porém real, sobre massa magra e força nessa fase — uma população historicamente sub-representada nos estudos de creatina, que se concentravam mais em homens jovens atletas.",
-      aplicar: "Para mulheres na pós-menopausa, considere a creatina (a partir de 5 g/dia) como adjuvante ao treino de força para ganho de massa magra e força, comunicando que o efeito médio é pequeno e que a resposta pode variar entre indivíduas — reforce que o treino de força continua sendo o pilar da intervenção, com a creatina como complemento, não substituto.",
-      evidencia: 4,
-      link: "https://doi.org/10.1080/15502783.2026.2668435",
-      fonte: {
-        autores: "Naddafha, Antonio, Kreider e Stout",
-        revista: "Journal of the International Society of Sports Nutrition",
-        ano: "2026",
-        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados controlados por placebo",
-        amostra: "7 ECRs, 608 mulheres na pós-menopausa (idade média em torno de 62 anos)",
-        doi: "10.1080/15502783.2026.2668435",
-        acesso: "Resumo livre; verificar acesso ao texto completo no site da revista"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "A maior parte da evidência sobre creatina e composição corporal vem de estudos com homens jovens treinados, deixando uma lacuna sobre o efeito em mulheres na pós-menopausa — fase da vida marcada por perda progressiva de massa magra e força. Os autores reuniram os ensaios randomizados disponíveis nessa população específica." },
-        { h: "Como o estudo foi feito", p: "Revisão sistemática com meta-análise reuniu 7 ensaios clínicos randomizados, controlados por placebo, com 608 mulheres na pós-menopausa (idade média em torno de 62 anos), testando suplementação de creatina com e sem treino de força associado. Os desfechos incluíram massa magra e força (por exemplo, no leg press)." },
-        { h: "O que foi encontrado", p: "A creatina produziu ganho adicional médio de massa magra de 0,37 kg (IC95% 0,05-0,69 kg) em relação ao placebo, além de ganho de força no leg press. O benefício foi mais consistente quando a dose era de pelo menos 5 g/dia e a suplementação vinha associada a treino de força. O intervalo de predição de 95% (-0,10 a +0,84 kg), porém, cruza o zero, sinalizando que o efeito pode não se repetir em todos os contextos ou estudos futuros." },
-        { h: "O que isso não responde", p: "A amostra total (608 mulheres) ainda é pequena para uma meta-análise definitiva, e a revisão não foi registrada prospectivamente, o que pode introduzir viés de seleção de desfechos. Os resumos consultados também não detalham se há diferença de efeito conforme tempo desde a menopausa ou uso de terapia hormonal." },
-        { h: "Na prática do consultório", p: "Para mulheres na pós-menopausa engajadas em treino de força, considere a creatina (a partir de 5 g/dia) como adjuvante razoável para ganho de massa magra e força, comunicando que o efeito médio é pequeno e pode variar entre indivíduas — reforce que o treino de força continua sendo o pilar da intervenção, com a creatina como complemento, não substituto." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "amendoas-qualidade-sono-ecr",
-      categoria: "Comportamental",
-      areas: ["Comportamental", "Suplementação"],
-      data: "03 ago 2026",
-      title: "ECR na Índia: consumo diário de 60 g de amêndoas por 20 semanas melhora a qualidade percebida do sono em adultos com sono ruim",
-      resumo: "Ensaio clínico randomizado, aberto, paralelo, com avaliação de desfecho cegada, conduzido na região metropolitana de Mumbai, randomizou 209 adultos de 21-55 anos com má qualidade de sono para consumir 60 g/dia de amêndoas cruas ou um lanche salgado calórico equivalente; dos 175 que completaram as 20 semanas, o grupo das amêndoas apresentou melhor qualidade percebida do sono, maior eficiência do sono e menor tempo para adormecer (esta última diferença só foi significativa após ajuste para valores basais e sexo), além de níveis mais altos de melatonina ao final do estudo.",
-      mudou: "Fornece um ensaio randomizado (não apenas observacional) testando um alimento específico — amêndoas — como possível estratégia alimentar para melhorar o sono percebido, complementando evidências anteriores menores sobre o tema; os próprios autores alertam para não equiparar sono percebido a sono medido objetivamente.",
-      aplicar: "Pode-se sugerir o consumo diário de cerca de 60 g de amêndoas como estratégia alimentar adjuvante para pacientes que relatam má qualidade de sono, deixando claro que o desfecho medido foi a percepção subjetiva do sono (não polissonografia) e que o estudo foi financiado pela indústria de amêndoas (Almond Board of California), o que pede cautela na interpretação.",
-      evidencia: 3,
-      link: "https://doi.org/10.3389/fnut.2026.1892442",
-      fonte: {
-        autores: "Desai, Pinto, Halbe, Vaidya, Udipi e Kalita",
-        revista: "Frontiers in Nutrition",
-        ano: "2026",
-        desenho: "Ensaio clínico randomizado, aberto, paralelo, comunitário, com avaliação de desfecho cegada",
-        amostra: "209 adultos de 21-55 anos com má qualidade de sono na região metropolitana de Mumbai; 175 completaram as 20 semanas de acompanhamento",
-        doi: "10.3389/fnut.2026.1892442",
-        acesso: "Acesso aberto (texto completo livre, Frontiers); financiado pelo Almond Board of California"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "Alimentos específicos já foram associados a melhor qualidade de sono em estudos observacionais, e as amêndoas contêm nutrientes relacionados à síntese de melatonina e magnésio. Faltava um ensaio randomizado maior testando se o consumo diário de amêndoas realmente melhora a qualidade do sono percebida por adultos com sono ruim." },
-        { h: "Como o estudo foi feito", p: "O ensaio, conduzido na região metropolitana de Mumbai entre 2023 e 2025, randomizou 209 adultos de 21 a 55 anos com má qualidade de sono para consumir 60 g/dia de amêndoas cruas ou um lanche salgado calórico equivalente, por 20 semanas, em desenho aberto e comunitário, mas com avaliação de desfecho cegada. Qualidade de sono, eficiência do sono, tempo para adormecer e níveis de melatonina foram medidos ao final do estudo." },
-        { h: "O que foi encontrado", p: "Dos 209 randomizados, 175 completaram as 20 semanas. O grupo das amêndoas apresentou melhor qualidade percebida do sono, maior eficiência do sono e menor tempo para adormecer (esta última diferença só foi significativa após ajuste para valores basais e sexo), além de níveis mais altos de melatonina ao final do estudo em relação ao grupo controle." },
-        { h: "O que isso não responde", p: "O desfecho principal foi a qualidade de sono autorrelatada (percebida), não medida objetivamente por polissonografia ou actigrafia — os próprios autores alertam para não equiparar os dois tipos de medida. O estudo foi conduzido em uma população urbana indiana específica, o que limita a generalização para outros contextos, e foi financiado pelo Almond Board of California, entidade com interesse comercial direto no resultado." },
-        { h: "Na prática do consultório", p: "Pode-se sugerir o consumo diário de cerca de 60 g de amêndoas como estratégia alimentar adjuvante para pacientes que relatam má qualidade de sono, deixando claro que o desfecho medido foi a percepção subjetiva do sono, não um exame objetivo, e que o financiamento do estudo pela indústria de amêndoas pede uma leitura cautelosa dos resultados." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "mistura-vegetal-microbiota-vs-probiotico-ecr",
-      categoria: "Microbiota",
-      areas: ["Microbiota", "Comportamental"],
-      data: "16 jul 2026",
-      title: "Ensaio BIOME: mistura de mais de 30 alimentos vegetais muda mais a composição da microbiota do que um probiótico de cepa única em 6 semanas",
-      resumo: "Ensaio clínico randomizado com 399 adultos saudáveis do Reino Unido (35-65 anos) comparou uma mistura em pó de mais de 30 alimentos vegetais (30 g/dia), um probiótico de cepa única (Lactobacillus rhamnosus, 15 bilhões UFC/dia) e um controle de croutons de pão (28 g/dia) por 6 semanas: a mistura vegetal alterou a abundância relativa de 57 espécies bacterianas, contra 14 no grupo controle e 4 no grupo probiótico (p<0,001 para ambas as comparações), além de mais relatos de melhora de indigestão, prisão de ventre, azia e flatulência do que no grupo controle; não houve redução da glicemia pós-prandial em um subestudo com refeição rica em carboidrato.",
-      mudou: "Sugere que a diversidade de fibras e compostos de múltiplas fontes vegetais pode remodelar a microbiota intestinal de forma mais ampla do que a suplementação de uma única cepa probiótica isolada — reforçando a ideia de 'diversidade vegetal' como estratégia preferencial sobre o 'probiótico isolado' para saúde da microbiota em adultos saudáveis.",
-      aplicar: "Ao orientar pacientes saudáveis preocupados com saúde intestinal, priorize recomendar variedade de alimentos vegetais (leguminosas, grãos integrais, hortaliças, frutas, oleaginosas) como primeira estratégia para a microbiota, em vez de depender de um único probiótico — mas informe que o estudo foi financiado pela empresa que comercializa a mistura testada (ZOE), o que é um conflito de interesse relevante a considerar na leitura dos resultados.",
-      evidencia: 4,
-      link: "https://doi.org/10.1017/S0007114526107703",
-      fonte: {
-        autores: "Berry e cols. (King's College London, em parceria com a ZOE)",
-        revista: "British Journal of Nutrition",
-        ano: "2026",
-        desenho: "Ensaio clínico randomizado de 3 braços",
-        amostra: "399 adultos saudáveis do Reino Unido, 35-65 anos, 6 semanas de intervenção",
-        doi: "10.1017/S0007114526107703",
-        acesso: "Resumo livre; verificar acesso ao texto completo no site da revista; estudo financiado pela ZOE Ltd"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "Probióticos de cepa única são amplamente comercializados para saúde intestinal, mas a diversidade de fibras e compostos de múltiplas fontes vegetais também é apontada, por estudos observacionais, como benéfica para a microbiota. Faltava um ensaio randomizado comparando diretamente uma mistura de múltiplos alimentos vegetais a um probiótico de cepa única." },
-        { h: "Como o estudo foi feito", p: "399 adultos saudáveis do Reino Unido, de 35 a 65 anos, foram randomizados em 3 braços por 6 semanas: uma mistura em pó de mais de 30 alimentos vegetais (30 g/dia), um probiótico de cepa única (Lactobacillus rhamnosus, 15 bilhões UFC/dia) ou um controle de croutons de pão (28 g/dia). Os pesquisadores sequenciaram a microbiota fecal antes e depois da intervenção e registraram sintomas gastrointestinais autorrelatados; um subestudo também testou o efeito sobre a glicemia pós-prandial." },
-        { h: "O que foi encontrado", p: "A mistura vegetal alterou a abundância relativa de 57 espécies bacterianas, contra 14 no grupo controle e apenas 4 no grupo probiótico (p<0,001 para ambas as comparações). Participantes do grupo da mistura vegetal relataram menos indigestão, prisão de ventre, azia e flatulência do que o grupo controle. No subestudo de glicemia, a mistura vegetal não reduziu a glicemia pós-prandial após uma refeição rica em carboidrato." },
-        { h: "O que isso não responde", p: "O estudo foi financiado e conduzido em parceria com a empresa que comercializa a mistura testada (ZOE), e parte da equipe de pesquisa inclui cofundadores da empresa — um conflito de interesse relevante. Os sintomas gastrointestinais foram autorrelatados, e o estudo não acompanhou desfechos clínicos de longo prazo (como risco cardiometabólico) além da composição da microbiota em 6 semanas." },
-        { h: "Na prática do consultório", p: "Ao orientar pacientes saudáveis preocupados com saúde intestinal, priorize recomendar variedade de alimentos vegetais (leguminosas, grãos integrais, hortaliças, frutas, oleaginosas) como estratégia de primeira linha para a microbiota, em vez de depender de um único probiótico isolado — mas, ao citar este estudo específico, deixe claro o financiamento da empresa que vende o produto testado." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "omega3-vitaminas-pre-natais-parto-prematuro-coorte",
-      categoria: "Suplementação",
-      areas: ["Suplementação", "Materno Infantil"],
-      data: "06 jan 2026",
-      title: "Estudo de coorte: somar ômega-3 às vitaminas pré-natais associa-se a menor taxa de parto prematuro em gestantes nulíparas",
-      resumo: "Estudo de coorte observacional da Columbia University Irving Medical Center comparou gestantes nulíparas que usaram vitaminas pré-natais associadas a ômega-3 extra com as que usaram apenas vitaminas pré-natais: a taxa de parto prematuro foi de 5,04% no grupo com ômega-3 extra versus 8,41% no grupo sem, com chance de parto prematuro cerca de 36% menor após ajuste (OR ajustado 0,64); os próprios autores destacam que o desenho observacional não permite afirmar causalidade e que ensaios randomizados ainda são necessários.",
-      mudou: "Acrescenta um sinal observacional relativamente forte a favor da suplementação de ômega-3 somada às vitaminas pré-natais para redução do risco de parto prematuro, mas não resolve a questão de causalidade — revisões anteriores com ensaios randomizados já mostravam benefício mais consistente em mulheres com baixo status basal de ômega-3, e este estudo não distingue esse subgrupo.",
-      aplicar: "Pode-se discutir com gestantes a adição de ômega-3 às vitaminas pré-natais como estratégia nutricional razoável para tentar reduzir o risco de parto prematuro, especialmente em mulheres com baixo consumo de peixe — mas seja transparente de que a evidência aqui é observacional, sujeita a fatores de confusão não totalmente controlados, e sempre dentro da orientação obstétrica vigente.",
-      evidencia: 3,
-      link: "https://doi.org/10.3389/fnut.2025.1693844",
-      fonte: {
-        autores: "Yakah, Haas, Grobman e cols. (Columbia University Irving Medical Center)",
-        revista: "Frontiers in Nutrition",
-        ano: "2026 (publicado on-line em janeiro de 2026)",
-        desenho: "Estudo de coorte observacional",
-        amostra: "Gestantes nulíparas em uso de vitaminas pré-natais, com ou sem suplementação adicional de ômega-3",
-        doi: "10.3389/fnut.2025.1693844",
-        acesso: "Acesso aberto (texto completo livre, Frontiers)"
-      },
-      leitura: [
-        { h: "A pergunta do estudo", p: "Vitaminas pré-natais costumam conter pouco ou nenhum ômega-3, nutriente já associado, em estudos observacionais, a menor risco de parto prematuro. Os autores quiseram comparar, em gestantes nulíparas, as taxas de parto prematuro entre quem usava vitaminas pré-natais sozinhas e quem somava ômega-3 extra a elas." },
-        { h: "Como o estudo foi feito", p: "Estudo de coorte observacional da Columbia University Irving Medical Center comparou gestantes nulíparas em uso de vitaminas pré-natais associadas a ômega-3 adicional com gestantes em uso apenas de vitaminas pré-natais, registrando a ocorrência de parto prematuro e calculando a razão de chances ajustada para fatores de confusão conhecidos." },
-        { h: "O que foi encontrado", p: "A taxa de parto prematuro foi de 5,04% no grupo com ômega-3 extra, contra 8,41% no grupo sem ômega-3 adicional. Após ajuste para fatores de confusão, a chance de parto prematuro foi cerca de 36% menor no grupo que usava ômega-3 extra (OR ajustado de 0,64)." },
-        { h: "O que isso não responde", p: "Por ser observacional, o estudo não prova causalidade — mulheres que optam por suplementação adicional de ômega-3 podem diferir sistematicamente (em renda, acesso a cuidado pré-natal, outros hábitos de saúde) das que não optam, mesmo após ajuste estatístico. Os próprios autores afirmam que ensaios clínicos randomizados ainda são necessários para confirmar causalidade." },
-        { h: "Na prática do consultório", p: "Pode-se discutir com gestantes a adição de ômega-3 às vitaminas pré-natais como estratégia nutricional razoável, especialmente para aquelas com baixo consumo de peixe, mas comunique que a evidência aqui vem de um estudo observacional, não de um ensaio randomizado — e mantenha a decisão sempre alinhada à orientação obstétrica vigente." }
-      ]
-    },
-
-    /* ------------------------------------------------------------------ */
-    {
-      id: "h2go-reducao-bebidas-acucaradas-imc-criancas-ecr",
+      id: "dietas-diferentes-peso-perfil-cardiometabolico-sobrepeso-ecr",
       categoria: "Obesidade",
-      areas: ["Obesidade", "Materno Infantil"],
-      data: "09 out 2026",
-      title: "Ensaio cluster randomizado H2GO!: programa comunitário para reduzir bebidas açucaradas melhora o escore z de IMC em crianças de 8-13 anos",
-      resumo: "Ensaio clínico cluster randomizado testou o programa comunitário H2GO! — 6 semanas com 12 sessões em grupo, conduzidas em unidades do Boys & Girls Clubs — com 437 crianças de 8-13 anos e um cuidador, focado em reduzir o consumo de bebidas açucaradas e aumentar o consumo de água: em 12 meses, as crianças do grupo intervenção tiveram redução significativamente maior do escore z de IMC do que as do grupo comparação, com cerca de 30% das crianças do grupo intervenção migrando para uma categoria de IMC mais baixa (vs. 18% no comparação), chegando a 47,5% entre as que começaram com obesidade (vs. 36,7% no comparação).",
-      mudou: "Mostra que um programa comunitário relativamente breve (6 semanas), focado especificamente em bebidas açucaradas e entregue por equipe de organizações comunitárias (não só por profissionais de saúde), pode gerar redução mensurável do IMC em crianças ao longo de 12 meses — um modelo de intervenção escalável fora do consultório tradicional.",
-      aplicar: "Ao orientar famílias de crianças com sobrepeso/obesidade, priorize a redução do consumo de bebidas açucaradas e o aumento da ingestão de água como meta concreta e de fácil mensuração — e, onde disponível, considere encaminhar famílias para programas comunitários estruturados (como os oferecidos por organizações extracurriculares) como complemento ao acompanhamento nutricional individual.",
+      areas: ["Obesidade", "Clínica"],
+      data: "16 nov 2026",
+      title: "ECR de 6 meses: diferentes estratégias dietéticas reduzem em média 3% do peso em adultos com sobrepeso, sem diferença significativa de eficácia entre elas",
+      resumo: "Ensaio clínico randomizado de 6 meses com 141 adultos com sobrepeso testou diferentes intervenções dietéticas sobre componentes de gordura abdominal e perfil cardiometabólico: a perda de peso média foi de aproximadamente 3%, com perda de peso clinicamente significativa (≥5%) alcançada por 16,8% dos participantes aos 3 meses e por 30,7% aos 6 meses, sem diferenças significativas entre as diferentes estratégias dietéticas testadas.",
+      mudou: "Reforça que diferentes abordagens dietéticas, quando bem implementadas, tendem a convergir para resultados médios semelhantes — sugerindo que a adesão e o tempo de acompanhamento pesam mais do que a escolha específica da estratégia de macronutrientes para alcançar perda de peso clinicamente relevante.",
+      aplicar: "Use este achado para individualizar a escolha da estratégia dietética conforme a preferência e a adesão esperada de cada paciente, em vez de assumir superioridade de uma abordagem de macronutrientes sobre outra — e seja realista ao comunicar que, mesmo com acompanhamento estruturado, cerca de 1 em cada 3 pacientes atinge perda de peso ≥5% em 6 meses.",
       evidencia: 4,
-      link: "https://doi.org/10.1001/jamanetworkopen.2026.38188",
+      link: "https://doi.org/10.1038/s41430-026-01845-9",
       fonte: {
-        autores: "Wang e cols. (Boston University)",
+        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
+        revista: "European Journal of Clinical Nutrition (grupo Nature)",
+        ano: "2026 (publicado em 16 de novembro de 2026)",
+        desenho: "Ensaio clínico randomizado de 6 meses, múltiplos braços dietéticos",
+        amostra: "141 adultos com sobrepeso",
+        doi: "10.1038/s41430-026-01845-9",
+        acesso: "Verificar acesso ao texto completo no site da revista (PMID 43039960)"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "Diferentes estratégias dietéticas (como dietas balanceadas, pobres em carboidrato ou pobres em gordura) são frequentemente comparadas entre si na literatura, mas os resultados costumam ser inconsistentes. Os autores testaram, em um ensaio de 6 meses, se diferentes intervenções dietéticas produzem efeitos distintos sobre gordura abdominal, peso e perfil cardiometabólico em adultos com sobrepeso." },
+        { h: "Como o estudo foi feito", p: "141 adultos com sobrepeso foram randomizados para diferentes intervenções dietéticas por 6 meses, com avaliações em pontos intermediários (3 meses) e ao final (6 meses). Os desfechos incluíram peso corporal, componentes de gordura abdominal e marcadores cardiometabólicos." },
+        { h: "O que foi encontrado", p: "A perda de peso média foi de aproximadamente 3% em todo o grupo. A proporção de participantes que atingiu perda de peso clinicamente significativa (≥5%) foi de 16,8% aos 3 meses e subiu para 30,7% aos 6 meses. Não houve diferenças estatisticamente significativas entre as diferentes estratégias dietéticas testadas em nenhum dos desfechos avaliados." },
+        { h: "O que isso não responde", p: "Os resumos consultados não detalham os componentes exatos de cada braço dietético nem o grau de adesão de cada grupo ao longo dos 6 meses, o que dificulta saber se a ausência de diferença reflete equivalência real entre as dietas ou dificuldade de adesão uniforme. Também não há dados de seguimento além de 6 meses para avaliar manutenção do peso perdido." },
+        { h: "Na prática do consultório", p: "Ao prescrever uma estratégia dietética para perda de peso em pacientes com sobrepeso, priorize a que tiver maior probabilidade de adesão para aquele paciente específico, em vez de assumir que uma estratégia de macronutrientes é inerentemente superior — e comunique, de forma realista, que a perda de peso clinicamente significativa (≥5%) costuma levar meses e não ocorre para todos os pacientes, mesmo com acompanhamento estruturado." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "formula-mfgm-cognicao-lactentes-ecr",
+      categoria: "Materno Infantil",
+      areas: ["Materno Infantil"],
+      data: "19 nov 2026",
+      title: "ECR: fórmula infantil enriquecida com membrana do glóbulo de gordura do leite (MFGM) não melhora significativamente a cognição aos 12 meses, em comparação com fórmula padrão",
+      resumo: "Ensaio clínico randomizado com lactentes a termo, únicos, recrutados na comunidade com menos de 2 meses de idade (recrutamento entre maio de 2020 e abril de 2022), comparou fórmula infantil enriquecida com membrana do glóbulo de gordura do leite (MFGM) à fórmula padrão, incluindo um grupo de referência de lactentes amamentados (204 lactentes): o escore cognitivo médio aos 12 meses foi de 100,1 no grupo MFGM versus 99,4 no grupo fórmula padrão, uma diferença que não foi estatisticamente significativa.",
+      mudou: "Contraria a expectativa, baseada em ensaios menores e mais antigos, de que a suplementação de MFGM na fórmula traria um benefício cognitivo mensurável frente à fórmula padrão — neste ensaio maior e mais recente, não foi encontrada diferença estatisticamente significativa entre os grupos.",
+      aplicar: "Tenha cautela ao recomendar fórmulas enriquecidas com MFGM especificamente por alegações de benefício cognitivo — comunique às famílias que a evidência mais recente e robusta não confirma superioridade cognitiva frente à fórmula padrão, e reforce que a amamentação continua sendo a referência sempre que possível.",
+      evidencia: 4,
+      link: "https://pubmed.ncbi.nlm.nih.gov/43056116/",
+      fonte: {
+        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
         revista: "JAMA Network Open",
-        ano: "2026",
-        desenho: "Ensaio clínico cluster randomizado (programa H2GO!)",
-        amostra: "437 crianças de 8-13 anos e um cuidador, recrutadas em unidades do Boys & Girls Clubs; seguimento de 12 meses",
-        doi: "10.1001/jamanetworkopen.2026.38188",
+        ano: "2026 (publicado em 19 de novembro de 2026)",
+        desenho: "Ensaio clínico randomizado, com grupo de referência amamentado",
+        amostra: "Lactentes a termo, únicos, com menos de 2 meses de idade no recrutamento (comunidade, 2020-2022); grupo de referência amamentado com 204 lactentes",
+        doi: "Conferir DOI no registro do PMID 43056116",
         acesso: "Acesso aberto (JAMA Network Open)"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "Programas de prevenção de obesidade infantil conduzidos dentro do sistema de saúde nem sempre alcançam as famílias que mais precisam, e organizações comunitárias (como clubes recreativos) são um canal alternativo pouco estudado em ensaios randomizados de boa qualidade. Os autores testaram se um programa de 6 semanas focado em reduzir bebidas açucaradas, entregue nesse formato comunitário, reduz o IMC de crianças ao longo de 12 meses." },
-        { h: "Como o estudo foi feito", p: "O ensaio cluster randomizado H2GO! recrutou 437 crianças de 8 a 13 anos, cada uma com um cuidador, em unidades do Boys & Girls Clubs. O programa consistiu em 6 semanas com 12 sessões em grupo, conduzidas por equipe treinada da própria organização comunitária, focadas em reduzir o consumo de bebidas açucaradas e aumentar o consumo de água. O desfecho principal foi a mudança no escore z de IMC em 12 meses." },
-        { h: "O que foi encontrado", p: "As crianças do grupo intervenção tiveram redução significativamente maior do escore z de IMC em 12 meses do que as do grupo comparação. Cerca de 30% das crianças do grupo intervenção migraram para uma categoria de IMC mais baixa, contra 18% no grupo comparação; entre as crianças que começaram o estudo com obesidade, 47,5% do grupo intervenção melhoraram de categoria de IMC, contra 36,7% no grupo comparação." },
-        { h: "O que isso não responde", p: "Os resumos consultados não detalham a magnitude exata (em kg/m² ou unidades de escore z) da diferença entre os grupos, nem se o efeito se mantém além dos 12 meses de seguimento. Também não está claro, pelos dados disponíveis, qual componente específico do programa (educação, suporte do grupo, mudança de disponibilidade de bebidas em casa) mais contribuiu para o resultado." },
-        { h: "Na prática do consultório", p: "Ao orientar famílias de crianças com sobrepeso ou obesidade, priorize a redução do consumo de bebidas açucaradas e o aumento da ingestão de água como meta concreta, de fácil mensuração e com respaldo deste ensaio — e, onde houver organizações comunitárias locais (clubes, ONGs, programas extracurriculares) dispostas a implementar abordagens semelhantes, considere isso como um complemento valioso ao acompanhamento nutricional individual." }
+        { h: "A pergunta do estudo", p: "Ensaios anteriores, em geral menores, sugeriram que a suplementação de MFGM (membrana do glóbulo de gordura do leite) em fórmulas infantis poderia melhorar o desenvolvimento cognitivo de lactentes não amamentados, aproximando seus resultados dos de lactentes amamentados. Faltava um ensaio maior e mais recente para confirmar esse benefício." },
+        { h: "Como o estudo foi feito", p: "Lactentes a termo, únicos, com menos de 2 meses de idade, foram recrutados na comunidade entre maio de 2020 e abril de 2022 e randomizados para fórmula enriquecida com MFGM ou fórmula padrão, com um grupo de referência de lactentes amamentados (204 lactentes) incluído para comparação. O desfecho principal foi o escore cognitivo médio aos 12 meses." },
+        { h: "O que foi encontrado", p: "O escore cognitivo médio aos 12 meses foi de 100,1 no grupo que recebeu fórmula com MFGM e de 99,4 no grupo de fórmula padrão — uma diferença pequena e não estatisticamente significativa. Os autores notaram que uma possível redução no número de lactentes com atraso cognitivo mereceria investigação adicional." },
+        { h: "O que isso não responde", p: "O estudo não esclarece, a partir dos resumos disponíveis, se subgrupos específicos de lactentes (por exemplo, com maior risco de atraso no desenvolvimento) poderiam se beneficiar de forma diferente da suplementação de MFGM. Também não há, nos materiais consultados, uma comparação estatística direta entre os grupos de fórmula e o grupo de referência amamentado." },
+        { h: "Na prática do consultório", p: "Ao orientar famílias que não conseguem ou optam por não amamentar, evite basear a recomendação de uma fórmula específica em alegações de benefício cognitivo ligadas à MFGM — explique que o ensaio mais recente e rigoroso não confirmou esse benefício, e mantenha o foco em orientações de evidência consolidada sobre introdução alimentar e acompanhamento do crescimento." }
       ]
     },
 
     /* ------------------------------------------------------------------ */
     {
-      id: "aba-feed-suporte-pares-amamentacao-ecr",
-      categoria: "Materno Infantil",
-      areas: ["Materno Infantil", "Comportamental"],
-      data: "31 mar 2026",
-      title: "ECR multicêntrico do Reino Unido (ABA-feed): suporte intensivo de pares não aumenta as taxas de amamentação em relação ao cuidado padrão",
-      resumo: "Ensaio clínico randomizado multicêntrico no Reino Unido comparou um programa intensivo de suporte de pares para amamentação (ABA-feed, 1.458 participantes) ao cuidado padrão (1.017 participantes): a taxa de qualquer amamentação em 8 semanas foi semelhante entre os grupos (69,8% vs. 68,8%; diferença de risco ajustada de 0,01, IC95% -0,03 a 0,04), sem diferença também em iniciação da amamentação (94,2% vs. 92,5%) nem nos demais desfechos secundários em 8, 16 e 24 semanas, exceto um ganho transitório de suporte social percebido às 8 semanas no grupo intervenção, que não se sustentou às 16 semanas.",
-      mudou: "Contraria, neste contexto populacional específico do Reino Unido (com taxa basal de amamentação já alta, próxima de 69%), a expectativa de que um programa intensivo e estruturado de suporte de pares aumentaria as taxas de amamentação acima do que o cuidado padrão já entrega — os próprios autores concluem que esse programa, nesse formato, não deveria ser implementado nesse contexto sem evidência adicional de efetividade local.",
-      aplicar: "Antes de recomendar ou implementar um programa específico de suporte de pares para amamentação, considere que a efetividade pode depender muito do contexto local (taxa basal de amamentação, estrutura do cuidado padrão já oferecido) — avalie evidência de efetividade no contexto onde o programa será aplicado antes de assumir benefício automático, e continue oferecendo suporte individualizado baseado nas necessidades específicas de cada binômio mãe-bebê.",
-      evidencia: 4,
-      link: "https://doi.org/10.1136/bmj-2025-086558",
+      id: "proteina-perda-peso-idosos-massa-magra-analise-secundaria",
+      categoria: "Suplementação",
+      areas: ["Suplementação", "Clínica"],
+      data: "22 jan 2026",
+      title: "Análise secundária de 3 ECRs: mais proteína durante a perda de peso em idosos preserva mais massa magra apendicular, mas não melhora força nem função física",
+      resumo: "Análise secundária de dados de 3 ensaios clínicos randomizados (Muscle Preservation Study, PROBE study e WelPrex study) com 191 idosos com sobrepeso ou obesidade (idade média de 65,1 anos, IMC médio de 32,9 kg/m²) em intervenções de perda de peso: maior ingestão de proteína (variando entre aproximadamente 0,87 e 1,06 g/kg/dia entre os estudos) associou-se a mais massa magra apendicular preservada, mas não a melhores resultados de força de preensão manual, velocidade de marcha ou desempenho físico (SPPB).",
+      mudou: "Nuança a suposição de que 'mais proteína' durante a perda de peso em idosos se traduz automaticamente em melhor função física — este estudo mostra uma dissociação entre um efeito positivo na composição corporal (massa magra preservada) e a ausência de efeito mensurável sobre força e função física.",
+      aplicar: "Em planos hipocalóricos para idosos, priorizar ingestão de proteína na faixa superior das recomendações continua sendo razoável para proteger a massa magra, mas comunique que preservar massa muscular isoladamente pode não se traduzir em ganho funcional perceptível — associe sempre a um programa de treino de força para atingir diretamente os desfechos de função física.",
+      evidencia: 3,
+      link: "https://doi.org/10.1186/s12937-025-01279-2",
       fonte: {
-        autores: "Jolly e cols.",
-        revista: "The BMJ",
-        ano: "2026",
-        desenho: "Ensaio clínico randomizado multicêntrico, paralelo",
-        amostra: "2.475 gestantes/puérperas no Reino Unido (1.458 no grupo ABA-feed, 1.017 no cuidado padrão)",
-        doi: "10.1136/bmj-2025-086558",
-        acesso: "Acesso aberto (BMJ)"
+        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
+        revista: "Nutrition Journal",
+        ano: "2026 (publicado em 22 de janeiro de 2026)",
+        desenho: "Análise secundária de dados de 3 ensaios clínicos randomizados",
+        amostra: "191 idosos com sobrepeso ou obesidade em intervenções de perda de peso",
+        doi: "10.1186/s12937-025-01279-2",
+        acesso: "Acesso aberto (BioMed Central)"
       },
       leitura: [
-        { h: "A pergunta do estudo", p: "Programas de suporte de pares (mulheres que já amamentaram orientando outras mães) são frequentemente recomendados para aumentar as taxas de amamentação, mas sua efetividade real, testada em ensaios grandes e bem desenhados, ainda é incerta — especialmente em contextos onde o cuidado padrão já é relativamente robusto. Os autores testaram um programa intensivo de suporte de pares (ABA-feed) contra o cuidado padrão no Reino Unido." },
-        { h: "Como o estudo foi feito", p: "Ensaio clínico randomizado multicêntrico, paralelo, no Reino Unido, alocou 1.458 participantes para o programa intensivo de suporte de pares ABA-feed e 1.017 para o cuidado padrão de amamentação. O desfecho primário foi qualquer amamentação em 8 semanas pós-parto; desfechos secundários incluíram iniciação da amamentação, amamentação exclusiva, práticas de uso de fórmula, ansiedade, suporte social percebido e utilização de serviços de saúde, avaliados em 8, 16 e 24 semanas." },
-        { h: "O que foi encontrado", p: "A taxa de qualquer amamentação em 8 semanas foi semelhante entre os grupos (69,8% no ABA-feed vs. 68,8% no cuidado padrão; diferença de risco ajustada de 0,01, IC95% -0,03 a 0,04). A iniciação da amamentação também foi semelhante (94,2% vs. 92,5%). Entre os desfechos secundários, a única diferença encontrada foi um ganho transitório de suporte social percebido às 8 semanas no grupo intervenção, que não se sustentou na avaliação de 16 semanas." },
-        { h: "O que isso não responde", p: "A taxa basal de amamentação no cuidado padrão já era alta (quase 69%), mais alta do que o esperado no planejamento do estudo — isso pode ter reduzido a margem para o programa de suporte de pares mostrar benefício adicional detectável. O estudo não testa se o mesmo programa traria benefício em contextos com taxas basais de amamentação mais baixas." },
-        { h: "Na prática do consultório", p: "Antes de recomendar ou apoiar a implementação de um programa específico de suporte de pares para amamentação, considere que a efetividade pode depender muito do contexto local — avalie a taxa basal de amamentação e a qualidade do cuidado padrão já oferecido antes de assumir benefício automático de um programa estruturado, e continue priorizando o suporte individualizado conforme as necessidades específicas de cada binômio mãe-bebê." }
+        { h: "A pergunta do estudo", p: "Recomenda-se maior ingestão de proteína durante a perda de peso em idosos para proteger a massa magra e, em tese, a função física. Mas faltavam dados combinando múltiplos ensaios para verificar se esse benefício de composição corporal realmente se traduz em melhor força e desempenho físico nessa população." },
+        { h: "Como o estudo foi feito", p: "Os autores reanalisaram dados de 3 ensaios clínicos randomizados (Muscle Preservation Study, PROBE study e WelPrex study), totalizando 191 idosos com sobrepeso ou obesidade (idade média de 65,1 anos, IMC médio de 32,9 kg/m²) em intervenções de perda de peso. A ingestão de proteína observada variou entre aproximadamente 0,87 e 1,06 g/kg/dia entre os estudos. Os desfechos avaliados incluíram massa magra apendicular, força de preensão manual, velocidade de marcha e a Short Physical Performance Battery (SPPB)." },
+        { h: "O que foi encontrado", p: "Maior ingestão de proteína associou-se a maior preservação de massa magra apendicular durante a perda de peso. No entanto, essa associação não se repetiu para os desfechos funcionais avaliados: força de preensão manual, velocidade de marcha e SPPB não diferiram significativamente conforme a ingestão de proteína." },
+        { h: "O que isso não responde", p: "Por se tratar de uma análise secundária, com ingestão de proteína não necessariamente randomizada dentro de cada estudo original, a relação encontrada é associativa, não causal. Os autores dos estudos originais não foram desenhados especificamente para testar essa questão, o que limita a força da conclusão e reforça a necessidade de ensaios dedicados a esse objetivo." },
+        { h: "Na prática do consultório", p: "Ao planejar dietas hipocalóricas para idosos, continue priorizando ingestão de proteína na faixa superior das recomendações para proteger a massa magra, mas não assuma que isso, isoladamente, melhorará força ou função física — combine sempre com treino de força e reavalie a função física como desfecho separado, não como consequência automática da preservação de massa magra." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "cafeina-dose-resposta-desempenho-aerobico-meta-analise",
+      categoria: "Esportiva",
+      areas: ["Esportiva", "Suplementação"],
+      data: "19 jun 2026",
+      title: "Meta-análise dose-resposta: doses baixas de cafeína (1,3-3 mg/kg) já melhoram o desempenho aeróbico em provas contrarrelógio, sem necessidade de doses mais altas",
+      resumo: "Revisão sistemática com meta-análise dose-resposta sobre o efeito da cafeína oral no desempenho em exercício aeróbico encontrou que doses baixas, entre 1,3 e 3 mg/kg, já podem melhorar o desempenho em provas contrarrelógio ao reduzir o tempo de conclusão, sem necessidade das doses mais altas (frequentemente de 3 a 6 mg/kg) comumente recomendadas na literatura esportiva.",
+      mudou: "Desafia a suposição comum de que doses mais altas de cafeína são necessárias para obter benefício ergogênico — sugere que um benefício comparável pode ser alcançado com doses notavelmente mais baixas e, potencialmente, mais bem toleradas.",
+      aplicar: "Para atletas de endurance sensíveis a doses mais altas de cafeína (ansiedade, desconforto gastrointestinal, prejuízo do sono), considere começar com doses mais baixas (em torno de 1,3 a 3 mg/kg) como estratégia potencialmente suficiente para benefício de desempenho, individualizando conforme tolerância e uso habitual de cafeína pelo atleta.",
+      evidencia: 5,
+      link: "https://doi.org/10.3390/nu18121989",
+      fonte: {
+        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
+        revista: "Nutrients",
+        ano: "2026 (publicado em 19 de junho de 2026)",
+        desenho: "Revisão sistemática com meta-análise dose-resposta",
+        amostra: "Ensaios clínicos sobre cafeína oral e desempenho em exercício aeróbico",
+        doi: "10.3390/nu18121989",
+        acesso: "Acesso aberto (MDPI)"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "A cafeína é um dos suplementos ergogênicos mais estudados no esporte, mas a dose ideal para desempenho aeróbico ainda é debatida, com recomendações tradicionais apontando para doses de moderadas a altas (3 a 6 mg/kg). Os autores quiseram mapear, de forma sistemática, a relação dose-resposta entre cafeína oral e desempenho em exercício aeróbico." },
+        { h: "Como o estudo foi feito", p: "Os autores conduziram uma revisão sistemática com meta-análise dose-resposta de ensaios clínicos que testaram diferentes doses de cafeína oral sobre o desempenho em exercício aeróbico, com foco especial em provas contrarrelógio (time-trial), nas quais o desfecho é o tempo necessário para completar uma distância ou carga de trabalho definida." },
+        { h: "O que foi encontrado", p: "Doses baixas de cafeína, entre 1,3 e 3 mg/kg, já se associaram a melhora no desempenho em provas contrarrelógio, reduzindo o tempo de conclusão em comparação com placebo. O benefício não dependeu de doses mais altas, frequentemente recomendadas na prática esportiva." },
+        { h: "O que isso não responde", p: "Os resumos consultados não detalham se o efeito varia conforme o uso habitual de cafeína pelo atleta (usuários crônicos tendem a responder diferente de não usuários), nem se os resultados se generalizam igualmente para todas as modalidades de exercício aeróbico ou apenas para provas contrarrelógio especificamente." },
+        { h: "Na prática do consultório", p: "Ao orientar atletas de endurance sobre suplementação de cafeína, considere que doses mais baixas (1,3 a 3 mg/kg) podem já ser suficientes para benefício de desempenho — uma informação útil especialmente para atletas que relatam efeitos colaterais com doses mais altas, como ansiedade, desconforto gastrointestinal ou prejuízo do sono antes de competições." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "mindfulness-alimentacao-obesidade-ansiedade-ecr-brasil",
+      categoria: "Comportamental",
+      areas: ["Comportamental", "Obesidade"],
+      data: "15 jul 2026",
+      title: "ECR brasileiro (Porto Alegre): programa online de alimentação consciente para pacientes com obesidade e ansiedade não muda o controle inibitório alimentar, mas traz ganhos psicológicos",
+      resumo: "Ensaio clínico randomizado de viabilidade (estudo OMETA), conduzido no Hospital de Clínicas de Porto Alegre, randomizou 52 adultos com obesidade e transtorno de ansiedade generalizada para um programa online de alimentação consciente ('mindful eating') ou um grupo controle que assistiu a vídeos sobre qualidade de vida: não houve melhora clara no controle inibitório alimentar, medido por uma tarefa comportamental objetiva (Go/No-Go com estímulos alimentares), mas houve melhora em diversos desfechos psicológicos secundários autorrelatados.",
+      mudou: "Relativiza a ideia de que programas de alimentação consciente mudam diretamente o controle inibitório alimentar medido de forma objetiva — neste ensaio, o benefício pareceu se concentrar mais no bem-estar psicológico autorrelatado do que em uma tarefa comportamental objetiva de impulsividade alimentar.",
+      aplicar: "Programas de alimentação consciente podem ser oferecidos como ferramenta complementar para bem-estar psicológico em pacientes com obesidade e ansiedade, mas não se deve esperar, com base neste ensaio, uma mudança mensurável no comportamento alimentar impulsivo isoladamente — combine com outras estratégias comportamentais voltadas diretamente ao comportamento alimentar.",
+      evidencia: 4,
+      link: "https://doi.org/10.1016/j.lana.2026.101541",
+      fonte: {
+        autores: "Autoria não detalhada nos resumos consultados — conferir no artigo original",
+        revista: "Lancet Regional Health – Americas",
+        ano: "2026 (publicado em 15 de julho de 2026, volume 59, artigo 101541)",
+        desenho: "Ensaio clínico randomizado de viabilidade (estudo OMETA, NCT06087185)",
+        amostra: "52 adultos com obesidade e transtorno de ansiedade generalizada, Hospital de Clínicas de Porto Alegre (Brasil)",
+        doi: "10.1016/j.lana.2026.101541",
+        acesso: "Acesso aberto (Lancet Regional Health)"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "Programas de alimentação consciente ('mindful eating') são frequentemente propostos para pacientes com obesidade, com a expectativa de reduzir a alimentação impulsiva ligada a estados emocionais como ansiedade. Faltavam, porém, ensaios que testassem esse efeito usando uma medida comportamental objetiva de controle inibitório alimentar, e não apenas questionários autorrelatados." },
+        { h: "Como o estudo foi feito", p: "O ensaio de viabilidade OMETA, conduzido no Hospital de Clínicas de Porto Alegre, randomizou 52 adultos com obesidade e transtorno de ansiedade generalizada para um programa online de alimentação consciente ou um grupo controle que assistiu a vídeos educativos sobre qualidade de vida. O controle inibitório alimentar foi medido por uma tarefa comportamental do tipo Go/No-Go com estímulos de comida, além de desfechos psicológicos secundários autorrelatados." },
+        { h: "O que foi encontrado", p: "Não houve melhora clara no desempenho da tarefa Go/No-Go (controle inibitório alimentar objetivo) no grupo que recebeu o programa de alimentação consciente, em comparação com o grupo controle. Por outro lado, houve melhora em diversos desfechos psicológicos secundários autorrelatados entre os participantes do programa." },
+        { h: "O que isso não responde", p: "Por ser um ensaio de viabilidade com amostra pequena (52 participantes), o estudo não tem poder estatístico para descartar com segurança um efeito real, porém modesto, sobre o controle inibitório alimentar. Também não fica claro, pelos resumos disponíveis, quais desfechos psicológicos específicos melhoraram nem por quanto tempo esse ganho se sustentou após o fim do programa." },
+        { h: "Na prática do consultório", p: "Ao considerar programas de alimentação consciente para pacientes com obesidade e ansiedade, posicione-os como uma ferramenta de apoio ao bem-estar psicológico, não como uma intervenção comprovadamente capaz de mudar, por si só, o comportamento alimentar impulsivo — combine com abordagens comportamentais dirigidas especificamente à relação do paciente com a comida." }
+      ]
+    },
+
+    /* ------------------------------------------------------------------ */
+    {
+      id: "dieta-mediterranea-microbiota-diabetes-tipo-2-meta-analise",
+      categoria: "Microbiota",
+      areas: ["Microbiota", "Clínica"],
+      data: "03 nov 2025",
+      title: "Meta-análise de 9 ECRs: dieta mediterrânea melhora HbA1c, LDL e triglicerídeos no diabetes tipo 2, mas o efeito sobre a microbiota intestinal ainda não pôde ser quantificado",
+      resumo: "Revisão sistemática com meta-análise de 9 ensaios clínicos randomizados (1.337 adultos) comparou intervenções baseadas na dieta mediterrânea a dietas controle em pessoas com diabetes tipo 2: a dieta mediterrânea reduziu HbA1c (diferença média de -0,18), LDL (diferença média de -0,10) e triglicerídeos (diferença média de -0,20) em relação ao controle, sem efeito significativo sobre glicemia de jejum, insulina, HOMA-IR, colesterol total ou HDL; os dados de microbiota intestinal não puderam ser combinados quantitativamente por falta de padronização entre os estudos, mas a síntese narrativa relatou aumento da diversidade alfa e maior presença de táxons como Akkermansia muciniphila e Roseburia spp.",
+      mudou: "Confirma, com evidência combinada mais robusta, o benefício metabólico da dieta mediterrânea no diabetes tipo 2 (lipídios e controle glicêmico via HbA1c), mas evidencia que o elo com a microbiota intestinal, apesar de biologicamente plausível e relatado de forma qualitativamente favorável, ainda carece de evidência quantitativa padronizada — uma lacuna metodológica, não um resultado negativo.",
+      aplicar: "Continue recomendando o padrão mediterrâneo com confiança para pacientes com diabetes tipo 2 quanto aos benefícios sobre lipídios e HbA1c, mas evite apresentar aos pacientes mecanismos específicos mediados pela microbiota como fato já estabelecido — trate as mudanças na microbiota como uma via plausível e ainda em estudo, não como explicação comprovada do benefício metabólico.",
+      evidencia: 5,
+      link: "https://doi.org/10.1016/j.numecd.2025.104433",
+      fonte: {
+        autores: "Lauria F, Formisano A, Dello Russo M, Quaglia C, Giacco R, Russo GL, Spagnuolo C e Vitale M",
+        revista: "Nutrition, Metabolism and Cardiovascular Diseases",
+        ano: "2026 (publicado on-line em 3 de novembro de 2025; edição impressa de maio de 2026, volume 36(5), artigo 104433)",
+        desenho: "Revisão sistemática com meta-análise de ensaios clínicos randomizados",
+        amostra: "9 ECRs, 1.337 adultos com diabetes tipo 2",
+        doi: "10.1016/j.numecd.2025.104433",
+        acesso: "Verificar acesso ao texto completo no site da revista (Elsevier); PMID 41381307"
+      },
+      leitura: [
+        { h: "A pergunta do estudo", p: "A dieta mediterrânea já é associada a benefícios metabólicos no diabetes tipo 2, e estudos menores sugerem que parte desse efeito poderia ser mediada por mudanças na microbiota intestinal. Os autores reuniram os ensaios randomizados disponíveis para quantificar, de forma mais robusta, tanto os efeitos metabólicos quanto os efeitos sobre a microbiota." },
+        { h: "Como o estudo foi feito", p: "Os autores buscaram em cinco bases de dados (PubMed, Embase, Web of Science, Cochrane CENTRAL e Scopus) até outubro de 2024, selecionando ensaios clínicos randomizados que comparassem dietas baseadas no padrão mediterrâneo a dietas controle em adultos com diabetes tipo 2. Nove ensaios, totalizando 1.337 participantes, atenderam aos critérios de inclusão para a meta-análise quantitativa dos desfechos metabólicos." },
+        { h: "O que foi encontrado", p: "Em comparação com o controle, a dieta mediterrânea reduziu significativamente HbA1c (diferença média de -0,18), LDL (diferença média de -0,10) e triglicerídeos (diferença média de -0,20). Não houve efeito significativo sobre glicemia de jejum, insulina, HOMA-IR, colesterol total ou HDL. Para a microbiota, a heterogeneidade nos métodos e desfechos relatados impediu uma meta-análise quantitativa; a síntese narrativa apontou aumento da diversidade alfa e maior abundância de táxons associados à saúde metabólica, como Akkermansia muciniphila e Roseburia spp." },
+        { h: "O que isso não responde", p: "Os próprios autores afirmam que esta meta-análise não fornece evidência definitiva de que a dieta mediterrânea melhora todos os fatores de risco metabólico do diabetes tipo 2, especialmente no que diz respeito à composição da microbiota — a falta de padronização entre os estudos impede conclusões quantitativas sobre esse elo específico. Eles pedem ensaios mais longos, abordagens individualizadas e investigação mecanística com dados multi-ômicos." },
+        { h: "Na prática do consultório", p: "Ao recomendar o padrão mediterrâneo para pacientes com diabetes tipo 2, apoie-se com confiança nos benefícios bem documentados sobre HbA1c, LDL e triglicerídeos — mas, ao explicar o 'porquê' do benefício ao paciente, evite afirmar que ele ocorre 'através da microbiota' como fato estabelecido; apresente essa via como biologicamente plausível e ainda em investigação." }
       ]
     }
   ]
